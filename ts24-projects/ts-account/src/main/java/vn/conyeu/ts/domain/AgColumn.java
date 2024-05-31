@@ -28,7 +28,7 @@ public class AgColumn extends LongId<AgColumn> {
     @JoinColumn(name = "tableId", nullable = false)
     private AgTable table;
 
-    @JsonProperty("field")
+    @JsonProperty("field_name")
     @Column(length = 50, nullable = false)
     private String fieldName;
 
@@ -36,12 +36,13 @@ public class AgColumn extends LongId<AgColumn> {
     private Double width;
 
     @Column(length = 100, nullable = false)
+	@JsonProperty("header_name")
     private String headerName;
 
-    @ColumnDefault("0")
-    private Boolean hide;
+    @ColumnDefault("1")
+    private Boolean visible;
 
-    @JsonProperty("index")
+    @JsonProperty("position")
     private Integer position;
 
     @ColumnDefault("1")
@@ -55,6 +56,7 @@ public class AgColumn extends LongId<AgColumn> {
 
     /**The column type */
     @Column(length = 50)
+	@JsonProperty("column_type")
     private String type;
 
     @ManyToOne(fetch = FetchType.LAZY)
