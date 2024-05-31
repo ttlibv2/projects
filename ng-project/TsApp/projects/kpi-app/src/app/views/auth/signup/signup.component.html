@@ -1,0 +1,66 @@
+<div class="signup-form flex justify-content-center">
+  <form [formGroup]="formSignup">
+    <p-card header="Đăng ký tài khoản" class="formgrid">
+      <div class="grid">
+        <div class=" col-6">
+          <p-iconField>
+            <p-inputIcon styleClass="fa-light fa-user"/>
+            <input type="text" pInputText placeholder="First Name" formControlName="first_name"/>
+          </p-iconField>
+        </div>
+        <div class=" col-6">
+          <p-iconField>
+            <p-inputIcon styleClass="fa-light fa-user"/>
+            <input type="text" pInputText placeholder="Last Name" formControlName="last_name"/>
+          </p-iconField>
+        </div>
+        <div class="col-6">
+          <p-iconField>
+            <p-inputIcon styleClass="fa-light fa-envelope"/>
+            <input type="text" pInputText placeholder="Email" formControlName="email"/>
+          </p-iconField>
+        </div>
+        <div class="col-6">
+          <p-iconField>
+            <p-inputIcon styleClass="fa-light fa-phone"/>
+            <input type="text" pInputText placeholder="Phone" formControlName="phone"/>
+          </p-iconField>
+        </div>
+        <div class="col-6">
+          <p-iconField>
+            <p-inputIcon styleClass="fa-light fa-key"/>
+            <input type="password" pInputText placeholder="Password" formControlName="password"/>
+          </p-iconField>
+        </div>
+        <div class="col-6">
+          <p-iconField>
+            <p-inputIcon styleClass="fa-light fa-key"/>
+            <input type="password" pInputText placeholder="Repeat Password" formControlName="re_password"/>
+          </p-iconField>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="col-12">
+          <p-checkbox [binary]="true" [inputId]="'read_terms'"></p-checkbox>
+          <label for="read_terms" class="ml-2">Tôi đã đọc và đồng ý với <a routerLink="/terms">Điều khoản sử dụng dịch
+            vụ</a> và <a routerLink="/chinhsach">Chính sách bảo mật</a> của APP</label>
+        </div>
+      </div>
+      <div class="grid mt-2">
+        <p-button label="Đăng ký" icon="pi pi-user-plus" size="small"
+                  class="ml-2" (click)="onSignUp()" [disabled]="formSignup.invalid"></p-button>
+      </div>
+      <div class="grid">
+        <div class="col-12">
+          <p-divider align="center">Hoặc</p-divider>
+        </div>
+        <div class="col socials">
+          <ng-template ngFor let-item [ngForOf]="socials">
+            <p-button [icon]="item.icon" [rounded]="true" [text]="true" [routerLink]="item.link" class="mr-3"/>
+          </ng-template>
+        </div>
+      </div>
+
+    </p-card>
+  </form>
+</div>

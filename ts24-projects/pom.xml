@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>vn.conyeu</groupId>
+        <artifactId>spring-projects</artifactId>
+        <version>0.0.1</version>
+        <relativePath>../spring-projects</relativePath>
+    </parent>
+
+    <groupId>vn.conyeu.ts</groupId>
+    <artifactId>ts24-projects</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>ts-account</module>
+        <module>ts-web</module>
+        <module>od-ticket</module>
+        <module>od-client</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>vn.conyeu.ts</groupId>
+                <artifactId>ts-account</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>vn.conyeu.ts</groupId>
+                <artifactId>od-ticket</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>vn.conyeu.ts</groupId>
+                <artifactId>od-client</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+</project>

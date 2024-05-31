@@ -1,0 +1,760 @@
+@use "sass:math";
+@use "sass:color";
+@use "utils";
+
+// scss-docs-start color-variables
+$red: #dc3545 !default;
+$orange: #fd7e14 !default;
+$pink: #d63384 !default;
+$green: #198754 !default;
+$blue: #0d6efd !default;
+$bluegray: #7c8ea7 !default;
+$yellow: #ffc107 !default;
+$purple: #6f42c1 !default;
+$teal: #20c997 !default;
+$indigo: #6610f2 !default;
+$cyan: #0dcaf0 !default;
+$gray: #adb5bd !default;
+// scss-docs-end color-variables
+
+// scss-docs-start colors-map
+$colors: (
+  "red": $red,
+  "orange": $orange,
+  "pink": $pink,
+  "green": $green,
+  "blue": $blue,
+  "bluegray": $bluegray,
+  "yellow": $yellow,
+  "purple": $purple,
+  "teal": $teal,
+  "indigo": $indigo,
+  "cyan": $cyan,
+  "gray": $gray
+) !default;
+// scss-docs-end colors-map
+
+// scss-docs-start gray-color-variables
+$white: #fff !default;
+$gray-0: #f6f8fa !default;
+$gray-1: #f8f9fa !default;
+$gray-2: #e9ecef !default;
+$gray-3: #dee2e6 !default;
+$gray-4: #ced4da !default;
+$gray-5: #adb5bd !default;
+$gray-6: #6c757d !default;
+$gray-7: #495057 !default;
+$gray-8: #343a40 !default;
+$gray-9: #212529 !default;
+$black: #000 !default;
+
+$base-0: $gray-0 !default;
+$base-1: $gray-1 !default;
+$base-2: $gray-2 !default;
+$base-3: $gray-3 !default;
+$base-4: $gray-4 !default;
+$base-5: $gray-5 !default;
+$base-6: $gray-6 !default;
+$base-7: $gray-7 !default;
+$base-8: $gray-8 !default;
+$base-9: $gray-9 !default;
+
+$accent-0: #ddf4ff !default; // hsl(199, 100,  93.3)
+$accent-1: #b6e3ff !default; // hsl(203, 100,  85.7)
+$accent-2: #80ccff !default; // hsl(204, 100,  75.1)
+$accent-3: #54aeff !default; // hsl(208, 100,  66.5)
+$accent-4: #218bff !default; // hsl(211, 100,  56.5)
+$accent-5: #0969da !default; // hsl(212, 92.1, 44.5)
+$accent-6: #0550ae !default; // hsl(213, 94.4, 35.1)
+$accent-7: #033d8b !default; // hsl(214, 95.8, 27.8)
+$accent-8: #0a3069 !default; // hsl(216, 82.6, 22.5)
+$accent-9: #002155 !default; // hsl(217, 100,  16.7)
+
+// scss-docs-end gray-color-variables
+
+// fusv-disable
+// scss-docs-start red-color-variables
+$red-0: utils.tint($red, 5 * 19%) !default;
+$red-1: utils.tint($red, 4 * 19%) !default;
+$red-2: utils.tint($red, 3 * 19%) !default;
+$red-3: utils.tint($red, 2 * 19%) !default;
+$red-4: utils.tint($red, 1 * 19%) !default;
+$red-5: $red !default;
+$red-6: utils.shade($red, 1 * 15%) !default;
+$red-7: utils.shade($red, 2 * 15%) !default;
+$red-8: utils.shade($red, 3 * 15%) !default;
+$red-9: utils.shade($red, 4 * 15%) !default;
+// scss-docs-end red-color-variables
+
+// scss-docs-start orange-color-variables
+$orange-0: utils.tint($orange, 5 * 19%) !default;
+$orange-1: utils.tint($orange, 4 * 19%) !default;
+$orange-2: utils.tint($orange, 3 * 19%) !default;
+$orange-3: utils.tint($orange, 2 * 19%) !default;
+$orange-4: utils.tint($orange, 1 * 19%) !default;
+$orange-5: $orange !default;
+$orange-6: utils.shade($orange, 1 * 15%) !default;
+$orange-7: utils.shade($orange, 2 * 15%) !default;
+$orange-8: utils.shade($orange, 3 * 15%) !default;
+$orange-9: utils.shade($orange, 4 * 15%) !default;
+// scss-docs-end orange-color-variables
+
+// scss-docs-start pink-color-variables
+$pink-0: utils.tint($pink, 5 * 19%) !default;
+$pink-1: utils.tint($pink, 4 * 19%) !default;
+$pink-2: utils.tint($pink, 3 * 19%) !default;
+$pink-3: utils.tint($pink, 2 * 19%) !default;
+$pink-4: utils.tint($pink, 1 * 19%) !default;
+$pink-5: $pink !default;
+$pink-6: utils.shade($pink, 1 * 15%) !default;
+$pink-7: utils.shade($pink, 2 * 15%) !default;
+$pink-8: utils.shade($pink, 3 * 15%) !default;
+$pink-9: utils.shade($pink, 4 * 15%) !default;
+// scss-docs-end pink-color-variables
+
+// scss-docs-start pink-colors-map
+
+
+// scss-docs-end pink-colors-map
+// scss-docs-start green-color-variables
+$green-0: utils.tint($green, 5 * 19%) !default;
+$green-1: utils.tint($green, 4 * 19%) !default;
+$green-2: utils.tint($green, 3 * 19%) !default;
+$green-3: utils.tint($green, 2 * 19%) !default;
+$green-4: utils.tint($green, 1 * 19%) !default;
+$green-5: $green !default;
+$green-6: utils.shade($green, 1 * 15%) !default;
+$green-7: utils.shade($green, 2 * 15%) !default;
+$green-8: utils.shade($green, 3 * 15%) !default;
+$green-9: utils.shade($green, 4 * 15%) !default;
+// scss-docs-end green-color-variables
+
+// scss-docs-start blue-color-variables
+$blue-0: utils.tint($blue, 5 * 19%) !default;
+$blue-1: utils.tint($blue, 4 * 19%) !default;
+$blue-2: utils.tint($blue, 3 * 19%) !default;
+$blue-3: utils.tint($blue, 2 * 19%) !default;
+$blue-4: utils.tint($blue, 1 * 19%) !default;
+$blue-5: $blue !default;
+$blue-6: utils.shade($blue, 1 * 15%) !default;
+$blue-7: utils.shade($blue, 2 * 15%) !default;
+$blue-8: utils.shade($blue, 3 * 15%) !default;
+$blue-9: utils.shade($blue, 4 * 15%) !default;
+// scss-docs-end blue-color-variables
+
+// scss-docs-start bluegray-color-variables
+$bluegray-0: utils.tint($bluegray, 5 * 19%) !default;
+$bluegray-1: utils.tint($bluegray, 4 * 19%) !default;
+$bluegray-2: utils.tint($bluegray, 3 * 19%) !default;
+$bluegray-3: utils.tint($bluegray, 2 * 19%) !default;
+$bluegray-4: utils.tint($bluegray, 1 * 19%) !default;
+$bluegray-5: $bluegray !default;
+$bluegray-6: utils.shade($bluegray, 1 * 15%) !default;
+$bluegray-7: utils.shade($bluegray, 2 * 15%) !default;
+$bluegray-8: utils.shade($bluegray, 3 * 15%) !default;
+$bluegray-9: utils.shade($bluegray, 4 * 15%) !default;
+// scss-docs-end bluegray-color-variables
+
+// scss-docs-start yellow-color-variables
+$yellow-0: utils.tint($yellow, 5 * 19%) !default;
+$yellow-1: utils.tint($yellow, 4 * 19%) !default;
+$yellow-2: utils.tint($yellow, 3 * 19%) !default;
+$yellow-3: utils.tint($yellow, 2 * 19%) !default;
+$yellow-4: utils.tint($yellow, 1 * 19%) !default;
+$yellow-5: $yellow !default;
+$yellow-6: utils.shade($yellow, 1 * 15%) !default;
+$yellow-7: utils.shade($yellow, 2 * 15%) !default;
+$yellow-8: utils.shade($yellow, 3 * 15%) !default;
+$yellow-9: utils.shade($yellow, 4 * 15%) !default;
+// scss-docs-end yellow-color-variables
+
+// scss-docs-start purple-color-variables
+$purple-0: utils.tint($purple, 5 * 19%) !default;
+$purple-1: utils.tint($purple, 4 * 19%) !default;
+$purple-2: utils.tint($purple, 3 * 19%) !default;
+$purple-3: utils.tint($purple, 2 * 19%) !default;
+$purple-4: utils.tint($purple, 1 * 19%) !default;
+$purple-5: $purple !default;
+$purple-6: utils.shade($purple, 1 * 15%) !default;
+$purple-7: utils.shade($purple, 2 * 15%) !default;
+$purple-8: utils.shade($purple, 3 * 15%) !default;
+$purple-9: utils.shade($purple, 4 * 15%) !default;
+// scss-docs-end purple-color-variables
+
+// scss-docs-start teal-color-variables
+$teal-0: utils.tint($teal, 5 * 19%) !default;
+$teal-1: utils.tint($teal, 4 * 19%) !default;
+$teal-2: utils.tint($teal, 3 * 19%) !default;
+$teal-3: utils.tint($teal, 2 * 19%) !default;
+$teal-4: utils.tint($teal, 1 * 19%) !default;
+$teal-5: $teal !default;
+$teal-6: utils.shade($teal, 1 * 15%) !default;
+$teal-7: utils.shade($teal, 2 * 15%) !default;
+$teal-8: utils.shade($teal, 3 * 15%) !default;
+$teal-9: utils.shade($teal, 4 * 15%) !default;
+// scss-docs-end teal-color-variables
+
+// scss-docs-start indigo-color-variables
+$indigo-0: utils.tint($indigo, 5 * 19%) !default;
+$indigo-1: utils.tint($indigo, 4 * 19%) !default;
+$indigo-2: utils.tint($indigo, 3 * 19%) !default;
+$indigo-3: utils.tint($indigo, 2 * 19%) !default;
+$indigo-4: utils.tint($indigo, 1 * 19%) !default;
+$indigo-5: $indigo !default;
+$indigo-6: utils.shade($indigo, 1 * 15%) !default;
+$indigo-7: utils.shade($indigo, 2 * 15%) !default;
+$indigo-8: utils.shade($indigo, 3 * 15%) !default;
+$indigo-9: utils.shade($indigo, 4 * 15%) !default;
+// scss-docs-end indigo-color-variables
+
+// scss-docs-start cyan-color-variables
+$cyan-0: utils.tint($cyan, 5 * 19%) !default;
+$cyan-1: utils.tint($cyan, 4 * 19%) !default;
+$cyan-2: utils.tint($cyan, 3 * 19%) !default;
+$cyan-3: utils.tint($cyan, 2 * 19%) !default;
+$cyan-4: utils.tint($cyan, 1 * 19%) !default;
+$cyan-5: $cyan !default;
+$cyan-6: utils.shade($cyan, 1 * 15%) !default;
+$cyan-7: utils.shade($cyan, 2 * 15%) !default;
+$cyan-8: utils.shade($cyan, 3 * 15%) !default;
+$cyan-9: utils.shade($cyan, 4 * 15%) !default;
+// scss-docs-end cyan-color-variables
+
+
+$base-0: #f6f8fa !default; // hsl(210, 28.6, 97.3)
+$base-1: #eaeef2 !default; // hsl(210, 23.5, 93.3)
+$base-2: #d0d7de !default; // hsl(210, 17.5, 84.3)
+$base-3: #afb8c1 !default; // hsl(210, 12.7, 72.2)
+$base-4: #8c959f !default; // hsl(212, 9,    58.6)
+$base-5: #6e7781 !default; // hsl(212, 7.9,  46.9)
+$base-6: #57606a !default; // hsl(212, 9.8,  37.8)
+$base-7: #424a53 !default; // hsl(212, 11.4, 29.2)
+$base-8: #32383f !default; // hsl(212, 11.5, 22.2)
+$base-9: #24292f !default; // hsl(213, 13.3, 16.3)
+
+$accent-0: #ddf4ff !default; // hsl(199, 100,  93.3)
+$accent-1: #b6e3ff !default; // hsl(203, 100,  85.7)
+$accent-2: #80ccff !default; // hsl(204, 100,  75.1)
+$accent-3: #54aeff !default; // hsl(208, 100,  66.5)
+$accent-4: #218bff !default; // hsl(211, 100,  56.5)
+$accent-5: #0969da !default; // hsl(212, 92.1, 44.5)
+$accent-6: #0550ae !default; // hsl(213, 94.4, 35.1)
+$accent-7: #033d8b !default; // hsl(214, 95.8, 27.8)
+$accent-8: #0a3069 !default; // hsl(216, 82.6, 22.5)
+$accent-9: #002155 !default; // hsl(217, 100,  16.7)
+
+$reds: (
+  "red-0": $red-0,
+  "red-1": $red-1,
+  "red-2": $red-2,
+  "red-3": $red-3,
+  "red-4": $red-4,
+  "red-5": $red-5,
+  "red-6": $red-6,
+  "red-7": $red-7,
+  "red-8": $red-8,
+  "red-9": $red-9
+);
+$oranges: (
+  "orange-0": $orange-0,
+  "orange-1": $orange-1,
+  "orange-2": $orange-2,
+  "orange-3": $orange-3,
+  "orange-4": $orange-4,
+  "orange-5": $orange-5,
+  "orange-6": $orange-6,
+  "orange-7": $orange-7,
+  "orange-8": $orange-8,
+  "orange-9": $orange-9
+);
+$pinks: (
+  "pink-0": $pink-0,
+  "pink-1": $pink-1,
+  "pink-2": $pink-2,
+  "pink-3": $pink-3,
+  "pink-4": $pink-4,
+  "pink-5": $pink-5,
+  "pink-6": $pink-6,
+  "pink-7": $pink-7,
+  "pink-8": $pink-8,
+  "pink-9": $pink-9
+);
+$greens: (
+  "green-0": $green-0,
+  "green-1": $green-1,
+  "green-2": $green-2,
+  "green-3": $green-3,
+  "green-4": $green-4,
+  "green-5": $green-5,
+  "green-6": $green-6,
+  "green-7": $green-7,
+  "green-8": $green-8,
+  "green-9": $green-9
+);
+$blues: (
+  "blue-0": $blue-0,
+  "blue-1": $blue-1,
+  "blue-2": $blue-2,
+  "blue-3": $blue-3,
+  "blue-4": $blue-4,
+  "blue-5": $blue-5,
+  "blue-6": $blue-6,
+  "blue-7": $blue-7,
+  "blue-8": $blue-8,
+  "blue-9": $blue-9
+);
+$bluegrays: (
+  "bluegray-0": $bluegray-0,
+  "bluegray-1": $bluegray-1,
+  "bluegray-2": $bluegray-2,
+  "bluegray-3": $bluegray-3,
+  "bluegray-4": $bluegray-4,
+  "bluegray-5": $bluegray-5,
+  "bluegray-6": $bluegray-6,
+  "bluegray-7": $bluegray-7,
+  "bluegray-8": $bluegray-8,
+  "bluegray-9": $bluegray-9
+);
+$yellows: (
+  "yellow-0": $yellow-0,
+  "yellow-1": $yellow-1,
+  "yellow-2": $yellow-2,
+  "yellow-3": $yellow-3,
+  "yellow-4": $yellow-4,
+  "yellow-5": $yellow-5,
+  "yellow-6": $yellow-6,
+  "yellow-7": $yellow-7,
+  "yellow-8": $yellow-8,
+  "yellow-9": $yellow-9
+);
+$purples: (
+  "purple-0": $purple-0,
+  "purple-1": $purple-1,
+  "purple-2": $purple-2,
+  "purple-3": $purple-3,
+  "purple-4": $purple-4,
+  "purple-5": $purple-5,
+  "purple-6": $purple-6,
+  "purple-7": $purple-7,
+  "purple-8": $purple-8,
+  "purple-9": $purple-9
+);
+$teals: (
+  "teal-0": $teal-0,
+  "teal-1": $teal-1,
+  "teal-2": $teal-2,
+  "teal-3": $teal-3,
+  "teal-4": $teal-4,
+  "teal-5": $teal-5,
+  "teal-6": $teal-6,
+  "teal-7": $teal-7,
+  "teal-8": $teal-8,
+  "teal-9": $teal-9
+);
+$indigos: (
+  "indigo-0": $indigo-0,
+  "indigo-1": $indigo-1,
+  "indigo-2": $indigo-2,
+  "indigo-3": $indigo-3,
+  "indigo-4": $indigo-4,
+  "indigo-5": $indigo-5,
+  "indigo-6": $indigo-6,
+  "indigo-7": $indigo-7,
+  "indigo-8": $indigo-8,
+  "indigo-9": $indigo-9
+);
+$cyans: (
+  "cyan-0": $cyan-0,
+  "cyan-1": $cyan-1,
+  "cyan-2": $cyan-2,
+  "cyan-3": $cyan-3,
+  "cyan-4": $cyan-4,
+  "cyan-5": $cyan-5,
+  "cyan-6": $cyan-6,
+  "cyan-7": $cyan-7,
+  "cyan-8": $cyan-8,
+  "cyan-9": $cyan-9
+);
+$grays: (
+  "gray-0": $gray-0,
+  "gray-1": $gray-1,
+  "gray-2": $gray-2,
+  "gray-3": $gray-3,
+  "gray-4": $gray-4,
+  "gray-5": $gray-5,
+  "gray-6": $gray-6,
+  "gray-7": $gray-7,
+  "gray-8": $gray-8,
+  "gray-9": $gray-9
+) !default;
+$bases: (
+  "base-0": $base-0,
+  "base-1": $base-1,
+  "base-2": $base-2,
+  "base-3": $base-3,
+  "base-4": $base-4,
+  "base-5": $base-5,
+  "base-6": $base-6,
+  "base-7": $base-7,
+  "base-8": $base-8,
+  "base-9": $base-9
+) !default;
+$accents: (
+  "accent-0": $accent-0,
+  "accent-1": $accent-1,
+  "accent-2": $accent-2,
+  "accent-3": $accent-3,
+  "accent-4": $accent-4,
+  "accent-5": $accent-5,
+  "accent-6": $accent-6,
+  "accent-7": $accent-7,
+  "accent-8": $accent-8,
+  "accent-9": $accent-9
+) !default;
+// fusv-enable
+
+// scss-docs-start theme-color-variables
+$primary: $blue !default;
+$secondary: $gray-6 !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $yellow !default;
+$danger: $red !default;
+$help: $purple-5 !default;
+$light: $gray-1 !default;
+$dark: $gray-9 !default;
+
+$theme-colors: (
+  "secondary": $secondary,
+  "help": $help,
+  "success": $success,
+  "warning": $warning,
+  "danger": $danger,
+  "primary": $primary,
+  "info": $info,
+) !default;
+
+
+// scss-docs-start colors-map
+$colors: (
+  "secondary": $secondary,
+  "help": $help,
+  "success": $success,
+  "warning": $warning,
+  "danger": $danger,
+  "primary": $primary,
+  "info": $info,
+) !default;
+// scss-docs-end colors-map
+
+// scss-docs-start help-color-variables
+$help-0: utils.tint($help, 5 * 19%) !default;
+$help-1: utils.tint($help, 4 * 19%) !default;
+$help-2: utils.tint($help, 3 * 19%) !default;
+$help-3: utils.tint($help, 2 * 19%) !default;
+$help-4: utils.tint($help, 1 * 19%) !default;
+$help-5: $help !default;
+$help-6: utils.shade($help, 1 * 15%) !default;
+$help-7: utils.shade($help, 2 * 15%) !default;
+$help-8: utils.shade($help, 3 * 15%) !default;
+$help-9: utils.shade($help, 4 * 15%) !default;
+// scss-docs-end help-color-variables
+
+// scss-docs-start help-colors-map
+$helps: (
+  "help-0": $help-0,
+  "help-1": $help-1,
+  "help-2": $help-2,
+  "help-3": $help-3,
+  "help-4": $help-4,
+  "help-5": $help-5,
+  "help-6": $help-6,
+  "help-7": $help-7,
+  "help-8": $help-8,
+  "help-9": $help-9
+);
+// scss-docs-end help-colors-map
+// scss-docs-start success-color-variables
+$success-0: utils.tint($success, 5 * 19%) !default;
+$success-1: utils.tint($success, 4 * 19%) !default;
+$success-2: utils.tint($success, 3 * 19%) !default;
+$success-3: utils.tint($success, 2 * 19%) !default;
+$success-4: utils.tint($success, 1 * 19%) !default;
+$success-5: $success !default;
+$success-6: utils.shade($success, 1 * 15%) !default;
+$success-7: utils.shade($success, 2 * 15%) !default;
+$success-8: utils.shade($success, 3 * 15%) !default;
+$success-9: utils.shade($success, 4 * 15%) !default;
+// scss-docs-end success-color-variables
+
+// scss-docs-start success-colors-map
+$successs: (
+  "success-0": $success-0,
+  "success-1": $success-1,
+  "success-2": $success-2,
+  "success-3": $success-3,
+  "success-4": $success-4,
+  "success-5": $success-5,
+  "success-6": $success-6,
+  "success-7": $success-7,
+  "success-8": $success-8,
+  "success-9": $success-9
+);
+// scss-docs-end success-colors-map
+
+// scss-docs-start warning-color-variables
+$warning-0: utils.tint($warning, 5 * 19%) !default;
+$warning-1: utils.tint($warning, 4 * 19%) !default;
+$warning-2: utils.tint($warning, 3 * 19%) !default;
+$warning-3: utils.tint($warning, 2 * 19%) !default;
+$warning-4: utils.tint($warning, 1 * 19%) !default;
+$warning-5: $warning !default;
+$warning-6: utils.shade($warning, 1 * 15%) !default;
+$warning-7: utils.shade($warning, 2 * 15%) !default;
+$warning-8: utils.shade($warning, 3 * 15%) !default;
+$warning-9: utils.shade($warning, 4 * 15%) !default;
+// scss-docs-end warning-color-variables
+
+// scss-docs-start warning-colors-map
+$warnings: (
+  "warning-0": $warning-0,
+  "warning-1": $warning-1,
+  "warning-2": $warning-2,
+  "warning-3": $warning-3,
+  "warning-4": $warning-4,
+  "warning-5": $warning-5,
+  "warning-6": $warning-6,
+  "warning-7": $warning-7,
+  "warning-8": $warning-8,
+  "warning-9": $warning-9
+);
+// scss-docs-end warning-colors-map
+// scss-docs-start danger-color-variables
+$danger-0: utils.tint($danger, 5 * 19%) !default;
+$danger-1: utils.tint($danger, 4 * 19%) !default;
+$danger-2: utils.tint($danger, 3 * 19%) !default;
+$danger-3: utils.tint($danger, 2 * 19%) !default;
+$danger-4: utils.tint($danger, 1 * 19%) !default;
+$danger-5: $danger !default;
+$danger-6: utils.shade($danger, 1 * 15%) !default;
+$danger-7: utils.shade($danger, 2 * 15%) !default;
+$danger-8: utils.shade($danger, 3 * 15%) !default;
+$danger-9: utils.shade($danger, 4 * 15%) !default;
+// scss-docs-end danger-color-variables
+
+// scss-docs-start danger-colors-map
+$dangers: (
+  "danger-0": $danger-0,
+  "danger-1": $danger-1,
+  "danger-2": $danger-2,
+  "danger-3": $danger-3,
+  "danger-4": $danger-4,
+  "danger-5": $danger-5,
+  "danger-6": $danger-6,
+  "danger-7": $danger-7,
+  "danger-8": $danger-8,
+  "danger-9": $danger-9
+);
+// scss-docs-end danger-colors-map
+
+// scss-docs-start info-color-variables
+$info-0: utils.tint($info, 5 * 19%) !default;
+$info-1: utils.tint($info, 4 * 19%) !default;
+$info-2: utils.tint($info, 3 * 19%) !default;
+$info-3: utils.tint($info, 2 * 19%) !default;
+$info-4: utils.tint($info, 1 * 19%) !default;
+$info-5: $info !default;
+$info-6: utils.shade($info, 1 * 15%) !default;
+$info-7: utils.shade($info, 2 * 15%) !default;
+$info-8: utils.shade($info, 3 * 15%) !default;
+$info-9: utils.shade($info, 4 * 15%) !default;
+// scss-docs-end info-color-variables
+
+// scss-docs-start info-colors-map
+$infos: (
+  "info-0": $info-0,
+  "info-1": $info-1,
+  "info-2": $info-2,
+  "info-3": $info-3,
+  "info-4": $info-4,
+  "info-5": $info-5,
+  "info-6": $info-6,
+  "info-7": $info-7,
+  "info-8": $info-8,
+  "info-9": $info-9
+);
+// scss-docs-end info-colors-map
+
+
+// scss-docs-start secondary-color-variables
+$secondary-0: utils.tint($secondary, 5 * 19%) !default;
+$secondary-1: utils.tint($secondary, 4 * 19%) !default;
+$secondary-2: utils.tint($secondary, 3 * 19%) !default;
+$secondary-3: utils.tint($secondary, 2 * 19%) !default;
+$secondary-4: utils.tint($secondary, 1 * 19%) !default;
+$secondary-5: $secondary !default;
+$secondary-6: utils.shade($secondary, 1 * 15%) !default;
+$secondary-7: utils.shade($secondary, 2 * 15%) !default;
+$secondary-8: utils.shade($secondary, 3 * 15%) !default;
+$secondary-9: utils.shade($secondary, 4 * 15%) !default;
+// scss-docs-end secondary-color-variables
+
+// scss-docs-start secondary-colors-map
+$secondarys: (
+  "secondary-0": $secondary-0,
+  "secondary-1": $secondary-1,
+  "secondary-2": $secondary-2,
+  "secondary-3": $secondary-3,
+  "secondary-4": $secondary-4,
+  "secondary-5": $secondary-5,
+  "secondary-6": $secondary-6,
+  "secondary-7": $secondary-7,
+  "secondary-8": $secondary-8,
+  "secondary-9": $secondary-9
+);
+
+// scss-docs-start primary-color-variables
+$primary-0: utils.tint($primary, 5 * 19%) !default;
+$primary-1: utils.tint($primary, 4 * 19%) !default;
+$primary-2: utils.tint($primary, 3 * 19%) !default;
+$primary-3: utils.tint($primary, 2 * 19%) !default;
+$primary-4: utils.tint($primary, 1 * 19%) !default;
+$primary-5: $primary !default;
+$primary-6: utils.shade($primary, 1 * 15%) !default;
+$primary-7: utils.shade($primary, 2 * 15%) !default;
+$primary-8: utils.shade($primary, 3 * 15%) !default;
+$primary-9: utils.shade($primary, 4 * 15%) !default;
+// scss-docs-end primary-color-variables
+
+// scss-docs-start primary-colors-map
+$primarys: (
+  "primary-0": $primary-0,
+  "primary-1": $primary-1,
+  "primary-2": $primary-2,
+  "primary-3": $primary-3,
+  "primary-4": $primary-4,
+  "primary-5": $primary-5,
+  "primary-6": $primary-6,
+  "primary-7": $primary-7,
+  "primary-8": $primary-8,
+  "primary-9": $primary-9
+);
+// scss-docs-end primary-colors-map
+
+// color variables
+$fg-default: $base-9 !default;
+$fg-muted: $base-6 !default;
+$fg-subtle: $base-5 !default;
+$fg-onEmphasis: $light !default;
+
+$canvas-default: $light !default;
+$canvas-overlay: $light !default;
+$canvas-inset: $base-0 !default;
+$canvas-subtle: $base-0 !default;
+
+$border-default: $base-2 !default;
+$border-muted: lighten($base-2, 0.03) !default;
+$border-subtle: utils.flattenColor($light, color.change($dark, $alpha: 0.15)) !default;
+$shadow-default: $base-2 !default;
+
+// neutral is used by the .split-menu-button,
+// note that you should maintain some contrast between neutral and canvas.subtle
+$neutral-emphasisPlus: $base-9 !default;
+$neutral-emphasis: $base-5 !default;
+$neutral-muted: color.change($base-3, $alpha: 0.2) !default;
+$neutral-subtle: color.change($base-1, $alpha: 0.5) !default;
+
+$accent-fg: $accent-5 !default;
+$accent-emphasis: $accent-5 !default;
+$accent-muted: color.change($accent-3, $alpha: 0.4) !default;
+$accent-subtle: $accent-0 !default;
+
+$success-fg: $success-5 !default;
+$success-emphasis: $success-4 !default;
+$success-muted: color.change($success-3, $alpha: 0.4) !default;
+$success-subtle: $success-0 !default;
+
+$warning-fg: $warning-5 !default;
+$warning-emphasis: $warning-4 !default;
+$warning-muted: color.change($warning-3, $alpha: 0.4) !default;
+$warning-subtle: $warning-0 !default;
+
+$danger-fg: $danger-5 !default;
+$danger-emphasis: $danger-5 !default;
+$danger-muted: color.change($danger-3, $alpha: 0.4) !default;
+$danger-subtle: $danger-0 !default;
+
+$info-fg: $info-5 !default;
+$info-emphasis: $info-5 !default;
+$info-muted: color.change($info-3, $alpha: 0.4) !default;
+$info-subtle: $info-0 !default;
+
+$help-fg: $help-5 !default;
+$help-emphasis: $help-5 !default;
+$help-muted: color.change($help-3, $alpha: 0.4) !default;
+$help-subtle: $help-0 !default;
+
+$secondary-fg: $secondary-5 !default;
+$secondary-emphasis: $secondary-5 !default;
+$secondary-muted: color.change($secondary-3, $alpha: 0.4) !default;
+$secondary-subtle: $secondary-0 !default;
+
+$primary-fg: $primary-5 !default;
+$primary-emphasis: $primary-5 !default;
+$primary-muted: color.change($primary-3, $alpha: 0.4) !default;
+$primary-subtle: $primary-0 !default;
+
+//----------
+
+
+
+
+
+
+
+
+
+
+
+$chart-1: #f3622d !default;
+$chart-2: #fba71b !default;
+$chart-3: #57b757 !default;
+$chart-4: #41a9c9 !default;
+$chart-5: #4258c9 !default;
+$chart-6: #9a42c8 !default;
+$chart-7: #c84164 !default;
+$chart-8: #888888 !default;
+
+$chart-1-alpha70: color.change($chart-1, $alpha: 0.7) !default;
+$chart-2-alpha70: color.change($chart-2, $alpha: 0.7) !default;
+$chart-3-alpha70: color.change($chart-3, $alpha: 0.7) !default;
+$chart-4-alpha70: color.change($chart-4, $alpha: 0.7) !default;
+$chart-5-alpha70: color.change($chart-5, $alpha: 0.7) !default;
+$chart-6-alpha70: color.change($chart-6, $alpha: 0.7) !default;
+$chart-7-alpha70: color.change($chart-7, $alpha: 0.7) !default;
+$chart-8-alpha70: color.change($chart-8, $alpha: 0.7) !default;
+
+$chart-1-alpha20: color.change($chart-1, $alpha: 0.2) !default;
+$chart-2-alpha20: color.change($chart-2, $alpha: 0.2) !default;
+$chart-3-alpha20: color.change($chart-3, $alpha: 0.2) !default;
+$chart-4-alpha20: color.change($chart-4, $alpha: 0.2) !default;
+$chart-5-alpha20: color.change($chart-5, $alpha: 0.2) !default;
+$chart-6-alpha20: color.change($chart-6, $alpha: 0.2) !default;
+$chart-7-alpha20: color.change($chart-7, $alpha: 0.2) !default;
+$chart-8-alpha20: color.change($chart-8, $alpha: 0.2) !default;
+
+$allColor: ($colors, $theme-colors, $reds, $oranges, $pinks, $greens,
+  $blues, $bluegrays, $yellows, $purples, $teals, $indigos,
+  $cyans, $grays, $accents, $bases) !default;
+
+//reused color variables
+//$shade000: #ffffff !default; //surface
+//$shade100: #efefef !default; //header background
+//$shade200: #e9ecef !default; //hover background
+//$shade300: #dee2e6 !default; //border, divider
+//$shade400: #ced4da !default; //input border
+//$shade500: #adb5bd !default; //unused
+//$shade600: #6c757d !default; //text secondary color
+//$shade700: #495057 !default; //input text color
+//$shade800: #343a40 !default; //unused
+//$shade900: #212529 !default; //text color

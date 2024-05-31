@@ -1,0 +1,11 @@
+{
+    "editor.fontFamily": "'Cascadia Mono-SemiLight', 'Roboto Mono', Consolas, 'Courier New', monospace",
+    "editor.fontSize": 16,
+    "editor.fontWeight": "normal",
+    "angular.trace.server": "messages",
+    "editor.acceptSuggestionOnEnter": "on",
+    "workbench.colorTheme": "Visual Studio Light",
+    "workbench.colorCustomizations": {
+        
+    }
+}

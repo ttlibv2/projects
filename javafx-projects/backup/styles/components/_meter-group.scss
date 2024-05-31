@@ -1,0 +1,37 @@
+.meter-group {
+  -fx-pref-width: 550;
+  //-fx-pref-height: 350;
+
+  -fx-padding: 10;
+  -fx-border-color: red;
+
+  -fx-orientation:  vertical; //vertical | horizontal;
+  -fx-label-orientation: vertical; //vertical | horizontal;
+  -fx-label-pos: end; // start | end
+
+
+
+  .label-group {
+    -fx-flex-vgap: 5;
+
+    .meter-item {
+
+      .badge-dot {
+        -fx-dot-size: 10;
+      }
+
+    }
+
+  }
+
+  .line-group {
+
+    .track {
+      -fx-pref-height: 250;
+      -fx-pref-width: 8;
+      -fx-background-color: #e5e7eb;
+    }
+  }
+
+
+}

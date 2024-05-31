@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="sm-identity" />
+        <module name="sm-cookie" />
+        <module name="ts-account" />
+        <module name="sm-web" />
+        <module name="od-ticket" />
+        <module name="sm-client" />
+        <module name="sm-exception" />
+        <module name="ts-web" />
+        <module name="sm-common" />
+        <module name="sm-dslquery" />
+        <module name="sm-address" />
+        <module name="od-client" />
+      </profile>
+      <profile name="Annotation profile for java-common" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/unknown/spring-boot-configuration-processor-unknown.jar" />
+        </processorPath>
+        <module name="java-common" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="sm-account" target="21" />
+      <module name="sm-converter" target="21" />
+      <module name="sm-security" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="od-client" options="-parameters" />
+      <module name="od-ticket" options="-parameters" />
+      <module name="sm-account" options="-parameters" />
+      <module name="sm-address" options="-parameters" />
+      <module name="sm-client" options="-parameters" />
+      <module name="sm-common" options="-parameters" />
+      <module name="sm-converter" options="-parameters" />
+      <module name="sm-cookie" options="-parameters" />
+      <module name="sm-dslquery" options="-parameters" />
+      <module name="sm-exception" options="-parameters" />
+      <module name="sm-identity" options="-parameters" />
+      <module name="sm-security" options="-parameters" />
+      <module name="sm-web" options="-parameters" />
+      <module name="ts-account" options="-parameters" />
+      <module name="ts-web" options="-parameters" />
+    </option>
+  </component>
+</project>

@@ -1,0 +1,12 @@
+{
+  "text_color": "Màu chữ",
+  "bg_color": "Màu nền",
+  "save": "Lưu lại",
+  "cancel": "Hủy bỏ",
+  "summary": "Diễn giải",
+  "summary.holder": "Nhập diễn giải",
+  "title": "Tiêu đề",
+  "title.holder": "Nhập tiêu đề",
+  "unique_id": "Mã ID",
+  "templates": "Danh sách mẫu"
+}

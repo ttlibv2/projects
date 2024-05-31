@@ -1,0 +1,86 @@
+@use "../settings/utils";
+
+$avatar-bg: -color-accent-emphasis;
+
+$avatar-size-small: 2em !default;
+$avatar-size-larger: 3em !default;
+$avatar-size-xlarger: 4em !default;
+
+.avatar {
+  -fx-border-color: red;
+
+  -fx-avatar-shape: square;
+  -fx-graphic-literak: far-user;
+
+  .container {
+	-fx-background-color: $avatar-bg;
+	-fx-pref-width: $avatar-size-small;
+	-fx-pref-height: $avatar-size-small;
+  }
+
+  .label {
+	-fx-font-size: calc($avatar-size-small / 1.5);
+	-fx-font-weight: bold;
+	-fx-text-fill: #fff;
+  }
+
+  .icon {
+	-fx-icon-size: calc($avatar-size-small / 1.5);
+	-fx-icon-color: #fff;
+  }
+
+  &:circle .container {
+	-fx-background-radius: 50%;
+  }
+
+  &:square .container {
+	-fx-background-radius: 5;
+  }
+
+  &-small .container {
+	-fx-pref-width: $avatar-size-small;
+	-fx-pref-height: $avatar-size-small;
+
+	.label {
+	  -fx-font-size: calc($avatar-size-small / 1.5);
+	}
+
+	.icon {
+	  -fx-icon-size: calc($avatar-size-small / 1.5);
+	}
+
+  }
+
+  &-larger .container {
+	-fx-pref-width: $avatar-size-larger;
+	-fx-pref-height: $avatar-size-larger;
+
+	.label {
+	  -fx-font-size: calc($avatar-size-larger / 1.5);
+	}
+
+	.icon {
+	  -fx-icon-size: calc($avatar-size-larger / 1.5);
+	}
+
+  }
+
+  &-xlarger .container {
+	-fx-pref-width: $avatar-size-xlarger;
+	-fx-pref-height: $avatar-size-xlarger;
+
+	.label {
+	  -fx-font-size: calc($avatar-size-xlarger / 1.5);
+	}
+
+	.icon {
+	  -fx-icon-size: calc($avatar-size-xlarger / 1.5);
+	}
+
+  }
+
+  &:has-badge {
+
+  }
+
+}

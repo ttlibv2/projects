@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="sm-cookie" />
+        <module name="sm-web" />
+        <module name="sm-account" />
+        <module name="sm-client" />
+        <module name="sm-exception" />
+        <module name="sm-common" />
+        <module name="sm-dslquery" />
+        <module name="java-common" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="sm-converter" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="sm-account" options="-parameters" />
+      <module name="sm-client" options="-parameters" />
+      <module name="sm-common" options="-parameters" />
+      <module name="sm-converter" options="-parameters" />
+      <module name="sm-cookie" options="-parameters" />
+      <module name="sm-dslquery" options="-parameters" />
+      <module name="sm-exception" options="-parameters" />
+      <module name="sm-web" options="-parameters" />
+      <module name="spring-projects" options="" />
+    </option>
+  </component>
+</project>

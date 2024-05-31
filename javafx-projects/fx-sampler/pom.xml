@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>vn.conyeu.javafx</groupId>
+        <artifactId>javafx-projects</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>fx-sampler</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>fx-demo</name>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.commons</groupId>
+            <artifactId>java-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>fx-styleable</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>fx-theme</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>fx-icons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>fx-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>awesome-svg-icon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>awesome-font-icon</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>fr.brouillard.oss</groupId>
+            <artifactId>cssfx</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.sun.el/el-ri -->
+        <dependency>
+            <groupId>com.sun.el</groupId>
+            <artifactId>el-ri</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>5.0.0-M1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/jakarta.el/jakarta.el-api -->
+        <dependency>
+            <groupId>jakarta.el</groupId>
+            <artifactId>jakarta.el-api</artifactId>
+            <version>6.0.0-RC1</version>
+        </dependency>
+
+
+
+
+        <!-- https://mvnrepository.com/artifact/io.github.palexdev/mfxeffects -->
+        <dependency>
+            <groupId>io.github.palexdev</groupId>
+            <artifactId>mfxeffects</artifactId>
+            <version>11.3.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.palexdev/mfxresources -->
+        <dependency>
+            <groupId>io.github.palexdev</groupId>
+            <artifactId>mfxresources</artifactId>
+            <version>11.13.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.palexdev/mfxcore -->
+        <dependency>
+            <groupId>io.github.palexdev</groupId>
+            <artifactId>mfxcore</artifactId>
+            <version>11.8.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.palexdev</groupId>
+            <artifactId>materialfx</artifactId>
+            <version>11.17.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlsc.formsfx</groupId>
+            <artifactId>formsfx-core</artifactId>
+            <version>11.5.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.synedra</groupId>
+            <artifactId>validatorfx</artifactId>
+            <version>0.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.bootstrapfx</groupId>
+            <artifactId>bootstrapfx-core</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>tilesfx</artifactId>
+            <version>17.1.15</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>fx-effects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu.javafx</groupId>
+            <artifactId>fx-controls</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.palexdev</groupId>
+            <artifactId>scenicview</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <compilerArgs>
+                        <arg>--add-opens</arg><arg>javafx.controls/javafx.scene.control.skin=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg><arg>javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED</arg>
+                        <arg>--add-exports</arg><arg>javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED</arg>
+
+
+                    </compilerArgs>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.kordamp.jipsy</groupId>
+                            <artifactId>jipsy-processor</artifactId>
+                            <version>${jipsy.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
