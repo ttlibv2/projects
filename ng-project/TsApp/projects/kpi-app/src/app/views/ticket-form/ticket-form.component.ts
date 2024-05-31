@@ -16,9 +16,8 @@ import {TicketOption} from "../../models/ticket-option";
 export class TicketFormComponent implements OnInit{
   ticketForm: FormGroup;
   ref: DynamicDialogRef | undefined;
-  ticket: Ticket = undefined;
+  ticket: Ticket = new Ticket();
   templates: TemplateMap;
-  options: TicketOption = TicketOption.createDef();
 
   toolActions: MenuItem[] = [
     {label: 'Lấy mã kích hoạt', icon: 'pi pi-key', command: event => this.onLoadLicense(event) },
@@ -51,6 +50,10 @@ export class TicketFormComponent implements OnInit{
     return this.options.viewTs24 ?? false;
   }
 
+  get options(): TicketOption {
+    return this.ticket.get_options();
+  }
+
   onLoadLicense(event: MenuItemCommandEvent) {
 
   }
@@ -62,6 +65,10 @@ export class TicketFormComponent implements OnInit{
   onCreateTemplate(event: MenuItemCommandEvent) {
     this.ref = this.dialogService.open(TemplateFormComponent, {
       header: 'Tạo mẫu',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true,
+      height: '600px',
       data: {ticket: this.ticket}
     });
 

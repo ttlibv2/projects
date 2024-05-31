@@ -40,7 +40,7 @@ export class TemplateFormComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.ref.close();
+    this.ref.close(this.ticket);
   }
 
   onSave() {

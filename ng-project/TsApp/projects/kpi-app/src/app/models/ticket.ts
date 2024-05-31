@@ -100,6 +100,10 @@ export class Ticket extends BaseModel {
   is_delete?: boolean;
   is_report?: boolean;
 
+  constructor() {
+    super();
+  }
+
   static from(data: JsonObject): Ticket {
     return new Ticket().update(data);
   }
@@ -113,6 +117,10 @@ export class Ticket extends BaseModel {
     Objects.ifNotNull(object['support_help'], val => ticket.support_help = Chanel.from(val));
     Objects.ifListNotEmpty(object['chanels'], val => ticket.chanels = Chanel.fromList(val));
     return ticket;
+  }
+
+  get_options(): TicketOption {
+    return  this.options ?? TicketOption.createDef();
   }
 
 }
