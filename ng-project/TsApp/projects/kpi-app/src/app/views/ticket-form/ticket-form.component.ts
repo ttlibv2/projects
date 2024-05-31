@@ -6,6 +6,7 @@ import {CheckboxChangeEvent} from "primeng/checkbox";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {TemplateFormComponent} from "../template-form/template-form.component";
 import {TicketOption} from "../../models/ticket-option";
+import {FindPartnerComponent} from "../find-partner/find-partner.component";
 
 @Component({
   selector: 'ts-ticket-form',
@@ -65,10 +66,6 @@ export class TicketFormComponent implements OnInit{
   onCreateTemplate(event: MenuItemCommandEvent) {
     this.ref = this.dialogService.open(TemplateFormComponent, {
       header: 'Tạo mẫu',
-      contentStyle: { overflow: 'auto' },
-      baseZIndex: 10000,
-      maximizable: true,
-      height: '600px',
       data: {ticket: this.ticket}
     });
 
@@ -91,5 +88,11 @@ export class TicketFormComponent implements OnInit{
 
   onSaveTicket() {
     console.log(this.options);
+  }
+
+  onSearchUser() {
+    this.dialogService.open(FindPartnerComponent, {
+      header: 'Tìm kiếm khách hàng'
+    });
   }
 }

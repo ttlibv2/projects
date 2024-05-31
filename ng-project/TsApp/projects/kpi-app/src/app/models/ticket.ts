@@ -120,7 +120,10 @@ export class Ticket extends BaseModel {
   }
 
   get_options(): TicketOption {
-    return  this.options ?? TicketOption.createDef();
+    if(Objects.isEmpty(this.options)) {
+      this.options = TicketOption.createDef();
+    }
+    return  this.options;
   }
 
 }

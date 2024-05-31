@@ -13,7 +13,6 @@ import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import vi from '@angular/common/locales/vi';
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {ToastModule} from "primeng/toast";
-import { DemoComponent } from './views/demo/demo.component';
 
 registerLocaleData(vi);
 
@@ -24,7 +23,6 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    DemoComponent,
   ],
   imports: [
     BrowserModule,
