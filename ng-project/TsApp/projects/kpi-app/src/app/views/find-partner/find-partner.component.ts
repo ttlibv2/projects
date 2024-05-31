@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DialogService, DynamicDialogComponent, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AgColumn} from "../../models/ag-table";
+import {Objects} from "../../utils/objects";
 
 @Component({
   selector: 'ts-find-partner',
@@ -70,4 +71,20 @@ export class FindPartnerComponent implements OnInit {
   closeDialog(): void {
     this.ref.close();
   }
+
+  isVisibleComp(): boolean {
+    const company_id: number = this.getRaw().company_id;
+    return Objects.isNull(company_id);
+  }
+
+  isVisiblePerson() {
+    const person_id: number = this.getRaw().person_id;
+    return Objects.isNull(person_id);
+  }
+
+  getRaw() {
+    return this.formGroup.getRawValue();
+  }
+
+
 }
