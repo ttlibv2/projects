@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedBy;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @JsonIgnoreProperties({"createBy"})
 @AttributeOverride(name = "id", column = @Column(name = "tableId"))
 //@formatter:on
-public class AgTable extends LongId<AgTable> {
+public class AgTable extends LongUId<AgTable> {
 
     @Column(length = 50, nullable = false, unique = true)
     private String code;

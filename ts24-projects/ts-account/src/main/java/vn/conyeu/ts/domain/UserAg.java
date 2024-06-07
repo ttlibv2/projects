@@ -8,7 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ObjectMapToString;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 
 //@formatter:off
@@ -17,7 +17,7 @@ import vn.conyeu.commons.beans.ObjectMap;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "agId"))
 //@formatter:on
-public class UserAg extends LongId<UserAg> {
+public class UserAg extends LongUId<UserAg> {
 
     @Column(length = 50, nullable = false)
     private String code;

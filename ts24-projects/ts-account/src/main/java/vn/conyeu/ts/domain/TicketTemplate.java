@@ -1,19 +1,15 @@
 package vn.conyeu.ts.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.domain.LongId;
-import vn.conyeu.common.domain.LongId;
-import vn.conyeu.common.domain.LongIdDate;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.common.converter.ObjectMapToString;
-import java.time.LocalDateTime;
 
 //@formatter:off
 @Entity @Table
@@ -21,7 +17,7 @@ import java.time.LocalDateTime;
 @DynamicInsert @DynamicUpdate
 @JsonIgnoreProperties({"ticket"})
 //@formatter:on
-public class TicketTemplate extends LongId<TicketTemplate> {
+public class TicketTemplate extends LongUId<TicketTemplate> {
 	private String code;
 	private String title;
 	private String icon;
@@ -33,7 +29,7 @@ public class TicketTemplate extends LongId<TicketTemplate> {
 	@JsonProperty("text_color")
 	private String textColor;
 	
-	@MapsId @OneToOne(fetch =FetchType.LAZY)
+	@MapsId @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticketId")
     private Ticket ticket;
 	

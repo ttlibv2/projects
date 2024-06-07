@@ -15,35 +15,17 @@ import vn.conyeu.common.domain.LongIdDate;
 @Entity @Table
 @Getter @Setter @NoArgsConstructor
 @DynamicInsert @DynamicUpdate
-@JsonIgnoreProperties({"account", "tsSecret"})
+@JsonIgnoreProperties({"account"})
 @AttributeOverride(name = "id", column = @Column(name = "accountId"))
 //@formatter:on
 public class TsUser extends LongIdDate<TsUser> {
 
-//    @MapsId
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "accountId", nullable = false)
-//    private Account account;
 
-    public static TsUser createDefaultUser() {
-        TsUser user = new TsUser();
-        user.setTsEmail("::EMAIL::");
-        user.setTsName("::NAME::");
-        user.setTsSecret("::SECRET::");
-        user.setUserCode("::USER_CODE::");
-        user.setRoomCode("::ROOM_CODE::");
-        user.setRequiredUpdate(true);
-        return user;
-    }
-
-    @JsonProperty("ts_email")
+    @JsonProperty("email")
     @Column(length = 100, nullable = false)
     private String tsEmail;
 
-    @Column(length = 100, nullable = false)
-    private String tsSecret;
-
-    @JsonProperty("ts_name")
+    @JsonProperty("name")
     @Column(length = 100, nullable = false)
     private String tsName;
 

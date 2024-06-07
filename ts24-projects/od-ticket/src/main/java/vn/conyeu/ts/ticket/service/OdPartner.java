@@ -4,7 +4,7 @@ import org.springframework.util.StringUtils;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsPage;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsPartner;
@@ -16,9 +16,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class OdPartner extends OdTicketCore<ClsPartner> {
+public class OdPartner extends OdTicketClient<ClsPartner> {
 
-    public OdPartner(ClsApiConfig apiConfig) {
+    public OdPartner(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 
@@ -26,12 +26,6 @@ public class OdPartner extends OdTicketCore<ClsPartner> {
     public String getModel() {
         return "res.partner";
     }
-
-//    @Override
-//    public String getBasePath() {
-//        return "call_kw/res.partner";
-//    }
-
 
     /**
      * POST `search_read`
@@ -75,13 +69,13 @@ public class OdPartner extends OdTicketCore<ClsPartner> {
     private void checkErrorPartner(ClsPartner p) {
         ObjectMap error = ObjectMap.create();
 
-        if(StringUtils.isEmpty(p.getName()))
+        if(Objects.isBlank(p.getName()))
             error.set("name", "Tên không được trống.");
 
-        if(StringUtils.isEmpty(p.getEmail()))
+        if(Objects.isBlank(p.getEmail()))
             error.set("email", "E-mail không được trống.");
 
-        if(p.getIs_company() && StringUtils.isEmpty(p.getVat())) {
+        if(p.getIs_company() && Objects.isBlank(p.getVat())) {
             error.set("vat", "MST không được trống.");
         }
 

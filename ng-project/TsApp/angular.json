@@ -58,10 +58,8 @@
             ],
             "scripts": [],
             "server": "projects/kpi-app/src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "projects/kpi-app/server.ts"
-            }
+            "prerender": false,
+            "ssr": false
           },
           "configurations": {
             "production": {

@@ -6,7 +6,8 @@ public enum TicketStatus {
     COMPLETE("Hoàn thành"),
     CLOSED("Đã đóng"),
     CANCEL("Hủy"),
-    OPENING("Mở lại");
+    OPENING("Mở lại"),
+    DELETE("Đã xóa");
 
     final String text;
     TicketStatus(String text) {

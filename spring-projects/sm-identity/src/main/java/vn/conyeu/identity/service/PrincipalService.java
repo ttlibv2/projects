@@ -1,5 +1,6 @@
 package vn.conyeu.identity.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -35,7 +36,9 @@ public class PrincipalService implements UserDetailsService, UserDetailsChecker,
         messages = new MessageSourceAccessor(messageSource);
     }
 
-    public final Principal loadUserByUsername(String username) throws UsernameNotFoundException {
+
+    @Cacheable(value = "principal", key = "#username")
+    public Principal loadUserByUsername(String username) throws UsernameNotFoundException {
 
         if(username.startsWith("uid::")) {
             String uid = username.substring("uid::".length());

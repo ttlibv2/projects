@@ -1,14 +1,11 @@
 package vn.conyeu.ts.service;
 
 import org.springframework.stereotype.Service;
-import vn.conyeu.identity.domain.Account;
-import vn.conyeu.identity.domain.AccountInfo;
-import vn.conyeu.identity.repository.AccountInfoRepo;
+import vn.conyeu.common.service.LongIdService;
 import vn.conyeu.identity.repository.AccountRepo;
-import vn.conyeu.identity.service.AccountService;
 import vn.conyeu.ts.domain.TsUser;
 import vn.conyeu.ts.repository.UserRepo;
-import vn.conyeu.common.service.LongIdService;
+import vn.conyeu.common.service.LongUIdService;
 
 import java.util.Optional;
 
@@ -21,13 +18,4 @@ public class UserService extends LongIdService<TsUser, UserRepo> {
         this.accountRepo = accountRepo;
     }
 
-    public TsUser checkUser(Long userId) {
-        Optional<TsUser> userOptional = findById(userId);
-        if(userOptional.isPresent()) return userOptional.get();
-        else {
-            TsUser user = TsUser.createDefaultUser();
-            user.setId(userId);
-            return createNew(user);
-        }
-    }
 }

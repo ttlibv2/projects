@@ -14,6 +14,7 @@ import {FieldsetModule} from "primeng/fieldset";
 import {TableModule} from "primeng/table";
 import {DialogModule} from "primeng/dialog";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
+import {AgGridAngular} from "ag-grid-angular";
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
     ButtonModule,
     CardModule,
     FieldsetModule,
-    TableModule
+    TableModule,
+    AgGridAngular
   ],
   providers: [
     DialogService,

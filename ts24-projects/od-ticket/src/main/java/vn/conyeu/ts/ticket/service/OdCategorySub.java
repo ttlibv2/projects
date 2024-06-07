@@ -1,7 +1,7 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsCategorySub;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsSearchReadOption;
@@ -9,9 +9,9 @@ import vn.conyeu.ts.ticket.domain.ClsSearchReadOption;
 import java.util.List;
 import java.util.function.Function;
 
-public class OdCategorySub extends OdTicketCore<ClsCategorySub> {
+public class OdCategorySub extends OdTicketClient<ClsCategorySub> {
     
-    public OdCategorySub(ClsApiConfig apiConfig) {
+    public OdCategorySub(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 

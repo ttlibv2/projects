@@ -1,15 +1,15 @@
 package vn.conyeu.ts.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ObjectMapToString;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.commons.utils.Objects;
 
 //@formatter:off
 @Entity @Table
@@ -17,7 +17,7 @@ import vn.conyeu.commons.utils.Objects;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "apiId"))
 //@formatter:on
-public class ApiInfo extends LongId<ApiInfo> {
+public class ApiInfo extends LongUId<ApiInfo> {
 
     @Column(length = 100, nullable = false, unique = true, updatable = false)
     private String code;
@@ -25,41 +25,29 @@ public class ApiInfo extends LongId<ApiInfo> {
     @Column(length = 100, nullable = false)
     private String title;
 
+    @JsonProperty("base_url")
     @Column(length = 500, nullable = false, unique = true)
     private String baseUrl;
 
+    @JsonProperty("login_path")
     @Column(length = 100, nullable = false)
     private String loginPath;
 
     @Convert(converter = ObjectMapToString.class)
     @Column(columnDefinition = "json")
-    private ObjectMap defaultHeader;
+    private ObjectMap headers;
 
     @Convert(converter = ObjectMapToString.class)
     @Column(columnDefinition = "json")
-    private ObjectMap defaultQuery;
+    private ObjectMap queries;
 
-    @Convert(converter = ObjectMapToString.class)
-    @Column(columnDefinition = "json")
-    private ObjectMap loginInfo;
+    @Transient
+    private String username;
 
-    @Column(length = 100)
-    private String defaultUser;
+    @Transient
+    private String password;
 
-    @Column(length = 100)
-    private String defaultSecret;
 
-    public void setUpdateUser(String userName) {
-        if(Objects.notBlank(userName)) {
-            setDefaultUser(userName);
-        }
-    }
-
-    public void setUpdatePwd(String secret) {
-        if(Objects.notBlank(secret)) {
-            setDefaultSecret(secret);
-        }
-    }
 
     public ApiInfo copy() {
         ApiInfo cfg = new ApiInfo();
@@ -68,10 +56,8 @@ public class ApiInfo extends LongId<ApiInfo> {
         cfg.title = title;
         cfg.baseUrl = baseUrl;
         cfg.loginPath = loginPath;
-        cfg.defaultUser = defaultUser;
-        cfg.defaultSecret = defaultSecret;
-        cfg.defaultHeader = ObjectMap.clone(defaultHeader);
-        cfg.defaultQuery = ObjectMap.clone(defaultQuery);
+        cfg.headers = ObjectMap.clone(headers);
+        cfg.queries = ObjectMap.clone(queries);
         return cfg;
     }
 

@@ -1,6 +1,7 @@
 package vn.conyeu.identity.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,9 +10,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ListStringToString;
-import vn.conyeu.common.domain.LongIdDate;
-import vn.conyeu.common.domain.StringId;
-import vn.conyeu.common.domain.StringIdDate;
+import vn.conyeu.common.domain.LongUIdDate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,9 +19,10 @@ import java.util.List;
 @Entity @Table
 @Getter @Setter @NoArgsConstructor
 @DynamicInsert @DynamicUpdate
+@JsonIgnoreProperties({"account"})
 @AttributeOverride(name = "id", column = @Column(name = "accountId"))
 //@formatter:on
-public class AccountInfo extends LongIdDate<AccountInfo> {
+public class AccountInfo extends LongUIdDate<AccountInfo> {
 
     @MapsId @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accountId", nullable = false)
@@ -74,8 +74,14 @@ public class AccountInfo extends LongIdDate<AccountInfo> {
 
     public void setAccount(Account account) {
         this.account = account;
-        if(account !=null) {
-            this.account.setInfo(this);
+        if(account != null) {
+            account.setInfo(this);
         }
+    }
+
+    public String getFullName() {
+        if(firstName != null && lastName != null) return firstName + " " + lastName;
+        else if(firstName == null) return lastName;
+        else return firstName;
     }
 }

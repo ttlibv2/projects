@@ -7,7 +7,7 @@ import vn.conyeu.ts.odcore.domain.ClsModel;
 
 @Getter @EqualsAndHashCode(callSuper = false)
 public class ClsStage extends ClsModel<ClsStage> {
-    private Integer id;
+    private Long id;
     private String name;
     private String display_name;
 
@@ -29,7 +29,7 @@ public class ClsStage extends ClsModel<ClsStage> {
      *
      * @param id the value
      */
-    public ClsStage setId(Integer id) {
+    public ClsStage setId(Long id) {
         this.id = id;
         return this;
     }

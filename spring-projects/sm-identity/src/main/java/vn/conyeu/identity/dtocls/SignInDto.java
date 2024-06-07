@@ -12,7 +12,7 @@ public class SignInDto implements Serializable {
     private String password;
 
     @JsonProperty("sign_type")
-    private String signinType;
+    private String signinType = "email";
 
     public static SignInDto readRequest(HttpServletRequest request) throws IOException {
         return MapperHelper.readValue(request.getInputStream(), SignInDto.class);

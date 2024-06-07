@@ -15,21 +15,22 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.restclient.ClientUtil;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.odcore.domain.ClsUserContext;
 import vn.conyeu.ts.odcore.domain.IOdUserLogin;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsNameSearchOption;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
-public class OdUser extends OdTicketCore<ClsUser> implements IOdUserLogin {
+public class OdUser extends OdTicketClient<ClsUser> implements IOdUserLogin {
 
-    public OdUser(ClsApiConfig apiConfig) {
+    public OdUser(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 
@@ -37,11 +38,6 @@ public class OdUser extends OdTicketCore<ClsUser> implements IOdUserLogin {
     public String getModel() {
         return "res.users";
     }
-
-//    @Override
-//    public String getBasePath() {
-//        return "call_kw/res.users";
-//    }
 
     @Override
     protected final Class<ClsUser> getDomainCls() {
@@ -97,7 +93,7 @@ public class OdUser extends OdTicketCore<ClsUser> implements IOdUserLogin {
     }
 
     public ClsUser login() {
-        return login(apiConfig.getLoginInfo());
+        return login(cfg.getUserName(), cfg.getPassword());
     }
 
     @Override
@@ -112,7 +108,7 @@ public class OdUser extends OdTicketCore<ClsUser> implements IOdUserLogin {
      * @param password the pass login
      * */
     public ClsUser login(String userName, String password) {
-        String loginUrl = apiConfig.getLoginPath();
+        String loginUrl = cfg.getLoginPath();
 
         ClientBuilder builder = applyDefaultBuilder()
                 .defaultContentType(MediaType.TEXT_HTML)
@@ -198,10 +194,12 @@ public class OdUser extends OdTicketCore<ClsUser> implements IOdUserLogin {
         user.setCookie(extractCookie(entityB3.getHeaders()));
         user.setPartner_id(obj.getLong("partner_id", null));
         user.setCache_hashes(obj.getMap("cache_hashes"));
-        user.set("ts_user", obj);
+        user.setTsUser(obj);
 
         // update to config
-        apiConfig.setClsUser(user);
+        cfg.setClsUser(user);
+        cfg.setCookieValue(user.getCookie());
+        cfg.setCsrfToken(user.getCsrfToken());
 
         return user;
     }

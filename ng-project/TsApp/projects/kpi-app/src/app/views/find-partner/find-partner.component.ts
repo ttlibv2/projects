@@ -1,43 +1,63 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {DialogService, DynamicDialogComponent, DynamicDialogRef} from "primeng/dynamicdialog";
-import {AgColumn} from "../../models/ag-table";
 import {Objects} from "../../utils/objects";
+import {ColDef, GridOptions} from "ag-grid-community";
+
+const {isBlank, notBlank} = Objects;
 
 @Component({
   selector: 'ts-find-partner',
   templateUrl: './find-partner.component.html',
-  styleUrl: './find-partner.component.scss'
+  styleUrl: './find-partner.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class FindPartnerComponent implements OnInit {
   instance: DynamicDialogComponent | undefined;
+
   data: any[] = [];
   formGroup: FormGroup;
 
   searchWhere: any[] = [
-    { label: 'MST', value: 'vat', checked: true },
-    { label: 'E-mail', value: 'email', checked: true },
-    { label: 'Cá nhân', value: 'is_person', checked: true }
+    {label: 'MST', value: 'vat', checked: true},
+    {label: 'E-mail', value: 'email', checked: true},
+    {label: 'Cá nhân', value: 'is_person', checked: true}
   ];
 
-  columns: AgColumn[] = [
-    {header_name: 'Mã số thuế'},
-    {header_name: 'Tên hiển thị'},
-    {header_name: 'Số điện thoại'},
-    {header_name: 'Người liên hệ'},
-    {header_name: 'Email'},
-    {header_name: 'Tên công ty'},
+  columns: ColDef[] = [
+    {headerName: 'Mã số thuế', field: 'tax_code', headerCheckboxSelection: true},
+    {headerName: 'Tên hiển thị', field: 'display_name'},
+    {headerName: 'Tên công ty', field: 'company_name'},
+    {headerName: 'Người liên hệ', field: 'person_name'},
+    {headerName: 'Số đện thoại', field: 'phone'},
+    {headerName: 'E-mail', field: 'email'},
   ];
+
+  agOptions: GridOptions<any> = {
+    rowSelection: 'single'
+  };
+
 
   constructor(
-   private ref: DynamicDialogRef,
-   private dialogSrv: DialogService,
-    private fb: FormBuilder) {}
+    private fb: FormBuilder,
+    private ref: DynamicDialogRef,
+    private dialogSrv: DialogService) {
+  }
+
+  get isVisibleComp(): boolean {
+    const {company_id} = this.getRaw();
+    return isBlank(company_id);
+  }
+
+  get isVisiblePerson(): boolean {
+    const {person_id, company_id} = this.getRaw();
+    return notBlank(company_id) && isBlank(person_id);
+  }
 
   ngOnInit() {
 
-    if(this.instance && this.instance.data) {
-     // this.ticket = this.instance.data['ticket'];
+    if (this.instance && this.instance.data) {
+      // this.ticket = this.instance.data['ticket'];
     }
 
     this.formGroup = this.fb.group({
@@ -55,9 +75,11 @@ export class FindPartnerComponent implements OnInit {
 
   }
 
-  onSearch() {}
+  onSearch() {
+  }
 
-  onResetForm() {}
+  onResetForm() {
+  }
 
   onCreateContact(person: string) {
 
@@ -67,20 +89,10 @@ export class FindPartnerComponent implements OnInit {
 
   }
 
-
   closeDialog(): void {
     this.ref.close();
   }
 
-  isVisibleComp(): boolean {
-    const company_id: number = this.getRaw().company_id;
-    return Objects.isNull(company_id);
-  }
-
-  isVisiblePerson() {
-    const person_id: number = this.getRaw().person_id;
-    return Objects.isNull(person_id);
-  }
 
   getRaw() {
     return this.formGroup.getRawValue();

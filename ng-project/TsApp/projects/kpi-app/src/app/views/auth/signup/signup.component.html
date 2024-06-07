@@ -1,62 +1,74 @@
-<div class="signup-form flex justify-content-center">
+<div class="signup-form flex justify-content-center" *ngIf="asyncView">
   <form [formGroup]="formSignup">
     <p-card header="Đăng ký tài khoản" class="formgrid">
       <div class="grid">
-        <div class=" col-6">
+        <div class="g-field col-6">
+          <label for="first_name">{{'first_name' | translate}}</label>
           <p-iconField>
             <p-inputIcon styleClass="fa-light fa-user"/>
-            <input type="text" pInputText placeholder="First Name" formControlName="first_name"/>
+            <input id="first_name" type="text" pInputText placeholder="First Name" formControlName="first_name"/>
           </p-iconField>
         </div>
-        <div class=" col-6">
+        <div class="g-field col-6">
+          <label for="last_name">{{'last_name' | translate}}</label>
           <p-iconField>
             <p-inputIcon styleClass="fa-light fa-user"/>
-            <input type="text" pInputText placeholder="Last Name" formControlName="last_name"/>
+            <input id="last_name" type="text" pInputText placeholder="Last Name" formControlName="last_name"/>
           </p-iconField>
         </div>
-        <div class="col-6">
+        <div class="g-field col-6">
+          <label for="email">{{'email' | translate}}</label>
           <p-iconField>
             <p-inputIcon styleClass="fa-light fa-envelope"/>
-            <input type="text" pInputText placeholder="Email" formControlName="email"/>
+            <input id="email" type="text" pInputText placeholder="Email" formControlName="email"/>
           </p-iconField>
         </div>
-        <div class="col-6">
+        <div class="g-field col-6">
+          <label for="phone">{{'phone' | translate}}</label>
           <p-iconField>
             <p-inputIcon styleClass="fa-light fa-phone"/>
-            <input type="text" pInputText placeholder="Phone" formControlName="phone"/>
+            <input id="phone" type="text" pInputText placeholder="Phone" formControlName="phone"/>
           </p-iconField>
         </div>
-        <div class="col-6">
+        <div class="g-field col-6">
+          <label for="password">{{'password' | translate}}</label>
           <p-iconField>
             <p-inputIcon styleClass="fa-light fa-key"/>
-            <input type="password" pInputText placeholder="Password" formControlName="password"/>
+            <input type="password" id="password" pInputText placeholder="Password" formControlName="password"/>
           </p-iconField>
         </div>
-        <div class="col-6">
-          <p-iconField>
-            <p-inputIcon styleClass="fa-light fa-key"/>
-            <input type="password" pInputText placeholder="Repeat Password" formControlName="re_password"/>
+        <div class="g-field col-6">
+         <label for="re_password">{{'re_password' | translate}}</label>
+          <p-iconField >
+            <p-inputIcon styleClass="fa-light fa-key"></p-inputIcon>
+            <input id="re_password" type="password" pInputText placeholder="Repeat Password" formControlName="re_password"/>
           </p-iconField>
+        </div>
+        <div class="g-field col-6">
+          <label for="dob">{{'dob' | translate}}</label>
+          <p-calendar id="dob" formControlName="dob" dateFormat="yy-mm-dd"
+                      placeholder="Ngày sinh" [showIcon]="true" [iconDisplay]="'input'"></p-calendar>
+
         </div>
       </div>
-      <div class="grid">
+      <div class="grid mt-1">
         <div class="col-12">
-          <p-checkbox [binary]="true" [inputId]="'read_terms'"></p-checkbox>
+          <p-checkbox [binary]="true" id="read_terms" formControlName="allow_term"></p-checkbox>
           <label for="read_terms" class="ml-2">Tôi đã đọc và đồng ý với <a routerLink="/terms">Điều khoản sử dụng dịch
             vụ</a> và <a routerLink="/chinhsach">Chính sách bảo mật</a> của APP</label>
         </div>
       </div>
       <div class="grid mt-2">
         <p-button label="Đăng ký" icon="pi pi-user-plus" size="small"
-                  class="ml-2" (click)="onSignUp()" [disabled]="formSignup.invalid"></p-button>
+                  [loading]="asyncSignup" class="ml-2" (click)="onSignUp()" [disabled]="formSignup.invalid"></p-button>
       </div>
       <div class="grid">
         <div class="col-12">
           <p-divider align="center">Hoặc</p-divider>
         </div>
-        <div class="col socials">
+        <div class="col socials flex gap-3">
           <ng-template ngFor let-item [ngForOf]="socials">
-            <p-button [icon]="item.icon" [rounded]="true" [text]="true" [routerLink]="item.link" class="mr-3"/>
+            <p-button [icon]="item.icon" [rounded]="true" [text]="true" [routerLink]="item.link"/>
           </ng-template>
         </div>
       </div>

@@ -1,5 +1,6 @@
 package vn.conyeu.identity.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +10,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import vn.conyeu.common.domain.LongIdDate;
-import vn.conyeu.common.domain.StringId;
-import vn.conyeu.common.domain.StringIdDate;
-import vn.conyeu.identity.domain.enums.AccountStatus;
+import vn.conyeu.common.domain.LongUIdDate;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,7 +22,7 @@ import java.util.Set;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "accountId"))
 //@formatter:on
-public class Account extends LongIdDate<Account> {
+public class Account extends LongUIdDate<Account> {
 
     @Column(length = 100)
     private String email;
@@ -49,6 +46,7 @@ public class Account extends LongIdDate<Account> {
     private Boolean credentialsExpired;
 
     @Enumerated(EnumType.STRING)
+    @JsonProperty("signup_type")
     private SignupType signupType;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
@@ -59,6 +57,18 @@ public class Account extends LongIdDate<Account> {
             joinColumns = @JoinColumn(name = "accountId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
     private Set<Role> roles;
+
+    /**
+     * Set the info
+     *
+     * @param info the value
+     */
+    public void setInfo(AccountInfo info) {
+        this.info = info;
+        if(info != null && info.getAccount() != this) {
+            info.setAccount(this);
+        }
+    }
 
     public Set<Role> getRoles() {
         if(roles == null) roles = new HashSet<>();
@@ -94,4 +104,10 @@ public class Account extends LongIdDate<Account> {
         }
         return authorities;
     }
+
+    @PrePersist()
+    public void beforeSave() {
+        if(info != null) info.setAccount(this);
+    }
+
 }

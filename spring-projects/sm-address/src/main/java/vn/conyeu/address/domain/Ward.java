@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 
 //@formatter:off
 @Entity @Table
@@ -15,7 +15,7 @@ import vn.conyeu.common.domain.LongId;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "wardId"))
 //@formatter:on
-public class Ward extends LongId<Ward> {
+public class Ward extends LongUId<Ward> {
 
     @Column(length = 10, nullable = false)
     private String code;

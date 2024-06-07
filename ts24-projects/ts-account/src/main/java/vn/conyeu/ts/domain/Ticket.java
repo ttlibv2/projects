@@ -1,9 +1,6 @@
 package vn.conyeu.ts.domain;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +10,13 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ListLongToString;
 import vn.conyeu.common.converter.ObjectMapToString;
-import vn.conyeu.common.domain.LongId;
-import vn.conyeu.common.domain.LongIdDate;
+import vn.conyeu.common.domain.LongUIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.Objects;
+import vn.conyeu.ts.dtocls.Converters.*;
+import vn.conyeu.ts.odcore.domain.ClsUser;
+import vn.conyeu.ts.ticket.domain.*;
+import vn.conyeu.ts.ticket_rest.OdTRHelper;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ import java.util.List;
 @DynamicInsert @DynamicUpdate
 @JsonIgnoreProperties({"user"})
 //@formatter:on
-public class Ticket extends LongIdDate<Ticket> {
+public class Ticket extends LongUIdDate<Ticket> {
 
     @JsonProperty("full_name")
     @Column(length = 150, nullable = false)
@@ -128,33 +129,15 @@ public class Ticket extends LongIdDate<Ticket> {
     @JsonProperty("edit_reply")
     private Boolean editReply;
 
-    @ColumnDefault("0")
-    @JsonProperty("is_web")
-    @Column(name = "isWeb")
-    private Boolean web;
-
-    @ColumnDefault("0")
-    @JsonProperty("is_delete")
-    @Column(name = "isDelete")
-    private Boolean delete;
-
-    @ColumnDefault("0")
-    @JsonProperty("is_report")
-    @Column(name = "isReport")
-    private Boolean report;
-
     @Column(length = 50)
     private String source;
 
     @Column(length = 100)
-	 @JsonProperty("client_version")
+    @JsonProperty("client_version")
     private String clientVersion;
 
-    @Column(length = 20)
-    private Long odPartnerId;
-
     @Enumerated(EnumType.STRING)
-	@JsonProperty("ticket_status")
+    @JsonProperty("ticket_status")
     private TicketStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -163,68 +146,73 @@ public class Ticket extends LongIdDate<Ticket> {
 
     @Convert(converter = ObjectMapToString.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_assign")
-    private ObjectMap odAssign;
-
-    @Convert(converter = ObjectMapToString.class)
-    @Column(columnDefinition = "json")
-	@JsonProperty("od_category_sub")
-    private ObjectMap odCateSub;
-
-    @Convert(converter = ObjectMapToString.class)
-    @Column(columnDefinition = "json")
-	@JsonProperty("od_category")
-    private ObjectMap odCate;
-
-    @Convert(converter = ObjectMapToString.class)
-    @Column(columnDefinition = "json")
-	@JsonProperty("od_image")
+    @JsonProperty("od_image")
     private ObjectMap odImage;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsAssignConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_partner")
-    private ObjectMap odPartner;
+    @JsonProperty("od_assign")
+    private ClsUser odAssign;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsCategorySubConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_priority")
-    private ObjectMap odPriority;
+    @JsonProperty("od_category_sub")
+    private ClsCategorySub odCateSub;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsCategoryConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_repiled")
-    private ObjectMap odRepiled;
+    @JsonProperty("od_category")
+    private ClsCategory odCate;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsPartnerConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_subject_type")
-    private ObjectMap odSubjectType;
+    @JsonProperty("od_partner")
+    private ClsPartner odPartner;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsTicketPriorityConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_tags")
-    private ObjectMap odTags;
+    @JsonProperty("od_priority")
+    private ClsTicketPriority odPriority;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsRepiledStatusConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_team")
-    private ObjectMap odTeam;
+    @JsonProperty("od_repiled")
+    private ClsRepiledStatus odRepiled;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsSubjectTypeConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_team_head")
-    private ObjectMap odTeamHead;
+    @JsonProperty("od_subject_type")
+    private ClsSubjectType odSubjectType;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsTicketTagConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_ticket_type")
-    private ObjectMap odTicketType;
+    @JsonProperty("od_tags")
+    private List<ClsTicketTag> odTags;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = ClsHelpdeskTeamConvert.class)
     @Column(columnDefinition = "json")
-	@JsonProperty("od_topic")
-    private ObjectMap odTopic;
+    @JsonProperty("od_team")
+    private ClsHelpdeskTeam odTeam;
+
+    @Convert(converter = ClsTeamHeadConvert.class)
+    @Column(columnDefinition = "json")
+    @JsonProperty("od_team_head")
+    private ClsTeamHead odTeamHead;
+
+    @Convert(converter = ClsTicketTypeConvert.class)
+    @Column(columnDefinition = "json")
+    @JsonProperty("od_ticket_type")
+    private ClsTicketType odTicketType;
+
+    @Convert(converter = ClsTopicConvert.class)
+    @Column(columnDefinition = "json")
+    @JsonProperty("od_topic")
+    private ClsTopic odTopic;
+
+    @Convert(converter = ClsProductConvert.class)
+    @Column(columnDefinition = "json")
+    @JsonProperty("od_product")
+    private ClsProduct odProduct;
 
     @Convert(converter = ObjectMapToString.class)
     @Column(columnDefinition = "json")
@@ -234,9 +222,42 @@ public class Ticket extends LongIdDate<Ticket> {
     @Column(columnDefinition = "json")
     private ObjectMap custom;
 
-    //@JsonUnwrapped
+    @JsonUnwrapped
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket")
     private TicketDetail detail;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "ticket", cascade = CascadeType.ALL)
+    private TicketTemplate template;
+
+    public void setStage(ClsStage stage) {
+        setStatus(OdTRHelper.fromStage(stage));
+        getDetail().setStageId(stage == null ? null : stage.getId());
+        getDetail().setStageText(stage == null ? null : stage.getName());
+    }
+
+    public void setAccessToken(String token) {
+        set("access_token", token);
+    }
+
+    public void setReportToken(String token) {
+        set("report_token", token);
+    }
+
+    public boolean isEditNote() {
+        return editNote == null || editNote;
+    }
+
+    public boolean isEditTicket() {
+        return editTicket == null || editTicket;
+    }
+
+    public boolean isEditReply() {
+        return editReply == null || editReply;
+    }
+
+    public boolean isWeb() {
+        return "web".equals(source);
+    }
 
     /**
      * Returns the custom
@@ -248,13 +269,75 @@ public class Ticket extends LongIdDate<Ticket> {
     }
 
     @JsonAnySetter
-    public void set(String field, Object data) {
+    public Ticket set(String field, Object data) {
         getCustom().set(field, data);
+        return this;
     }
-	
-	@JsonProperty("user_id")
-	public Long getUserId() {
-		 return user == null ? null : user.getId();
-	}
 
+    @JsonProperty("user_id")
+    public Long getUserId() {
+        return user == null ? null : user.getId();
+    }
+
+    /**
+     * Returns the odPartner
+     */
+    public Long getOdPartnerId() {
+        return odPartner == null ? null : odPartner.getId();
+    }
+
+    /**
+     * Returns the detail
+     */
+    public TicketDetail getDetail() {
+        if(detail == null) {
+            detail = new TicketDetail();
+            detail.setTicket(this);
+        }
+        return detail;
+    }
+
+    @PostPersist
+    protected void postPersist() {
+        if(detail != null && detail.getTicket() != this) {
+            detail.setTicket(this);
+        }
+    }
+
+    public boolean isSendTicket() {
+        return getDetail().getTicketNumber() != null;
+    }
+
+    /**
+     * Set the source
+     *
+     * @param source the value
+     */
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    @JsonIgnore
+    public String getBodyHtml() {
+        return body != null ? body.replace("\n", "<br/>") : null;
+    }
+
+    @JsonIgnore
+    public String getReplyHtml() {
+        return reply != null ? reply.replace("\n", "<br/>") : null;
+    }
+
+    @JsonIgnore
+    public String getNoteHtml() {
+        return note != null ? note.replace("\n", "<br/>") : null;
+    }
+
+    public boolean isUpFile() {
+        if(Objects.isEmpty(odImage)) return false;
+        else return !Objects.anyNull(odImage.values());
+    }
+
+    public boolean isEmailTicket() {
+        return Objects.notBlank(contentEmail);
+    }
 }

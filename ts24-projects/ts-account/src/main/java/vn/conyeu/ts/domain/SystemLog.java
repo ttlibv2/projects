@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.domain.LongIdDate;
+import vn.conyeu.common.domain.LongUIdDate;
 
 //@formatter:off
 @Entity @Table
@@ -17,6 +17,6 @@ import vn.conyeu.common.domain.LongIdDate;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "logId"))
 //@formatter:on
-public class SystemLog extends LongIdDate<SystemLog> {
+public class SystemLog extends LongUIdDate<SystemLog> {
 
 }

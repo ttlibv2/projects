@@ -3,8 +3,6 @@ package vn.conyeu.commons.utils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 //import org.apache.commons.validator.routines.UrlValidator;
@@ -451,11 +449,15 @@ public final class Objects {
         return Stream.of(objects).noneMatch(Objects::nonNull);
     }
 
-    public static boolean isAnyNotNull(Iterator<Object> iterator) {
+    public static boolean anyNotNull(Iterator<Object> iterator) {
         return Lists.newArrayList(iterator).stream().anyMatch(Objects::nonNull);
     }
 
-    public static boolean isAnyNull(Iterator<Object> iterator) {
+    public static boolean anyNull(Collection<Object> collection) {
+        return Stream.of(collection).anyMatch(Objects::isNull);
+    }
+
+    public static boolean anyNull(Iterator<Object> iterator) {
         while (iterator.hasNext()) {
             boolean empty = isNull(iterator.next());
             if (empty) return true;
@@ -1356,15 +1358,12 @@ public final class Objects {
                 .map(o -> o == null ? null : o.toString()).toList();
     }
 
-
-
-
-    public static String camelCaseText(String string) {
+    public static String camelCaseToDot(String string) {
         if (isBlank(string)) return "";
         StringBuilder builder = new StringBuilder(string.replace('.', '_'));
         for (int i = 1; i < builder.length() - 1; i++) {
             if (isUnderscoreRequired(builder.charAt(i - 1), builder.charAt(i), builder.charAt(i + 1))) {
-                builder.insert(i++, '_');
+                builder.insert(i++, '.');
             }
         }
         return builder.toString();

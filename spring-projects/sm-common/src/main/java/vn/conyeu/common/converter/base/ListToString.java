@@ -25,6 +25,10 @@ public abstract class ListToString<T> extends ConvertAttrDb<List<T>> {
         this(objectCls, delimiter, new LinkedHashSet<>());
     }
 
+    public ListToString(Class<T> objectCls, Set<String> fields) {
+        this(objectCls, DELIMITER, fields);
+    }
+
     public ListToString(Class<T> objectCls, String delimiter, Set<String> fields) {
         this.objectCls = objectCls;
         this.delimiter = delimiter;

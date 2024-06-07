@@ -1,16 +1,16 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsCategory;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 
 import java.util.List;
 import java.util.function.Function;
 
-public class OdCategory extends OdTicketCore<ClsCategory> {
+public class OdCategory extends OdTicketClient<ClsCategory> {
     
-    public OdCategory(ClsApiConfig apiConfig) {
+    public OdCategory(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 
@@ -18,6 +18,7 @@ public class OdCategory extends OdTicketCore<ClsCategory> {
     public String getModel() {
         return "helpdesk.category";
     }
+
 
 //    @Override
 //    public String getBasePath() {

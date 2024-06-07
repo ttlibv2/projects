@@ -1,8 +1,8 @@
 package vn.conyeu.ts.repository;
 
 import vn.conyeu.ts.domain.Chanel;
-import vn.conyeu.common.repository.LongIdRepo;
+import vn.conyeu.common.repository.LongUIdRepo;
 
-public interface ChanelRepo extends LongIdRepo<Chanel> {
+public interface ChanelRepo extends LongUIdRepo<Chanel> {
 
 }

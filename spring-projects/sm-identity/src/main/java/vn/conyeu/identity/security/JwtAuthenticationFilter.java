@@ -6,14 +6,18 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import vn.conyeu.common.domain.LogDetail;
 import vn.conyeu.common.exception.BaseException;
+import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.identity.helper.IdentityHelper;
 import vn.conyeu.identity.service.JwtService;
 import vn.conyeu.identity.service.PrincipalService;
 
 import java.io.IOException;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final PrincipalService principalService;
@@ -39,9 +43,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }//
             catch (JwtException exp) {
                 String code = IdentityHelper.extractCode(exp);
-                throw BaseException.e401(code)
-                        .message(exp.getMessage())
-                        .throwable(exp);
+                IdentityHelper.sendError(response, LogDetail.e401().logCode(code)
+                        .message(exp.getMessage()).throwable(exp)
+                        .createMapResponse());
+                return;
             }
         }
 

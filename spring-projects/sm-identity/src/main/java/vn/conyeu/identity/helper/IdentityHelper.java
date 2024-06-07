@@ -31,13 +31,18 @@ public class IdentityHelper {
         return "jwt."+name.trim().toLowerCase();
     }
 
-    public static void sendError(HttpServletResponse response, ObjectMap jsonData) throws IOException {
-        PrintWriter out = response.getWriter();
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    public static void sendResponse(int status, HttpServletResponse response, Object jsonData) throws IOException {
         response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        out.print(jsonData.toJson());
+        response.setContentType("application/json");
+        response.setStatus(status);
+
+        PrintWriter out = response.getWriter();
+        out.print(ObjectMap.fromJson(jsonData).toJson());
         out.flush();
+    }
+
+    public static void sendError(HttpServletResponse response, ObjectMap jsonData) throws IOException {
+       sendResponse(401, response, jsonData);
     }
 
 
@@ -48,9 +53,13 @@ public class IdentityHelper {
     }
 
     public static Long extractUserId() {
+       return getPrincipal().getUserId();
+    }
+
+    public static Principal getPrincipal() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication == null) throw new Unauthorized("not_login").message("Người dùng chưa đăng nhập");
-        if(authentication.getPrincipal() instanceof Principal principal) return principal.getUserId();
+        if(authentication.getPrincipal() instanceof Principal principal) return principal;
         else throw new Unauthorized("not_principal");
     }
 }

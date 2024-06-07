@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ObjectMapToString;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 
 //@formatter:off
@@ -16,7 +16,7 @@ import vn.conyeu.commons.beans.ObjectMap;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "settingId"))
 //@formatter:on
-public class Setting extends LongId<Setting> {
+public class Setting extends LongUId<Setting> {
 
     @Column(length = 100, nullable = false)
     private String fieldKey;

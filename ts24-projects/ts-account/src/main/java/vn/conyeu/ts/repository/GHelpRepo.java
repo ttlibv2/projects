@@ -1,8 +1,8 @@
 package vn.conyeu.ts.repository;
 
 import vn.conyeu.ts.domain.GroupHelp;
-import vn.conyeu.common.repository.LongIdRepo;
+import vn.conyeu.common.repository.LongUIdRepo;
 
-public interface GHelpRepo extends LongIdRepo<GroupHelp> {
+public interface GHelpRepo extends LongUIdRepo<GroupHelp> {
 
 }

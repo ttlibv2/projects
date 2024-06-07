@@ -4,14 +4,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.domain.AgColumn;
+import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.service.AgColumnService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
-@RequestMapping("/ts.ag-column")
+@RequestMapping(TsVar.Rest.tsAgColumn)
 public class AgColumnRest {
     private final AgColumnService columnService;
 

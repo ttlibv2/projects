@@ -25,11 +25,16 @@ public class ClsUser extends ClsModel<ClsUser> {
     private ObjectMap cache_hashes;
     private ObjectMap menus;
     private ClsUserContext context;
+    private Object tsUser;
 
     @JsonProperty("csrf_token")
     private String csrfToken;
 
     private String cookie;
+
+    //
+    private Long company_uid;
+    private String company_name;
 
     /**
      * Returns the display_name
@@ -326,8 +331,8 @@ public class ClsUser extends ClsModel<ClsUser> {
 
         Object[] objects = Objects.toObjectArray(cls.company_id);
         if(objects != null && objects.length > 0) {
-            cls.getCustom().set("comp_id", objects[0]);
-            cls.getCustom().set("comp_name", objects[1]);
+            cls.set("comp_id", objects[0]);
+            cls.set("comp_name", objects[1]);
         }
 
         return cls;
@@ -343,7 +348,20 @@ public class ClsUser extends ClsModel<ClsUser> {
         return getDisplay_name();
     }
 
+    /**
+     * Returns the tsUser
+     */
+    public Object getTsUser() {
+        return tsUser;
+    }
 
-
-
+    /**
+     * Set the tsUser
+     *
+     * @param tsUser the value
+     */
+    public ClsUser setTsUser(Object tsUser) {
+        this.tsUser = tsUser;
+        return this;
+    }
 }

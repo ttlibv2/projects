@@ -1,15 +1,16 @@
 package vn.conyeu.identity.service;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import vn.conyeu.common.service.LongIdService;
+import vn.conyeu.common.service.LongUIdService;
 import vn.conyeu.identity.domain.Account;
 import vn.conyeu.identity.repository.AccountRepo;
 
 import java.util.Optional;
 
 @Service
-public class AccountService extends LongIdService<Account, AccountRepo> {
+public class AccountService extends LongUIdService<Account, AccountRepo> {
 
     public AccountService(AccountRepo accountRepo) {
         super(accountRepo);
@@ -21,24 +22,30 @@ public class AccountService extends LongIdService<Account, AccountRepo> {
         return createNew(info);
     }
 
+    @CacheEvict("principal")
     public void changePass(Long accountId, String newPassword) {
-        entityRepo.updatePassword(accountId, newPassword);
+        repo().updatePassword(accountId, newPassword);
+    }
+
+   // @CacheEvict(value = "principal")
+    public Account save(Account entity) {
+        return super.save(entity);
     }
 
     public Optional<Account> findByEmail(String email) {
-        return entityRepo.findByEmail(email);
+        return repo().findByEmail(email);
     }
 
     public Optional<Account> findByPhone(String phone) {
-        return entityRepo.findByPhone(phone);
+        return repo().findByPhone(phone);
     }
 
 
     public boolean existsByEmail(String email) {
-        return entityRepo.existsByEmail(email);
+        return repo().existsByEmail(email);
     }
 
     public boolean existsByPhone(String phone) {
-        return entityRepo.existsByPhone(phone);
+        return repo().existsByPhone(phone);
     }
 }

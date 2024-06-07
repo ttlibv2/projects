@@ -1,0 +1,40 @@
+<div class="flex flex-column gap-2">
+  <div class="col-12">
+    <p-card header="{{'user_info.title' | translate}}">
+      <div class="user-form justify-content-center">
+        <form [formGroup]="formGroup" (ngSubmit)="onSave()">
+          <div class="grid">
+            <div class="g-field col-6">
+              <label for="room_code">{{ 'user_info.room_code' | translate }}</label>
+              <input pInputText placeholder="{{'user_info.room_code' | translate}}" id="room_code"
+                     formControlName="room_code"/>
+            </div>
+            <div class="g-field col-6">
+              <label for="user_code">{{ 'user_info.user_code' | translate }}</label>
+              <input pInputText placeholder="{{'user_info.user_code' | translate}}" id="user_code"
+                     formControlName="user_code"/>
+            </div>
+            <div class="g-field col-6">
+              <label for="email">{{ 'user_info.email' | translate }}</label>
+              <input pInputText placeholder="{{'user_info.email' | translate}}" id="email" formControlName="email"/>
+            </div>
+            <div class="g-field col-6">
+              <label for="name">{{ 'user_info.fullName' | translate }}</label>
+              <input pInputText placeholder="{{'user_info.fullName' | translate}}" id="name" formControlName="name"/>
+            </div>
+          </div>
+          <div class="grid">
+            <div class="col-12 flex gap-2">
+              <p-button label="{{'save' | translate}}" type="submit"
+                        [disabled]="formGroup.invalid" [loading]="asyncSave"></p-button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </p-card>
+  </div>
+  <div class="col-12">
+    <ts-api-info></ts-api-info>
+  </div>
+
+</div>

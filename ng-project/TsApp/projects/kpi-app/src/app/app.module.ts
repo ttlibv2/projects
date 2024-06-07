@@ -1,5 +1,10 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  provideClientHydration,
+  withHttpTransferCacheOptions,
+  withNoHttpTransferCache
+} from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,11 +13,21 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {AppConfigModule} from "./views/app-config/app-config.module";
 import { registerLocaleData } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import {HttpClient, provideHttpClient, withFetch} from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient,
+  withFetch,
+  withInterceptors,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
 import vi from '@angular/common/locales/vi';
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {ToastModule} from "primeng/toast";
+import {MessageModule} from "primeng/message";
+import {MessageService} from "primeng/api";
+import {tokenInterceptor} from "./guards/token.interceptor";
 
 registerLocaleData(vi);
 
@@ -43,8 +58,10 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   providers: [
     provideAnimationsAsync(),
-    provideHttpClient(withFetch()),
-    provideClientHydration()
+    provideHttpClient(withFetch(), withInterceptors([tokenInterceptor])),
+    provideClientHydration(),
+    MessageService,
+    //{provide: HTTP_INTERCEPTORS, useFactory: tokenInterceptor, multi: true},
   ],
   bootstrap: [AppComponent],
   exports: [

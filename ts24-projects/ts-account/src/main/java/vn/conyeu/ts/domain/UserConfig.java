@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ValueToString;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.common.domain.ValueDb;
 
 //@formatter:off
@@ -16,7 +16,7 @@ import vn.conyeu.common.domain.ValueDb;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "configId"))
 //@formatter:on
-public class UserConfig extends LongId<UserConfig> {
+public class UserConfig extends LongUId<UserConfig> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)

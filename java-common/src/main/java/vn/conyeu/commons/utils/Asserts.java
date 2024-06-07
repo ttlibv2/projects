@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public final class Asserts {
@@ -740,5 +741,10 @@ public final class Asserts {
     public static <T> List<T> isEmpty(List<T> list, String message) {
         if(list == null || !list.isEmpty()) throw new IllegalArgumentException(message);
         else return list;
+    }
+
+    public static void allNotNull(Object... objects) {
+        int index = IntStream.range(0, objects.length).filter(pos -> Objects.isNull(objects[pos])).findFirst().orElse(-1);
+        if(index != -1) throw Objects.newIllegal("The value at [%s] is null", index);
     }
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 
 
 //@formatter:off
@@ -14,7 +14,7 @@ import vn.conyeu.common.domain.LongId;
 @DynamicInsert @DynamicUpdate
 @MappedSuperclass
 //@formatter:on
-public abstract class BaseAddress<E extends BaseAddress<E>> extends LongId<E> {
+public abstract class BaseAddress<E extends BaseAddress<E>> extends LongUId<E> {
 
     @Column(length = 200)
     private String street1;

@@ -64,27 +64,21 @@ public class AuthRest {
                     .message("The phone empty");
         }
 
+        AccountInfo info = new AccountInfo();
+        info.fromMap(ObjectMap.fromJson(dto));
+
         Account account = new Account();
         account.setEmail(dto.getEmail());
         account.setPhone(dto.getPhone());
         account.setSignupType(dto.getSignupType());
         account.setPassword(encoder.encode(dto.getPassword()));
-
-        AccountInfo info = new AccountInfo();
-        info.fromMap(ObjectMap.fromJson(dto));
-        info.setAccount(account);
+        account.setInfo(info);
 
 
         account = service.createNew(account);
 
         Principal principal = new Principal(account);
         JwtBuilder token = jwtService.generateToken(principal);
-        AuthToken body = new AuthToken().setAccessToken(token.compact())
-                .setTokenType(jwtService.getTokenType())
-                .setExpiresIn(jwtService.getConfig().getExpiration());
-
-        return ResponseEntity.ok()
-                .header(jwtService.getAuthHeader(), body.getTokenType() +" " + body.getAccessToken())
-                .body(body);
+        return jwtService.buildToken(token);
     }
 }

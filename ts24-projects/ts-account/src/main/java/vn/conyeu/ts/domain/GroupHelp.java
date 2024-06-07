@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 
 //@formatter:off
 @Entity @Table(name = "groupHelp")
@@ -17,7 +17,7 @@ import vn.conyeu.common.domain.LongId;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "helpId"))
 //@formatter:on
-public class GroupHelp extends LongId<GroupHelp> {
+public class GroupHelp extends LongUId<GroupHelp> {
 
     @Column(nullable = false, length = 50)
     private String code;

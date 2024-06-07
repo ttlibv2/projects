@@ -10,6 +10,8 @@ import {AutoCompleteModule} from "primeng/autocomplete";
 import {CheckboxModule} from "primeng/checkbox";
 import {ButtonModule} from "primeng/button";
 import {CardModule} from "primeng/card";
+import {MessagesModule} from "primeng/messages";
+import {MessageService} from "primeng/api";
 
 
 @NgModule({
@@ -28,6 +30,9 @@ import {CardModule} from "primeng/card";
         CheckboxModule,
         ButtonModule,
         CardModule
-    ]
+    ],
+  providers: [
+    MessageService
+  ]
 })
 export class SigninModule { }

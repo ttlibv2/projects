@@ -8,5 +8,20 @@
   "title": "Tiêu đề",
   "title.holder": "Nhập tiêu đề",
   "unique_id": "Mã ID",
-  "templates": "Danh sách mẫu"
+  "templates": "Danh sách mẫu",
+  "last_name": "Tên của bạn",
+  "first_name": "Họ của bạn",
+  "gender": "Giới tính",
+  "phone": "Số điện thoại",
+  "email": "E-mail",
+  "password": "Mật khẩu",
+  "re_password": "Nhập lại mật khẩu",
+  "dob": "Ngày sinh",
+  "user_info": {
+    "title": "Thông tin người dùng",
+    "room_code": "Mã phòng ban",
+    "user_code": "Mã người dùng",
+    "fullName": "Họ và tên",
+    "email": "Địa chỉ email"
+  }
 }

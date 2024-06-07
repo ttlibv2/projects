@@ -62,7 +62,7 @@ public class ClsModel<T> implements Serializable {
      *
      * @param object Object
      */
-    protected Integer getObjectID(Object object) {
+    protected Long getObjectID(Object object) {
         return getObjectID(object, "id");
     }
 
@@ -72,9 +72,9 @@ public class ClsModel<T> implements Serializable {
      *
      * @param object Object
      */
-    protected Integer getObjectID(Object object, String fieldId) {
+    protected Long getObjectID(Object object, String fieldId) {
         ObjectMap objMap = objectToMap(object);
-        return objMap == null ? null : objMap.getInteger(fieldId);
+        return objMap == null ? null : objMap.getLong(fieldId);
     }
 
 

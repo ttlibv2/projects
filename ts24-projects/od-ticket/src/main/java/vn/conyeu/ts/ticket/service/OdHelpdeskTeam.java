@@ -1,7 +1,7 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsHelpdeskTeam;
 
@@ -10,9 +10,9 @@ import java.util.function.Function;
 
 import java.util.Arrays;
 
-public class OdHelpdeskTeam extends OdTicketCore<ClsHelpdeskTeam> {
+public class OdHelpdeskTeam extends OdTicketClient<ClsHelpdeskTeam> {
 
-    public OdHelpdeskTeam(ClsApiConfig apiConfig) {
+    public OdHelpdeskTeam(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 
@@ -26,11 +26,11 @@ public class OdHelpdeskTeam extends OdTicketCore<ClsHelpdeskTeam> {
 //        return "call_kw/"+getModel();
 //    }
 
-    public List<ClsHelpdeskTeam> findAll() {
-       return findAll(true);
+    public List<ClsHelpdeskTeam> getAll() {
+       return getAll(true);
     }
 
-    public List<ClsHelpdeskTeam> findAll(boolean isGetDetail) {
+    public List<ClsHelpdeskTeam> getAll(boolean isGetDetail) {
         List<ClsHelpdeskTeam> list = nameSearch("");
         return !isGetDetail ? list : readBy(list.stream().map(ClsHelpdeskTeam::getId).toList());
     }

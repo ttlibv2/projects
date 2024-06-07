@@ -1,15 +1,15 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsMenu;
 
 import java.util.function.Function;
 
-public class OdWebClient extends OdTicketCore<ClsMenu> {
+public class OdWebClient extends OdTicketClient<ClsMenu> {
     public static final String LOAD_MENU_ID = "load_menus";
 
-    public OdWebClient(ClsApiConfig apiConfig) {
+    public OdWebClient(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 

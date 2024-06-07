@@ -3,6 +3,7 @@ package vn.conyeu.common.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import vn.conyeu.common.domain.LogDetail;
+import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.MapperHelper;
 
@@ -130,8 +131,8 @@ public class BaseException extends RuntimeException {
         return this;
     }
 
-    public BaseException details(Object data) {
-        object.detail("details", data);
+    public BaseException detail(String field, Object data) {
+        object.detail(field, data);
         return this;
     }
 
@@ -152,8 +153,8 @@ public class BaseException extends RuntimeException {
         return object;
     }
 
-    @Override
-    public String getMessage() {
-        return MapperHelper.serializeToString(object);
-    }
+//    @Override
+//    public String getMessage() {
+//        return MapperHelper.serializeToString(object);
+//    }
 }

@@ -1,7 +1,7 @@
 @import "primeng/theme/aura/aura-light/blue/theme";
 @import "primeng/resources/primeng.css";
 
-@import "primeflex/primeflex.scss";
+@import "primeflex/primeflex.min.css";
 @import "primeicons/primeicons.css";
 
 @import "assets/fontawesome/css/all.css";
@@ -9,6 +9,10 @@
 //Editor is rich text editor component based on Quill
 @import "quill/dist/quill.core.css";
 @import "quill/dist/quill.snow.css";
+
+// ag-grid theme
+@import "ag-grid-community/styles/ag-grid.min.css";
+@import  "ag-grid-community/styles/ag-theme-quartz.css";
 
 
 @import "prime-style";

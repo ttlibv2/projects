@@ -1,19 +1,23 @@
 package vn.conyeu.ts.repository;
 
 import org.springframework.data.jpa.repository.Query;
-import vn.conyeu.common.repository.DomainRepo;
+import vn.conyeu.common.repository.LongUIdRepo;
 import vn.conyeu.ts.domain.UserApi;
-import vn.conyeu.ts.domain.UserApi.UserApiId;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface UserApiRepo extends DomainRepo<UserApi, UserApiId> {
+public interface UserApiRepo extends LongUIdRepo<UserApi> {
 
-    Optional<UserApi> findById(UserApiId userApiId);
+    @Query("select e from #{#entityName} e where e.user.id=?1 and e.api.code=?2")
+    Optional<UserApi> loadByApiCode(Long userId, String apiCode);
 
-    @Query("select e from #{#entityName} e where e.id.user.id=?1 and e.id.api.code=?2")
-    Optional<UserApi> findByCode(Long userId, String apiCode);
+    @Query("select e from #{#entityName} e where e.user.id=?1 and e.api.id=?2")
+    Optional<UserApi> loadByApiId(Long userId, Long apiId);
 
-    @Query("select e from #{#entityName} e where e.id.user.id=?1 and e.id.api.baseUrl=?2")
-    Optional<UserApi> findByBaseUrl(Long userId, String baseUrl);
+    @Query("select e from #{#entityName} e where e.user.id=?1 and e.api.baseUrl=?2")
+    Optional<UserApi> findByApiUrl(Long userId, String baseUrl);
+
+    @Query("select e from #{#entityName} e where e.user.id=?1")
+    List<UserApi> getAllByUser(Long userId);
 }

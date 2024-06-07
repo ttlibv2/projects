@@ -5,36 +5,39 @@ import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsPage;
 import vn.conyeu.ts.odcore.domain.ClsUserContext;
-import vn.conyeu.ts.ticket.domain.ClsFollow;
-import vn.conyeu.ts.ticket.domain.ClsMessage;
-import vn.conyeu.ts.ticket.domain.ClsTicket;
+import vn.conyeu.ts.ticket.domain.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
-public class OdTicket extends OdTicketCore<ClsTicket> {
+public class OdTicket extends OdTicketClient<ClsTicket> {
     public static final String MODEL = "helpdesk.ticket";
     protected final OdMessage odMessage;
     protected final OdFollow odMail;
+    private final OdMailComposeMsg odComposeMsg;
 
-    public OdTicket(ClsApiConfig apiConfig, OdMessage odMessage, OdFollow odMail) {
+    public OdTicket(ClsApiCfg apiConfig, OdMessage odMessage, OdFollow odMail, OdMailComposeMsg odComposeMsg) {
         super(apiConfig);
         this.odMessage = odMessage;
         this.odMail = odMail;
+        this.odComposeMsg = odComposeMsg;
     }
 
     public String getModel() {
         return MODEL;
     }
-    public String getBasePath() {
-        return "call_kw/helpdesk.ticket";
-    }
+
+//    public String getBasePath() {
+//        return "call_kw/helpdesk.ticket";
+//    }
+
     protected Class<ClsTicket> getDomainCls() {
         return ClsTicket.class;
     }
@@ -53,16 +56,9 @@ public class OdTicket extends OdTicketCore<ClsTicket> {
      *
      * @param ticketID Long
      */
-    public ClsTicket getByID(Long ticketID) {
+    public Optional<ClsTicket> getByID(Long ticketID) {
         List<ClsTicket> all = read(Collections.singletonList(ticketID));
-
-        if (all.isEmpty()) {
-            throw BaseException.e404("no_id")
-                    .message("Đã xảy ra lỗi lấy thông tin ticket số [%s] trên hệ thống helpdesk !!", ticketID)
-                    .arguments("id", ticketID);
-        }
-
-        return all.get(0);
+        return Optional.ofNullable(Objects.getItemAt(all, 0));
     }
 
     /**
@@ -80,7 +76,7 @@ public class OdTicket extends OdTicketCore<ClsTicket> {
         }
 
         ObjectMap data = createAndReturnMap(clsTicket.cloneMap());
-        return getByID(data.getLong("result"));
+        return getByID(data.getLong("result")).orElseThrow();
     }
 
     /**
@@ -90,8 +86,8 @@ public class OdTicket extends OdTicketCore<ClsTicket> {
      */
     public ClsTicket closeTicket(Long ticketID) {
         Asserts.notNull(ticketID, "@ticketNumber");
-        callButton("action_closed", new Object[]{ticketID});
-        return getByID(ticketID);
+        callButton( "action_closed", new Object[]{ticketID});
+        return getByID(ticketID).orElseThrow();
     }
 
     /**
@@ -139,12 +135,19 @@ public class OdTicket extends OdTicketCore<ClsTicket> {
         return odMessage.create(clsMsg.setModel(getModel(), ticketNum));
     }
 
+    public ClsMessage updateNote(Long noteId, ClsMessage clsMsg) {
+        return odMessage.update(noteId, clsMsg);
+    }
+
+
+
+
     public List<ClsTicket> searchTicket(ObjectMap clone, ClsPage clsPage) {
         throw new UnsupportedOperationException();
     }
 
     public ClsTicket updateTicket(Long ticketNumber, ClsTicket ticket) {
-        ClsTicket clsTicket = getByID(ticketNumber);
+        ClsTicket clsTicket = getByID(ticketNumber).orElseThrow();
         clsTicket = clsTicket.updateValueFrom(ticket);
 
         Map<String, Object> errorList = clsTicket.validateCreate();
@@ -155,11 +158,11 @@ public class OdTicket extends OdTicketCore<ClsTicket> {
         Long ticketNum = updateAndReturnMap(ticketNumber, clsTicket.cloneMap())
                 .getLong("id");
 
-        return getByID(ticketNum);
+        return getByID(ticketNum).orElseThrow();
     }
 
     public List<Long> deleteFollow(Long ticketId) {
-        Long odUserId = apiConfig.getUserId();
+        Long odUserId = cfg.getUserId();
         return deleteFollow(ticketId, odUserId);
     }
 
@@ -177,7 +180,7 @@ public class OdTicket extends OdTicketCore<ClsTicket> {
     }
 
     public  void deleteFollow(Long ticketId, List<Long> partnerId) {
-        String url = String.format("%s/message_unsubscribe", getBasePath());
+        String url = call_kwUri("%s/message_unsubscribe");// String.format("%s/message_unsubscribe", getBasePath());
         ObjectMap context = ObjectMap.setNew("context", createUserContext());
 
         ObjectMap object = ObjectMap.create()
@@ -189,7 +192,28 @@ public class OdTicket extends OdTicketCore<ClsTicket> {
                         partnerId
                 });
 
-        sendPost(datasetUri(url), object);
+        sendPost(object, datasetUri(url));
+    }
+
+    public Long actionReply(Long ticketNumber, Long[] partnerIds, String subject, String body) {
+
+        // callButton
+        Object[] uids = new Object[] { ticketNumber};
+        ClsTicketActionReply reply = callButton( "action_reply", uids )
+                    .getMap("result").map(ClsTicketActionReply::from);
+
+        // create reply
+        ClsTicketActionReply.ActionReplyContext context = reply.getContext();
+        ClsMailComposeMsg cls = new ClsMailComposeMsg();
+        cls.setComposition_mode(context.getDefault_composition_mode());
+        cls.setModel(context.getDefault_model());
+        cls.setRes_id(context.getDefault_res_id());
+        cls.setTemplate_id(context.getDefault_template_id());
+        cls.createPartnerId(partnerIds);
+        cls.setSubject(subject);
+        cls.setBody(body);
+
+        return odComposeMsg.create(reply, cls);
     }
 
 }

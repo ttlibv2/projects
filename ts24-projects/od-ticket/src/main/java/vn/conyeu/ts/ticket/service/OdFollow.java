@@ -1,14 +1,14 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFollow;
 import java.util.List;
 import java.util.function.Function;
 
-public class OdFollow extends OdTicketCore<ClsFollow> {
+public class OdFollow extends OdTicketClient<ClsFollow> {
 
-    public OdFollow(ClsApiConfig apiConfig) {
+    public OdFollow(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 
@@ -35,7 +35,7 @@ public class OdFollow extends OdTicketCore<ClsFollow> {
                 .set("res_id", res_id)
                 .set("res_model", res_model);
 
-       return sendPost("/mail/read_followers", map)
+       return sendPost(map, "/mail/read_followers")
                 .getStream("result.followers")
                 .map(obj -> mapToObject().apply(obj))
                 .toList();

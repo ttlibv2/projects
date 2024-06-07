@@ -1,16 +1,16 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsTicketTag;
 
 import java.util.List;
 import java.util.function.Function;
 
-public class OdTicketTags extends OdTicketCore<ClsTicketTag> {
+public class OdTicketTags extends OdTicketClient<ClsTicketTag> {
 
-    public OdTicketTags(ClsApiConfig apiConfig) {
+    public OdTicketTags(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 

@@ -162,15 +162,6 @@ public final class Classes {
         }
     }
 
-    /**
-     * @param refClass – the class or interface from which the method is accessed
-     */
-    public static <T> T newObject(Class<T> refClass, Object... arguments) throws Throwable {
-        Class[] paramType = Stream.of(arguments).map(Object::getClass).toArray(Class[]::new);
-        MethodType methodType = MethodType.methodType(void.class, paramType);
-        MethodHandle handle = MethodHandles.lookup().findConstructor(refClass, methodType);
-        return (T) handle.invokeWithArguments(arguments);
-    }
 
     public static MethodHandle findStaticMethod(Class refClass, String method, Class[] parameterCls) {
         try {
@@ -927,6 +918,21 @@ public final class Classes {
             float.class, 0F,
             double.class, 0D,
             char.class, '\0');
+
+    public static <S > S newObject(Class<S> objectCls, Object value) {
+        Asserts.allNotNull(objectCls, value);
+        try {
+            Constructor<S> constructor = objectCls.getConstructor(value.getClass());
+            return constructor.newInstance(value);
+        }
+        catch (NoSuchMethodException e) {
+            String msg = "The class %s not exist constructor %s(%s)";
+            throw Objects.newIllegal(msg, objectCls, objectCls.getSimpleName(), value.getClass());
+        } //
+        catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      */

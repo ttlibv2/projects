@@ -2,13 +2,15 @@ package vn.conyeu.identity.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@ConfigurationProperties(prefix = "spring.security.jwt")
+//@Configuration
+@Component
+@ConfigurationProperties("security.jwt")
 public class JwtConfig {
 
     private String secretKey = "33743677397A24432646294A404D635166546A576E5A7234753778214125442A";
-    private Long expiration = 1000 * 60 * 24L;
+    private Long expiration = 3600000L;
     private String algorithm = "HmacSHA256";
     private String publicKeyLocation;
     private String tokenType = "Bearer";
@@ -27,9 +29,8 @@ public class JwtConfig {
      *
      * @param algorithm the value
      */
-    public JwtConfig setAlgorithm(String algorithm) {
+    public void setAlgorithm(String algorithm) {
         this.algorithm = algorithm;
-        return this;
     }
 
     /**
@@ -44,9 +45,8 @@ public class JwtConfig {
      *
      * @param secretKey the value
      */
-    public JwtConfig setSecretKey(String secretKey) {
+    public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
-        return this;
     }
 
     /**
@@ -61,9 +61,8 @@ public class JwtConfig {
      *
      * @param expiration the value
      */
-    public JwtConfig setExpiration(Long expiration) {
+    public void setExpiration(Long expiration) {
         this.expiration = expiration;
-        return this;
     }
 
     /**
@@ -78,9 +77,8 @@ public class JwtConfig {
      *
      * @param publicKeyLocation the value
      */
-    public JwtConfig setPublicKeyLocation(String publicKeyLocation) {
+    public void setPublicKeyLocation(String publicKeyLocation) {
         this.publicKeyLocation = publicKeyLocation;
-        return this;
     }
 
     /**
@@ -95,9 +93,8 @@ public class JwtConfig {
      *
      * @param tokenType the value
      */
-    public JwtConfig setTokenType(String tokenType) {
+    public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
-        return this;
     }
 
     /**
@@ -112,9 +109,8 @@ public class JwtConfig {
      *
      * @param headerAuth the value
      */
-    public JwtConfig setHeaderAuth(String headerAuth) {
+    public void setHeaderAuth(String headerAuth) {
         this.headerAuth = headerAuth;
-        return this;
     }
 
     /**
@@ -129,8 +125,7 @@ public class JwtConfig {
      *
      * @param authUri the value
      */
-    public JwtConfig setAuthUri(String authUri) {
+    public void setAuthUri(String authUri) {
         this.authUri = authUri;
-        return this;
     }
 }

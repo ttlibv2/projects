@@ -88,7 +88,7 @@ public class ObjectMap extends LinkedHashMap<String, Object> implements Cloneabl
     }
 
     public static <T> String toJsonString(T object, Set<String> fields) {
-        return fromJson(object).get(fields).toJson(true);
+        return fromJson(object).get(fields, true).toJson(true);
     }
 
     public ObjectMap deleteAll() {
@@ -360,7 +360,7 @@ public class ObjectMap extends LinkedHashMap<String, Object> implements Cloneabl
      * @param keys the all key
      */
     public ObjectMap get(String... keys) {
-        return get(Set.of(keys));
+        return get(Set.of(keys), true);
     }
 
 
@@ -369,11 +369,12 @@ public class ObjectMap extends LinkedHashMap<String, Object> implements Cloneabl
      *
      * @param keys the all key
      */
-    public ObjectMap get(Set<String> keys) {
+    public ObjectMap get(Set<String> keys, boolean includeNull) {
         Asserts.notEmpty(keys, "@keys must be not empty.");
         ObjectMap obj = ObjectMap.create();
-        keys.stream().filter(Objects::hasLength)
-                .forEach(key -> obj.set(key, get(key)));
+        Stream<String> stream = keys.stream().filter(Objects::hasLength);
+        if(!includeNull) stream = stream.filter(Objects::nonNull);
+        stream.forEach(key -> obj.set(key, get(key)));
         return obj;
     }
 

@@ -10,6 +10,7 @@ import vn.conyeu.common.service.DomainService;
 import vn.conyeu.commons.beans.ObjectMap;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public abstract class DomainRest<E extends DomainId<E, Id>, Id extends Serializable, S extends DomainService<E, Id, ?>> {
     protected final S service;
@@ -39,7 +40,8 @@ public abstract class DomainRest<E extends DomainId<E, Id>, Id extends Serializa
     }
 
     @PutMapping("update-by-id/{entityId}")
-    public E updateById(@RequestBody ObjectMap object, @PathVariable Id entityId) {
+    public E updateById(@RequestBody Map<String, ?> body, @PathVariable Id entityId) {
+        ObjectMap object = ObjectMap.fromMap(body);
         return service.update(entityId, object).orElseThrow(() -> noId(entityId));
     }
 

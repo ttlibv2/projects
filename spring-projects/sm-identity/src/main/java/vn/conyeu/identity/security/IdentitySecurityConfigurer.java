@@ -3,30 +3,24 @@ package vn.conyeu.identity.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import vn.conyeu.common.context.AppContext;
 import vn.conyeu.identity.service.JwtService;
 import vn.conyeu.identity.service.PrincipalService;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class IdentitySecurityConfigurer {
+public class IdentitySecurityConfigurer extends SecurityAdapter {
     private final PrincipalService userDetailsService;
 
     @Autowired
@@ -54,17 +48,23 @@ public class IdentitySecurityConfigurer {
         return provider;
     }
 
-    @Bean
-    public SecurityFilterChain identitySecurityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager, JwtService jwtService) throws Exception {
-        http.cors(cfg -> cfg.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable);
 
-        http.formLogin(AbstractHttpConfigurer::disable).httpBasic(AbstractHttpConfigurer::disable);
-        http.userDetailsService(userDetailsService);
-        http.authenticationManager(authenticationManager);
-        http.sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+    @Order(2)@Bean("identitySecurityFilterChain")
+    public SecurityFilterChain filterChainImpl2(HttpSecurity http) throws Exception {
+        applyDefaultSecurityFilterChain(http);
+
+        http.securityMatcher("/accounts/**", "/auth/**");
+
+        http.authorizeHttpRequests(cfg -> cfg
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/accounts/**").authenticated()
+        );
+
+        AuthenticationManager authenticationManager = AppContext.getBean(AuthenticationManager.class);
+        JwtService jwtService = AppContext.getBean(JwtService.class);
         http.addFilter(new JwtUPAuthenticationFilter(authenticationManager, jwtService));
-        http.addFilterAfter(new JwtAuthenticationFilter(jwtService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+
         http.exceptionHandling(cfg -> {
            cfg.authenticationEntryPoint(new SimpleAuthenticationEntryPoint());
            cfg.accessDeniedHandler(new SimpleAccessDeniedHandler());
@@ -76,29 +76,13 @@ public class IdentitySecurityConfigurer {
                 .deleteCookies("JSESSIONID"));
 
 
-
         http.authorizeHttpRequests(cfg -> {
            cfg.requestMatchers("/auth/**").permitAll();
-           cfg.requestMatchers("/error/**").permitAll();
-           cfg.anyRequest().authenticated();
+           cfg.requestMatchers("/accounts/**").authenticated();
         });
 
+        //return super.filterChainImpl(http);
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        //Make the below setting as * to allow connection from any hos
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST"));
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedHeaders(List.of("*"));
-        corsConfiguration.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return source;
     }
 
 }

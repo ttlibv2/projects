@@ -2,13 +2,15 @@ package vn.conyeu.ts.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 
 import java.time.LocalDateTime;
 
@@ -19,7 +21,7 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties({"ticket"})
 @AttributeOverride(name = "id", column = @Column(name = "id"))
 //@formatter:on
-public class TicketDetail extends LongId<TicketDetail> {
+public class TicketDetail extends LongUId<TicketDetail> {
 
     @Column(length = 300)
 	@JsonProperty("download_url")
@@ -73,13 +75,22 @@ public class TicketDetail extends LongId<TicketDetail> {
 	@JsonProperty("mail_id")
     private Long mailId;
 
+    @ColumnDefault("0")
+    @JsonProperty("is_report")
+    @Column(name = "isReport")
+    private Boolean report;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING)
 	@JsonProperty("reply_at")
     private LocalDateTime replyAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-	@JsonProperty("ticket_at")
-    private LocalDateTime ticketAt;
+	@JsonProperty("send_at")
+    private LocalDateTime sendAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @JsonProperty("modify_at")
+    private LocalDateTime modifyAt;
 
 	@JsonProperty("note_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING)

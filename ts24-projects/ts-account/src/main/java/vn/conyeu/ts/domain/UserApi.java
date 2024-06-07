@@ -1,95 +1,74 @@
 package vn.conyeu.ts.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ObjectMapToString;
-import vn.conyeu.common.domain.DomainId;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
-
-import java.io.Serializable;
+import vn.conyeu.ts.dtocls.Converters;
+import vn.conyeu.ts.odcore.domain.ClsUser;
 
 //@formatter:off
 @Getter @Setter @NoArgsConstructor @DynamicInsert @DynamicUpdate
 @Entity @Table(uniqueConstraints = @UniqueConstraint(name = "USER_API_UID", columnNames = "apiId,userId"))
-@AttributeOverride(name = "id", column = @Column(name = "uaId"))
+@AttributeOverride(name = "id", column = @Column(name = "uniqueId"))
 //@formatter:on
-public class UserApi extends DomainId<UserApi, UserApi.UserApiId> {
+public class UserApi extends LongUId<UserApi> {
 
-    @EmbeddedId
-    private UserApiId id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private TsUser user;
 
-    @Convert(converter = ObjectMapToString.class)
-    @Column(columnDefinition = "json")
-    private ObjectMap headers;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "apiId")
+    private ApiInfo api;
 
-    @Convert(converter = ObjectMapToString.class)
-    @Column(columnDefinition = "json")
-    private ObjectMap queries;
-
-    @Column(length = 100)
+    @JsonProperty("username")
+    @Column(length = 100, nullable = false)
     private String userName;
 
-    @Column(length = 100)
-    private String secret;
+    @Column(length = 100, nullable = false)
+    private String password;
+
+    @ColumnDefault("1")
+    @JsonProperty("auto_login")
+    private Boolean autoLogin;
 
     @Column(length = 150)
+    @JsonProperty("csrf_token")
     private String csrfToken;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Column(length = 1000)
+    private String cookie;
+
+    @Convert(converter = Converters.ClsUserConvert.class)
     @Column(columnDefinition = "json")
-    private ObjectMap userInfo;
+    private ClsUser userInfo;
 
-    /**
-     * Returns the api
-     */
-    public ApiInfo getConfig() {
-        return id == null ? null : id.api;
+    public boolean isAutoLogin() {
+        return autoLogin != null && autoLogin;
     }
 
-    /**
-     * Returns the user
-     */
-    public TsUser getUser() {
-        return id == null ? null : id.user;
-    }
-
-    public void setApiId(Long userId, ApiInfo apiConfig) {
-        setId(new UserApiId(new TsUser(userId), apiConfig));
-    }
-
-    public ObjectMap getHeaders() {
-        headers = ObjectMap.ifNull(headers);
-        return headers;
-    }
-
-    public ObjectMap getQueries() {
-        queries = ObjectMap.ifNull(queries);
-        return queries;
-    }
-
-    @Embeddable @NoArgsConstructor
-    public static class UserApiId implements Serializable {
-
-        //@Id
-        @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "apiId", nullable = false)
-        private ApiInfo api;
-
-       // @Id
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "userId", nullable = false)
-        private TsUser user;
-
-        public UserApiId(TsUser user, ApiInfo api) {
-            this.api = api;
-            this.user = user;
-        }
 
 
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

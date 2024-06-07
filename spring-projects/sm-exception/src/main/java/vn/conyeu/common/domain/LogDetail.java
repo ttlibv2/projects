@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import lombok.Getter;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
-import org.springframework.data.relational.core.sql.In;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import vn.conyeu.common.exception.BaseException;
@@ -225,9 +225,10 @@ public class LogDetail implements Serializable {
     }
 
     public ObjectMap createMapResponse(ErrorAttributeOptions options) {
+
         ObjectMap map = ObjectMap
                 .setNew("code", getCode())
-                .set("message", I18N.get(codeI18N, message))
+                .set("summary", I18N.get(codeI18N, message))
                 .set(getCustom().delete("trace"));
 
         if(options.isIncluded(Include.STACK_TRACE)) {
@@ -257,8 +258,5 @@ public class LogDetail implements Serializable {
     public ResponseEntity<Object> createResponse(ErrorAttributeOptions options) {
         return ResponseEntity.status(status).body(createMapResponse(options));
     }
-
-
-
 
 }

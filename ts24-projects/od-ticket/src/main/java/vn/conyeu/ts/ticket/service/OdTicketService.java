@@ -1,20 +1,32 @@
 package vn.conyeu.ts.ticket.service;
 
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
+import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.odcore.service.OdBaseService;
 
-public class OdTicketService extends OdBaseService<OdTicketCore> {
-    public static final String SERVICE_NAME = "od.ticket";
-    public static final ClsApiConfig DEFAULT = new ClsApiConfig()
-                .setBaseUrl("https://web.ts24.com.vn/web").setLoginPath("/login")
-                .setApiTitle("Ticket Api").setApiCode(SERVICE_NAME);
+public class OdTicketService extends OdBaseService<OdTicketClient> {
+    public static final String SERVICE_NAME = determineServiceName(OdTicketService.class);
 
-    public OdTicketService(ClsApiConfig clsApiConfig) {
+
+    public static final ClsApiCfg DEFAULT_INFO = new ClsApiCfg()
+            .setApiTitle("Ticket Api").setApiCode(SERVICE_NAME)
+            .setBaseUrl("https://web.ts24.com.vn/web")
+            .setLoginPath("/login")
+            .setHeaders(ObjectMap.create())
+            .setQueries(ObjectMap.create());
+
+    public OdTicketService(ClsApiCfg clsApiConfig) {
         super(clsApiConfig);
     }
 
-    public String getUniqueId() {
+    @Override
+    public final String getUniqueId() {
         return SERVICE_NAME;
+    }
+
+    public ClsUser loginImpl() {
+        return user().login();
     }
 
     /**
@@ -80,6 +92,10 @@ public class OdTicketService extends OdBaseService<OdTicketCore> {
         return service(OdPriority.class, () -> new OdPriority(clsConfig));
     }
 
+    public OdProduct product() {
+        return service(OdProduct.class, () -> new OdProduct(clsConfig));
+    }
+
     /**
      * Returns {@link OdStage}
      */
@@ -90,7 +106,7 @@ public class OdTicketService extends OdBaseService<OdTicketCore> {
     /**
      * Returns {@link OdTicketSubType}
      */
-    public OdTicketSubType ticketSubType() {
+    public OdTicketSubType ticketSubjectType() {
         return service(OdTicketSubType.class, () -> new OdTicketSubType(clsConfig));
     }
 
@@ -112,8 +128,17 @@ public class OdTicketService extends OdBaseService<OdTicketCore> {
      * Returns {@link OdTicket}
      */
     public OdTicket ticket() {
-        return service(OdTicket.class, () -> new OdTicket(clsConfig, message(), follow()));
+        return service(OdTicket.class, () -> new OdTicket(clsConfig, message(), follow(), composeMsg()));
     }
+
+    /**
+     * Returns {@link OdMailComposeMsg}
+     */
+    public OdMailComposeMsg composeMsg() {
+        return service(OdMailComposeMsg.class, () -> new OdMailComposeMsg(clsConfig));
+    }
+
+
 
     /**
      * Returns {@link OdUser}

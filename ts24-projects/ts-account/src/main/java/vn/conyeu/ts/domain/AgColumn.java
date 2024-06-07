@@ -12,7 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ObjectMapToString;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 
 //@formatter:off
@@ -22,7 +22,7 @@ import vn.conyeu.commons.beans.ObjectMap;
 @JsonIgnoreProperties({"table"})
 @AttributeOverride(name = "id", column = @Column(name = "columnId"))
 //@formatter:on
-public class AgColumn extends LongId<AgColumn> {
+public class AgColumn extends LongUId<AgColumn> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tableId", nullable = false)
@@ -75,7 +75,7 @@ public class AgColumn extends LongId<AgColumn> {
     @JsonProperty("index")
     public Integer getPosition() {
         return position != null ? position
-                : id != null ? getId().intValue() : null;
+                : id != null ? this.getId().intValue() : null;
     }
 
     @JsonAnyGetter

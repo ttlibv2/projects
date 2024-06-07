@@ -1,11 +1,11 @@
 package vn.conyeu.ts.repository;
 
 import vn.conyeu.ts.domain.AgTable;
-import vn.conyeu.common.repository.LongIdRepo;
+import vn.conyeu.common.repository.LongUIdRepo;
 
 import java.util.Optional;
 
-public interface AgTableRepo extends LongIdRepo<AgTable> {
+public interface AgTableRepo extends LongUIdRepo<AgTable> {
 
     Optional<AgTable> findByCode(String agCode);
 }

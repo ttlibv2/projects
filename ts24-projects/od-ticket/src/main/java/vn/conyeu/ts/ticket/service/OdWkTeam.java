@@ -1,15 +1,15 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsWkTeam;
 
 import java.util.List;
 import java.util.function.Function;
 
-public class OdWkTeam extends OdTicketCore<ClsWkTeam> {
+public class OdWkTeam extends OdTicketClient<ClsWkTeam> {
 
-    public OdWkTeam(ClsApiConfig apiConfig) {
+    public OdWkTeam(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 

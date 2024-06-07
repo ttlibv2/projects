@@ -1,17 +1,17 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsTopic;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class OdTopic extends OdTicketCore<ClsTopic> {
+public class OdTopic extends OdTicketClient<ClsTopic> {
 
 
-    public OdTopic(ClsApiConfig apiConfig) {
+    public OdTopic(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 

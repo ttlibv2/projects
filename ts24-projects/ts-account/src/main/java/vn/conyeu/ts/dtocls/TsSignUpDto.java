@@ -37,7 +37,6 @@ public class TsSignUpDto implements Serializable {
         user.setRoomCode(roomCode);
         user.setTsEmail(email);
         user.setTsName(name);
-        user.setTsSecret(secret);
         user.setUserCode(userCode);
         return user;
     }

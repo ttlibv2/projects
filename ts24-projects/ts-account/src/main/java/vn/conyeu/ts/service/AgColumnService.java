@@ -3,12 +3,12 @@ package vn.conyeu.ts.service;
 import org.springframework.stereotype.Service;
 import vn.conyeu.ts.domain.AgColumn;
 import vn.conyeu.ts.repository.AgColumnRepo;
-import vn.conyeu.common.service.LongIdService;
+import vn.conyeu.common.service.LongUIdService;
 
 import java.util.List;
 
 @Service
-public class AgColumnService extends LongIdService<AgColumn, AgColumnRepo> {
+public class AgColumnService extends LongUIdService<AgColumn, AgColumnRepo> {
 
     public AgColumnService(AgColumnRepo domainRepo) {
         super(domainRepo);
@@ -19,7 +19,7 @@ public class AgColumnService extends LongIdService<AgColumn, AgColumnRepo> {
      * @param tableCode the code of table
      * */
     public List<AgColumn> findByTableCode(String tableCode) {
-        return entityRepo.findByTableCode(tableCode);
+        return repo().findByTableCode(tableCode);
     }
 
     /**
@@ -27,6 +27,6 @@ public class AgColumnService extends LongIdService<AgColumn, AgColumnRepo> {
      * @param tableId the id of table
      * */
     public List<AgColumn> findByTableId(Long tableId) {
-        return entityRepo.findByTableId(tableId);
+        return repo().findByTableId(tableId);
     }
 }

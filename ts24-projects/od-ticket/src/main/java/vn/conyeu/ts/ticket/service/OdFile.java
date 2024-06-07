@@ -11,7 +11,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFile;
 
 import java.io.InputStream;
@@ -20,9 +20,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 
-public class OdFile extends OdTicketCore<ClsFile> {
+public class OdFile extends OdTicketClient<ClsFile> {
 
-    public OdFile(ClsApiConfig apiConfig) {
+    public OdFile(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 
@@ -68,7 +68,7 @@ public class OdFile extends OdTicketCore<ClsFile> {
             }
 
         });
-        bodyBuilder.add("csrf_token", apiConfig.getCsrfToken());
+        bodyBuilder.add("csrf_token", cfg.getCsrfToken());
         bodyBuilder.add("is_pending", true);
         bodyBuilder.add("thread_id", thread_id);
         bodyBuilder.add("thread_model", thread_model);
@@ -76,7 +76,7 @@ public class OdFile extends OdTicketCore<ClsFile> {
         return applyDefaultBuilder().build().post()
                 .uri("/mail/attachment/upload")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .header(HttpHeaders.COOKIE, apiConfig.getCookieValue())
+                .header(HttpHeaders.COOKIE, cfg.getCookieValue())
                 .body(BodyInserters.fromMultipartData(bodyBuilder))
                 .retrieve().bodyToMono(ClsFile.class)
                 .blockOptional().orElseThrow();

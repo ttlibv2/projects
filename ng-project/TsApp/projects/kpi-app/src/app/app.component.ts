@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {PrimeNGConfig} from "primeng/api";
 import {TranslateService} from "@ngx-translate/core";
 

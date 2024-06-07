@@ -14,8 +14,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
+import vn.conyeu.identity.domain.AuthToken;
 import vn.conyeu.identity.dtocls.SignInDto;
+import vn.conyeu.identity.helper.IdentityHelper;
 import vn.conyeu.identity.service.JwtService;
 
 import java.io.IOException;
@@ -72,14 +75,9 @@ public class JwtUPAuthenticationFilter extends UsernamePasswordAuthenticationFil
     // The 'auth' passed to successfulAuthentication() is the current authenticated user.
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
-        JwtBuilder token = jwtService.generateToken( authResult.getName(), claims -> claims.add("authorities", authorities));
-
-        // Add token to header
-        String authHeader = jwtService.getConfig().getHeaderAuth();
-        String tokenType = jwtService.getConfig().getTokenType();
-        response.addHeader(authHeader, tokenType + " " + token.compact());
-
-
+        JwtBuilder jwtBuilder = jwtService.generateToken( authResult.getName(), claims -> claims.add("authorities", authorities));
+        AuthToken authToken = jwtService.buildToken(jwtBuilder);
+        IdentityHelper.sendResponse(200, response, authToken);
     }
 
     @Override

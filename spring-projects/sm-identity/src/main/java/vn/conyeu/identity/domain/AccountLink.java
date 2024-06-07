@@ -10,7 +10,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ObjectMapToString;
-import vn.conyeu.common.domain.LongIdDate;
+import vn.conyeu.common.domain.LongUIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
 
 //@formatter:off
@@ -20,7 +20,7 @@ import vn.conyeu.commons.beans.ObjectMap;
 @JsonIgnoreProperties({"account", "device"})
 @AttributeOverride(name = "id", column = @Column(name = "accountLink"))
 //@formatter:on
-public class AccountLink extends LongIdDate<AccountLink> {
+public class AccountLink extends LongUIdDate<AccountLink> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="accountId", nullable = false)

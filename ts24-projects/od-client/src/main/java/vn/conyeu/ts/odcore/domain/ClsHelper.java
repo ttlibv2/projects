@@ -157,7 +157,7 @@ public final class ClsHelper {
                         "<i class='ps'>P/s: Vào menu [Khác] -> [Mã kích hoạt].</i>");
     }
 
-    public static void updateConfig(ClsApiConfig userApi, ClsUser clsUser) {
+    public static void updateConfig(ClsApiCfg userApi, ClsUser clsUser) {
         userApi.setClsUser(clsUser);
         userApi.setCookieValue(clsUser.getCookie());
         userApi.setCsrfToken(clsUser.getCsrfToken());

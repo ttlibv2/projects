@@ -1,5 +1,6 @@
 package vn.conyeu.ts.ticket.domain;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import vn.conyeu.commons.beans.ObjectMap;
@@ -13,9 +14,15 @@ import java.util.Optional;
 @EqualsAndHashCode(callSuper = false)
 public  class ClsPartner extends ClsModel<ClsPartner> {
     Long id;
+
+    @NotBlank(message = "clsPartner.name.notEmpty")
     String name;
+
     String display_name;
+
+    @NotBlank(message = "clsPartner.email.notEmpty")
     String email;
+
     Boolean is_company = false;
     String phone;
     String mobile;

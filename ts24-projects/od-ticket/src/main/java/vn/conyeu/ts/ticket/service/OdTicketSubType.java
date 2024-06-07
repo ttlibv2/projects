@@ -1,17 +1,17 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
-import vn.conyeu.ts.ticket.domain.ClsHelpdeskSubType;
+import vn.conyeu.ts.ticket.domain.ClsSubjectType;
 
 import java.util.List;
 import java.util.function.Function;
 
 /** Ticket Subject Type */
-public class OdTicketSubType extends OdTicketCore<ClsHelpdeskSubType> {
+public class OdTicketSubType extends OdTicketClient<ClsSubjectType> {
 
-    public OdTicketSubType(ClsApiConfig apiConfig) {
+    public OdTicketSubType(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 
@@ -26,28 +26,28 @@ public class OdTicketSubType extends OdTicketCore<ClsHelpdeskSubType> {
 //    }
 
     @Override
-    protected Class<ClsHelpdeskSubType> getDomainCls() {
+    protected Class<ClsSubjectType> getDomainCls() {
         return null;
     }
 
     @Override
-    protected Function<ObjectMap, ClsHelpdeskSubType> mapToObject() {
+    protected Function<ObjectMap, ClsSubjectType> mapToObject() {
         return null;
     }
-    public List<ClsHelpdeskSubType> nameSearch() {
+    public List<ClsSubjectType> nameSearch() {
         return nameSearch("");
     }
 
-    public List<ClsHelpdeskSubType> find(ClsFilterOption filterOption) {
+    public List<ClsSubjectType> find(ClsFilterOption filterOption) {
         return searchRead(filterOption);
     }
 
-    public List<ClsHelpdeskSubType> find(ObjectMap searchObj) {
+    public List<ClsSubjectType> find(ObjectMap searchObj) {
         return searchRead(searchObj);
     }
 
 
-    public List<ClsHelpdeskSubType> getAll() {
+    public List<ClsSubjectType> getAll() {
         return nameSearch();
     }
 }

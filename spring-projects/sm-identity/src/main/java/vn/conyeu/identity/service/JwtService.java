@@ -6,10 +6,13 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.exception.BaseException;
+import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.identity.domain.AuthToken;
 import vn.conyeu.identity.helper.IdentityHelper;
 import vn.conyeu.identity.security.JwtConfig;
 
@@ -21,7 +24,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Service
+@Service @Slf4j
 public class JwtService {
     private final JwtConfig jwtConfig;
 
@@ -46,6 +49,12 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    public AuthToken buildToken(JwtBuilder build) {
+        return new AuthToken()
+                .setAccessToken(build.compact())
+                .setTokenType(getTokenType())
+                .setExpiresIn(jwtConfig.getExpiration());
+    }
 
     public JwtBuilder generateToken( UserDetails userDetails) {
         return generateToken( userDetails.getUsername(),

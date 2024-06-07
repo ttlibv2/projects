@@ -13,6 +13,11 @@ import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {IconFieldModule} from "primeng/iconfield";
 import {InputIconModule} from "primeng/inputicon";
 import {DividerModule} from "primeng/divider";
+import {EditorModule} from "primeng/editor";
+import {InputTextareaModule} from "primeng/inputtextarea";
+import {CalendarModule} from "primeng/calendar";
+import {TranslateModule} from "@ngx-translate/core";
+import {BlockUIModule} from "primeng/blockui";
 
 
 @NgModule({
@@ -31,7 +36,12 @@ import {DividerModule} from "primeng/divider";
     InputGroupAddonModule,
     IconFieldModule,
     InputIconModule,
-    DividerModule
+    DividerModule,
+    EditorModule,
+    InputTextareaModule,
+    CalendarModule,
+    TranslateModule,
+    BlockUIModule
   ]
 })
 export class SignupModule { }

@@ -1,6 +1,7 @@
 package vn.conyeu.ts.odcore.service;
 
 import org.springframework.web.util.UriBuilder;
+import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Lists;
@@ -8,10 +9,7 @@ import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.restclient.RestClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
-import vn.conyeu.ts.odcore.domain.ClsHelper;
-import vn.conyeu.ts.odcore.domain.ClsRequest;
-import vn.conyeu.ts.odcore.domain.ClsUserContext;
+import vn.conyeu.ts.odcore.domain.*;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -20,11 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class OdClient {
-    protected final ClsApiConfig apiConfig;
-    protected OdClient(ClsApiConfig apiConfig) {
-        this.apiConfig = apiConfig;
+    protected final ClsApiCfg cfg;
+    protected Supplier<ClsUser> tryLoginFnc;
+
+    protected OdClient(ClsApiCfg apiConfig) {
+        this.cfg = apiConfig;
     }
 
     /**
@@ -32,21 +33,20 @@ public abstract class OdClient {
      */
     public abstract String getModel();
 
-//    /**
-//     * Returns base path
-//     */
-//    public abstract String getBasePath();
-
-    /**
-     * Returns the api code def
-     */
-    public abstract String getApiCode();
-
     /**
      * Create RestClient ClientBuilder
      */
     protected ClientBuilder clientBuilder() {
         return RestClient.builder().baseUrl(getApiUrl());
+    }
+
+    /**
+     * Set the tryLoginFnc
+     *
+     * @param tryLoginFnc the value
+     */
+    public void setTryLoginFnc(Supplier<ClsUser> tryLoginFnc) {
+        this.tryLoginFnc = tryLoginFnc;
     }
 
     /**
@@ -78,8 +78,6 @@ public abstract class OdClient {
         return datasetUri("/call_kw/" + getModel() + "/" + method);
     }
 
-
-
     /**
      * Returns list field of model
      *
@@ -93,8 +91,8 @@ public abstract class OdClient {
     }
 
     protected ClsUserContext createUserContext() {
-        Long userId = apiConfig.getUserId();
-        ClsUserContext ctx = apiConfig.getUserContext();
+        Long userId = cfg.getUserId();
+        ClsUserContext ctx = cfg.getUserContext();
         return ClsUserContext.fix(userId, ctx);
     }
 
@@ -102,17 +100,15 @@ public abstract class OdClient {
      * Returns the api url
      */
     protected final String getApiUrl() {
-        return apiConfig.getBaseUrl();
+        return cfg.getBaseUrl();
     }
-
-
 
     protected ClientBuilder applyDefaultBuilder() {
         ClientBuilder clientBuilder = clientBuilder();
-        clientBuilder.defaultQueries(apiConfig.getQueries());
-        clientBuilder.defaultHeaders(apiConfig.getHeaders());
-        clientBuilder.defaultCookie(apiConfig.getCookieValue());
-        clientBuilder.defaultCsrfToken(apiConfig.getCsrfToken());
+        clientBuilder.defaultQueries(cfg.getQueries());
+        clientBuilder.defaultHeaders(cfg.getHeaders());
+        clientBuilder.defaultHeader("cookie", cfg.getCookieValue());
+        clientBuilder.defaultCsrfToken(cfg.getCsrfToken());
         return clientBuilder;
     }
 
@@ -125,18 +121,6 @@ public abstract class OdClient {
     public final ObjectMap sendPost(Object body, URI uri) {
         return sendBody(body, spec -> spec.uri(uri));
     }
-
-    /**
-     * Execute send data with POST
-     *
-     * @param body the data body
-     * @param uri  the URI for the request using a URI template and URI variables
-     * @deprecated
-     */
-    public final ObjectMap sendPost(String uri, Object body) {
-        return sendBody(body, spec -> spec.uri(uri));
-    }
-
 
     /**
      * Execute send data with POST
@@ -182,6 +166,10 @@ public abstract class OdClient {
     }
 
     protected ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer) {
+        return sendBody(body, consumer, 0);
+    }
+
+    private ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer, int count) {
         Asserts.notNull(consumer, "Consumer<RequestBodyUriSpec>");
 
         ClientBuilder clientBuilder = applyDefaultBuilder();
@@ -195,23 +183,23 @@ public abstract class OdClient {
                 //.doOnSuccess(res -> checkResponse(uri, body, res))
                 .blockOptional().orElseThrow();
 
-        return checkResponse(body, response);
+        try {
+            return checkResponse(body, response);
+        }//
+        catch (BaseException exp) {
+            if(exp.getObject().getCode().equals("SessionExpired") && cfg.isAutoLogin() && tryLoginFnc != null && count == 0) {
+                tryLoginFnc.get();
+                return sendBody(body, consumer, 1);
+            }
+            else throw exp;
+        }
 
     }
 
     protected ObjectMap checkResponse(Object requestBody, ObjectMap responseData) {
-       // try{
-            ClsHelper.checkResponse(responseData);
-            return responseData;
-       // }
-       // catch (BaseException exp) {
-       //     String code = exp.getObject().getCode();
-       //     if("SessionExpired".equals(code)) {
-       //        ClsUser clsUser = baseService.tryLoginUser();
-       //        if(clsUser != null)return sendPost(uri, requestBody);
-       //     }
-      //      throw exp;
-      //  }
+        ClsHelper.checkResponse(responseData);
+        return responseData;
     }
+
 
 }

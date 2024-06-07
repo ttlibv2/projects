@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ListStringToString;
-import vn.conyeu.common.domain.LongId;
+import vn.conyeu.common.domain.LongUId;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "softwareId"))
 //@formatter:on
-public class Software extends LongId<Software> {
+public class Software extends LongUId<Software> {
 
     @Column(length = 50, nullable = false)
     private String code;

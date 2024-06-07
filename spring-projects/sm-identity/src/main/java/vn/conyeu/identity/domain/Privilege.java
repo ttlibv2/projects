@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.domain.LongId;
-import vn.conyeu.common.domain.StringId;
+import vn.conyeu.common.domain.LongUId;
 
 //@formatter:off
 @Entity @Table
@@ -18,7 +17,7 @@ import vn.conyeu.common.domain.StringId;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "privilegeId"))
 //@formatter:on
-public class Privilege extends LongId<Privilege> {
+public class Privilege extends LongUId<Privilege> {
 
     @Column(length = 50, nullable = false)
     private String code;

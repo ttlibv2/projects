@@ -6,6 +6,7 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.odcore.domain.ClsHelper;
 import vn.conyeu.ts.odcore.domain.ClsModel;
+import vn.conyeu.ts.odcore.helper.OdHelper;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -120,7 +121,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
     private ClsCategorySub categorySub;
     private ClsHelpdeskTeam helpdeskTeam;
     private ClsTeamHead clsTeamHead;
-    private ClsHelpdeskSubType subjectType;
+    private ClsSubjectType subjectType;
     private ClsTicketType ticketType;
     private ClsPartner partner;
 
@@ -156,7 +157,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
 
     public ClsTicket subject_id(Object subject_id) {
         this.subject_id = subject_id;
-        this.subjectType = ClsHelpdeskSubType.from(subject_id);
+        this.subjectType = ClsSubjectType.from(subject_id);
         return this;
     }
 
@@ -179,7 +180,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
         clsTicket.stage = ClsStage.from(clsTicket.stage_id);
         clsTicket.category = ClsCategory.from(clsTicket.category_id);
         clsTicket.categorySub = ClsCategorySub.from(clsTicket.sub_category_id);
-        clsTicket.subjectType = ClsHelpdeskSubType.from(clsTicket.subject_id);
+        clsTicket.subjectType = ClsSubjectType.from(clsTicket.subject_id);
         clsTicket.ticketType = ClsTicketType.from(clsTicket.ticket_type);
         clsTicket.partner = ClsPartner.from(clsTicket.partner_id);
 
@@ -210,7 +211,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
 //        ClsUser clsUser = ticket.getOdAssign();
 //        if(clsUser != null) cls.setUser_id(clsUser.getId());
 //
-//        ClsHelpdeskSubType subType = ticket.getOdSubjectType();
+//        ClsSubjectType subType = ticket.getOdSubjectType();
 //        if(subType != null) cls.setSubject_id(subType.getId());
 //
 //        ClsCategory clsCategory = ticket.getOdCategory();
@@ -313,7 +314,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
     }
 
     @JsonIgnore
-    public Integer getStageId() {
+    public Long getStageId() {
         return getObjectID(stage_id);
     }
 
@@ -803,8 +804,8 @@ public class ClsTicket extends ClsModel<ClsTicket> {
     /**
      * Returns the close_date
      */
-    public Object getClose_date() {
-        return close_date;
+    public LocalDateTime getClose_date() {
+        return OdHelper.toDateTime(close_date);
     }
 
     /**
@@ -812,6 +813,13 @@ public class ClsTicket extends ClsModel<ClsTicket> {
      */
     public Object getClose_by() {
         return close_by;
+    }
+
+    /**
+     * Returns the close_by
+     */
+    public Long getClose_byId() {
+        return getObjectID(close_by);
     }
 
     /**
@@ -824,8 +832,8 @@ public class ClsTicket extends ClsModel<ClsTicket> {
     /**
      * Returns the cancel_date
      */
-    public Object getCancel_date() {
-        return cancel_date;
+    public LocalDateTime getCancel_date() {
+        return OdHelper.toDateTime(cancel_date);
     }
 
     /**
@@ -838,8 +846,8 @@ public class ClsTicket extends ClsModel<ClsTicket> {
     /**
      * Returns the cancel_reason
      */
-    public Object getCancel_reason() {
-        return cancel_reason;
+    public String getCancel_reason() {
+        return OdHelper.toString(cancel_reason);
     }
 
     /**
@@ -922,7 +930,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
     /**
      * Returns the subjectType
      */
-    public ClsHelpdeskSubType getSubjectType() {
+    public ClsSubjectType getSubjectType() {
         return subjectType;
     }
 
@@ -1805,7 +1813,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
      *
      * @param subjectType the value
      */
-    public ClsTicket setSubjectType(ClsHelpdeskSubType subjectType) {
+    public ClsTicket setSubjectType(ClsSubjectType subjectType) {
         this.subjectType = subjectType;
         return this;
     }

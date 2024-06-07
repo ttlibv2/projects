@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serializable, R extends DomainRepo<S, Id>> {
-    protected final R entityRepo;
+    private final R entityRepo;
 
     public DomainService(R domainRepo) {
         this.entityRepo = domainRepo;
@@ -27,6 +27,10 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
     public BaseException noId(Id id) {
         return new NotFound().code("noId").arguments("id", id)
                 .message("Không tồn tại dữ liệu %s", id);
+    }
+
+    protected final R repo() {
+        return entityRepo;
     }
 
     /**
@@ -204,7 +208,7 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
      */
     @Transactional
     public S createNew(S entity) {
-        return entityRepo.save(entity);
+        return save(entity);
     }
 
     /**
@@ -237,11 +241,16 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
     }
 
     @Transactional
+    public S save(S entity) {
+        return entityRepo.save(entity);
+    }
+
+    @Transactional
     public Optional<S> update(Id entityId, ObjectMap overrides) {
         Optional<S> optional = findById(entityId);
         return optional.map(s -> {
             s.fromMap(overrides);
-            return saveAndFlush(s);
+            return save(s);
         });
     }
 
@@ -251,7 +260,7 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
         if(optional.isEmpty()) return Optional.empty();
         else {
             optional.get().fromEntity(overrides);
-            S newUp = createNew(optional.get());
+            S newUp = save(optional.get());
             return Optional.of(newUp);
         }
     }

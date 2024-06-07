@@ -2,7 +2,7 @@ package vn.conyeu.ts.ticket.service;
 
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiConfig;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsMailTemplate;
 import vn.conyeu.ts.ticket.domain.ClsNameSearchOption;
@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class OdMailTemplate extends OdTicketCore<ClsMailTemplate> {
+public class OdMailTemplate extends OdTicketClient<ClsMailTemplate> {
 
-    public OdMailTemplate(ClsApiConfig apiConfig) {
+    public OdMailTemplate(ClsApiCfg apiConfig) {
         super(apiConfig);
     }
 

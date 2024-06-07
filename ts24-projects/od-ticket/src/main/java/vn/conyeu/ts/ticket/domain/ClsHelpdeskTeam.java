@@ -37,7 +37,7 @@ public class ClsHelpdeskTeam extends ClsModel<ClsHelpdeskTeam> {
         else return from(objectToMap(team_id));
     }
 
-    public Integer getTeamHeadId() {
+    public Long getTeamHeadId() {
         return getObjectID(team_head);
     }
 

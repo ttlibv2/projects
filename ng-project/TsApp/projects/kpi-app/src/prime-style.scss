@@ -1,3 +1,12 @@
+.p-calendar,
+.p-iconfield{
+  display: flex;
+}
+
+.p-icon-field {
+  display: flex;
+}
+
 .p-inputgroup {
 
   //input:first-child {
@@ -21,14 +30,11 @@
 
   }
 
-
-}
-
-.formgrid {
-
-  .p-inputtext {
-    width: 100%;
+  .p-autocomplete-input:first-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
+
 
 }
 
@@ -74,8 +80,8 @@ form {
       &.p-inputtext,
       .p-multiselect-label,
       .p-dropdown-label {
-        padding-top: 0.2rem;
-        padding-bottom: 0.2rem;
+        //padding-top: 0.2rem;
+        //padding-bottom: 0.2rem;
       }
     }
 
