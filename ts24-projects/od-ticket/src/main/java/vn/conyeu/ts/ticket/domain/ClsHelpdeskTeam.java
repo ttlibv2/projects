@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsModel;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,10 +20,18 @@ public class ClsHelpdeskTeam extends ClsModel<ClsHelpdeskTeam> {
     String email_sender;
     String team_email;
     Object team_head; // object[] | ObjectMap
-    Integer[] team_members;
+    Long[] team_members;
 
     Object[] sh_resource_calendar_id;
     Integer sla_count;
+
+    /**
+     * Returns the team_members
+     */
+    @JsonIgnore
+    public List<Long> getListTeam_members() {
+        return team_members == null ? null : List.of(team_members);
+    }
 
     //ClsTeamHead team_head_obj;
 

@@ -1,20 +1,22 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {MenuItem, MenuItemCommandEvent} from "primeng/api";
-import {TemplateMap, Ticket} from "../../models/ticket";
-import {CheckboxChangeEvent} from "primeng/checkbox";
-import {DialogService} from "primeng/dynamicdialog";
-import {TemplateFormComponent} from "../template-form/template-form.component";
-import {TicketOption} from "../../models/ticket-option";
-import {FindPartnerComponent} from "../find-partner/find-partner.component";
-import {CatalogService} from "../../services/catalog.service";
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { MenuItem, MenuItemCommandEvent } from "primeng/api";
+import { TemplateMap, Ticket } from "../../models/ticket";
+import { CheckboxChangeEvent } from "primeng/checkbox";
+import { DialogService } from "primeng/dynamicdialog";
+import { TemplateFormComponent } from "../template-form/template-form.component";
+import { TicketOption } from "../../models/ticket-option";
+import { FindPartnerComponent } from "../find-partner/find-partner.component";
+import { CatalogService } from "../../services/catalog.service";
 
 import { Catalog } from '../../models/catalog';
 import { ToastService } from '../../services/toast.service';
 import { Objects } from '../../utils/objects';
 import { Software } from '../../models/software';
+import { ClsTeam } from '../../models/od-cls';
+import { ConfigService } from '../../services/config.service';
 
-const {notNull} = Objects;
+const { notNull } = Objects;
 
 @Component({
   selector: 'ts-ticket-form',
@@ -22,7 +24,9 @@ const {notNull} = Objects;
   styleUrl: './ticket-form.component.scss',
   encapsulation: ViewEncapsulation.None
 })
-export class TicketFormComponent implements OnInit{
+export class TicketFormComponent implements OnInit {
+
+
 
   ticketForm: FormGroup;
   ticket: Ticket = new Ticket();
@@ -33,15 +37,16 @@ export class TicketFormComponent implements OnInit{
   lsSoftName: string[] = [];
 
   toolActions: MenuItem[] = [
-    {label: 'Lấy mã kích hoạt', icon: 'pi pi-key', command: event => this.onLoadLicense(event) },
-    {label: 'Tải danh mục', icon: 'pi pi-home', command: event => this.onLoadCatalogs() },
-    {label: 'Tạo mẫu ticket', icon: 'pi pi-home',  command: event => this.onCreateTemplate(event) }
+    { label: 'Lấy mã kích hoạt', icon: 'pi pi-key', command: event => this.onLoadLicense(event) },
+    { label: 'Tải danh mục', icon: 'pi pi-home', command: event => this.onLoadCatalogs() },
+    { label: 'Tạo mẫu ticket', icon: 'pi pi-home', command: event => this.onCreateTemplate(event) }
   ];
 
   constructor(private fb: FormBuilder,
     private toast: ToastService,
-              private catalogSrv: CatalogService,
-              private dialogService: DialogService) {
+    private config: ConfigService,
+    private catalogSrv: CatalogService,
+    private dialogService: DialogService) {
   }
 
   ngOnInit() {
@@ -117,7 +122,7 @@ export class TicketFormComponent implements OnInit{
 
   onLoadCatalogs() {
     this.asyncLoadCate = true;
-    this.toast.loading({summary: 'Đang lấy danh mục. Vui lòng chờ'});
+    this.toast.loading({ summary: 'Đang lấy danh mục. Vui lòng chờ' });
 
     this.catalogSrv.getAll().subscribe({
       error: err => {
@@ -125,11 +130,11 @@ export class TicketFormComponent implements OnInit{
         this.toast.clearAll();
       },
       next: res => {
-        this.catalog = res; 
+        this.catalog = res;
         this.toast.clearAll();
         console.log(res);
       },
-      
+
     });
 
   }
@@ -137,12 +142,12 @@ export class TicketFormComponent implements OnInit{
   onCreateTemplate(event: MenuItemCommandEvent) {
     const ref = this.dialogService.open(TemplateFormComponent, {
       header: 'Tạo mẫu',
-      data: {ticket: this.ticket}
+      data: { ticket: this.ticket }
     });
 
     ref.onClose.subscribe({
       next: value => {
-        if(value != undefined) {
+        if (value != undefined) {
           this.templates.save(value.data);
         }
       }
@@ -168,7 +173,7 @@ export class TicketFormComponent implements OnInit{
   }
 
   changeSelectedItem(field: string, data: any) {
-    if('#software' === field ){
+    if ('#software' === field) {
       const item: Software = data;
       this.lsSoftName = notNull(data) ? item.soft_names : [];
       this.pathValue('soft_name', this.lsSoftName[0]);
@@ -177,7 +182,21 @@ export class TicketFormComponent implements OnInit{
     else throw new Error('Method not implemented.');
   }
 
+  onDropdownSearch(field: string, data: any) {
+    this.catalogSrv.searchAssign(data);
+  }
+
+  onDropdownChange(field: string, data: any) {
+    if ('#clsHelpdeskTeam' === field) {
+      const item: ClsTeam = data;
+      this.catalog.ls_assign = item.lsMember;
+      this.pathValue('od_assign', item.lsMember[0]);
+    }
+
+    else throw new Error('Method not implemented.');
+  }
+
   private pathValue(path: string, value: any) {
-    this.ticketForm.get(path).patchValue(value);
+    this.ticketForm.patchValue({ [path]: value });
   }
 }

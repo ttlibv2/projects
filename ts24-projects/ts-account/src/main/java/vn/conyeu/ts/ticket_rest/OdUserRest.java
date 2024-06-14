@@ -44,7 +44,7 @@ public class OdUserRest extends OdBaseRest {
     @GetMapping(value = "search", params = "ids")
     public List<ClsUser> findByUserIds(@RequestParam String ids) {
         if(ids == null) return new LinkedList<>();
-        List<Integer> list = Stream.of(ids.split(",")).map(Integer::parseInt).toList();
+        List<Long> list = Stream.of(ids.split(",")).map(Long::parseLong).toList();
         return service().user().search(list);
     }
 

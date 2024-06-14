@@ -5,6 +5,13 @@ export abstract class ClsModel extends BaseModel {
   name?: string;
   display_name?: string;
   model_id?: number;
+  id?: number;
+
+  override update(object: JsonObject, include404?: boolean): this {
+    super.update(object, include404);
+    this.model_id = object['id'];
+    return this;
+  }
 }
 
 export class ClsAssign  extends ClsModel {
@@ -65,8 +72,21 @@ export class ClsTag  extends ClsModel {
 }
 
 export class ClsTeam  extends ClsModel {
+  lsMember: ClsAssign[];
+
   static from(json: JsonObject):  ClsTeam{
     return BaseModel.fromJson(ClsTeam, json);
+  }
+
+  override update(object: JsonObject, include404?: boolean): this {
+    super.update(object, include404);
+   
+    if('ls_team_member' in object) {
+      const ls: any[] = object['ls_team_member'];
+      this.lsMember = ls.flatMap(i => ClsAssign.from(i));
+    }
+
+    return this;
   }
 }
 

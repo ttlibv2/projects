@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.dtocls.TsVar;
+import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.*;
@@ -12,6 +13,7 @@ import vn.conyeu.ts.ticket.service.OdTicketService;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -29,58 +31,80 @@ public class OdCatalogRest extends OdBaseRest {
         final OdTicketService service = service();
         final boolean isAll = include.equalsIgnoreCase("all");
         final List<String> segments = List.of(include.split(","));
+
         final ObjectMap map = new ObjectMap();
 
-        if(isAll || segments.contains("ls_ticket_type")) {
+        List<ClsHelpdeskTeam> helpdeskTeams = null;
+
+        if (isAll || segments.contains("ls_ticket_type")) {
             map.set("ls_ticket_type", getAllTicketType());
         }
 
-        if(isAll || segments.contains("ls_helpdesk_team")) {
-            map.set("ls_helpdesk_team", getAllHelpdeskTeam());
+        if (isAll || segments.contains("ls_helpdesk_team")) {
+            helpdeskTeams = getAllHelpdeskTeam();
+            map.set("ls_helpdesk_team", helpdeskTeams);
         }
 
         List<ClsCategory> categories = null;
-        if(isAll || segments.contains("ls_category")) {
-            categories =  getAllCate();
+        if (isAll || segments.contains("ls_category")) {
+            categories = getAllCate();
             map.set("ls_category", categories);
         }
 
 
-        if(isAll || segments.contains("ls_category_sub")) {
+        if (isAll || segments.contains("ls_category_sub")) {
             List<ClsCategorySub> subList = categories == null ? getAllCateSub()
                     : categories.stream().map(cate -> service.categorySub().search(cate.getName()))
                     .flatMap(Collection::stream).toList();
 
-            map.set("ls_category_sub",subList);
+            map.set("ls_category_sub", subList);
         }
 
-        if(isAll || segments.contains("ls_ticket_tag")) {
+        if (isAll || segments.contains("ls_ticket_tag")) {
             map.set("ls_ticket_tag", getAllTicketTags());
         }
 
-        if(isAll || segments.contains("ls_priority")) {
+        if (isAll || segments.contains("ls_priority")) {
             map.set("ls_priority", getAllTicketPriority());
         }
 
-        if(isAll || segments.contains("ls_product")) {
+        if (isAll || segments.contains("ls_product")) {
             map.set("ls_product", getAllProduct(10));
         }
 
-        if(isAll || segments.contains("ls_subject_type")) {
+        if (isAll || segments.contains("ls_subject_type")) {
             map.set("ls_subject_type", getSubjecType());
         }
 
-        if(isAll || segments.contains("ls_stage")) {
+        if (isAll || segments.contains("ls_stage")) {
             map.set("ls_stage", getAllStage());
         }
 
-        if(isAll || segments.contains("ls_repiled_status")) {
+        if (isAll || segments.contains("ls_repiled_status")) {
             map.set("ls_repiled_status", getRepiledStatus());
         }
 
-        if(isAll || segments.contains("ls_topic")) {
-           // map.set("ls_topic", getAllTopic());
+        if (isAll || segments.contains("ls_topic")) {
+            // map.set("ls_topic", getAllTopic());
         }
+
+//        if(isAll || segments.contains("ls_assign")) {
+//           if(helpdeskTeams != null) {
+//               for(ClsHelpdeskTeam helpdeskTeam:helpdeskTeams) {
+//                   List<Long> members = helpdeskTeam.getListTeam_members();
+//                   helpdeskTeam.set("ls_team_member", searchUsersByIds(members));
+//               }
+//           }
+//        }
+
+        //
+        ClsUser cls = service.getConfig().getClsUser();
+        map.set(service.getUniqueId()+".user_api", new ClsUser().setId(cls.getId())
+                .setUser_name(cls.getUser_name())
+                .setDisplay_name(cls.getDisplay_name())
+                .setEmail(cls.getEmail())
+        );
+
 
         return map;
     }
@@ -148,12 +172,37 @@ public class OdCatalogRest extends OdBaseRest {
     public List<ClsHelpdeskTeam> getAllHelpdeskTeam() {
         ClsFilterOption filterOption = new ClsFilterOption();
         filterOption.NotLike("team_email", "CEO@ts24.com.vn");
-        return service().team().find(filterOption);
+        OdTicketService service = service();
+        List<ClsHelpdeskTeam> helpdeskTeams = service.team().find(filterOption);
+
+        Long odUserId = service.getConfig().getClsUser().getId();
+
+        for (ClsHelpdeskTeam helpdeskTeam : helpdeskTeams) {
+            List<Long> members = helpdeskTeam.getListTeam_members();
+            List<ClsUser> clsUsers = searchUsersByIds(service, members);
+
+            int index = IntStream.range(0, clsUsers.size())
+                    .filter(i -> clsUsers.get(i).getId().equals(odUserId))
+                    .findFirst().orElse(-1);
+
+            if(index != -1) {
+                ClsUser clsUser = clsUsers.remove(index);
+                clsUsers.add(0, clsUser);
+            }
+
+            helpdeskTeam.set("ls_team_member", clsUsers);
+        }
+        return helpdeskTeams;
     }
 
     @GetMapping("get-product")
     public List<ClsProduct> getAllProduct(@RequestParam Integer size) {
         return service().product().getAll(size);
+    }
+
+    // @GetMapping("get-user-by-ids")
+    private List<ClsUser> searchUsersByIds(OdTicketService service, List<Long> userIds) {
+        return service.user().search(userIds);
     }
 
 }

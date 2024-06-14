@@ -63,7 +63,7 @@ public class OdUser extends OdTicketClient<ClsUser> implements IOdUserLogin {
      * Find user by id
      * @param listUserId the id of user
      * */
-    public List<ClsUser> search(List<Integer> listUserId) {
+    public List<ClsUser> search(List<Long> listUserId) {
         Object[] args = new Object[] {"id", "in", listUserId};
         return nameSearch(ClsNameSearchOption.withArgs(args));
     }

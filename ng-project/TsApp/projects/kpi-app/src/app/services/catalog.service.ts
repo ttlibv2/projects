@@ -4,6 +4,7 @@ import { Observable, forkJoin, of, switchMap, tap } from "rxjs";
 import { Catalog } from "../models/catalog";
 import { DbTable, LocalDbService } from "./local-db.service";
 import { JsonObject } from '../models/common';
+import { ClsAssign } from '../models/od-cls';
 
 
 export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable<any, any> } = {
@@ -29,7 +30,7 @@ export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable<any, 
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService extends ClientService {
-
+ 
   read_db(lsName: string = 'all'): Observable<Catalog> {
     const allKey = lsName === 'all' ? Object.keys(CATALOG_MAP) : lsName.split(',');
     const fncs = allKey.map(name => [name, CATALOG_MAP[name](this.db).getAll()]);
@@ -67,5 +68,12 @@ export class CatalogService extends ClientService {
   saveCatalogToDb(data: Catalog): void {
     
   }
+
+  searchAssign(keyword: string): Observable<ClsAssign> {
+    const url = '/od-api/user/search';
+    return this.get(url, {keyword})
+      .pipe(switchMap((res:any[]) => res.map(i => ClsAssign.from(i))));
+  }
+
 
 }

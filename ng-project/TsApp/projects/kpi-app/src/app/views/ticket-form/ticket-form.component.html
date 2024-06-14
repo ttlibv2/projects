@@ -8,7 +8,7 @@
             <div class="p-fluid col-12 lg:col-12">
               <label for="chanels">Kênh - Tình trạng <span class="p-text-danger">(*)</span></label>
               <p-multiSelect id="chanels" class="required" [filter]="false" optionLabel="value" [showClear]="true"
-               [showToggleAll]="false" [showHeader]="false" [filter]="true"
+                [showToggleAll]="false" [showHeader]="false" [filter]="true"
                 [options]="catalog.ls_chanel"></p-multiSelect>
             </div>
           </div>
@@ -16,7 +16,7 @@
             <div class="p-fluid col-6 lg:col-6">
               <label for="software">Nhóm Phần mềm <span class="p-text-danger">(*)</span></label>
               <p-dropdown id="software" class="required" [options]="catalog.ls_software" [showClear]="true"
-                optionLabel="value" (onChange)="changeSelectedItem('#software', $event.value)" ></p-dropdown>
+                optionLabel="value" (onChange)="changeSelectedItem('#software', $event.value)"></p-dropdown>
             </div>
             <div class="p-fluid col-6 lg:col-6">
               <label for="group-help">Nhóm hỗ trợ <span class="p-text-danger">(*)</span></label>
@@ -28,11 +28,14 @@
             <div class="grid">
               <div class="p-fluid col-3 lg:col-6 xl:col-3">
                 <label for="od_team">Support Team <span class="p-text-danger">(*)</span></label>
-                <p-dropdown id="od_team" [options]="catalog.ls_helpdesk_team" optionLabel="display_name"></p-dropdown>
+                <p-dropdown id="od_team" [options]="catalog.ls_helpdesk_team" optionLabel="display_name"
+                  (onChange)="onDropdownChange('#clsHelpdeskTeam', $event.value)"></p-dropdown>
               </div>
               <div class="p-fluid col-3 lg:col-6 xl:col-3">
                 <label for="od_assign">Phân công cho <span class="p-text-danger">(*)</span></label>
-                <p-dropdown id="od_assign" [options]="catalog.ls_assign" optionLabel="display_name"></p-dropdown>
+                <p-dropdown id="od_assign" formControlName="od_assign" [options]="catalog.ls_assign"
+                  optionLabel="display_name" [filter]="true"
+                  (onFilter)="onDropdownSearch('#clsAssign', $event.filter)"></p-dropdown>
               </div>
               <div class="p-fluid col-6">
                 <label for="od_subtype">Ticket Subject Type <span class="p-text-danger">(*)</span></label>
@@ -130,20 +133,20 @@
                   <p-checkbox class="ml-1" [binary]="true"></p-checkbox>
                 </div>
 
-                <p-dropdown id="question" [options]="catalog.ls_question" optionLabel="title" #refQues 
-                  [filter]="true" [showClear]="true"></p-dropdown>
+                <p-dropdown id="question" [options]="catalog.ls_question" optionLabel="title" #refQues [filter]="true"
+                  [showClear]="true"></p-dropdown>
               </div>
             </div>
             <div class="grid" *ngIf="isViewAll">
               <div class="p-fluid col-6">
                 <label for="support_help">Hình thức hỗ trợ <span class="p-text-danger">(*)</span></label>
-                <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value"
-                  [filter]="false" [showClear]="true"></p-dropdown>
+                <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false"
+                  [showClear]="true"></p-dropdown>
               </div>
               <div class="p-fluid col-6">
                 <label for="soft_names">Tên phần mềm <span class="p-text-danger">(*)</span></label>
-                <p-dropdown id="soft_names" [options]="lsSoftName"
-                  [filter]="false" [showClear]="true" formControlName="soft_name"></p-dropdown>
+                <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" [showClear]="true"
+                  formControlName="soft_name"></p-dropdown>
               </div>
             </div>
           </p-fieldset>
