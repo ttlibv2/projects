@@ -1,25 +1,22 @@
-import {IStorage, JsonObject} from "./common";
+import { JsonObject} from "./common";
 import {Objects} from "../utils/objects";
+import { Type } from "@angular/core";
 
 export abstract class BaseModel {
   [field: string]: any;
 
-  update(object: JsonObject): this {
+
+  update(object: JsonObject, include404: boolean = true): this {
     if(Objects.notEmpty(object)) {
-      Object.assign(this, object);
+      Objects.assign(this, object);
     }
+
     return this;
   }
 
-  saveTo(storage: IStorage) {
-    storage.set_model(this);
+  protected static fromJson<E extends BaseModel>(modelType: Type<E>, data: E | JsonObject): E {
+    return data instanceof modelType ? data : new modelType().update(data);
+
   }
-
-  toString(): string {
-    return JSON.stringify(this);
-  }
-
-
-
 
 }

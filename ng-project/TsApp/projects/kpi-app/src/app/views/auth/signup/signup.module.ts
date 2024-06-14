@@ -18,6 +18,8 @@ import {InputTextareaModule} from "primeng/inputtextarea";
 import {CalendarModule} from "primeng/calendar";
 import {TranslateModule} from "@ngx-translate/core";
 import {BlockUIModule} from "primeng/blockui";
+import {PasswordModule} from "primeng/password";
+import {DropdownModule} from "primeng/dropdown";
 
 
 @NgModule({
@@ -41,7 +43,9 @@ import {BlockUIModule} from "primeng/blockui";
     InputTextareaModule,
     CalendarModule,
     TranslateModule,
-    BlockUIModule
+    BlockUIModule,
+    PasswordModule,
+    DropdownModule
   ]
 })
 export class SignupModule { }

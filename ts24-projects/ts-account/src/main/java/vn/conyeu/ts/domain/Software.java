@@ -1,5 +1,6 @@
 package vn.conyeu.ts.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Software extends LongUId<Software> {
 
     @Convert(converter = ListStringToString.class)
     @Column(length = 500, nullable = false)
+    @JsonProperty("soft_names")
     private List<String> softNames;
 
 }

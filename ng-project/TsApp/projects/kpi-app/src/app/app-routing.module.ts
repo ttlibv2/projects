@@ -65,7 +65,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    pathMatch: 'full', redirectTo: '/user-info'
+    pathMatch: 'full', redirectTo: '/ticket-form'
   },
 ];
 

@@ -1,7 +1,7 @@
 <div class="template-form">
     <form [formGroup]="form" (ngSubmit)="onSave()">
       <div class="grid">
-        <div class="g-field col-12">
+        <div class="g-field col-12 p-fluid">
           <label for="template_code">{{'templates' | translate}}</label>
           <p-dropdown id="template_code" formControlName="code"></p-dropdown>
         </div>

@@ -20,19 +20,14 @@ public class OdTicketSubType extends OdTicketClient<ClsSubjectType> {
         return "helpdesk.sub.type";
     }
 
-//    @Override
-//    public String getBasePath() {
-//        return "call_kw/"+getModel();
-//    }
-
     @Override
     protected Class<ClsSubjectType> getDomainCls() {
-        return null;
+        return ClsSubjectType.class;
     }
 
     @Override
     protected Function<ObjectMap, ClsSubjectType> mapToObject() {
-        return null;
+        return ClsSubjectType::from;
     }
     public List<ClsSubjectType> nameSearch() {
         return nameSearch("");

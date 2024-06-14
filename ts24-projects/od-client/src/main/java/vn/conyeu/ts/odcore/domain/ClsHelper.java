@@ -26,7 +26,7 @@ public final class ClsHelper {
     public static ObjectMap loadJson() {
         if(tsconfig == null) {
             try {
-                File file = ResourceUtils.getFile("classpath:config/tsconfig.json");
+                File file = ResourceUtils.getFile("classpath:tsconfig.json");
                 tsconfig = MapperHelper.readValue(file, new TypeReference<>() {});
             }
             //
@@ -114,7 +114,7 @@ public final class ClsHelper {
 
     public static void checkResponse(Object response) {
         ObjectMap detail = ObjectMap.create().set("client_response", response);
-        BaseException exp = BaseException.e500("client_error").arguments("detail", detail);
+        BaseException exp = BaseException.e500("client_error").arguments("od_error", detail);
 
         if (response instanceof String html) {
 

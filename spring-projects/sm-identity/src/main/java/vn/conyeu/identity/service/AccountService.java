@@ -16,12 +16,6 @@ public class AccountService extends LongUIdService<Account, AccountRepo> {
         super(accountRepo);
     }
 
-    public Account createUser(Account info, PasswordEncoder encoder) {
-        String pwdEncode = encoder.encode(info.getPassword());
-        info.setPassword(pwdEncode);
-        return createNew(info);
-    }
-
     @CacheEvict("principal")
     public void changePass(Long accountId, String newPassword) {
         repo().updatePassword(accountId, newPassword);

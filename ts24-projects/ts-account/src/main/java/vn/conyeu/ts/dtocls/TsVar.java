@@ -18,9 +18,9 @@ public interface TsVar {
         String tsChanel = tsApiPrefix + "/chanel";
 
         String odTicketApiPrefix = "/od-api";
-        String odUser = odTicketApiPrefix + "/od.user";
-        String odTicket = odTicketApiPrefix + "/od.ticket";
-        String odCatalog =  odTicketApiPrefix + "/od.catalog";
-        String odPartner = odTicketApiPrefix + "/od.partner";
+        String odUser = odTicketApiPrefix + "/user";
+        String odTicket = odTicketApiPrefix + "/ticket";
+        String odCatalog =  odTicketApiPrefix + "/catalog";
+        String odPartner = odTicketApiPrefix + "/partner";
     }
 }

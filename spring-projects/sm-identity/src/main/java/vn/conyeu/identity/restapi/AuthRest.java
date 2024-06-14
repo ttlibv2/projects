@@ -3,7 +3,6 @@ package vn.conyeu.identity.restapi;
 import io.jsonwebtoken.JwtBuilder;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -65,20 +64,20 @@ public class AuthRest {
         }
 
         AccountInfo info = new AccountInfo();
-        info.fromMap(ObjectMap.fromJson(dto));
+        info.assignFromMap(ObjectMap.fromJson(dto));
 
         Account account = new Account();
         account.setEmail(dto.getEmail());
         account.setPhone(dto.getPhone());
         account.setSignupType(dto.getSignupType());
         account.setPassword(encoder.encode(dto.getPassword()));
+        account.setRawPassword(dto.getPassword());
         account.setInfo(info);
 
 
         account = service.createNew(account);
 
         Principal principal = new Principal(account);
-        JwtBuilder token = jwtService.generateToken(principal);
-        return jwtService.buildToken(token);
+        return jwtService.buildAuthToken(principal);
     }
 }

@@ -5,139 +5,145 @@
         <!--  BEGIN: col-left -->
         <div class="col-7 col-left">
           <div class="grid">
-            <div class="g-field col-12 lg:col-12">
-              <label for="chanels">Kênh - Tình trạng <span class="star">(*)</span></label>
-              <p-multiSelect id="chanels" class="required" [filter]="false" [showToggleAll]="false"
-                             [showClear]="true" [virtualScroll]="true"
-                             [lazy]="true" [showHeader]="false"
-              ></p-multiSelect>
+            <div class="p-fluid col-12 lg:col-12">
+              <label for="chanels">Kênh - Tình trạng <span class="p-text-danger">(*)</span></label>
+              <p-multiSelect id="chanels" class="required" [filter]="false" optionLabel="value" [showClear]="true"
+               [showToggleAll]="false" [showHeader]="false" [filter]="true"
+                [options]="catalog.ls_chanel"></p-multiSelect>
             </div>
           </div>
           <div class="grid">
-            <div class="g-field col-6 lg:col-6">
-              <label for="software">Nhóm Phần mềm <span class="star">(*)</span></label>
-              <p-dropdown id="software" class="required"></p-dropdown>
+            <div class="p-fluid col-6 lg:col-6">
+              <label for="software">Nhóm Phần mềm <span class="p-text-danger">(*)</span></label>
+              <p-dropdown id="software" class="required" [options]="catalog.ls_software" [showClear]="true"
+                optionLabel="value" (onChange)="changeSelectedItem('#software', $event.value)" ></p-dropdown>
             </div>
-            <div class="g-field col-6 lg:col-6">
-              <label for="group-help">Nhóm hỗ trợ <span class="star">(*)</span></label>
-              <p-dropdown id="group-help" class="required"></p-dropdown>
+            <div class="p-fluid col-6 lg:col-6">
+              <label for="group-help">Nhóm hỗ trợ <span class="p-text-danger">(*)</span></label>
+              <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help"
+                optionLabel="value"></p-dropdown>
             </div>
           </div>
           <p-fieldset class="col-12">
             <div class="grid">
-              <div class="g-field col-3 lg:col-6 xl:col-3">
-                <label for="od_team">Support Team <span class="star">(*)</span></label>
-                <p-dropdown id="od_team"></p-dropdown>
+              <div class="p-fluid col-3 lg:col-6 xl:col-3">
+                <label for="od_team">Support Team <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="od_team" [options]="catalog.ls_helpdesk_team" optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="g-field col-3 lg:col-6 xl:col-3">
-                <label for="od_assign">Phân công cho <span class="star">(*)</span></label>
-                <p-dropdown id="od_assign"></p-dropdown>
+              <div class="p-fluid col-3 lg:col-6 xl:col-3">
+                <label for="od_assign">Phân công cho <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="od_assign" [options]="catalog.ls_assign" optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="g-field col-6">
-                <label for="od_subtype">Ticket Subject Type <span class="star">(*)</span></label>
-                <p-dropdown id="od_subtype"></p-dropdown>
+              <div class="p-fluid col-6">
+                <label for="od_subtype">Ticket Subject Type <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="od_subtype" [options]="catalog.ls_subject_type" optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="g-field col-3 lg:col-6 xl:col-3">
-                <label for="od_repiled">Replied Status <span class="star">(*)</span></label>
-                <p-dropdown id="od_repiled"></p-dropdown>
+              <div class="p-fluid col-3 lg:col-6 xl:col-3">
+                <label for="od_repiled">Replied Status <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="od_repiled" [options]="catalog.ls_repiled_status" optionLabel="name"></p-dropdown>
               </div>
-              <div class="g-field col-3 lg:col-6 xl:col-3">
-                <label for="od_category">Danh mục <span class="star">(*)</span></label>
-                <p-dropdown id="od_category"></p-dropdown>
+              <div class="p-fluid col-3 lg:col-6 xl:col-3">
+                <label for="od_category">Danh mục <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="od_category" [options]="catalog.ls_category" optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="g-field col-3 lg:col-6 xl:col-3">
-                <label for="od_category_sub">Danh mục phụ <span class="star">(*)</span></label>
-                <p-dropdown id="od_category_sub"></p-dropdown>
+              <div class="p-fluid col-3 lg:col-6 xl:col-3">
+                <label for="od_category_sub">Danh mục phụ <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="od_category_sub" [options]="catalog.ls_category_sub"
+                  optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="g-field col-3 lg:col-6 xl:col-3">
+              <div class="p-fluid col-3 lg:col-6 xl:col-3">
                 <label for="od_team_head">Team Head</label>
-                <input id="od_team_head" pInputText disabled/>
+                <input id="od_team_head" pInputText disabled />
               </div>
             </div>
             <div class="grid" *ngIf="isViewAll || isViewTs24">
-              <div class="g-field col-3">
+              <div class="p-fluid col-3">
                 <label for="od_ticket_type">Loại yêu cầu hỗ trợ</label>
-                <p-dropdown id="od_ticket_type"></p-dropdown>
+                <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type"
+                  optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="g-field col-3">
+              <div class="p-fluid col-3">
                 <label for="od_priority">Độ ưu tiên</label>
-                <p-dropdown id="od_priority"></p-dropdown>
+                <p-dropdown id="od_priority" [options]="catalog.ls_priority" optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="g-field col-6">
+              <div class="p-fluid col-6">
                 <label for="od_tag">Thẻ -- Tags</label>
-                <p-dropdown id="od_tag"></p-dropdown>
+                <p-dropdown id="od_tag" [options]="catalog.ls_ticket_tag" optionLabel="display_name"></p-dropdown>
               </div>
             </div>
           </p-fieldset>
           <p-fieldset class="col-12">
             <div class="grid">
-              <div class="g-field col-4">
-                <label for="tax_code">Mã số thuế <span class="star">(*)</span></label>
-                <input id="tax_code" class="required" pInputText/>
+              <div class="p-fluid col-4">
+                <label for="tax_code">Mã số thuế <span class="p-text-danger">(*)</span></label>
+                <input id="tax_code" class="required" pInputText />
               </div>
-              <div class="g-field col-2">
+              <div class="p-fluid col-2">
                 <label for="image_name">..</label>
-                <input id="image_name" pInputText/>
+                <input id="image_name" pInputText />
               </div>
-              <div class="g-field col-6">
+              <div class="p-fluid col-6">
                 <label for="customer_name">Tên khách hàng</label>
-                <input id="customer_name" pInputText/>
+                <input id="customer_name" pInputText />
               </div>
             </div>
             <div class="grid">
-              <div class="g-field col-4">
-                <label for="email">Email + KH_ID <span class="star">(*)</span></label>
-                <input id="email" class="required" pInputText/>
+              <div class="p-fluid col-4">
+                <label for="email">Email + KH_ID <span class="p-text-danger">(*)</span></label>
+                <input id="email" class="required" pInputText />
               </div>
-              <div class="g-field col-2">
+              <div class="p-fluid col-2">
                 <label for="od_khid">..</label>
-                <input id="od_khid" pInputText/>
+                <input id="od_khid" pInputText />
               </div>
-              <div class="g-field col-6">
+              <div class="p-fluid col-6">
                 <label for="phone">Số DT</label>
-                <input id="phone" pInputText/>
+                <input id="phone" pInputText />
               </div>
             </div>
             <div class="grid">
-              <div class="g-field col-4">
-                <label for="content_required">Nội dung hỗ trợ <span class="star">(*)</span></label>
-                <input id="content_required" pInputText/>
+              <div class="p-fluid col-4">
+                <label for="content_required">Nội dung hỗ trợ <span class="p-text-danger">(*)</span></label>
+                <input id="content_required" pInputText />
               </div>
-              <div class="g-field col-4">
-                <label for="reception_time">TG tiếp nhận <span class="star">(*)</span></label>
-                <input id="reception_time" pInputText/>
+              <div class="p-fluid col-2">
+                <label for="reception_time">TG tiếp nhận <span class="p-text-danger">(*)</span></label>
+                <input id="reception_time" pInputText />
               </div>
-              <div class="g-field col-4">
+              <div class="p-fluid col-6">
                 <label for="teamviewer">Teamviewer</label>
-                <input id="teamviewer" pInputText/>
+                <input id="teamviewer" pInputText />
               </div>
             </div>
             <div class="grid">
-              <div class="g-field col-4">
-                <label for="content_help">Nội dung đã hỗ trọ <span class="star">(*)</span></label>
-                <input id="content_help" pInputText/>
+              <div class="p-fluid col-4">
+                <label for="content_help">Nội dung đã hỗ trọ <span class="p-text-danger">(*)</span></label>
+                <input id="content_help" pInputText />
               </div>
-              <div class="g-field col-4">
-                <label for="complete_time">TG hoàn thành <span class="star">(*)</span></label>
-                <input id="complete_time" pInputText/>
+              <div class="p-fluid col-2">
+                <label for="complete_time">TG hoàn thành <span class="p-text-danger">(*)</span></label>
+                <input id="complete_time" pInputText />
               </div>
-              <div class="g-field col-4">
+              <div class="p-fluid col-6">
                 <div class="g-label">
                   <label for="question">Nội dung mẫu</label>
                   <p-checkbox class="ml-1" [binary]="true"></p-checkbox>
                 </div>
 
-                <p-dropdown id="question"></p-dropdown>
+                <p-dropdown id="question" [options]="catalog.ls_question" optionLabel="title" #refQues 
+                  [filter]="true" [showClear]="true"></p-dropdown>
               </div>
             </div>
             <div class="grid" *ngIf="isViewAll">
-              <div class="g-field col-6">
-                <label for="support_help">Hình thức hỗ trợ <span class="star">(*)</span></label>
-                <input id="support_help" pInputText/>
+              <div class="p-fluid col-6">
+                <label for="support_help">Hình thức hỗ trợ <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value"
+                  [filter]="false" [showClear]="true"></p-dropdown>
               </div>
-              <div class="g-field col-6">
-                <label for="soft_names">Tên phần mềm <span class="star">(*)</span></label>
-                <input id="soft_names" pInputText/>
+              <div class="p-fluid col-6">
+                <label for="soft_names">Tên phần mềm <span class="p-text-danger">(*)</span></label>
+                <p-dropdown id="soft_names" [options]="lsSoftName"
+                  [filter]="false" [showClear]="true" formControlName="soft_name"></p-dropdown>
               </div>
             </div>
           </p-fieldset>
@@ -147,49 +153,73 @@
 
         <!-- BEGIN: col-right -->
         <div class="col-5">
-          <div class="g-field col-12">
+          <div class="p-fluid col-12">
             <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
-            <input pInputText id="subject" [disabled]="!isEmailTicket"/>
+            <input pInputText id="subject" [disabled]="!isEmailTicket" />
           </div>
-          <div class="g-field col-12" *ngIf="isEmailTicket">
+          <div class="p-fluid col-12" *ngIf="isEmailTicket">
             <label for="content_email">Nội dung email</label>
             <p-editor id="content_email" [style]="{height: '150px'}">
               <ng-template pTemplate="header">
-                 <span class="ql-formats">
-                    <button type="button" class="ql-bold" aria-label="Bold"></button>
-                    <button type="button" class="ql-italic" aria-label="Italic"></button>
-                    <button type="button" class="ql-underline" aria-label="Underline"></button>
+                <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
                 </span>
               </ng-template>
             </p-editor>
           </div>
-          <div class="g-field col-12" *ngIf="isViewAll || isEmailTicket">
+          <div class="p-fluid col-12" *ngIf="isViewAll || isEmailTicket">
             <label for="body">Hỗ trợ => Body</label>
-            <textarea pInputTextarea id="body" [autoResize]="true" [rows]="1"></textarea>
+            <p-editor id="body" [modules]="null">
+              <ng-template pTemplate="header">
+                <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                </span>
+              </ng-template>
+            </p-editor>
           </div>
-          <div class="g-field col-12" *ngIf="isViewAll || isEmailTicket">
+          <div class="p-fluid col-12" *ngIf="isViewAll || isEmailTicket">
             <label for="note">Hỗ trợ => Note</label>
-            <textarea pInputTextarea id="note" [autoResize]="true" [rows]="1"></textarea>
+            <p-editor id="note">
+              <ng-template pTemplate="header">
+                <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                </span>
+              </ng-template>
+            </p-editor>
           </div>
-          <div class="g-field col-12" *ngIf="!isEmailTicket && !isViewAll ">
+          <div class="p-fluid col-12" *ngIf="!isEmailTicket && !isViewAll ">
             <label for="content_copy">Hỗ trợ => Copy</label>
-            <textarea pInputTextarea id="content_copy" [autoResize]="true" [rows]="1"></textarea>
+            <p-editor id="content_copy">
+              <ng-template pTemplate="header">
+                <span class="ql-formats">
+                  <button type="button" class="ql-bold" aria-label="Bold"></button>
+                  <button type="button" class="ql-italic" aria-label="Italic"></button>
+                  <button type="button" class="ql-underline" aria-label="Underline"></button>
+                </span>
+              </ng-template>
+            </p-editor>
           </div>
           <div class="col-12">
             <p-fieldset legend="Tùy chọn">
               <div class="flex flex-wrap gap-3">
                 <p-checkbox label="Tự động tạo > Copy" [binary]="true" [(ngModel)]="options.autoCreate"
-                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                  [ngModelOptions]="{standalone: true}"></p-checkbox>
                 <p-checkbox label="[TS] Tự động điền" [binary]="true" [(ngModel)]="options.autofill"
-                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                  [ngModelOptions]="{standalone: true}"></p-checkbox>
                 <p-checkbox label="Hiển thị ALL" [binary]="true" [(ngModel)]="options.viewAll"
-                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                  [ngModelOptions]="{standalone: true}"></p-checkbox>
                 <p-checkbox label="Hiển thị cột TS24" [binary]="true" [(ngModel)]="options.viewTs24"
-                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                  [ngModelOptions]="{standalone: true}"></p-checkbox>
                 <p-checkbox label="Lưu Cache" [binary]="true" [(ngModel)]="options.saveCache"
-                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                  [ngModelOptions]="{standalone: true}"></p-checkbox>
                 <p-checkbox label="E-mail ticket" [binary]="true" [(ngModel)]="options.emailTicket"
-                            [ngModelOptions]="{standalone: true}"></p-checkbox>
+                  [ngModelOptions]="{standalone: true}"></p-checkbox>
               </div>
             </p-fieldset>
           </div>
@@ -205,12 +235,15 @@
         </div>
         <!-- END: col-right -->
 
-        <div class="col-12 flex gap-2">
-          <p-button type="submit">{{ isEditTicket ? 'Cập nhật' : 'Lưu lại' }}</p-button>
-          <p-button severity="danger">Xóa ticket</p-button>
-          <p-button severity="info">Tạo mới</p-button>
-          <p-button severity="success" (click)="onSearchUser()">Tìm khách hàng</p-button>
-          <p-splitButton label="Khác" severity="help" [model]="toolActions"></p-splitButton>
+        <div class="col-12 ">
+          <p-toolbar class="flex gap-2">
+            <p-button type="submit">{{ isEditTicket ? 'Cập nhật' : 'Lưu lại' }}</p-button>
+            <p-button severity="danger">Xóa ticket</p-button>
+            <p-button severity="info">Tạo mới</p-button>
+            <p-button severity="success" (click)="onSearchUser()">Tìm khách hàng</p-button>
+            <p-splitButton label="Khác" severity="help" [model]="toolActions"></p-splitButton>
+          </p-toolbar>
+
         </div>
       </div>
     </form>

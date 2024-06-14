@@ -4,29 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import vn.conyeu.identity.dtocls.SignUpDto;
 import vn.conyeu.ts.domain.TsUser;
 
 import java.io.Serializable;
 
 @Getter
 @Setter
-public class TsSignUpDto implements Serializable {
+public class TsSignUpDto extends SignUpDto {
 
     @NotBlank
     @JsonProperty("room_code")
     private String roomCode;
-
-    @NotBlank
-    @JsonProperty("email")
-    private String email;
-
-    @NotBlank
-    @JsonProperty("name")
-    private String name;
-
-    @NotBlank
-    @JsonProperty("secret")
-    private String secret;
 
     @NotBlank
     @JsonProperty("user_code")
@@ -35,8 +24,6 @@ public class TsSignUpDto implements Serializable {
     public TsUser createUser() {
         TsUser user = new TsUser();
         user.setRoomCode(roomCode);
-        user.setTsEmail(email);
-        user.setTsName(name);
         user.setUserCode(userCode);
         return user;
     }

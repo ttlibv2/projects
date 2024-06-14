@@ -5,6 +5,7 @@ import {Objects} from "../utils/objects";
 export interface AuthToken {
   access_token?: string;
   token_type?: string;
+  user_id?: number;
 }
 
 export interface SignUpDto {
@@ -22,9 +23,7 @@ export interface SignUpDto {
 
 export class User extends BaseModel {
   user_id?: number;
-  name?: string;
-  email?: string;
-  secret?: string;
+  full_name?: string;
   user_code?: string;
   room_code?: string;
   required_update?: boolean;
@@ -76,8 +75,8 @@ export class RememberUser extends BaseModel {
 
   }
 
-  static from(data: JsonObject): RememberUser {
-    return new RememberUser().update(data);
+  static from(data: RememberUser | JsonObject): RememberUser {
+    return this.fromJson(RememberUser, data);
   }
 }
 

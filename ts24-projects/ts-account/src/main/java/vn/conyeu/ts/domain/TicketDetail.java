@@ -11,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.domain.LongUId;
+import vn.conyeu.ts.ticket.domain.ClsStage;
 
 import java.time.LocalDateTime;
 
@@ -75,10 +76,11 @@ public class TicketDetail extends LongUId<TicketDetail> {
 	@JsonProperty("mail_id")
     private Long mailId;
 
-    @ColumnDefault("0")
-    @JsonProperty("is_report")
-    @Column(name = "isReport")
-    private Boolean report;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private LocalDateTime report;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private LocalDateTime attachAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
 	@JsonProperty("reply_at")
@@ -116,4 +118,8 @@ public class TicketDetail extends LongUId<TicketDetail> {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime mailAt;
 
+    public void setStage(ClsStage stage) {
+        setStageId(stage == null ? null : stage.getId());
+        setStageText(stage == null ? null : stage.getName());
+    }
 }

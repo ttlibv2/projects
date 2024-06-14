@@ -17,7 +17,7 @@ export class TicketOption extends BaseModel {
       return TicketOption.from({
         autoCreate: true,
         autofill: true,
-        viewAll: false,
+        viewAll: true,
         viewTs24: false,
         saveCache: false,
         emailTicket: false

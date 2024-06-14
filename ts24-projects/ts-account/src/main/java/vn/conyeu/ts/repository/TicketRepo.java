@@ -10,4 +10,5 @@ public interface TicketRepo extends LongUIdRepo<Ticket> {
 
     @Query("select e.detail.ticketNumber from #{#entityName} e where e.id=?1")
     Optional<Long> findTicketNumberById(Long ticketId);
+
 }

@@ -10,19 +10,19 @@ import java.util.List;
 
 public final class OdTRHelper {
 
-    public static TicketStatus fromStage(ClsStage stage) {
-        if (stage == null) return TicketStatus.NEW;
-        else {
-            String name = stage.getName();
-            if ("Mới".equals(name)) return TicketStatus.NEW;
-            if ("Đang xử lý".equals(name)) return TicketStatus.PROCESSING;
-            if ("Hoàn thành".equals(name)) return TicketStatus.COMPLETE;
-            if ("Đã đóng".equals(name)) return TicketStatus.CLOSED;
-            if ("Mở lại".equals(name)) return TicketStatus.OPENING;
-            if ("Hủy".equals(name)) return TicketStatus.CANCEL;
-            else throw new UnsupportedOperationException(name);
-        }
-    }
+//    public static TicketStatus fromStage(ClsStage stage) {
+//        if (stage == null) return TicketStatus.NEW;
+//        else {
+//            String name = stage.getName();
+//            if ("Mới".equals(name)) return TicketStatus.NEW;
+//            if ("Đang xử lý".equals(name)) return TicketStatus.PROCESSING;
+//            if ("Hoàn thành".equals(name)) return TicketStatus.COMPLETE;
+//            if ("Đã đóng".equals(name)) return TicketStatus.CLOSED;
+//            if ("Mở lại".equals(name)) return TicketStatus.OPENING;
+//            if ("Hủy".equals(name)) return TicketStatus.CANCEL;
+//            else throw new UnsupportedOperationException(name);
+//        }
+//    }
 
     public static Ticket fromClsTicket(ClsTicket cls) {
         Ticket ticket = new Ticket();

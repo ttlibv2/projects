@@ -2,6 +2,7 @@ package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
+import vn.conyeu.ts.ticket.domain.ClsNameSearchOption;
 import vn.conyeu.ts.ticket.domain.ClsProduct;
 import vn.conyeu.ts.ticket.domain.ClsTicketPriority;
 
@@ -29,7 +30,7 @@ public class OdProduct extends OdTicketClient<ClsProduct> {
         return ClsProduct::from;
     }
 
-    public List<ClsProduct> getAll() {
-        return searchRead();
+    public List<ClsProduct> getAll(Integer size) {
+        return nameSearch(new ClsNameSearchOption().setLimit(size));
     }
 }

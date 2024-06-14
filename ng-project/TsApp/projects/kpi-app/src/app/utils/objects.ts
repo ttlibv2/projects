@@ -1,6 +1,22 @@
 import * as crypto from 'crypto-js';
+import {Type} from "@angular/core";
 
 export class Objects {
+  
+
+  static assign(target: any, source: any): any {
+    if(Objects.isObject(target) && Objects.isObject(source)) {
+      for(const key of Object.keys(source)) {
+        const srcFncGet = source[`get_${key}`];
+        const srcVal = typeof srcFncGet === 'function' ? srcFncGet() : source[key];
+        if(typeof target[`set_${key}`] === 'function') target[`set_${key}`](srcVal);
+        else if(!Objects.isObject(srcVal)) target[key] = srcVal;
+        else if(key in target) Objects.assign(target[key], srcVal);
+        else target[key] = srcVal;
+      }
+    }
+    else return target;
+  }
 
 
   static parseDate(value: any): Date {
@@ -38,6 +54,7 @@ export class Objects {
   static isEmpty(object: any): boolean {
     if(Objects.isNull(object)) return true;
     else if(typeof object == 'string') return object.length == 0;
+    else if(Objects.isArray(object)) return object.length == 0;
     else if (typeof object == 'object') return Object.keys(object).length == 0;
     else return false;
   }
@@ -50,13 +67,12 @@ export class Objects {
     return !Objects.isNull(object);
   }
 
-  static isArray(value: any, empty = true): boolean {
-    return Array.isArray(value) && (empty || value.length !== 0);
+  static isArray(value: any): value is [] {
+    return Array.isArray(value);
   }
 
-  static isObject(value: any, empty = true): boolean {
-    const hasObject: boolean = typeof value == 'object' && Objects.notNull(value) && !Objects.isArray(value);
-    return hasObject && (empty || Object.keys(value).length !== 0);
+  static isObject(value: any): boolean {
+    return Objects.notNull(value) && typeof value == 'object' && !Objects.isArray(value);
   }
 
   static isUrl(str: string): boolean {
@@ -67,7 +83,9 @@ export class Objects {
     catch (_) { return false; }
   }
 
-
+  static isFunction(object: any): boolean {
+    return Objects.notNull(object) && typeof object === 'function'
+}
 
 
   static ifNotNull<E>(object: E, callback: (val: E) => any): void {
@@ -88,16 +106,12 @@ export class Objects {
     return wa.toString(CryptoJS.enc.Utf8);
   }
 
-  static assign(target: any, source: any): any {
-    if(Objects.isObject(target) && Objects.isObject(source)) {
-      Object.keys(source).forEach(sourceKey => {
-        const fncSet = target[`set_${sourceKey}`];
-        const sourceValue = source[sourceKey];
-        if(typeof fncSet === 'function') fncSet(sourceValue);
-        else if(Objects.isArray(sourceValue)) target[sourceKey] = sourceValue;
-        else if(!Objects.isObject(sourceValue))target[sourceKey] = sourceValue;
-        else Objects.assign(target[sourceKey], source[sourceKey]);
-      });
-    }
+  static isClass(object: any): boolean {
+    return Objects.isObject(object) && object.constructor.name !== 'Object';
   }
+
+  static isClassOf(object: any, cls: Type<any>): boolean {
+    return Objects.isClass(object) && object.constructor.name === cls.name;
+  }
+
 }

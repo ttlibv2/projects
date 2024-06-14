@@ -1,5 +1,7 @@
 package vn.conyeu.ts.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,6 +20,7 @@ import vn.conyeu.ts.odcore.domain.ClsUser;
 @Getter @Setter @NoArgsConstructor @DynamicInsert @DynamicUpdate
 @Entity @Table(uniqueConstraints = @UniqueConstraint(name = "USER_API_UID", columnNames = "apiId,userId"))
 @AttributeOverride(name = "id", column = @Column(name = "uniqueId"))
+@JsonIgnoreProperties({"api", "id"})
 //@formatter:on
 public class UserApi extends LongUId<UserApi> {
 
@@ -29,7 +32,7 @@ public class UserApi extends LongUId<UserApi> {
     @JoinColumn(name = "apiId")
     private ApiInfo api;
 
-    @JsonProperty("username")
+    @JsonProperty("user_name")
     @Column(length = 100, nullable = false)
     private String userName;
 
@@ -47,6 +50,10 @@ public class UserApi extends LongUId<UserApi> {
     @Column(length = 1000)
     private String cookie;
 
+    @ColumnDefault("0")
+    @JsonProperty("allow_edit")
+    private Boolean allowEdit;
+
     @Convert(converter = Converters.ClsUserConvert.class)
     @Column(columnDefinition = "json")
     private ClsUser userInfo;
@@ -55,20 +62,20 @@ public class UserApi extends LongUId<UserApi> {
         return autoLogin != null && autoLogin;
     }
 
+    @JsonProperty("api_code")
+    public String getApiCode() {
+        return api == null ? null : api.getCode();
+    }
 
+    public void setUniqueId(Long userId, ApiInfo api) {
+        setApi(api);
+        setUser(new TsUser(userId));
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Returns the allowEdit
+     */
+    public boolean isAllowEdit() {
+        return allowEdit != null && allowEdit;
+    }
 }

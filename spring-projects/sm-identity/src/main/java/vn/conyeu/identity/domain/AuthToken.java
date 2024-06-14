@@ -18,6 +18,9 @@ public class AuthToken implements Serializable {
     @JsonProperty("expires_in")
     private Long expiresIn;
 
+    @JsonProperty("user_id")
+    private Long userId;
+
     /**
      * Set the tokenType
      *
@@ -45,6 +48,16 @@ public class AuthToken implements Serializable {
      */
     public AuthToken setExpiresIn(Long expiresIn) {
         this.expiresIn = expiresIn;
+        return this;
+    }
+
+    /**
+     * Set the userId
+     *
+     * @param userId the value
+     */
+    public AuthToken setUserId(Long userId) {
+        this.userId = userId;
         return this;
     }
 }

@@ -32,6 +32,7 @@ export class AgColumn extends BaseModel {
   pinned?: boolean;
   position?: number;
   width?: number;
+  ag_code?: string;
 
   static from(data: JsonObject): AgColumn {
     return new AgColumn().update(data);

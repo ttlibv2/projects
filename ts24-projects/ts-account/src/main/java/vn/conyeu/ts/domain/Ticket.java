@@ -136,10 +136,6 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JsonProperty("client_version")
     private String clientVersion;
 
-    @Enumerated(EnumType.STRING)
-    @JsonProperty("ticket_status")
-    private TicketStatus status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "userId")
     private TsUser user;
@@ -229,10 +225,16 @@ public class Ticket extends LongUIdDate<Ticket> {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "ticket", cascade = CascadeType.ALL)
     private TicketTemplate template;
 
+    //-------------------@Transient
+
+    @JsonProperty("group_helpid") @Transient private Long groupHelpId;
+    @JsonProperty("support_helpid") @Transient  private Long supportHelpId;
+    @JsonProperty("software_id") @Transient private Long softwareId;
+    @JsonProperty("question_id") @Transient private Long questionId;
+
+
     public void setStage(ClsStage stage) {
-        setStatus(OdTRHelper.fromStage(stage));
-        getDetail().setStageId(stage == null ? null : stage.getId());
-        getDetail().setStageText(stage == null ? null : stage.getName());
+        getDetail().setStage(stage);
     }
 
     public void setAccessToken(String token) {

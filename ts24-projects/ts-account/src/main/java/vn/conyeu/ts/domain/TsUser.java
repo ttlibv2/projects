@@ -20,24 +20,20 @@ import vn.conyeu.common.domain.LongIdDate;
 //@formatter:on
 public class TsUser extends LongIdDate<TsUser> {
 
-
-    @JsonProperty("email")
-    @Column(length = 100, nullable = false)
-    private String tsEmail;
-
-    @JsonProperty("name")
-    @Column(length = 100, nullable = false)
-    private String tsName;
+    @JsonProperty("full_name")
+    @Column(length = 100)
+    private String fullName;
 
     @JsonProperty("user_code")
-    @Column(length = 50, nullable = false)
+    @Column(length = 50)
     private String userCode;
 
     @JsonProperty("room_code")
-    @Column(length = 50, nullable = false)
+    @Column(length = 50)
     private String roomCode;
 
     @ColumnDefault("0")
+    @JsonProperty("required_update")
     private Boolean requiredUpdate;
 
     public TsUser(Long entityId) {

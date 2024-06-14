@@ -25,6 +25,11 @@ public class LogDetail implements Serializable {
         return eStatus(401);
     }
 
+    public static LogDetail e401(String code) {
+        return eStatus(401).logCode(code);
+    }
+
+
     public static LogDetail e403() {
         return eStatus(403);
     }

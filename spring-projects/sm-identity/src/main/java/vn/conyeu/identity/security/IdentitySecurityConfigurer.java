@@ -63,7 +63,7 @@ public class IdentitySecurityConfigurer extends SecurityAdapter {
 
         AuthenticationManager authenticationManager = AppContext.getBean(AuthenticationManager.class);
         JwtService jwtService = AppContext.getBean(JwtService.class);
-        http.addFilter(new JwtUPAuthenticationFilter(authenticationManager, jwtService));
+        http.addFilter(new SignInFilter(authenticationManager, jwtService));
 
         http.exceptionHandling(cfg -> {
            cfg.authenticationEntryPoint(new SimpleAuthenticationEntryPoint());

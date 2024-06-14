@@ -33,28 +33,28 @@ public abstract class DomainId<E extends DomainId<E, Id>, Id extends Serializabl
      * Copy properties from entity other
      * @param map the other entity
      * */
-    public void fromObject(Object map) {
+    public void assignFromObject(Object map) {
         throw new UnsupportedOperationException();
     }
 
-    public void fromMap(ObjectMap map) {
+    public void assignFromMap(ObjectMap map) {
         MapperHelper.update(this, map);
     }
 
     /**
      * Copy properties from entity other
      * @param other the other entity
-     * @see #fromEntity(DomainId, String...)
+     * @see #assignFromEntity(DomainId, String...)
      * */
-    public final void fromEntity(E other) {
-        fromEntity(other, "id");
+    public final void assignFromEntity(E other) {
+        assignFromEntity(other, "id");
     }
 
     /**
      * Copy properties from entity other
      * @param other the other entity
      * */
-    public void fromEntity(E other, String...ignoreProperties) {
+    public void assignFromEntity(E other, String...ignoreProperties) {
         BeanUtils.copyProperties(other, this, ignoreProperties);
     }
 

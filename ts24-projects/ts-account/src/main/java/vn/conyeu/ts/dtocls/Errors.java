@@ -71,4 +71,10 @@ public final class Errors {
         return BaseException.e400("invalid_ticket")
                 .message("[%s] Ticket này không phải là email ticket", ticketId);
     }
+
+    public static BaseException noApi(String apiCode) {
+        return new NotFound("api_info.code_404")
+                .message("Khong tim thay api [%s]", apiCode)
+                .detail("apiCode", apiCode);
+    }
 }

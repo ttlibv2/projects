@@ -88,7 +88,7 @@ public class I18N {
      * @return the message
      * @throws org.springframework.context.NoSuchMessageException if not found
      */
-    public static String get(String code, @Nullable Object[] args) throws NoSuchMessageException {
+    public static String get(String code, Object... args) throws NoSuchMessageException {
         return  message().getMessage(code, args);
     }
 

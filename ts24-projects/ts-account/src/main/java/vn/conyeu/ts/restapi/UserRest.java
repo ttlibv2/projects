@@ -22,7 +22,7 @@ import vn.conyeu.ts.ticket.service.OdTicketService;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(TsVar.Rest.TsUser)
+@RequestMapping(TsVar.Rest.tsUser)
 @PreAuthorize("isAuthenticated()")
 public class UserRest extends LongIdRest<TsUser, UserService> {
     final AccountService accountService;
@@ -70,8 +70,7 @@ public class UserRest extends LongIdRest<TsUser, UserService> {
             String fullName = account.getInfo().getFullName();
             TsUser user = new TsUser();
             user.setId(account.getId());
-            user.setTsName(fullName);
-            user.setTsEmail(account.getEmail());
+            user.setFullName(fullName);
             user.setUserCode("setUserCode");
             user.setRoomCode("setRoomCode");
             user.setRequiredUpdate(true);

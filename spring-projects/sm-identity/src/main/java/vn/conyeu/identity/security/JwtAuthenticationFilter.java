@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }//
             catch (JwtException exp) {
                 String code = IdentityHelper.extractCode(exp);
-                IdentityHelper.sendError(response, LogDetail.e401().logCode(code)
+                IdentityHelper.sendError(response, LogDetail.e401(code)
                         .message(exp.getMessage()).throwable(exp)
                         .createMapResponse());
                 return;

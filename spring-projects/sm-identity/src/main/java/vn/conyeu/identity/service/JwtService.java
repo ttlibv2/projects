@@ -2,7 +2,6 @@ package vn.conyeu.identity.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,16 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import vn.conyeu.common.exception.BaseException;
-import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.identity.domain.AuthToken;
-import vn.conyeu.identity.helper.IdentityHelper;
+import vn.conyeu.identity.domain.Principal;
 import vn.conyeu.identity.security.JwtConfig;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -49,27 +45,29 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public AuthToken buildToken(JwtBuilder build) {
+    public AuthToken buildAuthToken(Principal principal) {
         return new AuthToken()
-                .setAccessToken(build.compact())
-                .setTokenType(getTokenType())
+                .setAccessToken(generateTokenBuilder(principal).compact())
+                .setUserId(principal.getUserId()).setTokenType(getTokenType())
                 .setExpiresIn(jwtConfig.getExpiration());
     }
 
-    public JwtBuilder generateToken( UserDetails userDetails) {
-        return generateToken( userDetails.getUsername(),
-                claims -> claims.add("authorities", userDetails.getAuthorities()));
+    public JwtBuilder generateTokenBuilder(Principal principal) {
+        return generateTokenBuilder( principal.getUsername(),
+                claims -> claims.add("authorities", principal.getAuthorities())
+                        .add("user_id", principal.getUserId())
+        );
     }
 
-    public JwtBuilder generateToken( UserDetails userDetails, Map<String, Object> extraClaims) {
-        return generateToken( userDetails.getUsername(), extraClaims);
+    public JwtBuilder generateTokenBuilder(UserDetails userDetails, Map<String, Object> extraClaims) {
+        return generateTokenBuilder( userDetails.getUsername(), extraClaims);
     }
 
-    public JwtBuilder generateToken(String subject, Map<String, Object> extraClaims) {
-        return generateToken(subject, claims -> claims.add(extraClaims));
+    public JwtBuilder generateTokenBuilder(String subject, Map<String, Object> extraClaims) {
+        return generateTokenBuilder(subject, claims -> claims.add(extraClaims));
     }
 
-    public JwtBuilder generateToken(String subject, Consumer<JwtBuilder.BuilderClaims> claimsConsumer) {
+    public JwtBuilder generateTokenBuilder(String subject, Consumer<JwtBuilder.BuilderClaims> claimsConsumer) {
         Date issuedAt = new Date(System.currentTimeMillis());
         Date expiration = new Date(issuedAt.getTime() + jwtConfig.getExpiration());
 

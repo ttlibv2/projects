@@ -20,33 +20,35 @@ import {FieldsetModule} from "primeng/fieldset";
 import {TemplateFormModule} from "../template-form/template-form.module";
 import {DialogModule} from "primeng/dialog";
 import {DialogService} from "primeng/dynamicdialog";
+import {ToolbarModule} from "primeng/toolbar";
 
 
 @NgModule({
   declarations: [
     TicketFormComponent
   ],
-  imports: [
-    CommonModule,
-    TicketFormRoutingModule,
-    CardModule,
-    ReactiveFormsModule,
-    MultiSelectModule,
-    DropdownModule,
-    InputTextModule,
-    InputTextareaModule,
-    EditorModule,
-    DividerModule,
-    CheckboxModule,
-    ButtonModule,
-    SplitButtonModule,
-    ChipModule,
-    ChipsModule,
-    FieldsetModule,
-    FormsModule,
-    DialogModule,
-    TemplateFormModule
-  ],
+    imports: [
+        CommonModule,
+        TicketFormRoutingModule,
+        CardModule,
+        ReactiveFormsModule,
+        MultiSelectModule,
+        DropdownModule,
+        InputTextModule,
+        InputTextareaModule,
+        EditorModule,
+        DividerModule,
+        CheckboxModule,
+        ButtonModule,
+        SplitButtonModule,
+        ChipModule,
+        ChipsModule,
+        FieldsetModule,
+        FormsModule,
+        DialogModule,
+        TemplateFormModule,
+        ToolbarModule
+    ],
   providers: [
     DialogService
   ]

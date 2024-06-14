@@ -1,5 +1,6 @@
 package vn.conyeu.ts.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ public class Chanel extends LongUId<Chanel> {
     @Column(length = 20, nullable = false)
     private String code;
 
+    @JsonProperty("extend_code")
     @Column(length = 20, nullable = false)
     private String extendCode;
 
@@ -33,6 +35,7 @@ public class Chanel extends LongUId<Chanel> {
     private String value;
 
     @ColumnDefault("0")
+    @JsonProperty("has_image")
     private Boolean hasImage;
 
 

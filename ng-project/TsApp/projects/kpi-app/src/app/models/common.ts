@@ -56,28 +56,28 @@ export interface IStorage {
 
   get_nameModel(modelType: Type<any>): string;
 
-  set_string(field: string, value: number): void;
+  write_string(field: string, value: number): void;
 
-  set_number(field: string, value: number): void;
+  write_number(field: string, value: number): void;
 
-  set_json(field: string, json: object): void;
+  write_json(field: string, json: object): void;
 
-  set_boolean(field: string, value: boolean): void;
+  write_boolean(field: string, value: boolean): void;
 
-  set_model<E extends BaseModel>(model: E): string;
+  write_model<E extends BaseModel>(model: E): string;
 
-  set_any<E>(field: string, value: E): void;
+  write_any<E>(field: string, value: E): void;
 
-  get_any<E>(field: string, callback?: (data: any) => E, defaultValue?: () => E): any;
+  read_any<E>(field: string, callback?: (data: any) => E, defaultValue?: () => E): any;
 
-  get_string(field: string): string;
+  read_string(field: string): string;
 
-  get_int(field: string): number;
+  read_int(field: string): number;
 
-  get_num(field: string): number;
+  read_num(field: string): number;
 
-  get_json(field: string): JsonObject;
+  read_json(field: string): JsonObject;
 
-  get_model<E extends BaseModel>(modelType: Type<E>): E;
+  read_model<E extends BaseModel>(modelType: Type<E>, field?: string): E;
 
 }

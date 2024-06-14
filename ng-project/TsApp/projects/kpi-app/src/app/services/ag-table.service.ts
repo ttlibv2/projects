@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import {RestApiService} from "./rest-api.service";
+import {ModelApi} from "./model-api.service";
 import {AgTable} from "../models/ag-table";
 import {ResponseToModel} from "../models/common";
 import {Observable, switchMap} from "rxjs";
 
 @Injectable({providedIn: 'root'})
-export class AgTableService extends RestApiService{
+export class AgTableService extends ModelApi<AgTable> {
 
   override basePath(): string {
-    return "ts.ag-table";
+    return "/ts-api/ag-table";
   }
 
   override resToModel(): ResponseToModel<AgTable> {

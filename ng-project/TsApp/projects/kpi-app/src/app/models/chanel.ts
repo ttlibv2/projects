@@ -9,8 +9,12 @@ export class Chanel  extends BaseModel{
     support?: string;
     value?: string;
 
-  static from(data: JsonObject): Chanel {
-    return new Chanel().update(data);
+    get display_name(): string {
+      return this.value;
+    }
+
+  static from(data:  Chanel | JsonObject): Chanel {
+    return data instanceof Chanel ? data : new Chanel().update(data);
   }
 
   static fromList(data: JsonObject[]): Chanel[] {

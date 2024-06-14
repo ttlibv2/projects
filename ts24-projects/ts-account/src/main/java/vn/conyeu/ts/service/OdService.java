@@ -10,14 +10,11 @@ import vn.conyeu.ts.domain.ApiInfo;
 import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.Errors;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
-import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.odcore.service.OdBaseService;
 import vn.conyeu.ts.ticket.service.OdTicketService;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Service
@@ -108,7 +105,7 @@ public class OdService {
         public ClsApiCfg loadApi(String apiCode, boolean override) {
             if (override || !apiCfgMap.containsKey(apiCode)) {
                 updateConfig(userApiService
-                        .loadByApiCode(userId, apiCode).map(this::createClsApi)
+                        .findByApiCode(userId, apiCode).map(this::createClsApi)
                         .orElseThrow(() -> Errors.noUserApiCode(apiCode)));
             }
 

@@ -1,10 +1,16 @@
 package vn.conyeu.common.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaDelete;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.repository.query.FluentQuery;
 import vn.conyeu.common.domain.DomainId;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.NotFound;
@@ -16,6 +22,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serializable, R extends DomainRepo<S, Id>> {
     private final R entityRepo;
@@ -42,6 +50,102 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
      */
     public Optional<S> findOne(Example<S> example) {
         return entityRepo.findOne(example);
+    }
+
+    /**
+     * Returns a single entity matching the given {@link Specification} or {@link Optional#empty()} if none found.
+     *
+     * @param spec must not be {@literal null}.
+     * @return never {@literal null}.
+     * @throws IncorrectResultSizeDataAccessException if more than one entity found.
+     */
+    public Optional<S> findOne(Specification<S> spec) {
+        return entityRepo.findOne(spec);
+    }
+
+    /**
+     * Returns all entities matching the given {@link Specification}.
+     *
+     * @param spec must not be {@literal null}.
+     * @return never {@literal null}.
+     */
+    public List<S> findAll(Specification<S> spec) {
+        return entityRepo.findAll(spec);
+    }
+
+    /**
+     * Returns a {@link Page} of entities matching the given {@link Specification}.
+     *
+     * @param spec     must not be {@literal null}.
+     * @param pageable must not be {@literal null}.
+     * @return never {@literal null}.
+     */
+    public Page<S> findAll(Specification<S> spec, Pageable pageable) {
+        return entityRepo.findAll(spec, pageable);
+    }
+
+    /**
+     * Returns all entities matching the given {@link Specification} and {@link Sort}.
+     *
+     * @param spec must not be {@literal null}.
+     * @param sort must not be {@literal null}.
+     * @return never {@literal null}.
+     */
+    public List<S> findAll(Specification<S> spec, Sort sort) {
+        return entityRepo.findAll(spec, sort);
+    }
+
+    /**
+     * Returns the number of instances that the given {@link Specification} will return.
+     *
+     * @param spec the {@link Specification} to count instances for, must not be {@literal null}.
+     * @return the number of instances.
+     */
+    public long count(Specification<S> spec) {
+        return entityRepo.count(spec);
+    }
+
+    /**
+     * Checks whether the data store contains elements that match the given {@link Specification}.
+     *
+     * @param spec the {@link Specification} to use for the existence check, ust not be {@literal null}.
+     * @return {@code true} if the data store contains elements that match the given {@link Specification} otherwise
+     * {@code false}.
+     */
+    public boolean exists(Specification<S> spec) {
+        return entityRepo.exists(spec);
+    }
+
+    /**
+     * Deletes by the {@link Specification} and returns the number of rows deleted.
+     * <p>
+     * This method uses {@link CriteriaDelete Criteria API bulk delete} that maps directly to
+     * database delete operations. The persistence context is not synchronized with the result of the bulk delete.
+     * <p>
+     * Please note that {@link CriteriaQuery} in,
+     * {@link Specification#toPredicate(jakarta.persistence.criteria.Root, CriteriaQuery, CriteriaBuilder)} will be {@literal null} because
+     * {@link CriteriaBuilder#createCriteriaDelete(Class)} does not implement
+     * {@code CriteriaQuery}.
+     *
+     * @param spec the {@link Specification} to use for the existence check, must not be {@literal null}.
+     * @return the number of entities deleted.
+     * @since 3.0
+     */
+    public long delete(Specification<S> spec) {
+        return entityRepo.delete(spec);
+    }
+
+    /**
+     * Returns entities matching the given {@link Specification} applying the {@code queryFunction} that defines the query
+     * and its result type.
+     *
+     * @param spec          must not be null.
+     * @param queryFunction the query function defining projection, sorting, and the result type
+     * @return all entities matching the given Example.
+     * @since 3.0
+     */
+    public <S1 extends S, R> R findBy(Specification<S> spec, Function<FluentQuery.FetchableFluentQuery<S1>, R> queryFunction) {
+        return entityRepo.findBy(spec, queryFunction);
     }
 
     /**
@@ -245,11 +349,17 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
         return entityRepo.save(entity);
     }
 
-    @Transactional
     public Optional<S> update(Id entityId, ObjectMap overrides) {
+     return update(entityId, overrides, null);
+    }
+
+
+    @Transactional
+    public Optional<S> update(Id entityId, ObjectMap overrides, Consumer<S> customEntity) {
         Optional<S> optional = findById(entityId);
         return optional.map(s -> {
-            s.fromMap(overrides);
+            s.assignFromMap(overrides);
+            if(customEntity != null) customEntity.accept(s);
             return save(s);
         });
     }
@@ -259,7 +369,7 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
         Optional<S> optional = findById(entityId);
         if(optional.isEmpty()) return Optional.empty();
         else {
-            optional.get().fromEntity(overrides);
+            optional.get().assignFromEntity(overrides);
             S newUp = save(optional.get());
             return Optional.of(newUp);
         }

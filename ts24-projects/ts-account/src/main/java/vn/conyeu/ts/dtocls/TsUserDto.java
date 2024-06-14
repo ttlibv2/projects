@@ -47,8 +47,8 @@ public class TsUserDto implements Serializable {
 
     public TsUser createUser() {
         TsUser user = new TsUser();
-        user.setTsEmail(email);
-        user.setTsName(name);
+        //user.setTsEmail(email);
+        user.setFullName(name);
         user.setRoomCode(roomCode);
         user.setUserCode(userCode);
         return user;

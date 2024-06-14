@@ -18,9 +18,17 @@ import vn.conyeu.common.converter.ObjectMapToString;
 @JsonIgnoreProperties({"ticket"})
 //@formatter:on
 public class TicketTemplate extends LongUId<TicketTemplate> {
+
+	@Column(length = 50)
 	private String code;
+
+	@Column(length = 150)
 	private String title;
+
+	@Column(length = 20)
 	private String icon;
+
+	@Column(length = 300)
 	private String summary;
 	
 	@JsonProperty("bg_color")

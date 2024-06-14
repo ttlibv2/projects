@@ -4,8 +4,9 @@
     "editor.fontWeight": "normal",
     "angular.trace.server": "messages",
     "editor.acceptSuggestionOnEnter": "on",
-    "workbench.colorTheme": "Visual Studio Light",
+    "workbench.colorTheme": "Quiet Light",
     "workbench.colorCustomizations": {
         
-    }
+    },
+    "genGetSet.classic": true
 }

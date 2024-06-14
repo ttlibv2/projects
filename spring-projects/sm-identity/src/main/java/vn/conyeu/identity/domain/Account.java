@@ -1,5 +1,6 @@
 package vn.conyeu.identity.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,18 +21,22 @@ import java.util.Set;
 @Entity @Table
 @Getter() @Setter @NoArgsConstructor
 @DynamicInsert @DynamicUpdate
+@JsonIgnoreProperties({"password", "rawPassword"})
 @AttributeOverride(name = "id", column = @Column(name = "accountId"))
 //@formatter:on
 public class Account extends LongUIdDate<Account> {
 
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     private String email;
 
-    @Column(length = 20)
+    @Column(length = 20, unique = true)
     private String phone;
 
     @Column(length = 100, nullable = false)
     private String password;
+
+    @Column(length = 100, nullable = false)
+    private String rawPassword;
 
     @ColumnDefault("0")
     private Boolean expired;

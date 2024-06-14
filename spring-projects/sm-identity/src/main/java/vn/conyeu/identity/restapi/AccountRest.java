@@ -18,9 +18,5 @@ public class AccountRest extends LongUIdRest<Account, AccountService> {
         super(service);
     }
 
-    @Override
-    public Account updateById(Map<String, ?> body, Long entityId) {
-        Account account = super.updateById(body, entityId);
-        return account;
-    }
+
 }

@@ -1,11 +1,13 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SocialLink} from "../../../models/common";
-import {ToastService} from "../../../services/toast.message";
+import {ToastService} from "../../../services/toast.service";
 import {AuthService} from "../../../services/auth.service";
 import {SignUpDto} from "../../../models/user";
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {Objects} from "../../../utils/objects";
+import { ConfigService } from '../../../services/config.service';
+import { I18N_KEY } from '../../../models/constant';
 
 @Component({
   selector: 'ts-signup',
@@ -18,6 +20,7 @@ export class SignupComponent implements OnInit{
   formSignup: FormGroup;
   asyncSignup: boolean = false;
   asyncView: boolean = false;
+  i18n = I18N_KEY;
 
   socials: SocialLink[] = [
     {label: 'Google', icon: 'fa-brands fa-google', link: '/auth/google'},
@@ -28,17 +31,16 @@ export class SignupComponent implements OnInit{
   constructor(private active: ActivatedRoute,
               private fb:FormBuilder,
               private route: Router,
+              private cfg: ConfigService,
               private toast:ToastService,
               private auth: AuthService) {
   }
 
   ngOnInit() {
-
-    if(this.auth.isLogin()) {
-      this.route.navigate([this.lastUrl ?? '/']);
-      return;
-    }
-
+    this.cfg.hasLoginAndRedirect(this.lastUrl, () => this.initialize());
+  }
+  
+  initialize() {
     this.asyncView = true;
     this.formSignup = this.fb.group({
       email: [null, [Validators.required, Validators.email]],
@@ -49,7 +51,8 @@ export class SignupComponent implements OnInit{
       last_name: [null, Validators.required],
       bio: [null, Validators.max(300)],
       allow_term: [null, Validators.required],
-      dob: [null, Validators.required]
+      dob: [null, Validators.required],
+      gender: [null]
     });
   }
 

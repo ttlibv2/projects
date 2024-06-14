@@ -23,7 +23,7 @@ public class OdCatalogRest extends OdBaseRest {
     }
 
     @GetMapping("get-all")
-    public Object catalog_getAll(@RequestParam String include) {
+    public ObjectMap getAll(@RequestParam String include) {
         include = Objects.isBlank(include) ? "all" : include.toLowerCase().trim();
 
         final OdTicketService service = service();
@@ -31,51 +31,55 @@ public class OdCatalogRest extends OdBaseRest {
         final List<String> segments = List.of(include.split(","));
         final ObjectMap map = new ObjectMap();
 
-        if(isAll || segments.contains("ticket_type")) {
-            map.set("ticket_type", getAllTicketType());
+        if(isAll || segments.contains("ls_ticket_type")) {
+            map.set("ls_ticket_type", getAllTicketType());
         }
 
-        if(isAll || segments.contains("team")) {
-            map.set("team", getAllHelpdeskTeam());
+        if(isAll || segments.contains("ls_helpdesk_team")) {
+            map.set("ls_helpdesk_team", getAllHelpdeskTeam());
         }
 
         List<ClsCategory> categories = null;
-        if(isAll || segments.contains("catagory")) {
+        if(isAll || segments.contains("ls_category")) {
             categories =  getAllCate();
-            map.set("catagory", categories);
+            map.set("ls_category", categories);
         }
 
 
-        if(isAll || segments.contains("catagory_sub")) {
+        if(isAll || segments.contains("ls_category_sub")) {
             List<ClsCategorySub> subList = categories == null ? getAllCateSub()
                     : categories.stream().map(cate -> service.categorySub().search(cate.getName()))
                     .flatMap(Collection::stream).toList();
 
-            map.set("catagory_sub",subList);
+            map.set("ls_category_sub",subList);
         }
 
-        if(isAll || segments.contains("tags")) {
-            map.set("tags", getAllTicketTags());
+        if(isAll || segments.contains("ls_ticket_tag")) {
+            map.set("ls_ticket_tag", getAllTicketTags());
         }
 
-        if(isAll || segments.contains("priority")) {
-            map.set("priority", getAllTicketPriority());
+        if(isAll || segments.contains("ls_priority")) {
+            map.set("ls_priority", getAllTicketPriority());
         }
 
-        if(isAll || segments.contains("products")) {
-            map.set("products", getAllProduct());
+        if(isAll || segments.contains("ls_product")) {
+            map.set("ls_product", getAllProduct(10));
         }
 
-        if(isAll || segments.contains("subject_type")) {
-            map.set("subject_type", getSubjecType());
+        if(isAll || segments.contains("ls_subject_type")) {
+            map.set("ls_subject_type", getSubjecType());
         }
 
-        if(isAll || segments.contains("stage")) {
-            map.set("stage", getAllStage());
+        if(isAll || segments.contains("ls_stage")) {
+            map.set("ls_stage", getAllStage());
         }
 
-        if(isAll || segments.contains("repiled_status")) {
-            map.set("repiled_status", getRepiledStatus());
+        if(isAll || segments.contains("ls_repiled_status")) {
+            map.set("ls_repiled_status", getRepiledStatus());
+        }
+
+        if(isAll || segments.contains("ls_topic")) {
+           // map.set("ls_topic", getAllTopic());
         }
 
         return map;
@@ -148,8 +152,8 @@ public class OdCatalogRest extends OdBaseRest {
     }
 
     @GetMapping("get-product")
-    public List<ClsProduct> getAllProduct() {
-        return service().product().getAll();
+    public List<ClsProduct> getAllProduct(@RequestParam Integer size) {
+        return service().product().getAll(size);
     }
 
 }

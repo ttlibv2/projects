@@ -240,14 +240,12 @@ public class OdTicketRest extends OdBaseRest {
             case UPDATE_TICKET -> {
                 ClsTicket cls = (ClsTicket) clsNew;
                 OdTRHelper.updateTicket(ticket, cls);
-
                 detail = ticket.getDetail();
                 detail.setModifyAt(cls.getWriteAt());
             }
 
             case DELETE_TICKET -> {
                 ClsTicket cls = (ClsTicket) clsNew;
-                ticket.setStatus(TicketStatus.DELETE);
                 ticket.getDetail().setDeleteAt(LocalDateTime.now());
             }
             case ADD_NOTE -> {
@@ -262,6 +260,7 @@ public class OdTicketRest extends OdBaseRest {
                 ClsMessage cls = (ClsMessage) clsNew;
                 detail = ticket.getDetail();
                 detail.setImageAt(LocalDateTime.now());
+
                 ClsFileMap fileMap = cls.getFileMap();
 
                 if (fileMap.isEmpty()) {

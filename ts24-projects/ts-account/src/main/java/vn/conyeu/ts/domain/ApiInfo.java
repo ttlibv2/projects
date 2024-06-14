@@ -48,6 +48,10 @@ public class ApiInfo extends LongUId<ApiInfo> {
     private String password;
 
 
+    @JsonProperty("api_id")
+    public Long getId() {
+        return super.getId();
+    }
 
     public ApiInfo copy() {
         ApiInfo cfg = new ApiInfo();

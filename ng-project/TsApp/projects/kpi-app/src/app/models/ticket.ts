@@ -87,7 +87,7 @@ export class Ticket extends BaseModel {
   od_priority?: cls.ClsPriority;
   od_repiled?: cls.ClsRepiled;
   od_subject_type?: cls.ClsSubjectType;
-  od_tags?: cls.ClsTags;
+  od_tags?: cls.ClsTag;
   od_team?: cls.ClsTeam;
   od_team_head?: cls.ClsTeamHead;
   od_ticket_type?: cls.ClsTicketType;

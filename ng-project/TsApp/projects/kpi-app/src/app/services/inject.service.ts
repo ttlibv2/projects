@@ -1,11 +1,8 @@
-import {Injectable, InjectFlags, InjectOptions, Injector, ProviderToken} from "@angular/core";
+import {Injectable, InjectOptions, Injector, ProviderToken} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Toast} from "primeng/toast";
-import {ConfigService} from "./app-config.service";
-import {MessageService} from "primeng/api";
 import {DialogService} from "primeng/dynamicdialog";
-import {ToastService} from "./toast.message";
-import {UserService} from "./user.service";
+import {ToastService} from "./toast.service";
+import { ConfigService } from "./config.service";
 
 @Injectable({providedIn: 'root'})
 export class InjectService {

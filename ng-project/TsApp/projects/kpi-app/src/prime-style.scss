@@ -1,5 +1,5 @@
 .p-calendar,
-.p-iconfield{
+.p-iconfield {
   display: flex;
 }
 
@@ -23,8 +23,8 @@
 
     &-preview {
       padding: unset;
-      border-top-right-radius: 6px!important;
-      border-bottom-right-radius: 6px!important;
+      border-top-right-radius: 6px !important;
+      border-bottom-right-radius: 6px !important;
       width: 25px;
     }
 
@@ -58,25 +58,33 @@ form {
 
   .g-field {
 
-    .g-label, > label {
+    .g-label,
+    >label {
       display: inline-block;
       margin-bottom: 0.25rem;
 
-      > span.star {
+      >span.star {
         color: var(--red-600);
       }
     }
 
     .required {
+
       &.p-inputtext,
       .p-component {
         border-color: var(--red-600);
       }
     }
 
+    .p-multiselect-item {
+      .p-component {
+        width: unset!important;
+      }
+    }
+
+
     .p-component {
       width: 100%;
-
       &.p-inputtext,
       .p-multiselect-label,
       .p-dropdown-label {
@@ -92,4 +100,14 @@ form {
 
 ts-template-form {
   display: block;
+}
+
+
+.p-inputgroup {
+
+  .p-password:last-child input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
 }
