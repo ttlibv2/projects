@@ -7,6 +7,7 @@ import {AuthService} from "../../../services/auth.service";
 import {Router} from "@angular/router";
 import {ToastService} from "../../../services/toast.service";
 import { ConfigService } from '../../../services/config.service';
+import {TranslateService} from "@ngx-translate/core";
 
 
 @Component({
@@ -31,6 +32,7 @@ export class SigninComponent implements OnInit {
   cacheUsers: string[] = [];
 
   constructor(private fb: FormBuilder,
+              private translate: TranslateService,
               private router: Router,
               private cfg: ConfigService,
               private auth: AuthService,
@@ -67,6 +69,11 @@ export class SigninComponent implements OnInit {
 
 
   onSignIn() {
+    if(this.signinForm.invalid) {
+      this.toast.error({summary: this.cfg.i18n.form_invalid})
+      return;
+    }
+
     const obj: ChkUser = this.signinForm.getRawValue();
 
     if (this.isDev && Objects.notBlank(obj.url_dev)) {

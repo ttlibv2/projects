@@ -7,6 +7,7 @@
             <p-inputGroupAddon><i class="pi pi-user"></i></p-inputGroupAddon>
             <p-autoComplete [suggestions]="searchUser" (completeMethod)="onSearchUser($event)"
                             (onSelect)="selectUser($event.value)" [dropdownIcon]="'pi pi-user'"
+                            [showEmptyMessage]="false"
                             formControlName="username" placeholder="Tên đăng nhập"></p-autoComplete>
           </p-inputGroup>
         </div>

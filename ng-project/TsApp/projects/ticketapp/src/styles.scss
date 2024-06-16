@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+@import "../public/fontawesome/css/all.css";
+
+// ag-grid theme
+@import "ag-grid-community/styles/ag-grid.min.css";
+@import  "ag-grid-community/styles/ag-theme-quartz.css";
+@import 'ngx-toastr/toastr';
+
+//Editor is rich text editor component based on Quill
+@import "quill/dist/quill.core.css";
+@import "quill/dist/quill.snow.css";
+
+@import "primeflex/primeflex.min.css";
+@import "primeicons/primeicons.css";
+@import "primeng/resources/primeng.css";
+
+@import "primeng/theme/aura/aura-light/lime/theme.scss";
+@import "primeng/theme-base/components";
+@import "primeng/theme-base/custom" ;
+
+
+// @import "prime-style";
+ 

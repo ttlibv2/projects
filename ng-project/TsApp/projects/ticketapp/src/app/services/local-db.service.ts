@@ -25,11 +25,17 @@ import { JsonObject, ResponseToModel } from '../models/common';
 import { Question } from '../models/question';
 import { AppConfig } from '../models/app-config';
 import { BaseModel } from '../models/base-model';
-import "fake-indexeddb/auto";
 
 const { isNull, isArray, isClass } = Objects;
 
 Dexie.debug = true;
+
+function observable<E>(promise: Promise<E>, logging: boolean = true): Observable<E> {
+  return from(promise.catch(err => {
+    console.log(err);
+    return err;
+  }));
+}
 
 @Injectable({ providedIn: 'root' })
 export class LocalDbService extends Dexie {
@@ -47,7 +53,7 @@ export class LocalDbService extends Dexie {
       clsTeam: 'id',
       clsAssign: 'id',
       clsSubjectType: 'id',
-      clsRepiled: 'id',
+      clsReplied: 'id',
       clsCate: 'id',
       clsCateSub: 'id',
       clsTicketType: 'id',
@@ -63,7 +69,9 @@ export class LocalDbService extends Dexie {
 
     })
 
-    this.open();
+    this.open()
+        .then(s => console.log(`opening database success `, s._dbSchema))
+        .catch(err => console.error(`opening database error -> `, err));
   }
 
 
@@ -76,6 +84,7 @@ export class LocalDbService extends Dexie {
       return newTable;
     }
   }
+
 
 
 
@@ -111,8 +120,8 @@ export class LocalDbService extends Dexie {
     return this.get_set_tb('clsSubjectType', ClsSubjectType);
   }
 
-  get clsRepiled(): DbTable<ClsRepiled, number> {
-    return this.get_set_tb('clsRepiled', ClsRepiled);
+  get clsReplied(): DbTable<ClsRepiled, number> {
+    return this.get_set_tb('clsReplied', ClsRepiled);
   }
 
   get clsCate(): DbTable<ClsCategory, number> {
@@ -181,52 +190,52 @@ export class DbTable<T, Id extends IndexableType> {
     this.modelType = type;
   }
 
-  getFirst(): Observable<T> {
-    return from(this.table.toCollection()
+  get_first(): Observable<T> {
+    return observable(this.table.toCollection()
       .first(json => this.jsonToModel(json)));
   }
 
   getById(id: Id): Observable<T> {
-    return from(this.table.get(id));//.then(s => isNull(s) ? null : this.jsonToModel(s)));
+    return observable(this.table.get(id));//.then(s => isNull(s) ? null : this.jsonToModel(s)));
   }
 
   getAll(): Observable<T[]> {
-    return from(this.table.toArray(this.listToModel));
+    return observable(this.table.toArray(this.listToModel));
   }
 
   delById(id: Id): Observable<any> {
-    return from(this.table.where(':id').equals(id).delete())
+    return observable(this.table.where(':id').equals(id).delete())
   }
 
   delAll(): Observable<any> {
-    return from(this.table.clear());
+    return observable(this.table.clear());
   }
 
   existsById(key: Id): Observable<boolean> {
     const keyName = this.table.schema.primKey.keyPath;
-    return from(this.table.where(keyName).equals(key).count(c => c > 0));
+    return observable(this.table.where(keyName).equals(key).count(c => c > 0));
   }
 
   save(data: T | T[] | JsonObject | JsonObject[], key?: Id): Observable<any> {
     if (isNull(data)) return EMPTY;
     else if (!isArray(data)) {
       const dataSave = isClass(data) ? data : this.jsonToModel(data);
-      return from(this.table.put(dataSave, key).then(s => dataSave));
+      return observable(this.table.put(dataSave, key).then(s => dataSave));
     }
     else {
       const dataSave = (<any[]>data).flatMap(item => isClass(item) ? item : this.jsonToModel(item));
-      return from(this.table.bulkPut(dataSave).then(s => dataSave));
+      return observable(this.table.bulkPut(dataSave).then(s => dataSave));
     }
 
   }
 
   deleteById(key: Id): Observable<void> {
-    return from(this.table.delete(key));
+    return observable(this.table.delete(key));
   }
 
 
   update(key: Id, changes: UpdateSpec<T>): Observable<number> {
-    return from(this.table.update(key, changes));
+    return observable(this.table.update(key, changes));
   }
 
 
@@ -241,7 +250,7 @@ export class DbTable<T, Id extends IndexableType> {
 export class DbUserTable extends DbTable<User, number> {
 
   read(): Observable<User> {
-    return from(this.table.toCollection().first());
+    return observable(this.table.toCollection().first());
   }
 
   saveToken(user_id: number, token: AuthToken): Observable<any> {
@@ -262,12 +271,12 @@ export class ConfigTable extends DbTable<any, string> {
 
   set(code: string, value: any): Observable<any> {
     if(Objects.isNull(value)) return this.deleteById(code);
-    else return from(this.table.put({value, code}, code));//.pipe(map(() => value));
+    else return observable(this.table.put({value, code}, code));//.pipe(map(() => value));
   }
 
   read(): Observable<AppConfig> {
     const json: JsonObject = {};
-    return from(this.table.toCollection().each((item, cursor) => {
+    return observable(this.table.toCollection().each((item, cursor) => {
       let field: any = cursor.key;
       json[field] = item?.value;
     }).then(() => AppConfig.from(json)));

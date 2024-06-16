@@ -9,7 +9,7 @@ import {TranslateService} from "@ngx-translate/core";
     <p-toast key="TOAST_MESSAGE">
       <ng-template let-message pTemplate="message">
         <div class="flex flex-1 gap-2">
-          <p-inputIcon styleClass="pi pi-spinner pi-spin" />
+          <p-inputIcon [styleClass]="message.icon" *ngIf="!!message.icon"/>
           <div class="flex flex-column flex-1">
             <div [innerHTML]="message.summary"></div>
             <div [innerHTML]="message.detail"></div>

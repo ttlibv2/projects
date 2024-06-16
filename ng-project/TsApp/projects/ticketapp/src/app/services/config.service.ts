@@ -6,6 +6,7 @@ import { NavigationExtras, Router } from "@angular/router";
 import { AppConfig, IAppConfig } from "../models/app-config";
 import { LoggerService } from "../logger/logger.service";
 import { Objects } from "../utils/objects";
+import {LocalDbService} from "./local-db.service";
 
 const DEFAULT_CONFIG: IAppConfig = {
   baseUrl: 'http://localhost:8888',
@@ -18,16 +19,15 @@ export class ConfigService  {
   private config: AppConfig = new AppConfig().update(DEFAULT_CONFIG);
 
 
-  constructor(//private db: LocalDbService,
+  constructor(private db: LocalDbService,
     private logger: LoggerService,
     private router: Router) { }
 
     private save(code: string, data: any, selfUpdate: boolean = true): Observable<any> {
-      //const observable = this.db.tbAppCfg.set(code, data);
-     // return !selfUpdate ? observable : observable.pipe(
-     //   tap(_ => this.config[code] = data)
-     // );
-      return EMPTY;
+      const observable = this.db.tbAppCfg.set(code, data);
+     return !selfUpdate ? observable : observable.pipe(
+       tap(_ => this.config[code] = data)
+     );
     }
 
   get i18n(): Translation {
@@ -77,8 +77,7 @@ export class ConfigService  {
 
 
   get_user(): Observable<User> {
-    //return this.db.user.read();
-    return EMPTY;
+    return this.db.user.read();
   }
 
 
@@ -96,10 +95,9 @@ export class ConfigService  {
 
   
   read(): Observable<AppConfig> {
-    // return this.db.tbAppCfg.read().pipe(
-    //   tap(cfg => this.config = cfg.updateDefault(DEFAULT_CONFIG))
-    // );
-    return EMPTY;
+    return this.db.tbAppCfg.read().pipe(
+      tap(cfg => this.config = cfg.updateDefault(DEFAULT_CONFIG))
+    );
   }
 
 }

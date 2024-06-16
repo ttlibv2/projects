@@ -1,5 +1,6 @@
 package vn.conyeu.ts.dtocls;
 
+import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.NotFound;
 import vn.conyeu.ts.ticket_rest.TicketAction;
@@ -9,9 +10,9 @@ import java.util.List;
 public final class Errors {
 
     public static BaseException noUserApiCode(String apiCode) {
-        return new NotFound("user_api.code_404")
-                .message("Khong tim thay user api [%s]", apiCode)
-                .detail("apiCode", apiCode);
+        return new BadRequest("user_api.code_404")
+                .message("Bạn chưa cấu hình tài khoản '%s'", apiCode)
+                .detail("api_code", apiCode);
     }
 
     public static BaseException notPartnerId(Long partnerId) {

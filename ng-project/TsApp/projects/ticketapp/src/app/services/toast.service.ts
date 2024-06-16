@@ -2,18 +2,21 @@ import {Injectable} from "@angular/core";
 import { MessageService} from "primeng/api";
 import {MessageObj, Severity} from "../models/common";
 import {Objects} from "../utils/objects"
+import {Toast, ToastrService} from "ngx-toastr";
 
-const {isEmpty, isBlank} = Objects;
+const {isEmpty, isBlank, isArray, isObject} = Objects;
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
 
-  constructor(private message: MessageService) {
+  constructor(//public message: MessageService,
+              public message: ToastrService) {
   }
 
   private buildDetail(message: MessageObj): string {
-    if(isEmpty(message.details)) return message.detail;
-    else return '- ' + message.details.join('<br>- ');
+    const md: any = message.details;
+    if(isEmpty(md) || isObject(md) || !isArray(md)) return "";
+    else return '- '+ md.join('<br>- ');
   }
 
   private buildSummary(message: MessageObj): string {
@@ -21,14 +24,16 @@ export class ToastService {
     return `${message.summary}${code}`;
   }
 
-  show(severity: Severity, message: MessageObj): void {
-    const detail = this.buildDetail(message);
-    const summary = this.buildSummary(message);
-    message.life = message.life ?? 60 * 60 * 1000; // 1h
-    this.message.add({...message,
-      severity, detail, summary,
-      key: 'TOAST_MESSAGE'
-    });
+  show(severity: Severity, message: MessageObj) {
+    //const detail = this.buildDetail(message);
+    //const summary = this.buildSummary(message);
+    //message.life = message.life ?? 60 * 60 * 1000; // 1h
+    //this.message.add({...message,
+    //  severity, detail, summary,
+    //  //key: 'TOAST_MESSAGE'
+    //});
+
+    return this.message.show(severity, message.summary);
   }
 
   warning(message: MessageObj): void {
@@ -48,13 +53,13 @@ export class ToastService {
   }
 
   loading(message: MessageObj): void {
-    this.show('error', {...message, 
+    this.show('primary', {...message,
       life: 60 * 60 * 1000,
       icon: 'pi pi-spin pi-spinner'
     })
   }
 
   clearAll(): void {
-    this.message.clear('TOAST_MESSAGE');
+    //this.message.clear('TOAST_MESSAGE');
   }
 }

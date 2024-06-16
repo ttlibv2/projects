@@ -122,16 +122,17 @@ export class TicketFormComponent implements OnInit {
 
   onLoadCatalogs() {
     this.asyncLoadCate = true;
-    this.toast.loading({ summary: 'Đang lấy danh mục. Vui lòng chờ' });
+    this.toast.loading({ summary: 'Đang lấy danh mục. Vui lòng chờ' , key: '123333'});
 
     this.catalogSrv.getAll().subscribe({
       error: err => {
         this.asyncLoadCate = false;
-        this.toast.clearAll();
+        //this.toast.message.clear('123333');
+        //this.toast.clearAll();
       },
       next: res => {
         this.catalog = res;
-        this.toast.clearAll();
+        //this.toast.clearAll();
         console.log(res);
       },
 

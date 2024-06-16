@@ -58,13 +58,13 @@ export class SignupComponent implements OnInit{
 
   onSignUp() {
     if(this.formSignup.invalid) {
-      this.toast.warning({summary: 'Vui lòng nhập đầy đủ thông tin'});
+      this.toast.warning({summary: this.cfg.i18n.form_invalid});
       return;
     }
 
     const dto:SignUpDto = this.formSignup.getRawValue();
     if(dto.password !== dto.re_password) {
-      this.toast.warning({summary: 'Mật khẩu không giống nhau.'});
+      this.toast.warning({summary: this.cfg.i18n.repeatPassInvalid});
       return;
     }
 
@@ -72,7 +72,7 @@ export class SignupComponent implements OnInit{
     this.auth.signup(dto).subscribe({
       next: res => {
         this.asyncSignup = false;
-        this.toast.success({summary: 'Đăng ký thành công.'});
+        this.toast.success({summary: this.cfg.i18n.signupOk});
         if(Objects.notBlank(this.lastUrl)) this.route.navigate([this.lastUrl]);
         else this.route.navigate(['/']);
       },

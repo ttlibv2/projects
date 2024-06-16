@@ -29,18 +29,20 @@ import { LoggerWriterService } from './logger/writer.service';
 import { LoggerService } from './logger/logger.service';
 import { MessagesModule } from 'primeng/messages';
 import { InputIconModule } from 'primeng/inputicon';
+import {ToastrModule} from "ngx-toastr";
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 registerLocaleData(vi);
 
-function LOAD_CFIG(cfig: ConfigService, logger: LoggerService) {
-  return () => cfig.read().subscribe({
+function LOAD_CFG(config: ConfigService, logger: LoggerService) {
+  return () => config.read().subscribe({
     error: err => logger.error('initialize app error --> ', err),
     next: res => logger.info('initialize app success --> ', res)
   });
 }
 
 function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './public/i18n/', '.json');
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 const translateConfig: TranslateModuleConfig = {
@@ -58,6 +60,7 @@ const translateConfig: TranslateModuleConfig = {
   ],
   imports: [
     BrowserModule,
+
     BrowserAnimationsModule,
     CommonModule,
     RouterOutlet,
@@ -65,6 +68,13 @@ const translateConfig: TranslateModuleConfig = {
     AppConfigModule,
     ToastModule,
     DatePipe,
+      ToastrModule.forRoot({
+        autoDismiss: true,
+        closeButton: true,
+        enableHtml: true,
+        newestOnTop: true,
+        tapToDismiss: true
+      }),
     MessagesModule,
     InputIconModule,
     TranslateModule.forRoot(translateConfig),
@@ -89,8 +99,8 @@ const translateConfig: TranslateModuleConfig = {
   providers: [
     provideAnimationsAsync(),
     provideHttpClient(withFetch(), withInterceptors([tokenInterceptor])),
-    provideClientHydration(),
-    {provide: APP_INITIALIZER, useFactory: LOAD_CFIG, deps: [ConfigService, LoggerService], multi: true},
+   // provideClientHydration(),
+   {provide: APP_INITIALIZER, useFactory: LOAD_CFG, deps: [ConfigService, LoggerService], multi: true},
     DatePipe,  MessageService,
   ],
   bootstrap: [AppComponent],

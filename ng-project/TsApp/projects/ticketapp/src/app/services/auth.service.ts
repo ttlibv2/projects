@@ -19,21 +19,30 @@ export class AuthService extends ClientService {
       re_password: encodeBase64(dto.re_password), signup_type: 'email'
     };
 
-    return this.post(`/auth/signup`, dtoNew)
-      .pipe(tap(res => this.db.user.saveToken(res.user_id, res)));
+    const responseObs =  this.post(`/auth/signup`, dtoNew);
+    return this.saveAndGetInfo(responseObs, {
+      password: dto.password,
+      username: dto.email,
+      remember: true,
+      url_dev: this.config.get_baseUrl()
+    })
 
   }
 
   signin(user: ChkUser): Observable<any> {
-    const object = {
+    const responseObs = this.post(`/auth/signin`, {
       username: user.username, sign_type: 'email',
       password: encodeBase64(user.password)
-    };
+    });
 
-    return this.post(`/auth/signin`, object).pipe(
-      concatMap(token => this.config.set_authToken(token)),
-      concatMap(_ => this.config.set_rememberUser(user)),
-      concatMap(() => this.user.getProfile())
+    return this.saveAndGetInfo(responseObs, user);
+  }
+
+  private saveAndGetInfo(responseToken: Observable<AuthToken>, user: ChkUser): Observable<any> {
+    return responseToken.pipe(
+        concatMap(token => this.config.set_authToken(token)),
+        concatMap(_ => this.config.set_rememberUser(user)),
+        concatMap(() => this.user.getProfile())
     );
   }
 

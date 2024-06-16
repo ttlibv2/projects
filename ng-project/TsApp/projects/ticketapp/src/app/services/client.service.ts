@@ -6,7 +6,7 @@ import {Objects} from "../utils/objects";
 import {InjectService} from "./inject.service";
 import {Router} from "@angular/router";
 import { ConfigService } from './config.service';
-// import { LocalDbService } from './local-db.service';
+import {LocalDbService} from "./local-db.service";
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -26,8 +26,7 @@ export class ClientService {
   }
 
   protected get db(): any {
-    //return this.inject.get(LocalDbService);
-    throw new Error();
+    return this.inject.get(LocalDbService);
   }
 
 
@@ -65,12 +64,14 @@ export class ClientService {
   /**
    * Handler error client
    * */
-  protected handlerError(err: any, url: string, showError: boolean): Observable<any> {
-    const object: MessageObj = {code: 'unknown', details: []};
+  protected handlerError(err: any, url: string, showError: boolean = true): Observable<any> {
+    let object: MessageObj = {code: 'unknown', details: []};
 
     if(err instanceof HttpErrorResponse) {
-      object.code = err?.error?.code;
-      object.summary = err?.error?.summary;
+      object = {...err.error};
+
+     // object.code = err?.error?.code;
+     // object.summary = err?.error?.summary;
 
       if(err.status === 0) {
         object.code = 'disconnect';
@@ -80,6 +81,7 @@ export class ClientService {
           `Vui lòng kiểm tra kết nối: <a href="${url}" target="_blank" rel="noopener noreferrer">Kiểm tra</a>`,
         ];
       }
+
     }
 
     if(showError) {
