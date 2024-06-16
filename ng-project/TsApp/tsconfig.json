@@ -22,7 +22,7 @@
     "useDefineForClassFields": false,
     "paths": {
       "toast": [
-        "./dist/toast"
+        "./dist/ngx-toast"
       ]
     },
     "lib": [

@@ -30,7 +30,6 @@ import { LoggerService } from './logger/logger.service';
 import { MessagesModule } from 'primeng/messages';
 import { InputIconModule } from 'primeng/inputicon';
 import {ToastrModule} from "ngx-toastr";
-import { trigger, state, style, transition, animate } from '@angular/animations';
 
 registerLocaleData(vi);
 
