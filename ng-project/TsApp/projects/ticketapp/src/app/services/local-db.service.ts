@@ -25,6 +25,7 @@ import { JsonObject, ResponseToModel } from '../models/common';
 import { Question } from '../models/question';
 import { AppConfig } from '../models/app-config';
 import { BaseModel } from '../models/base-model';
+import "fake-indexeddb/auto";
 
 const { isNull, isArray, isClass } = Objects;
 

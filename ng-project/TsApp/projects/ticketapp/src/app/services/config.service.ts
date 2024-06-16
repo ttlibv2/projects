@@ -1,7 +1,6 @@
 import { Injectable, OnInit } from "@angular/core";
 import { EMPTY, Observable, map, tap } from "rxjs";
 import { AuthToken, ChkUser, RememberUser, User } from "../models/user";
-import { LocalDbService } from "./local-db.service";
 import { Translation } from "../models/translation";
 import { NavigationExtras, Router } from "@angular/router";
 import { AppConfig, IAppConfig } from "../models/app-config";
@@ -19,15 +18,16 @@ export class ConfigService  {
   private config: AppConfig = new AppConfig().update(DEFAULT_CONFIG);
 
 
-  constructor(private db: LocalDbService,
+  constructor(//private db: LocalDbService,
     private logger: LoggerService,
     private router: Router) { }
 
     private save(code: string, data: any, selfUpdate: boolean = true): Observable<any> {
-      const observable = this.db.tbAppCfg.set(code, data);
-      return !selfUpdate ? observable : observable.pipe(
-        tap(_ => this.config[code] = data)
-      );
+      //const observable = this.db.tbAppCfg.set(code, data);
+     // return !selfUpdate ? observable : observable.pipe(
+     //   tap(_ => this.config[code] = data)
+     // );
+      return EMPTY;
     }
 
   get i18n(): Translation {
@@ -39,7 +39,7 @@ export class ConfigService  {
   }
 
   set_baseUrl(url: string): Observable<string> {
-    return this.save('baseUrl', url);;
+    return this.save('baseUrl', url);
   }
 
   get_authToken(): AuthToken {
@@ -77,7 +77,8 @@ export class ConfigService  {
 
 
   get_user(): Observable<User> {
-    return this.db.user.read();
+    //return this.db.user.read();
+    return EMPTY;
   }
 
 
@@ -95,9 +96,10 @@ export class ConfigService  {
 
   
   read(): Observable<AppConfig> {
-    return this.db.tbAppCfg.read().pipe(
-      tap(cfg => this.config = cfg.updateDefault(DEFAULT_CONFIG))
-    );
+    // return this.db.tbAppCfg.read().pipe(
+    //   tap(cfg => this.config = cfg.updateDefault(DEFAULT_CONFIG))
+    // );
+    return EMPTY;
   }
 
 }

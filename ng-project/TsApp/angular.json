@@ -3,14 +3,15 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "KpiApp": {
+    "ticketapp": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
+          "inlineTemplate": true,
+          "inlineStyle": true,
           "style": "scss",
           "skipTests": true,
-          "standalone": false,
-          "displayBlock": true
+          "standalone": false
         },
         "@schematics/angular:class": {
           "skipTests": true
@@ -36,45 +37,50 @@
           "skipTests": true
         }
       },
-      "root": "projects/kpi-app",
-      "sourceRoot": "projects/kpi-app/src",
+      "root": "projects/ticketapp",
+      "sourceRoot": "projects/ticketapp/src",
       "prefix": "ts",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/kpi-app",
-            "index": "projects/kpi-app/src/index.html",
-            "browser": "projects/kpi-app/src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
-            "tsConfig": "projects/kpi-app/tsconfig.app.json",
+            "outputPath": "dist/ticketapp",
+            "index": "projects/ticketapp/src/index.html",
+            "browser": "projects/ticketapp/src/main.ts",
+            "polyfills": [  "zone.js"  ],
+            "tsConfig": "projects/ticketapp/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/kpi-app/src/favicon.ico",
-              "projects/kpi-app/src/assets"
+              {
+                "glob": "**/*",
+                "input": "projects/ticketapp/public"
+              }
             ],
             "styles": [
-              "projects/kpi-app/src/styles.scss"
+              "projects/ticketapp/src/styles.scss"
             ],
             "scripts": [],
-            "server": "projects/kpi-app/src/main.server.ts",
-            "prerender": false,
-            "ssr": false
+            "server": "projects/ticketapp/src/main.server.ts",
+            "prerender": true,
+            "ssr": { "entry": "projects/ticketapp/server.ts"  },
+            "allowedCommonJsDependencies": ["crypto-js", "quill-delta"],
+            "budgets": [{
+              "type": "initial",
+              "maximumWarning": "8mb"
+            }]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "2kB",
+                  "maximumError": "4kB"
                 }
               ],
               "outputHashing": "all"
@@ -91,43 +97,21 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "KpiApp:build:production"
+              "buildTarget": "ticketapp:build:production"
             },
             "development": {
-              "buildTarget": "KpiApp:build:development"
+              "buildTarget": "ticketapp:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "KpiApp:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
-            "tsConfig": "projects/kpi-app/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "projects/kpi-app/src/favicon.ico",
-              "projects/kpi-app/src/assets"
-            ],
-            "styles": [
-              "projects/kpi-app/src/styles.scss"
-            ],
-            "scripts": []
-          }
+          "builder": "@angular-devkit/build-angular:extract-i18n"
         }
       }
     }
   },
   "cli": {
-    "analytics": "95c45ab6-4d61-4835-a7b3-dc5c9cdf3939"
+    "analytics": "5945f354-988d-426f-9473-632c8d35d021"
   }
 }

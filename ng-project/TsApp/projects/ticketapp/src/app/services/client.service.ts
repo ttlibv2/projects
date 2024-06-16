@@ -6,7 +6,7 @@ import {Objects} from "../utils/objects";
 import {InjectService} from "./inject.service";
 import {Router} from "@angular/router";
 import { ConfigService } from './config.service';
-import { LocalDbService } from './local-db.service';
+// import { LocalDbService } from './local-db.service';
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -25,8 +25,9 @@ export class ClientService {
     return this.inject.get(Router);
   }
 
-  protected get db(): LocalDbService {
-    return this.inject.get(LocalDbService);
+  protected get db(): any {
+    //return this.inject.get(LocalDbService);
+    throw new Error();
   }
 
 

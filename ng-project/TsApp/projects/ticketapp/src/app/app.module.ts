@@ -40,7 +40,7 @@ function LOAD_CFIG(cfig: ConfigService, logger: LoggerService) {
 }
 
 function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, './public/i18n/', '.json');
 }
 
 const translateConfig: TranslateModuleConfig = {

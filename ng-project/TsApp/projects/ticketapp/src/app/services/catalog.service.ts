@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { ClientService } from "./client.service";
 import { Observable, forkJoin, of, switchMap, tap } from "rxjs";
 import { Catalog } from "../models/catalog";
-import { DbTable, LocalDbService } from "./local-db.service";
+// import { DbTable, LocalDbService } from "./local-db.service";
 import { JsonObject } from '../models/common';
 import { ClsAssign } from '../models/od-cls';
 
 
-export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable<any, any> } = {
+export const CATALOG_MAP: { [key: string]: (db: any) => any} = {//(db: LocalDbService) => DbTable<any, any> } = {
   ls_chanel: db => db.chanel,
   ls_software: db => db.software,
   ls_group_help: db => db.groupHelp,

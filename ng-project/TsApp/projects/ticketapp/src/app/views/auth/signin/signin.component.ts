@@ -7,9 +7,6 @@ import {AuthService} from "../../../services/auth.service";
 import {Router} from "@angular/router";
 import {ToastService} from "../../../services/toast.service";
 import { ConfigService } from '../../../services/config.service';
-import { LocalDbService } from '../../../services/local-db.service';
-import { LoggerService } from '../../../logger/logger.service';
-import { switchMap, tap } from 'rxjs';
 
 
 @Component({
