@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/archetypes/maven-archetype-blank/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/archetypes/maven-archetype-multiple-javafx/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/java-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-controls/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-effects/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-icons/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-sampler/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-sampler/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-styleable/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-theme/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-theme/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/fx-utils/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/icon-packs/awesome-font-icon/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/javafx-projects/icon-packs/awesome-font-icon/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservice/micro-projects/eureka-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservice/micro-projects/identity/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservice/micro-projects/zuul-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-projects/sm-address/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-projects/sm-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-projects/sm-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-projects/sm-cookie/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-projects/sm-exception/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-projects/sm-identity/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-projects/sm-web/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ts24-projects/od-client/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ts24-projects/od-ticket/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ts24-projects/ts-account/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ts24-projects/ts-web/src/main/java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
