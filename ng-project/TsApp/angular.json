@@ -46,7 +46,9 @@
             "outputPath": "dist/kpi-app",
             "index": "projects/kpi-app/src/index.html",
             "browser": "projects/kpi-app/src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "projects/kpi-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
