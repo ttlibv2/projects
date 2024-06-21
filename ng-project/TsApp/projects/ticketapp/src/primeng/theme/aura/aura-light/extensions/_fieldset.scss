@@ -1,5 +1,5 @@
 .p-fieldset {
-    padding: $panelContentPadding;
+    padding: $fieldsetContentPadding;
     margin: 0;
 
     &.p-fieldset-toggleable {
@@ -27,7 +27,7 @@
         padding: 0;
         margin-bottom: 0.375rem;
 
-        span {
+        span:not(:empty) {
             padding: $fieldSetLegendPadding;
         }
     }

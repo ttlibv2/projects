@@ -1,8 +1,10 @@
 .p-fieldset {
-    border: $panelContentBorder;
+    border: $fieldsetContentBorder;//$panelContentBorder;
     background: $panelContentBg;
     color: $panelContentTextColor;
     border-radius: $borderRadius;
+
+   
 
     .p-fieldset-legend {
         padding: $panelHeaderPadding;
