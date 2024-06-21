@@ -6,6 +6,7 @@ import { JsonObject } from '../models/common';
 import { ClsAssign } from '../models/od-cls';
 import { DbTable, LocalDbService } from './local-db.service';
 import { LoggerService } from 'ts-logger';
+import { Objects } from 'ts-helper';
 
 
 export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable } = {
@@ -29,25 +30,8 @@ export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable } = {
 };
 
 function jsonToCatalog(db: LocalDbService, data: JsonObject, logger?: LoggerService): Catalog {
-  logger.warn('catalog response => ', data)
-  const names = Object.keys(data);
-  const array = names.map(name => {
-    if (name in CATALOG_MAP) {
-      const fncTb: DbTable = CATALOG_MAP[name](db);
-      const newData = data[name].flatMap((item: any) => fncTb.jsonToModel(item))
-      return [name, newData];
-    }
-    else if('ls_teamplate' === name) {
-      const ls: JsonObject = data['ls_teamplate'];
-      return [name, new Map(Object.keys(ls).map(k => [k, ls[k]]))];
-    }
-    else {
-      if (logger) logger.warn(`The catalog without key not defined [${name}]`);
-      return [name, data[name]];
-    }
-  });
-
-  return Catalog.from(Object.fromEntries(array));
+  logger.warn('catalog response => ', data);
+  return Catalog.from(data, logger);
 }
 
 
