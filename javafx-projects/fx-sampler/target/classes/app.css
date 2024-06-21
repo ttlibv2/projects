@@ -1,0 +1,112 @@
+.vbox {
+    -fx-padding: 10;
+}
+
+.tool-box {
+    -fx-border-color: red;
+    -fx-padding: 0;
+    /*-fx-pref-width: 350;*/
+
+
+}
+
+.close-wrapper > .icon {
+    -fx-icon-color:blue;
+    -fx-icon-size: 16;
+}
+
+
+/*:root {*/
+/*    -mfx-blue: #2196f3;*/
+/*    -mfx-charcoal: #445055;*/
+/*    -mfx-green: #4caf50;*/
+/*    -mfx-onyx: #353935;*/
+/*    -mfx-orange: #ff9800;*/
+/*    -mfx-purple: #7a0ed9;*/
+/*    -mfx-red: #EF6E6B;*/
+/*    -mfx-yellow: #FFEA00;*/
+
+
+/*    -mfx-text-he: rgba(0, 0, 0, 0.87); !* High Emphasis *!*/
+/*    -mfx-text-me: rgba(0, 0, 0, 0.60); !* Medium Emphasis*!*/
+/*    -mfx-text-disabled: rgba(0, 0, 0, 0.38); !* Disabled *!*/
+
+/*    -common-gradient: linear-gradient(to right bottom, #c4008b, #d00085, #dc007f, #e60b79, #ef1872, #f5276b, #fa3564, #fe415e, #ff5158, #ff5f52, #ff6c4e, #ff794b);*/
+/*    -secondary-gradient: linear-gradient(to right bottom, #1ec400, #00bd3a, #00b654, #00ae67, #00a574, #00a280, #009e8a, #009a91, #009b9d, #009ba8, #009bb2, #009abb);*/
+/*}*/
+
+/*.mfx-text-field {*/
+/*    -mfx-main: #7a0ed9;*/
+/*    -fx-background-color: white;*/
+/*    -fx-background-radius: 5;*/
+/*    -fx-border-color: red;*/
+/*    -fx-border-radius: 5;*/
+/*    -fx-padding: 0;*/
+/*}*/
+
+/*.mfx-text-field:readonly,*/
+/*.mfx-text-field:readonly .text-field {*/
+/*    -fx-cursor: default;*/
+/*}*/
+
+/*.mfx-text-field .text-field {*/
+/*    !* Selected text highlight *!*/
+/*    -fx-highlight-fill: #ECE0FD;*/
+/*    !* Prompt text color *!*/
+/*    -fx-prompt-text-fill: rgba(0, 0, 0, 0.60);*/
+/*    !*-fx-border-color: red;*!*/
+/*    -fx-border-width: 0;*/
+/*    -fx-padding: 0;*/
+
+/*    -fx-text-box-border: transparent;*/
+/*    -fx-background-color: transparent;*/
+/*    -fx-backrgound-insets: 0;*/
+/*}*/
+
+/*.mfx-text-field .text-field .text {*/
+/*    -fx-font-smoothing-type: lcd;*/
+/*}*/
+
+/*.mfx-text-field:focus-within {*/
+/*    !*-fx-background-insets: 2;*!*/
+/*    !*-fx-border-color: -mfx-main;*!*/
+/*    !*-fx-border-width: 1.5;*!*/
+/*    !*-fx-border-insets: -0.5;*!*/
+/*}*/
+
+/*.mfx-text-field .floating-text {*/
+/*    !*-fx-font-family: "Open Sans Regular";*!*/
+/*    -fx-text-fill: rgba(0, 0, 0, 0.87);;*/
+/*    !*-fx-padding: 10;*!*/
+/*}*/
+
+/*.mfx-text-field:floating .floating-text {*/
+/*    -fx-background-color: red;*/
+/*}*/
+
+/*.mfx-text-field:focus-within .floating-text {*/
+/*    -fx-text-fill: -mfx-main;*/
+/*}*/
+
+/*.mfx-text-field .measure-unit {*/
+/*    !*-fx-font-family: "Open Sans Regular";*!*/
+/*    -fx-text-fill: rgba(0, 0, 0, 0.87);*/
+/*}*/
+
+
+/*.mfx-text-field .text-field:focused {*/
+/*    -fx-focus-color: transparent;*/
+/*    -fx-faint-focus-color: transparent;*/
+/*}*/
+
+/*.mfx-text-field:disabled {*/
+/*    -fx-border-color: rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+/*.mfx-text-field:disabled .floating-text {*/
+/*    -fx-text-fill: -mfx-text-disabled;*/
+/*}*/
+
+/*.mfx-text-field:disabled .text-field {*/
+/*    -fx-text-inner-color: -mfx-text-disabled;*/
+/*}*/
