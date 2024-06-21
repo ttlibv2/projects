@@ -222,9 +222,6 @@ public class Ticket extends LongUIdDate<Ticket> {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket")
     private TicketDetail detail;
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "ticket", cascade = CascadeType.ALL)
-    private TicketTemplate template;
-
     //-------------------@Transient
 
     @JsonProperty("group_helpid") @Transient private Long groupHelpId;

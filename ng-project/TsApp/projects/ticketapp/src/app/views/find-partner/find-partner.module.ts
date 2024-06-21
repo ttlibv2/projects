@@ -15,6 +15,10 @@ import {TableModule} from "primeng/table";
 import {DialogModule} from "primeng/dialog";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AgGridAngular} from "ag-grid-angular";
+import { ToolbarModule } from 'primeng/toolbar';
+import { AgTableModule } from '../api/ag-table/ag-table.module';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { DividerModule } from 'primeng/divider';
 
 
 @NgModule({
@@ -35,7 +39,11 @@ import {AgGridAngular} from "ag-grid-angular";
     CardModule,
     FieldsetModule,
     TableModule,
-    AgGridAngular
+    AgGridAngular,
+    ToolbarModule,
+    AgTableModule,
+    InputNumberModule,
+    DividerModule
   ],
   providers: [
     DialogService,

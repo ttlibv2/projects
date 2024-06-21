@@ -26,7 +26,7 @@ public final class ClsHelper {
     public static ObjectMap loadJson() {
         if(tsconfig == null) {
             try {
-                File file = ResourceUtils.getFile("classpath:tsconfig.json");
+                File file = ResourceUtils.getFile("classpath:ts24_config.json");
                 tsconfig = MapperHelper.readValue(file, new TypeReference<>() {});
             }
             //

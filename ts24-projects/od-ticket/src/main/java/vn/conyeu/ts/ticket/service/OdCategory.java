@@ -1,5 +1,6 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsCategory;
@@ -39,13 +40,8 @@ public class OdCategory extends OdTicketClient<ClsCategory> {
         return nameSearch(cateName, null);
     }
 
-    public List<ClsCategory> find(ClsFilterOption filterOption) {
-        return searchRead(filterOption);
-    }
 
-    public List<ClsCategory> find(ObjectMap searchObj) {
-        return searchRead(searchObj);
-    }
+
 
     public List<ClsCategory> getAll() {
         List<ClsCategory> list = nameSearch("");

@@ -4,7 +4,7 @@ import { TemplateFormComponent } from './template-form.component';
 import {CardModule} from "primeng/card";
 import {DropdownModule} from "primeng/dropdown";
 import {DialogModule} from "primeng/dialog";
-import {DialogService} from "primeng/dynamicdialog";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ButtonModule} from "primeng/button";
 import {ChipsModule} from "primeng/chips";
 import {ColorPickerModule} from "primeng/colorpicker";
@@ -15,7 +15,10 @@ import {InputIconModule} from "primeng/inputicon";
 import {IconFieldModule} from "primeng/iconfield";
 import {TranslateModule} from "@ngx-translate/core";
 import {ColorPipe} from "../../pipes/color.pipe";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TemplateRoutingModule } from './template-routing.module';
 
 
 
@@ -23,8 +26,12 @@ import {ReactiveFormsModule} from "@angular/forms";
   declarations: [
     TemplateFormComponent
   ],
+  exports: [
+    TemplateFormComponent
+  ],
   imports: [
     CommonModule,
+    TemplateRoutingModule,
     CardModule,
     DropdownModule,
     DialogModule,
@@ -36,12 +43,16 @@ import {ReactiveFormsModule} from "@angular/forms";
     InputGroupAddonModule,
     InputIconModule,
     IconFieldModule,
+    InputTextareaModule,
     TranslateModule,
     ColorPipe,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    CheckboxModule,
   ],
   providers: [
-    DialogService
+    DialogService,
+    DynamicDialogRef
   ]
 })
 export class TemplateFormModule { }

@@ -1,5 +1,6 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
@@ -44,13 +45,6 @@ public class OdHelpdeskTeam extends OdTicketClient<ClsHelpdeskTeam> {
         return read(Arrays.asList(teamIds, fields));
     }
 
-    public List<ClsHelpdeskTeam> find(ClsFilterOption filterOption) {
-        return searchRead(filterOption);
-    }
-
-    public List<ClsHelpdeskTeam> find(ObjectMap searchObj) {
-        return searchRead(searchObj);
-    }
 
 
     @Override

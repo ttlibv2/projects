@@ -1,14 +1,14 @@
 import { Injectable, Type } from '@angular/core';
 import { Chanel } from "../models/chanel";
-import { catchError, EMPTY, forkJoin, from, map, Observable, Observer, of, switchMap, throwError } from "rxjs";
+import { EMPTY, from, Observable, switchMap } from "rxjs";
 import { Dexie, IndexableType, Table, UpdateSpec } from "dexie";
-import { AuthToken, RememberUser, User } from "../models/user";
+import { AuthToken, User } from "../models/user";
 import { Software } from '../models/software';
 import { GroupHelp } from '../models/group-help';
 import { Ticket } from '../models/ticket';
 import { AgTable } from '../models/ag-table';
 import { ApiInfo } from '../models/api-info';
-import { Objects } from '../utils/objects';
+import { Objects } from 'ts-helper';
 import {
   ClsAssign,
   ClsCategory,
@@ -24,7 +24,7 @@ import {
 import { JsonObject, ResponseToModel } from '../models/common';
 import { Question } from '../models/question';
 import { AppConfig } from '../models/app-config';
-import { BaseModel } from '../models/base-model';
+import { Template } from '../models/template';
 
 const { isNull, isArray, isClass } = Objects;
 
@@ -45,11 +45,12 @@ export class LocalDbService extends Dexie {
     super("ts_web", { autoOpen: true, allowEmptyDB: true });
 
     this.version(50).stores({
-      chanel: "chanel_id",
-      software: 'software_id',
-      groupHelp: 'help_id',
-      question: 'question_id',
-      ticket: 'ticket_id',
+      template: "id,entity_code",
+      chanel: "id",
+      software: 'id',
+      groupHelp: 'id',
+      question: 'id',
+      ticket: 'id',
       clsTeam: 'id',
       clsAssign: 'id',
       clsSubjectType: 'id',
@@ -61,6 +62,7 @@ export class LocalDbService extends Dexie {
       clsProduct: 'id',
       clsStage: 'id',
       clsTag: 'id',
+      clsTopic: 'id',
       agTable: 'code',
       agColumn: '[field_name+ag_code]',
       apiInfo: 'api_id',
@@ -85,12 +87,9 @@ export class LocalDbService extends Dexie {
     }
   }
 
-
-
-
-
-
-
+  get template(): TemplateTable {
+    return this.get_set_tb('template', Template, TemplateTable);
+  }
 
   get chanel(): DbTable<Chanel, number> {
     return this.get_set_tb('chanel', Chanel);
@@ -178,7 +177,7 @@ export class LocalDbService extends Dexie {
 
 }
 
-export class DbTable<T, Id extends IndexableType> {
+export class DbTable<T=any, Id extends IndexableType=any> {
   public readonly jsonToModel: ResponseToModel<T>;
   protected readonly table: Table<T, Id, any>;
   protected readonly tableName: string;
@@ -244,6 +243,15 @@ export class DbTable<T, Id extends IndexableType> {
   }
 
 
+}
+
+export class TemplateTable extends DbTable<Template, number> {
+
+  override save(data: Template | Template[] | JsonObject | JsonObject[] | Map<string, Template>, key?: number): Observable<any> {
+    if(data instanceof Map) return super.save([...data.values()]);
+    else return super.save(data);
+  }
+  
 }
 
 

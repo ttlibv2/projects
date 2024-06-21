@@ -64,6 +64,15 @@ const routes: Routes = [
     loadChildren: () => import('./views/user-config/user-config.module').then(m => m.UserConfigModule)
   },
   {
+    path: 'find-partner',
+    canActivate: [userGuard],
+    loadChildren: () => import('./views/find-partner/find-partner-routing.module').then(m => m.FindPartnerRoutingModule)
+  },
+  { 
+    path: 'template',
+    canActivate: [userGuard], loadChildren: () => import('./views/template-form/template-form.module').then(m => m.TemplateFormModule)
+  },
+  {
     path: '**',
     pathMatch: 'full', redirectTo: '/ticket-form'
   },

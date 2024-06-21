@@ -1,82 +1,87 @@
 <div class="search-user-form grid">
   <div class="col-12">
-    <form [formGroup]="formGroup" (ngSubmit)="onSearch()">
+    <form [formGroup]="formGroup" (ngSubmit)="clickSearch()">
       <p-fieldset legend="Thông tin">
         <div class="grid">
-          <div class="g-field col-6">
+          <div class="p-fluid col-12" *ngIf="!allowNew && dataSelected">
+            <label for="display_name">Tên hiển thị</label>
+            <input pInputText id="display_name" formControlName="display_name" />
+          </div>
+          <div class="p-fluid col-6">
             <label for="tax_code">Mã số thuế</label>
-            <input pInputText id="tax_code" formControlName="tax_code"/>
+            <input pInputText id="vat" formControlName="vat" />
           </div>
-          <div class="g-field col-6">
+          <div class="p-fluid col-6">
             <label for="email">Email (Cá nhân *)</label>
-            <input pInputText id="email" formControlName="email"/>
+            <input pInputText id="email" formControlName="email" />
           </div>
-        </div>
-        <div class="grid">
-          <div class="g-field col-6">
+          <div class="p-fluid col-6" *ngIf="allowNew">
             <label for="company_name">Tên công ty</label>
             <p-inputGroup>
-              <input pInputText id="company_name" formControlName="company_name"/>
-              <input pInputText [style]="{width: '100px'}" formControlName="company_id"/>
+              <input pInputText id="company_name" formControlName="company_name" />
+              <input pInputText [style]="{width: '100px'}" formControlName="company_id" />
             </p-inputGroup>
           </div>
-          <div class="g-field col-6">
-            <label for="person_name">Người liên hệ (Cá nhân *)</label>
+          <div class="p-fluid col-6" *ngIf="allowNew">
+            <label for="customer_name">Người liên hệ (Cá nhân) *</label>
             <p-inputGroup>
-              <input pInputText id="person_name" formControlName="person_name"/>
-              <input pInputText [style]="{width: '100px'}" formControlName="person_id"/>
+              <input pInputText id="customer_name" formControlName="customer_name" />
+              <input pInputText [style]="{width: '100px'}" formControlName="customer_id" />
             </p-inputGroup>
           </div>
-        </div>
-        <div class="grid">
-          <div class="g-field col-6">
-            <label for="address">Địa chỉ</label>
-            <input pInputText id="address" formControlName="address"/>
+          <div class="p-fluid col-6" *ngIf="allowNew">
+            <label for="street">Địa chỉ</label>
+            <input pInputText id="street" formControlName="street" />
           </div>
-          <div class="g-field col-6">
+          <div class="p-fluid col-6" *ngIf="allowNew">
             <label for="phone">Số điện thoại (Cá nhân)</label>
-            <input pInputText id="phone" formControlName="phone"/>
+            <input pInputText id="phone" formControlName="phone" />
           </div>
         </div>
         <div class="grid">
           <div class="col-12 flex gap-4  mb-2">
             <span>Tìm theo: </span>
             <ng-template ngFor let-item [ngForOf]="searchWhere">
-              <p-checkbox [label]="item.label" [value]="item.value" [(ngModel)]="item.checked"
-                          [ngModelOptions]="{standalone: true}"></p-checkbox>
+              <p-checkbox [label]="item.label" [value]="item.name" [(ngModel)]="item.checked"
+                [ngModelOptions]="{standalone: true}" [binary]="true"></p-checkbox>
             </ng-template>
           </div>
         </div>
         <div class="grid">
-          <div class="col-12 flex gap-4  mb-2">
+          <div class="col-12 flex gap-4  mb-2 align-items-center">
             <span>Tùy chỉnh: </span>
-            <p-radioButton label="Tìm gần đúng" name="search_type" value="like"
-                           formControlName="search_type"></p-radioButton>
-            <p-radioButton label="Tìm chính xác" name="search_type" value="eq"
-                           formControlName="search_type"></p-radioButton>
+            <p-radioButton label="Tìm gần đúng" name="operator" value="like"
+              formControlName="operator"></p-radioButton>
+            <p-radioButton label="Tìm chính xác" name="operator" value="equal"
+              formControlName="operator"></p-radioButton>
+              <div class="inline-flex align-items-center gap-3">
+                <span class="font-weight-bold"> | Số dòng: </span>
+                <p-inputNumber inputId="minmax" mode="decimal" [min]="20" [max]="80" [useGrouping]="false"
+                  formControlName="pageSize" [inputStyle]="{'max-width': '100px'}" showButtons="true" />
+              </div>
           </div>
         </div>
         <div class="grid">
           <div class="col-12 flex gap-2">
-            <p-button label="Lấy từ form" severity="warning" (click)="onResetForm()"></p-button>
-            <p-button label="Tìm theo TS24" severity="primary" type="submit"></p-button>
-            <p-button label="+ Cá nhân" severity="success" (click)="onCreateContact('person')"
-                      *ngIf="isVisiblePerson"></p-button>
-            <p-button label="+ Công ty" severity="info" (click)="onCreateContact('company')"
-                      *ngIf="isVisibleComp"></p-button>
-            <p-checkbox label="Up+" (onChange)="onClickUp($event.checked)" [binary]="true"></p-checkbox>
-            <p-checkbox label="Tạo..." [binary]="true"></p-checkbox>
+            <p-button label="Lấy mặc định" severity="warning" (click)="resetForm()"></p-button>
+            <p-button label="Tìm kiếm" severity="primary" type="submit" [loading]="asyncLoading"></p-button>
+            <p-button label="+ Cá nhân" severity="success" (click)="createContact('person')" [loading]="asyncSave "
+              *ngIf="visiblePerson && allowNew"></p-button>
+            <p-button label="+ Công ty" severity="info" (click)="createContact('company')" [loading]="asyncSave "
+              *ngIf="visibleComp && allowNew"></p-button>
+            <p-checkbox label="Tạo mới dữ liệu" [binary]="true" (onChange)="allowNew = $event.checked"></p-checkbox>
           </div>
         </div>
       </p-fieldset>
     </form>
   </div>
   <div class="col-12">
-    <ag-grid-angular class="ag-theme-quartz"
-                     domLayout="autoHeight"
-                     [columnDefs]="columns"
-                     [rowData]="data"
-                     [gridOptions]="agOptions"
-                     [suppressLoadingOverlay]="false"></ag-grid-angular>
+    <ts-ag-table [option]="tableOption" [tableHeight]="tableHeight" [columns]="columns" [rows]="rowData"
+      (rowClicked)="rowClicked($event.data)"></ts-ag-table>
   </div>
+  <div class="col-12 flex flex-row justify-content-end gap-2" *ngIf="showToolbar">
+    <p-button label="Chọn" (onClick)="selectAndClose()" *ngIf="dataSelected" />
+    <p-button label="Đóng" (onClick)="closeDialog()" />
+  </div>
+
 </div>

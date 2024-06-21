@@ -1,7 +1,7 @@
-import { Objects } from "../utils/objects";
+import { Objects } from "ts-helper";
 import { BaseModel } from "./base-model";
 import { Chanel } from "./chanel";
-import { ImageObject, JsonObject } from "./common";
+import { AssignObject, ImageObject, JsonObject } from "./common";
 import { GroupHelp } from "./group-help";
 import { Question } from "./question";
 import { Software } from "./software";
@@ -9,14 +9,14 @@ import { TicketDetail } from "./ticket-detail";
 import { TicketOption } from "./ticket-option";
 import * as cls from "./od-cls";
 
-export interface TemplateObj  {
-  code?: string;
-  title?: string;
-  icon?: string;
-  summary?: string;
-  bg_color?: string;
-  text_color?: string;
-}
+// export interface TemplateObj  {
+//   code?: string;
+//   title?: string;
+//   icon?: string;
+//   summary?: string;
+//   bg_color?: string;
+//   text_color?: string;
+// }
 
 export enum TicketStatus {
   NEW,
@@ -27,25 +27,25 @@ export enum TicketStatus {
   OPENING
 }
 
-export class TemplateMap extends Map<string, Ticket> {
+// export class TemplateMap extends Map<string, Ticket> {
 
-  save(data: Ticket) {
-    const title = data.template.title;
-    this.set(title, data);
-  }
+//   save(data: Ticket) {
+//     const title = data.template.title;
+//     this.set(title, data);
+//   }
 
-  get listTitle(): string[] {
-    return [...this.keys()];
-  }
+//   get listTitle(): string[] {
+//     return [...this.keys()];
+//   }
 
-  style(title: string): any {
-    const temp: TemplateObj = this.get(title)?.template ?? {};
-    return {
-      'background-color': temp.bg_color,
-      'color': temp.text_color
-    };
-  }
-}
+//   style(title: string): any {
+//     const temp: TemplateObj = this.get(title)?.template ?? {};
+//     return {
+//       'background-color': temp.bg_color,
+//       'color': temp.text_color
+//     };
+//   }
+// }
 
 export class Ticket extends BaseModel {
   ticket_id?: number;
@@ -76,8 +76,7 @@ export class Ticket extends BaseModel {
   client_version?: string;
   ticket_status?: TicketStatus;
   user_id?: number;
-  template?: TemplateObj;
-  options?: TicketOption;
+  options: TicketOption = TicketOption.createDef();
   details?: TicketDetail;
   od_image?: ImageObject;
   od_assign?: cls.ClsAssign;
@@ -104,11 +103,12 @@ export class Ticket extends BaseModel {
     super();
   }
 
-  static from(data: JsonObject): Ticket {
-    return new Ticket().update(data);
+  static from(data: AssignObject<Ticket>): Ticket {
+    return BaseModel.fromJson(Ticket, data);
   }
 
-  override update(object: JsonObject, init?: boolean): this {
+  override update(object: AssignObject<Ticket>): this {
+
     const ticket = super.update(object);
     Objects.ifNotNull(object['options'], val => ticket.options = TicketOption.from(val));
     Objects.ifNotNull(object['group_help'], val => ticket.group_help = GroupHelp.from(val));

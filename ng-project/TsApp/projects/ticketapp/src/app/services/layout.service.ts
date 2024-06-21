@@ -121,7 +121,7 @@ export class LayoutService {
 
   changeTheme() {
     const config = this.config();
-    const themeLink = <HTMLLinkElement>document.getElementById('theme-css');
+    const themeLink = <HTMLLinkElement>document.getElementById('theme-scss');
     if(themeLink == null) throw `not find elementById(theme-css)`;
 
     const themeLinkHref = themeLink.getAttribute('href')!;
@@ -139,7 +139,7 @@ export class LayoutService {
     this.replaceThemeLink(newHref);
   }
   replaceThemeLink(href: string) {
-    const id = 'theme-css';
+    const id = 'theme-scss';
     let themeLink = <HTMLLinkElement>document.getElementById(id);
     const cloneLinkElement = <HTMLLinkElement>themeLink.cloneNode(true);
 

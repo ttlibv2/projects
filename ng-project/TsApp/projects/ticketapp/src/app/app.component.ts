@@ -1,35 +1,32 @@
-import { Component } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {PrimeNGConfig} from "primeng/api";
 import {TranslateService} from "@ngx-translate/core";
+import {ToastContainerDirective, ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'ts-root',
   template: `
     <router-outlet></router-outlet>
-    <p-toast key="TOAST_MESSAGE">
-      <ng-template let-message pTemplate="message">
-        <div class="flex flex-1 gap-2">
-          <p-inputIcon [styleClass]="message.icon" *ngIf="!!message.icon"/>
-          <div class="flex flex-column flex-1">
-            <div [innerHTML]="message.summary"></div>
-            <div [innerHTML]="message.detail"></div>
-          </div>
-        </div>
-      </ng-template>
-    </p-toast>
+   <div aria-live="polite" class="aaaaaa" toastContainer 
+    [style]="{position: 'absolute', 'z-index': 9999}"></div>
   `,
   styles: []
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  // @ViewChild(ToastContainerDirective, { static: true })
+  // toastContainer: ToastContainerDirective;
 
   constructor(private primengConfig: PrimeNGConfig,
+              private toastService: ToastrService,
               private translateService: TranslateService) {
+
   }
 
   ngOnInit() {
     console.log(`log`);
+    // this.toastService.overlayContainer = this.toastContainer;
     this.primengConfig.ripple = true;
-    // this.translateService.get('tsapp').subscribe(s => this.appCfg.set_translation(s));
     this.translateService.get('primeng').subscribe(s => this.primengConfig.setTranslation(s));
   }
 }

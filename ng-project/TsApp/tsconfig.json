@@ -21,8 +21,14 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "paths": {
-      "toast": [
-        "./dist/ngx-toast"
+      "ts-helper": [
+        "./dist/ts-helper"
+      ],
+      "ts-logger": [
+        "./dist/ts-logger"
+      ],
+      "ts-ui": [
+        "./dist/ts-ui"
       ]
     },
     "lib": [

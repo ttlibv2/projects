@@ -13,7 +13,6 @@ import vn.conyeu.ts.ticket.service.OdTicketService;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -54,7 +53,7 @@ public class OdCatalogRest extends OdBaseRest {
 
         if (isAll || segments.contains("ls_category_sub")) {
             List<ClsCategorySub> subList = categories == null ? getAllCateSub()
-                    : categories.stream().map(cate -> service.categorySub().search(cate.getName()))
+                    : categories.stream().map(cate -> getAllCateSubByParent(cate.getName()))
                     .flatMap(Collection::stream).toList();
 
             map.set("ls_category_sub", subList);
@@ -113,23 +112,23 @@ public class OdCatalogRest extends OdBaseRest {
     @GetMapping("get-category")
     public List<ClsCategory> getAllCate() {
         ClsFilterOption filterOption = new ClsFilterOption().NotLike("name", "ceo");
-        return service().category().find(filterOption);
+        return service().category().find(filterOption).getContent();
     }
 
     @GetMapping("get-category-sub")
     public List<ClsCategorySub> getAllCateSub() {
         ClsFilterOption filterOption = new ClsFilterOption().NotLike("parent_category_id", "ceo");
-        return service().categorySub().find(filterOption);
+        return service().categorySub().find(filterOption).getContent();
     }
 
     @GetMapping("get-category-sub/{parentSub}")
     public List<ClsCategorySub> getAllCateSubByParent(@PathVariable String parentSub) {
-        return service().categorySub().search(parentSub);
+        return service().categorySub().search(parentSub).getContent();
     }
 
     @GetMapping("get-team")
     public List<ClsWkTeam> getAllWkTeam() {
-        return service().wkTeam().getAll();
+        return service().wkTeam().getAll().getContent();
     }
 
     @GetMapping("get-topic")
@@ -150,17 +149,17 @@ public class OdCatalogRest extends OdBaseRest {
 
     @GetMapping("get-ticket-tags")
     public List<ClsTicketTag> getAllTicketTags() {
-        return service().ticketTags().getAll();
+        return service().ticketTags().findAll().getContent();
     }
 
     @GetMapping("get-ticket-priority")
     public List<ClsTicketPriority> getAllTicketPriority() {
-        return service().priority().getAll();
+        return service().priority().findAll().getContent();
     }
 
     @GetMapping("get-stage")
     public List<ClsStage> getAllStage() {
-        return service().stage().getAll();
+        return service().stage().findAll().getContent();
     }
 
     @GetMapping("get-ticket-type")
@@ -172,27 +171,7 @@ public class OdCatalogRest extends OdBaseRest {
     public List<ClsHelpdeskTeam> getAllHelpdeskTeam() {
         ClsFilterOption filterOption = new ClsFilterOption();
         filterOption.NotLike("team_email", "CEO@ts24.com.vn");
-        OdTicketService service = service();
-        List<ClsHelpdeskTeam> helpdeskTeams = service.team().find(filterOption);
-
-        Long odUserId = service.getConfig().getClsUser().getId();
-
-        for (ClsHelpdeskTeam helpdeskTeam : helpdeskTeams) {
-            List<Long> members = helpdeskTeam.getListTeam_members();
-            List<ClsUser> clsUsers = searchUsersByIds(service, members);
-
-            int index = IntStream.range(0, clsUsers.size())
-                    .filter(i -> clsUsers.get(i).getId().equals(odUserId))
-                    .findFirst().orElse(-1);
-
-            if(index != -1) {
-                ClsUser clsUser = clsUsers.remove(index);
-                clsUsers.add(0, clsUser);
-            }
-
-            helpdeskTeam.set("ls_team_member", clsUsers);
-        }
-        return helpdeskTeams;
+        return service().team().find(filterOption).getContent();
     }
 
     @GetMapping("get-product")

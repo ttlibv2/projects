@@ -1,12 +1,14 @@
-import { JsonObject} from "./common";
-import {Objects} from "../utils/objects";
+import { AssignObject} from "./common";
+import {Objects} from "ts-helper";
 import { Type } from "@angular/core";
+
+
 
 export abstract class BaseModel {
   [field: string]: any;
 
 
-  update(object: JsonObject, include404: boolean = true): this {
+  update(object: AssignObject<this>): this {
     if(Objects.notEmpty(object)) {
       Objects.assign(this, object);
     }
@@ -14,7 +16,7 @@ export abstract class BaseModel {
     return this;
   }
 
-  protected static fromJson<E extends BaseModel>(modelType: Type<E>, data: E | JsonObject): E {
+  protected static fromJson<E extends BaseModel>(modelType: Type<E>, data: AssignObject<E>): E {
     return data instanceof modelType ? data : new modelType().update(data);
 
   }

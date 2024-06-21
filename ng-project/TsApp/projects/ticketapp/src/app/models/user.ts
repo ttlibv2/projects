@@ -1,6 +1,6 @@
 import {BaseModel} from "./base-model";
 import {JsonObject} from "./common";
-import {Objects} from "../utils/objects";
+import {Objects} from "ts-helper";
 
 export interface AuthToken {
   access_token?: string;

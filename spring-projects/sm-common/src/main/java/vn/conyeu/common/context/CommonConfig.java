@@ -41,7 +41,7 @@ public class CommonConfig {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages");
+        messageSource.setBasename("classpath:/i18n/messages");
         messageSource.setCacheSeconds(10); //reload messages every 10 seconds
         messageSource.setFileExtensions(List.of(".properties", ".xml", ".json"));
         return messageSource;

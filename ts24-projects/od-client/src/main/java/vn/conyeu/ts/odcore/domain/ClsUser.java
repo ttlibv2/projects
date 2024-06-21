@@ -77,6 +77,11 @@ public class ClsUser extends ClsModel<ClsUser> {
         return company_id;
     }
 
+    public Long getCompany_Uid() {
+        return getObjectID(company_id);
+    }
+
+
     /**
      * Set the company_id
      *

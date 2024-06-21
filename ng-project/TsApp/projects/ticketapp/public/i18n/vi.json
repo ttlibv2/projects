@@ -227,8 +227,11 @@
   },
   "actions": {
     "save": "Lưu lại",
+    "create": "Tạo mới",
+    "update": "Cập nhật",
     "cancel": "Hủy bỏ",
-    "check_api": "Kết nối"
+    "check_api": "Kết nối",
+    "close": "Đóng"
   }
 
 }

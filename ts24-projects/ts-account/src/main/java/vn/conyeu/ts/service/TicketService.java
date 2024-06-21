@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.ts.domain.Template;
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.domain.TicketDetail;
 import vn.conyeu.ts.dtocls.TicketFindOption;
@@ -31,16 +32,6 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
     public Optional<Long> getTicketNumberById(Long ticketId) {
         if(!existsById(ticketId)) throw noId(ticketId);
         else return detailRepo.findTicketNumberById(ticketId);
-    }
-
-    @Override
-    public Optional<Ticket> findById(Long ticketId) {
-        Optional<Ticket> optional = super.findById(ticketId);
-        if(optional.isPresent() && optional.get().getTemplate() != null) {
-            throw new BadRequest("is_ticket_template")
-                    .message("The ticket `%s` is template", ticketId);
-        }
-        return optional;
     }
 
     @Override
@@ -78,11 +69,6 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
                 predicates.add(cb.equal(ct, option.getUserId()));
             }
 
-            if(option.getIsTemplate() != null) {
-                Path<Long> ct = rt.get("template");
-                predicates.add(ct.isNotNull());
-            }
-
             //----------
             Path<TicketDetail> detail = rt.get("detail");
 
@@ -111,6 +97,7 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
                 predicates.add(option.getIsClose() ? ct.isNotNull() : ct.isNull());
             }
 
+            // build predicates
             return cb.and(predicates.toArray(Predicate[]::new));
         };
         return findAll(spec, pageable);

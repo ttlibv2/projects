@@ -25,9 +25,6 @@ public class TicketFindOption implements Serializable {
     @JsonProperty("user_id")
     private Long userId;
 
-    @JsonProperty("is_template")
-    private Boolean isTemplate;
-
     @JsonProperty("is_send")
     private Boolean isSend;
 

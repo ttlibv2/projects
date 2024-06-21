@@ -1,12 +1,14 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { Injectable, } from '@angular/core';
-import {ClientParams, MessageObj, } from '../models/common';
-import {catchError, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {Objects} from "../utils/objects";
+import {ClientParams, ErrorResponse, Page } from '../models/common';
+import {catchError, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
+import {Objects} from "ts-helper";
 import {InjectService} from "./inject.service";
 import {Router} from "@angular/router";
 import { ConfigService } from './config.service';
 import {LocalDbService} from "./local-db.service";
+import {ToastMessage} from "./toast.service";
+import { LoggerService } from 'ts-logger';
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -25,12 +27,17 @@ export class ClientService {
     return this.inject.get(Router);
   }
 
-  protected get db(): any {
+  protected get db(): LocalDbService {
     return this.inject.get(LocalDbService);
   }
 
+  protected get logger(): LoggerService {
+    return this.inject.get(LoggerService);
+  }
 
-
+  protected searchGet(url: string, params?: ClientParams): Observable<Page<any>> {
+    return this.send('get', url, {params}).pipe(map(s => new Page().update(s)));
+  }
 
   protected get(url: string, params?: ClientParams): Observable<any> {
     return this.send('get', url, {params});
@@ -65,21 +72,29 @@ export class ClientService {
    * Handler error client
    * */
   protected handlerError(err: any, url: string, showError: boolean = true): Observable<any> {
-    let object: MessageObj = {code: 'unknown', details: []};
+    let object: ToastMessage = {};
 
     if(err instanceof HttpErrorResponse) {
-      object = {...err.error};
+      const error: ErrorResponse = err.error ?? {};
+      const baseUrl = (text: string) => `<a href="${new URL(url).host}" target="_blank" rel="noopener noreferrer">${text}</a>`;
 
-     // object.code = err?.error?.code;
-     // object.summary = err?.error?.summary;
+      object = {
+        details: error,
+        summary: error?.summary,
+        code: error?.code
+      };
+
 
       if(err.status === 0) {
         object.code = 'disconnect';
-        object.life = 20000;
-        object.summary = 'Lỗi không kết nối được tới máy chủ';
-        object.details = [
-          `Vui lòng kiểm tra kết nối: <a href="${url}" target="_blank" rel="noopener noreferrer">Kiểm tra</a>`,
-        ];
+        object.timeOut = 20000;
+        object.title = 'Lỗi không kết nối được tới máy chủ';
+        object.summary = `Vui lòng kiểm tra kết nối: ${baseUrl('Kiểm tra')}`;
+      }
+
+      else if(err.status === 500) {
+        object.code = error.code === 'e_500' ? 'e_server' : error.code;
+        object.summary = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')} <br>-> (${object.summary})`;
       }
 
     }
@@ -102,13 +117,13 @@ export class ClientService {
    * */
   protected handlerResponse(response: any, url: string,showError: boolean): Observable<any> {
     if(Objects.notBlank(response?.error)) {
-      const object: MessageObj = {summary: response.error_desc, code: response.error_code};
+      const object = {summary: response.error_desc, code: response.error_code};
       if(showError) this.inject.toast.error(object);
       return throwError(() => object)
     }
 
-    else if(Objects.notBlank(response['summary'])) {
-     this.inject.toast.info({summary: response['summary']});
+    else if(Objects.notBlank(response['alert_msg'])) {
+     this.inject.toast.info({summary: response['alert_msg']});
     }
 
     return of(response);

@@ -1,18 +1,19 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
-import vn.conyeu.ts.odcore.domain.ClsModel;
-import vn.conyeu.ts.odcore.domain.ClsUser;
+import vn.conyeu.ts.odcore.domain.*;
 import vn.conyeu.ts.odcore.service.OdClient;
-import vn.conyeu.ts.ticket.domain.ClsFilterOption;
-import vn.conyeu.ts.ticket.domain.ClsNameSearchOption;
-import vn.conyeu.ts.ticket.domain.ClsSearchReadOption;
+import vn.conyeu.ts.ticket.domain.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -23,8 +24,25 @@ public abstract class OdTicketClient<E> extends OdClient {
         super(apiConfig);
     }
 
+    public Page<E> findAll() {
+        return searchRead();
+    }
+
+    public Page<E> find(ClsSearch searchObj) {
+        return searchRead(searchObj);
+    }
+
+    public Page<E> find(ClsFilterOption filterOption) {
+        return searchRead(filterOption);
+    }
+
     protected abstract Class<E> getDomainCls();
     protected abstract Function<ObjectMap, E> mapToObject();
+
+
+    protected Page<E> forPage(List<E> data) {
+        return new PageImpl<>(data);
+    }
 
     protected ObjectMap createContextMap() {
         return ObjectMap.setNew("context", createUserContext());
@@ -92,19 +110,35 @@ public abstract class OdTicketClient<E> extends OdClient {
         return super.checkResponse(requestBody, responseData);
     }
 
-    /**
+     /**
      * Search with filter. Path `/{search_read}`
      */
-    protected List<E> searchRead() {
+    protected Page<E> searchRead() {
         return searchRead(new ClsSearchReadOption());
     }
 
-    protected List<E> searchRead(ClsFilterOption filterOption) {
-        return searchRead(new ClsSearchReadOption(filterOption));
+    protected Page<E> searchRead(Consumer<E> callbackItem) {
+        return searchRead(new ClsSearchReadOption(), callbackItem);
     }
 
-    protected List<E> searchRead(ObjectMap searchObj) {
-        return searchRead(new ClsSearchReadOption(searchObj));
+    protected Page<E> searchRead(ClsFilterOption filterOption) {
+        return searchRead(filterOption, null);
+    }
+
+    protected Page<E> searchRead(ClsFilterOption filterOption, Consumer<E> callbackItem) {
+        return searchRead(new ClsSearchReadOption(filterOption), callbackItem);
+    }
+
+//    protected Page<E> searchRead(ObjectMap data) {
+//        return searchRead(ClsSearch.forData(data));
+//    }
+
+    protected Page<E> searchRead(ClsSearch searchObj) {
+        return searchRead(searchObj, null);
+    }
+
+    protected Page<E> searchRead(ClsSearch searchObj, Consumer<E> callbackItem) {
+        return searchRead(new ClsSearchReadOption(searchObj), callbackItem);
     }
 
     /**
@@ -112,21 +146,40 @@ public abstract class OdTicketClient<E> extends OdClient {
      *
      * @param option -> {filterOptions, contextData}
      */
-    protected List<E> searchRead(ClsSearchReadOption option) {
+    protected Page<E> searchRead(ClsSearchReadOption option) {
+        return searchRead(option, null);
+    }
+
+    /**
+     * Search with filter. Path `/{search_read}`
+     *
+     * @param option -> {filterOptions, contextData}
+     */
+    protected Page<E> searchRead(ClsSearchReadOption option, Consumer<E> callbackItem) {
         Asserts.notNull(option, "@option -> ClsSearchReadOption");
 
+        Function<ObjectMap, E> convertItem = object -> {
+            E item = mapToObject().apply(object);
+            if(callbackItem != null) callbackItem.accept(item);
+            return item;
+        };
+
         Object context = createUserContext().cloneMap().set(option.getContext());
+        ClsPage clsPage = option.getPage();
 
         ObjectMap body = ObjectMap.setNew("model", getModel())
                 .set("context", context)
                 .set("domain", option.buildFilter())
                 .set("fields", getFields("find", null))
-                .set(option.getPage().cloneMap());
+                .set(clsPage.cloneMap());
 
-        return sendPost(body, datasetUri("search_read"))
-                .getStream("result.records")
-                .map(obj -> mapToObject().apply(obj))
-                .toList();
+        ObjectMap response = sendPost(body, datasetUri("search_read")).getMap("result");
+
+        List<E> listItem = response.getStream("records")
+                .map(convertItem).collect(Collectors.toList());
+
+        Pageable pageable = PageRequest.of(clsPage.getPage(), clsPage.getLimit());
+        return new PageImpl<>(listItem, pageable, response.getLong("length"));
     }
 
     protected ObjectMap callButton( String method, Object args) {

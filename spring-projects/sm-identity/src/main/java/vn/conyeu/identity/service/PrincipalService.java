@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import vn.conyeu.common.domain.I18N;
 import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.identity.domain.Principal;
 import vn.conyeu.identity.repository.AccountRepo;
@@ -71,8 +72,8 @@ public class PrincipalService implements UserDetailsService, UserDetailsChecker,
     }
 
     protected Unauthorized noUser(String field, Object data) {
-        return new Unauthorized("account.notSignup")
-                .message("User not exists.", field, data);
+        return new Unauthorized("user.404")
+                .message(I18N.get("user.404", "User not exists."), field, data);
     }
 
     public void check(UserDetails user) {

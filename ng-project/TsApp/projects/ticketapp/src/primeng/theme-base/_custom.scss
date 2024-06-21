@@ -15,4 +15,22 @@
     .p-text-danger {
         color: $dangerButtonBg;
     }
+
+    .p-multiselect-token-label {
+        max-width: unset!important;
+    }
+
+    .overlay-container {
+        position: absolute;
+        z-index: 999999;
+    }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
+ 
+    p-fieldset {
+        display: block;
+    }
+
 }

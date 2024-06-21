@@ -1,19 +1,22 @@
-.ticket-form form {
+.ticket-form {
 
   .template_list .p-chip {
     cursor: pointer;
   }
 
-  .g-field {
-    .p-component {
-
-      &.p-inputtext,
-      .p-multiselect-label,
-      .p-dropdown-label {
-        padding-top: 0.2rem;
-        padding-bottom: 0.2rem;
-      }
+  &.template {
+    .col-ticket-form {
+      width: 58.3333%!important;
     }
+
+    .col-left {
+     width: 100%!important;
+    }
+
+    .col-right {
+     width: 100%!important;
+    }
+
   }
 
 }

@@ -1,65 +1,127 @@
-import {Injectable} from "@angular/core";
-import { MessageService} from "primeng/api";
-import {MessageObj, Severity} from "../models/common";
-import {Objects} from "../utils/objects"
-import {Toast, ToastrService} from "ngx-toastr";
+import { ComponentRef, Injectable, Type } from "@angular/core";
+import { ActiveToast, IndividualConfig, ToastrService } from "ngx-toastr";
+import { DialogService, DynamicDialogComponent, DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { Objects } from "ts-helper";
 
-const {isEmpty, isBlank, isArray, isObject} = Objects;
+const { notBlank, notEmpty } = Objects;
+
+export type ToastSeverity = 'error' | 'warning' | 'info' | 'success' | 'primary' | 'help' | 'loading' | string;
+export type ToastPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-right' | 'bottom-center';
+
+//export const toastPrefixClass: string = 'p-toast';
+
+export interface ToastConfig extends Partial<IndividualConfig> {
+    closeClass?: string;
+    closeIcon?: string;
+    messageIcon?: string;
+    toastClassPrefix?: string;
+
+}
+
+export interface ToastMessage extends ToastConfig {
+    code?: string;
+    title?: string;
+    summary?: string;
+    details?: any;
+    severity?: ToastSeverity;
+    position?: ToastPosition;
+}
+
+export type CloseRef = ActiveToast<any> | number;
+
+const defaultDialogConfig: DynamicDialogConfig = {
+    closable: false,
+    closeOnEscape: false,
+    maximizable: true,
+    position: 'top',
+    draggable: true,
+    resizable: true,
+    focusOnShow: true
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
 
-  constructor(//public message: MessageService,
-              public message: ToastrService) {
-  }
+    constructor(
+        private message: ToastrService,
+        private dialog: DialogService) {
+    }
 
-  private buildDetail(message: MessageObj): string {
-    const md: any = message.details;
-    if(isEmpty(md) || isObject(md) || !isArray(md)) return "";
-    else return '- '+ md.join('<br>- ');
-  }
+    private prefixWith(...segments: string[]): string {
+        const config: ToastConfig = this.message.toastrConfig;
+        return [config.toastClassPrefix, ...segments].map(s => s.toLowerCase()).join('-');
+    }
 
-  private buildSummary(message: MessageObj): string {
-    const code = '';//isBlank(message.code) ? '' : ` (<b>Mã code: <i>${message.code}</i></b>)`;
-    return `${message.summary}${code}`;
-  }
+    private positionClass(message: ToastMessage): string {
+        if (notBlank(message.position)) return this.prefixWith(message.position);
+        else if (notBlank(message.positionClass)) return message.positionClass;
+        else return this.message.toastrConfig.positionClass;
+    }
 
-  show(severity: Severity, message: MessageObj) {
-    //const detail = this.buildDetail(message);
-    //const summary = this.buildSummary(message);
-    //message.life = message.life ?? 60 * 60 * 1000; // 1h
-    //this.message.add({...message,
-    //  severity, detail, summary,
-    //  //key: 'TOAST_MESSAGE'
-    //});
+    show(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        if (notEmpty(closeRef)) this.close(...closeRef);
 
-    return this.message.show(severity, message.summary);
-  }
+        message.position = message.position ?? 'top-right';
 
-  warning(message: MessageObj): void {
-    this.show('warn', message);
-  }
+        const toastType = this.prefixWith('message', message.severity);
+        const positionClass = this.positionClass(message);
 
-  error(message: MessageObj): void {
-    this.show('error', message);
-  }
+        const config: Partial<IndividualConfig<any>> = {
+            ...message,
+            toastClass: this.prefixWith('message'),
+            positionClass: positionClass
+        };
 
-  success(message: MessageObj): void {
-    this.show('success', message);
-  }
+        return this.message.show(message.summary, message.title, config, toastType);
+    }
 
-  info(message: MessageObj): void {
-    this.show('info', message);
-  }
+    success(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        return this.show({ ...message, severity: 'success' }, ...closeRef);
+    }
 
-  loading(message: MessageObj): void {
-    this.show('primary', {...message,
-      life: 60 * 60 * 1000,
-      icon: 'pi pi-spin pi-spinner'
-    })
-  }
+    error(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        return this.show({ ...message, severity: 'error' }, ...closeRef);
+    }
 
-  clearAll(): void {
-    //this.message.clear('TOAST_MESSAGE');
-  }
+    info(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        return this.show({ ...message, severity: 'info' }, ...closeRef);
+    }
+
+    warning(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        return this.show({ ...message, severity: 'warning' }, ...closeRef);
+    }
+
+    primary(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        return this.show({ ...message, severity: 'primary' }, ...closeRef);
+    }
+
+    help(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        return this.show({ ...message, severity: 'help' }, ...closeRef);
+    }
+
+    loading(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
+        return this.show({ messageIcon: 'pi pi-spin pi-spinner', ...message, severity: 'info' }, ...closeRef);
+    }
+
+    close(...refs: CloseRef[]): void {
+        for (const ref of refs) {
+            const toastId = typeof ref === 'object' ? ref.toastId : ref;
+            this.message.clear(toastId);
+        }
+    }
+
+    openDialog<E>(componentType: Type<E>, config: DynamicDialogConfig): DynamicDialogRef<E> {
+        return this.dialog.open(componentType, { ...defaultDialogConfig, ...config });
+    }
+
+    /**
+     * Returns the dynamic dialog component instance.
+     * @param ref DynamicDialog instance.
+     * @group Method
+     */
+    getDialogComponentRef(ref: DynamicDialogRef<any>): ComponentRef<DynamicDialogComponent> {
+        return this.dialog.dialogComponentRefMap.get(ref);
+    }
+
 }

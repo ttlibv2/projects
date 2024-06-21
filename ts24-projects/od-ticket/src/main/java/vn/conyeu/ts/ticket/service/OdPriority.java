@@ -1,11 +1,11 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsTicketPriority;
 
-import java.util.List;
 import java.util.function.Function;
 
 public class OdPriority extends OdTicketClient<ClsTicketPriority> {
@@ -19,11 +19,6 @@ public class OdPriority extends OdTicketClient<ClsTicketPriority> {
         return "helpdesk.priority";
     }
 
-//    @Override
-//    public String getBasePath() {
-//        throw new UnsupportedOperationException();
-//    }
-
     @Override
     protected Class<ClsTicketPriority> getDomainCls() {
         return ClsTicketPriority.class;
@@ -34,15 +29,5 @@ public class OdPriority extends OdTicketClient<ClsTicketPriority> {
         return ClsTicketPriority::from;
     }
 
-    public List<ClsTicketPriority> getAll() {
-        return searchRead();
-    }
 
-    public List<ClsTicketPriority> find(ClsFilterOption filterOption) {
-        return searchRead(filterOption);
-    }
-
-    public List<ClsTicketPriority> find(ObjectMap searchObj) {
-        return searchRead(searchObj);
-    }
 }

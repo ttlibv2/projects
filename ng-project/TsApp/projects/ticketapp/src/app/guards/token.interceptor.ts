@@ -2,7 +2,7 @@ import {HttpInterceptorFn, HttpRequest} from '@angular/common/http';
 import {inject} from "@angular/core";
 import {ConfigService} from "../services/config.service";
 import { AuthToken } from '../models/user';
-import { Objects } from '../utils/objects';
+import { Objects } from 'ts-helper';
 
 export const tokenInterceptor: HttpInterceptorFn = (request, next) => {
   const token = inject(ConfigService).get_authToken();

@@ -11,6 +11,9 @@ import {ChipsModule} from "primeng/chips";
 import {ButtonModule} from "primeng/button";
 import {TranslateModule} from "@ngx-translate/core";
 import {CheckboxModule} from "primeng/checkbox";
+import {PasswordModule} from "primeng/password";
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 
 
 @NgModule({
@@ -20,18 +23,21 @@ import {CheckboxModule} from "primeng/checkbox";
     exports: [
         ApiInfoComponent
     ],
-  imports: [
-    CommonModule,
-    ApiInfoRoutingModule,
-    CardModule,
-    ReactiveFormsModule,
-    MultiSelectModule,
-    DropdownModule,
-    ChipsModule,
-    ButtonModule,
-    TranslateModule,
-    CheckboxModule,
-    FormsModule
-  ]
+    imports: [
+        CommonModule,
+        ApiInfoRoutingModule,
+        CardModule,
+        ReactiveFormsModule,
+        MultiSelectModule,
+        DropdownModule,
+        ChipsModule,
+        ButtonModule,
+        TranslateModule,
+        CheckboxModule,
+        FormsModule,
+        PasswordModule,
+        InputGroupModule,
+        InputGroupAddonModule
+    ]
 })
 export class ApiInfoModule { }

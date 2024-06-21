@@ -1,31 +1,51 @@
-import {HttpParams} from "@angular/common/http";
-import {Type} from "@angular/core";
-import {BaseModel} from "./base-model";
-import {Objects} from "../utils/objects";
-import {Message} from "primeng/api";
+import { HttpParams } from "@angular/common/http";
+import { Type } from "@angular/core";
+import { BaseModel } from "./base-model";
+import { Callback } from 'ts-helper';
 
+export type AssignObject<E = any> = JsonObject | E | Partial<E>;
 
 export type ResponseToModel<E> = (response: any) => E;
-export type JsonObject = { [field: string]: any };
+export type JsonObject = Record<string, any>;
 export type ClientParams = HttpParams | {
   [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
 };
 
-export type Severity = 'error' | 'warn' | 'info' | 'success' | 'primary' | 'help';
 
-export interface Page<E> {
+
+
+
+
+
+
+
+export class Page<E = any> extends BaseModel {
   limit?: number;
+  total?: number;
   total_page?: number;
   current_page?: number;
-  is_fisrt?: boolean;
+  is_first?: boolean;
   is_last?: boolean;
-  data?: E[];
+  data?: E[] = [];
+
+  static from<E>(json: JsonObject, callback: Callback<any, E>): Page<E> {
+    const data = (json['data'] ?? []).map((item: any) => callback(item));
+    return BaseModel.fromJson(Page<E>, { ...json, data });
+  }
+
 }
 
-export interface MessageObj extends Message {
-  severity?: Severity;
+// export interface MessageObj extends Message {
+//   severity?: Severity;
+//   code?: string;
+//   details?: string[];
+// }
+
+export interface ErrorResponse {
+  [key: string]: any;
   code?: string;
-  details?: string[];
+  summary?: string;
+  details?: any;
 }
 
 export interface SocialLink {
@@ -40,6 +60,9 @@ export interface ImageObject {
 
 export interface Pageable {
   [field: string]: any;
+  size?: number;
+  offset?: number;
+  page?: number;
 }
 
 export interface IStorage {

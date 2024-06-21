@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,7 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.restclient.ClientUtil;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
-import vn.conyeu.ts.odcore.domain.ClsUser;
-import vn.conyeu.ts.odcore.domain.ClsUserContext;
-import vn.conyeu.ts.odcore.domain.IOdUserLogin;
+import vn.conyeu.ts.odcore.domain.*;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsNameSearchOption;
 
@@ -80,7 +78,7 @@ public class OdUser extends OdTicketClient<ClsUser> implements IOdUserLogin {
      * Search user by {@link ClsFilterOption}
      * @param filterOption the option filter
      * */
-    public List<ClsUser> search(ClsFilterOption filterOption) {
+    public Page<ClsUser> search(ClsFilterOption filterOption) {
         return searchRead(filterOption);
     }
 
@@ -88,7 +86,7 @@ public class OdUser extends OdTicketClient<ClsUser> implements IOdUserLogin {
      * Search user by {@link ObjectMap}
      * @param searchObj the option filter
      * */
-    public List<ClsUser> search(ObjectMap searchObj) {
+    public Page<ClsUser> search(ClsSearch searchObj) {
         return searchRead(searchObj);
     }
 

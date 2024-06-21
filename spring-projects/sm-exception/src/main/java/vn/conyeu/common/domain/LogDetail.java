@@ -187,6 +187,13 @@ public class LogDetail implements Serializable {
     }
 
     /**
+     * Returns the codeI18N
+     */
+    public String getCodeI18N() {
+        return Objects.firstNotBlank(codeI18N, code);
+    }
+
+    /**
      * Returns the other
      */
     @JsonAnyGetter
@@ -233,7 +240,7 @@ public class LogDetail implements Serializable {
 
         ObjectMap map = ObjectMap
                 .setNew("code", getCode())
-                .set("summary", I18N.get(codeI18N, message))
+                .set("summary", I18N.get(getCodeI18N(), message))
                 .set(getCustom().delete("trace"));
 
         if(options.isIncluded(Include.STACK_TRACE)) {

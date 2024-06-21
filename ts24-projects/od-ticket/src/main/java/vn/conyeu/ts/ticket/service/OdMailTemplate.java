@@ -1,8 +1,11 @@
 package vn.conyeu.ts.ticket.service;
 
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
+import vn.conyeu.ts.odcore.domain.ClsSearch;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsMailTemplate;
 import vn.conyeu.ts.ticket.domain.ClsNameSearchOption;
@@ -23,21 +26,16 @@ public class OdMailTemplate extends OdTicketClient<ClsMailTemplate> {
         return "mail.template";
     }
 
-//    @Override
-//    public String getBasePath() {
-//        return "call_kw/"+getModel();
-//    }
-
-    public List<ClsMailTemplate> findAll() {
+    public final Page<ClsMailTemplate> findAll() {
         return findAll(true);
     }
 
-    public List<ClsMailTemplate> findAll(boolean loadInfo) {
+    public final Page<ClsMailTemplate> findAll(boolean loadInfo) {
         Object args = new Object[] {"model", "=", "helpdesk.ticket"};
         ClsNameSearchOption option = new ClsNameSearchOption().setArgs(args);
         List<ClsMailTemplate> list = nameSearch("", option);
-        if(!loadInfo) return list;
-        else return getAllBy(list.stream().map(ClsMailTemplate::getId).toList());
+        if(!loadInfo) return forPage(list);
+        else return forPage(getAllBy(list.stream().map(ClsMailTemplate::getId).toList()));
     }
 
     public Optional<ClsMailTemplate> findById(Long templateId) {
@@ -48,15 +46,6 @@ public class OdMailTemplate extends OdTicketClient<ClsMailTemplate> {
 
     public List<ClsMailTemplate> getAllBy(List<Long> templateId) {
        return read(templateId);
-    }
-
-
-    public List<ClsMailTemplate> find(ClsFilterOption filterOption) {
-        return searchRead(filterOption);
-    }
-
-    public List<ClsMailTemplate> find(ObjectMap searchObj) {
-        return searchRead(searchObj);
     }
 
     @Override

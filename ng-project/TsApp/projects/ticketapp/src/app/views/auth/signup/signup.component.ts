@@ -5,7 +5,7 @@ import {ToastService} from "../../../services/toast.service";
 import {AuthService} from "../../../services/auth.service";
 import {SignUpDto} from "../../../models/user";
 import {ActivatedRoute, Route, Router} from "@angular/router";
-import {Objects} from "../../../utils/objects";
+import { Objects } from 'ts-helper';
 import { ConfigService } from '../../../services/config.service';
 import { I18N_KEY } from '../../../models/constant';
 

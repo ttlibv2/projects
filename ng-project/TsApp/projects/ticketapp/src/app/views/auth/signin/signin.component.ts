@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, ViewEncapsulation, booleanAttribute} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AutoCompleteCompleteEvent} from "primeng/autocomplete";
-import {Objects} from "../../../utils/objects";
+import { Objects } from 'ts-helper';
 import {ChkUser, RememberUser, User} from "../../../models/user";
 import {AuthService} from "../../../services/auth.service";
 import {Router} from "@angular/router";

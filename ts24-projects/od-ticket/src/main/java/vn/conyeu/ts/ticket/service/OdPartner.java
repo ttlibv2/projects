@@ -1,11 +1,13 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsPage;
+import vn.conyeu.ts.odcore.domain.ClsSearch;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsPartner;
 import vn.conyeu.ts.ticket.domain.ClsSearchReadOption;
@@ -17,6 +19,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class OdPartner extends OdTicketClient<ClsPartner> {
+
+    static class PartnerFilterOption {}
 
     public OdPartner(ClsApiCfg apiConfig) {
         super(apiConfig);
@@ -31,11 +35,9 @@ public class OdPartner extends OdTicketClient<ClsPartner> {
      * POST `search_read`
      * Tìm kiếm thông tin người liên hệ
      * @param filter {[key: string]: any}
-     * @param page {[key: string]: any}
      */
-    public List<ClsPartner> search(ObjectMap filter, ClsPage page) {
-        ClsSearchReadOption option = new ClsSearchReadOption(filter, page);
-        return searchRead(option).stream().map(this::fixPartner).collect(Collectors.toList());
+    public Page<ClsPartner> search(ClsSearch filter) {
+        return searchRead(filter, this::fixPartner);
     }
 
     /**
@@ -48,14 +50,20 @@ public class OdPartner extends OdTicketClient<ClsPartner> {
         else return fixPartner(all.get(0)).asOptional();
     }
 
+    public ClsPartner create(ClsPartner p) {
+        Long compId = cfg.getClsUser().getCompany_Uid();
+        return create(compId, p);
+    }
    public ClsPartner create(Long companyId, ClsPartner p) {
         p.setActive(true);
         p.setType("contact");
+        p.setIs_company(Objects.equals(p.getCompany_type(), "company"));
+        p.setCompany_id(companyId);
         p.set("partner_gid", 0)
-                .set("customer", true)
+                //.set("customer", true)
                 .set("lang", "en_US")
-                .set("company_id", companyId)
-                .set("is_company", Objects.equals(p.getCompany_type(), "company"))
+                //.set("company_id", companyId)
+                //.set("is_company", Objects.equals(p.getCompany_type(), "company"))
                 .set("property_account_receivable_id", 9)
                 .set("property_account_payable_id", 71);
 
@@ -92,8 +100,8 @@ public class OdPartner extends OdTicketClient<ClsPartner> {
         if(Objects.equals(p.getEmail(), "false")) p.setEmail(null);
 
         if(p.getIs_company()) {
-            p.setComp_id(p.getId());
-            p.setComp_name(p.getName());
+            p.setCompany_id(p.getId());
+            p.setCompany_name(p.getName());
         }
 
         else
@@ -103,20 +111,12 @@ public class OdPartner extends OdTicketClient<ClsPartner> {
 
             Object[] company = Objects.toObjectArray(p.getParent_id());
             if (Objects.notEmpty(company) && company.length == 2) {
-                p.setComp_id(Long.parseLong(String.valueOf(company[0])));
-                p.setComp_name(String.valueOf(company[1]));
+                p.setCompany_id(Long.parseLong(String.valueOf(company[0])));
+                p.setCompany_name(String.valueOf(company[1]));
             }
         }
 
         return p;
-    }
-
-    public List<ClsPartner> find(ClsFilterOption filterOption) {
-        return searchRead(filterOption);
-    }
-
-    public List<ClsPartner> find(ObjectMap searchObj) {
-        return searchRead(searchObj);
     }
 
     @Override

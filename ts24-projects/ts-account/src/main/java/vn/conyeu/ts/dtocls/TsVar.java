@@ -11,16 +11,18 @@ public interface TsVar {
         String tsGroupHelp = tsApiPrefix + "/group-help";
         String tsUser = tsApiPrefix + "/user";;
         String tsUserApi = tsApiPrefix + "/user-api";
-        String tsTicket = tsApiPrefix + "/ticket";
         String tsSoftware = tsApiPrefix + "/software";
         String tsSetting = tsApiPrefix + "/setting";
         String tsQuestion = tsApiPrefix + "/question";
         String tsChanel = tsApiPrefix + "/chanel";
+        String tsTicket = tsApiPrefix + "/ticket";
+        String tsTicketTemplate = tsApiPrefix + "/template";
 
         String odTicketApiPrefix = "/od-api";
         String odUser = odTicketApiPrefix + "/user";
         String odTicket = odTicketApiPrefix + "/ticket";
         String odCatalog =  odTicketApiPrefix + "/catalog";
         String odPartner = odTicketApiPrefix + "/partner";
+
     }
 }

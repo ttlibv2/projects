@@ -58,4 +58,6 @@ public abstract class DomainRest<E extends DomainId<E, Id>, Id extends Serializa
     public E createObject(@RequestBody E object) {
         return service.createNew(object);
     }
+
+
 }

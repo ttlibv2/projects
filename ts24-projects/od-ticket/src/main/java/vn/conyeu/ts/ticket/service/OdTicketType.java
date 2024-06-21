@@ -1,5 +1,6 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
@@ -19,11 +20,6 @@ public class OdTicketType extends OdTicketClient<ClsTicketType> {
         return "helpdesk.ticket.type";
     }
 
-//    @Override
-//    public String getBasePath() {
-//        return "call_kw/"+getModel();
-//    }
-
     @Override
     protected Class<ClsTicketType> getDomainCls() {
         return ClsTicketType.class;
@@ -33,18 +29,12 @@ public class OdTicketType extends OdTicketClient<ClsTicketType> {
     protected Function<ObjectMap, ClsTicketType> mapToObject() {
         return ClsTicketType::from;
     }
+
+    public final Page<ClsTicketType> findAll() {
+       return forPage(nameSearch(""));
+    }
+
     public List<ClsTicketType> getAll() {
-       return nameSearch("");
+        return findAll().getContent();
     }
-
-
-    public List<ClsTicketType> find(ClsFilterOption filterOption) {
-        return searchRead(filterOption);
-    }
-
-    public List<ClsTicketType> find(ObjectMap searchObj) {
-        return searchRead(searchObj);
-    }
-
-    
 }

@@ -27,12 +27,12 @@
                 <configuration>
                     <args>
                         <arg>${scss.basedir}/primer-light.scss:${css.outputDir}/primer-light.css</arg>
-<!--                        <arg>${scss.themedir}/primer-dark.scss:${css.outputDir}/primer-dark.css</arg>-->
-<!--                        <arg>${scss.themedir}/nord-light.scss:${css.outputDir}/nord-light.css</arg>-->
-<!--                        <arg>${scss.themedir}/nord-dark.scss:${css.outputDir}/nord-dark.css</arg>-->
-<!--                        <arg>${scss.themedir}/cupertino-light.scss:${css.outputDir}/cupertino-light.css</arg>-->
-<!--                        <arg>${scss.themedir}/cupertino-dark.scss:${css.outputDir}/cupertino-dark.css</arg>-->
-<!--                        <arg>${scss.themedir}/dracula.scss:${css.outputDir}/dracula.css</arg>-->
+<!--                        <arg>${scss.themedir}/primer-dark.scss:${scss.outputDir}/primer-dark.scss</arg>-->
+<!--                        <arg>${scss.themedir}/nord-light.scss:${scss.outputDir}/nord-light.scss</arg>-->
+<!--                        <arg>${scss.themedir}/nord-dark.scss:${scss.outputDir}/nord-dark.scss</arg>-->
+<!--                        <arg>${scss.themedir}/cupertino-light.scss:${scss.outputDir}/cupertino-light.scss</arg>-->
+<!--                        <arg>${scss.themedir}/cupertino-dark.scss:${scss.outputDir}/cupertino-dark.scss</arg>-->
+<!--                        <arg>${scss.themedir}/dracula.scss:${scss.outputDir}/dracula.scss</arg>-->
                         <arg>--no-source-map</arg>
                     </args>
                 </configuration>

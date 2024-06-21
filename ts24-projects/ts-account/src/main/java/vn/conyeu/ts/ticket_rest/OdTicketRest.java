@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.domain.TicketDetail;
-import vn.conyeu.ts.domain.TicketStatus;
 import vn.conyeu.ts.dtocls.Errors;
 import vn.conyeu.ts.dtocls.SendTicketDto;
 import vn.conyeu.ts.dtocls.TsVar;
@@ -17,7 +16,6 @@ import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.TicketService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.*;
-import vn.conyeu.ts.ticket.service.OdTicket;
 import vn.conyeu.ts.ticket.service.OdTicketService;
 
 import java.time.LocalDateTime;
@@ -42,7 +40,7 @@ public class OdTicketRest extends OdBaseRest {
 
     @GetMapping("search")
     public List<ClsTicket> findTicket(@RequestParam Map<String, Object> mapQuery, Pageable pg) {
-        ClsPage clsPage = new ClsPage().withLimit(pg.getPageSize());
+        ClsPage clsPage = new ClsPage().limit(pg.getPageSize());
         return service().ticket().searchTicket(ObjectMap.clone(mapQuery), clsPage);
     }
 

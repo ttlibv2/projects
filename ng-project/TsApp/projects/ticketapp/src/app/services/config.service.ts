@@ -5,7 +5,7 @@ import { Translation } from "../models/translation";
 import { NavigationExtras, Router } from "@angular/router";
 import { AppConfig, IAppConfig } from "../models/app-config";
 import { LoggerService } from "../logger/logger.service";
-import { Objects } from "../utils/objects";
+import { Objects } from "ts-helper";
 import {LocalDbService} from "./local-db.service";
 
 const DEFAULT_CONFIG: IAppConfig = {

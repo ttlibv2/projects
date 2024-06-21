@@ -1,5 +1,6 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsWkTeam;
@@ -31,7 +32,8 @@ public class OdWkTeam extends OdTicketClient<ClsWkTeam> {
     protected Function<ObjectMap, ClsWkTeam> mapToObject() {
         return ClsWkTeam::from;
     }
-    public List<ClsWkTeam> getAll() {
+
+    public Page<ClsWkTeam> getAll() {
         return searchRead();
     }
 

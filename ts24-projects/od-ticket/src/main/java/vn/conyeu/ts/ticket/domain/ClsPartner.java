@@ -3,6 +3,8 @@ package vn.conyeu.ts.ticket.domain;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.odcore.domain.ClsHelper;
@@ -10,7 +12,7 @@ import vn.conyeu.ts.odcore.domain.ClsModel;
 
 import java.util.Optional;
 
-@Data
+@Getter @Setter
 @EqualsAndHashCode(callSuper = false)
 public  class ClsPartner extends ClsModel<ClsPartner> {
     Long id;
@@ -30,11 +32,14 @@ public  class ClsPartner extends ClsModel<ClsPartner> {
     String type = "contact";
     String vat;
     Boolean active = false;
-    String company_type;
+    String company_type; // person | company
     Object parent_id;
 
-    Long comp_id;
-    String comp_name;
+    Object company_id;
+    String company_name;
+
+//    Long person_id;
+//    String person_name;
 
     String customer_name;
     Long customer_id;

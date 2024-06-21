@@ -5,6 +5,7 @@ import { Question } from "./question";
 import { BaseModel } from "./base-model";
 import { JsonObject } from "./common";
 import * as cls from "./od-cls";
+import { Template } from "./template";
 
 export class Catalog extends BaseModel {
    ls_chanel: Chanel[] = [];
@@ -25,6 +26,9 @@ export class Catalog extends BaseModel {
    ls_priority: cls.ClsPriority[]= [];
    ls_ticket_type: cls.ClsTicketType[]= [];
    ls_topic: cls.ClsTopic[]= [];
+   ls_teamplate: Map<string, Template[]> = new Map();
+
+   team_head: cls.ClsTeamHead;
   
 
    static from(json: JsonObject): Catalog {

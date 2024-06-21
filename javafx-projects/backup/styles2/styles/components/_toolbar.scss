@@ -124,14 +124,14 @@ $breadcrumbs-link-padding-y: 2px   !default;
       -fx-padding: $spacing 0 $padding-x 0;
     }
 
-    // this rule existed in modena.css, but JavaFX doesn't apply it automatically,
+    // this rule existed in modena.scss, but JavaFX doesn't apply it automatically,
     // you supposed to add it manually.
     &.right {
       -fx-background-insets: 0, 0 0 0 $border-width;
     }
   }
 
-  // this rule existed in modena.css, but JavaFX doesn't apply it automatically,
+  // this rule existed in modena.scss, but JavaFX doesn't apply it automatically,
   // you supposed to add it manually.
   &.bottom {
     -fx-background-insets: 0, $border-width 0 0 0;

@@ -1,5 +1,6 @@
 package vn.conyeu.ts.ticket_rest;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +8,7 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.dtocls.Errors;
 import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.odcore.domain.ClsPage;
+import vn.conyeu.ts.odcore.domain.ClsSearch;
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.ClsPartner;
@@ -23,11 +25,9 @@ public class OdPartnerRest extends OdBaseRest {
         super(odService, apiService);
     }
 
-    @GetMapping("search")
-    public List<ClsPartner> searchPartner(@RequestParam Map<String, Object> mapQuery, Pageable pg) {
-        ObjectMap data = ObjectMap.clone(mapQuery).delete("size");
-        ClsPage clsPage = new ClsPage().withLimit(pg.getPageSize());
-        return service().partner().search(data, clsPage);
+    @PostMapping("search")
+    public Page<ClsPartner> searchPartner(@RequestBody ClsSearch clsSearch) {
+        return service().partner().search(clsSearch);
     }
 
     @GetMapping("get-byid/{partnerId}")
@@ -36,8 +36,8 @@ public class OdPartnerRest extends OdBaseRest {
     }
 
     @PostMapping("create")
-    public ClsPartner createPartner(@RequestParam Long companyId, @RequestBody ClsPartner cls) {
-        return service().partner().create(companyId, cls);
+    public ClsPartner createPartner(@RequestBody ClsPartner cls) {
+        return service().partner().create( cls);
     }
 
 

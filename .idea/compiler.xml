@@ -15,21 +15,13 @@
         <module name="od-ticket" />
         <module name="sm-address" />
         <module name="eureka-server" />
-        <module name="fx-theme" />
         <module name="zuul-server" />
-        <module name="awesome-svg-icon" />
-        <module name="fx-styleable" />
         <module name="identity" />
-        <module name="fx-controls" />
         <module name="ts-web" />
-        <module name="fx-effects" />
         <module name="sm-dslquery" />
-        <module name="fx-sampler" />
         <module name="sm-identity" />
         <module name="sm-cookie" />
-        <module name="fx-utils" />
         <module name="maven-archetype-multiple-javafx" />
-        <module name="awesome-font-icon" />
         <module name="sm-common" />
         <module name="od-client" />
         <module name="maven-archetype-blank" />
@@ -37,7 +29,6 @@
         <module name="sm-web" />
         <module name="sm-client" />
         <module name="sm-exception" />
-        <module name="fx-icons" />
         <module name="maven-archetype-rest" />
       </profile>
       <profile name="Annotation profile for java-common" enabled="true">
@@ -49,14 +40,41 @@
         </processorPath>
         <module name="java-common" />
       </profile>
+      <profile name="Annotation profile for javafx-projects" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/kordamp/jipsy/jipsy-processor/1.2.0/jipsy-processor-1.2.0.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/kordamp/jipsy/jipsy-annotations/1.2.0/jipsy-annotations-1.2.0.jar" />
+        </processorPath>
+        <module name="awesome-svg-icon" />
+        <module name="fx-styleable" />
+        <module name="fx-controls" />
+        <module name="fx-effects" />
+        <module name="fx-icons" />
+        <module name="awesome-font-icon" />
+        <module name="fx-sampler" />
+        <module name="fx-theme" />
+      </profile>
+      <profile name="Annotation profile for fx-utils" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
+        </processorPath>
+        <module name="fx-utils" />
+      </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="eureka-server" options="-parameters" />
-      <module name="fx-controls" options="" />
-      <module name="fx-sampler" options="" />
-      <module name="fx-utils" options="" />
+      <module name="fx-controls" options="--add-opens javafx.controls/javafx.scene.control.skin=fx.controls --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=fx.controls --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=fx.controls --add-exports javafx.graphics/com.sun.javafx.scene=fx.controls --add-exports javafx.graphics/com.sun.prism.impl=fx.controls" />
+      <module name="fx-sampler" options="--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED --add-exports javafx.controls/com.sun.javafx.scene.control.inputmap=ALL-UNNAMED" />
+      <module name="fx-utils" options="--add-exports javafx.graphics/com.sun.javafx.tk=fx.utils --add-exports javafx.graphics/com.sun.javafx.scene=fx.utils --add-exports javafx.graphics/com.sun.javafx.scene.text=fx.utils --add-exports javafx.graphics/com.sun.javafx.scene.traversal=fx.utils --add-exports javafx.controls/com.sun.javafx.scene.control.behavior=fx.utils --add-exports javafx.controls/com.sun.javafx.scene.control.skin=fx.utils" />
       <module name="identity" options="-parameters" />
       <module name="od-client" options="-parameters" />
       <module name="od-ticket" options="-parameters" />

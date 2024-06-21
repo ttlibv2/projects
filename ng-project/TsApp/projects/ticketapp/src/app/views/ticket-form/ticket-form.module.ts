@@ -47,7 +47,7 @@ import {ToolbarModule} from "primeng/toolbar";
         FormsModule,
         DialogModule,
         TemplateFormModule,
-        ToolbarModule
+        ToolbarModule,
     ],
   providers: [
     DialogService

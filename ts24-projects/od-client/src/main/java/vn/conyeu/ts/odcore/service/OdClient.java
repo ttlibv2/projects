@@ -1,5 +1,8 @@
 package vn.conyeu.ts.odcore.service;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.util.UriBuilder;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
@@ -20,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Slf4j
 public abstract class OdClient {
     protected final ClsApiCfg cfg;
     protected Supplier<ClsUser> tryLoginFnc;
@@ -27,6 +31,7 @@ public abstract class OdClient {
     protected OdClient(ClsApiCfg apiConfig) {
         this.cfg = apiConfig;
     }
+
 
     /**
      * Returns the model api
@@ -109,6 +114,10 @@ public abstract class OdClient {
         clientBuilder.defaultHeaders(cfg.getHeaders());
         clientBuilder.defaultHeader("cookie", cfg.getCookieValue());
         clientBuilder.defaultCsrfToken(cfg.getCsrfToken());
+        //clientBuilder.filters(filters -> {
+        //    filters.add(ExchangeFilterFunction.ofRequestProcessor());
+        //    filters.add(ExchangeFilterFunction.ofResponseProcessor());
+        //});
         return clientBuilder;
     }
 
@@ -184,6 +193,7 @@ public abstract class OdClient {
                 .blockOptional().orElseThrow();
 
         try {
+            log.info(response.toJson(false));
             return checkResponse(body, response);
         }//
         catch (BaseException exp) {

@@ -1,7 +1,9 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
+import vn.conyeu.ts.odcore.domain.ClsSearch;
 import vn.conyeu.ts.ticket.domain.ClsCategorySub;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsSearchReadOption;
@@ -29,19 +31,10 @@ public class OdCategorySub extends OdTicketClient<ClsCategorySub> {
         return nameSearch("");
     }
 
-    public List<ClsCategorySub> search(String parentCate) {
+    public Page<ClsCategorySub> search(String parentCate) {
         ObjectMap filter = ObjectMap.setNew("parent_category_id", parentCate);
-        return searchRead(new ClsSearchReadOption().applyFilter(filter));
+        return searchRead(ClsSearch.forData(filter));
     }
-
-    public List<ClsCategorySub> find(ClsFilterOption filterOption) {
-        return searchRead(filterOption);
-    }
-
-    public List<ClsCategorySub> find(ObjectMap searchObj) {
-        return searchRead(searchObj);
-    }
-
 
     @Override
     protected Class<ClsCategorySub> getDomainCls() {

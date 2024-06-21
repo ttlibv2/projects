@@ -1,8 +1,11 @@
 :host { display: block; }
 
-.template-form {
-  max-width: 500px;
+.p-dialog-mask ts-template-form {
   display: block;
+  max-width: 700px;
+}
 
-
+ts-template-form {
+  // display: block;
+  // max-width: 700px;
 }

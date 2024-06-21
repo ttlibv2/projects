@@ -7,14 +7,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.identity.annotation.PrincipalId;
+import vn.conyeu.ts.domain.Template;
 import vn.conyeu.ts.dtocls.TsVar;
-import vn.conyeu.ts.service.ChanelService;
-import vn.conyeu.ts.service.GroupHelpService;
-import vn.conyeu.ts.service.QuestionService;
-import vn.conyeu.ts.service.SoftwareService;
+import vn.conyeu.ts.service.*;
 import vn.conyeu.ts.ticket_rest.OdCatalogRest;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -25,17 +26,22 @@ public class CatalogRest {
     final GroupHelpService groupHelpService;
     final QuestionService questionService;
     final OdCatalogRest odCatalogRest;
+    final TemplateService templateService;
 
-    public CatalogRest(ChanelService chanelService, SoftwareService softwareService, GroupHelpService groupHelpService, QuestionService questionService, OdCatalogRest odCatalogRest) {
+    public CatalogRest(ChanelService chanelService, SoftwareService softwareService, GroupHelpService groupHelpService, QuestionService questionService, OdCatalogRest odCatalogRest, TemplateService templateService) {
         this.chanelService = chanelService;
         this.softwareService = softwareService;
         this.groupHelpService = groupHelpService;
         this.questionService = questionService;
         this.odCatalogRest = odCatalogRest;
+        this.templateService = templateService;
     }
 
     @GetMapping("/get-all")
-    public ObjectMap getAll(@PrincipalId long userId, @RequestParam String include) {
+    public ObjectMap getAll(@PrincipalId long userId, @RequestParam Map<String, Object> params) {
+        ObjectMap mapParam = ObjectMap.fromMap(params);
+
+        String include = mapParam.getString("include", "all");
         ObjectMap data = odCatalogRest.getAll(include);
 
         final boolean isAll = include.equalsIgnoreCase("all");
@@ -55,6 +61,14 @@ public class CatalogRest {
 
         if(isAll || segments.contains("ls_question")) {
             data.set("ls_question", questionService.findByUser(userId));
+        }
+
+        if(isAll || segments.contains("ls_teamplate")) {
+            String codeStr = mapParam.getString("entities", null);
+            List<String> codes = codeStr == null ? null : List.of(codeStr.split(","));
+            List<Template> templates = templateService.findAll(userId, codes);
+            data.set("ls_teamplate", templates.parallelStream()
+                    .collect(Collectors.toMap(Template::getEntityCode, t -> t)));
         }
 
         return data;

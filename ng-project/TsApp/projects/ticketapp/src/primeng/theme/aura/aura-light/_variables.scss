@@ -368,10 +368,6 @@ $inputSwitchSliderOnBg: $primaryColor !default;
 $inputSwitchSliderOnHoverBg: $primaryDarkColor !default;
 $inputSwitchHandleOnBg: $shade000 !default;
 
-//fieldSet
-$fieldsetHeaderBorder: 0!default; //1px solid $panelHeaderBorderColor !default;
-$fieldSetLegendPadding: 0 .75rem!default;
-
 //
 $toolbarHeaderBorderColor: unset!default;//$shade200 !default;
 $toolbarHeaderBorder: unset!default;//1px solid $toolbarHeaderBorderColor !default;
@@ -401,6 +397,14 @@ $panelFooterBorder: 1px solid $shade200 !default;
 $panelFooterBg: $shade000 !default;
 $panelFooterTextColor: $shade700 !default;
 $panelFooterPadding: 0 1.125rem 1.125rem 1.125rem !default;
+
+//fieldSet
+$fieldsetHeaderBorder: 0!default; //1px solid $panelHeaderBorderColor !default;
+$fieldSetLegendPadding: 0 .75rem!default;
+$fieldsetContentPadding: $panelContentPadding!default;
+$fieldsetContentBorderColor:  #adc523!default;
+$fieldsetContentBorder: 1px solid $fieldsetContentBorderColor !default;//$panelContentBorder!default; 
+
 
 //accordion
 $accordionSpacing: 0 !default;
@@ -623,10 +627,17 @@ $warningMessageBg: rgba(254, 252, 232, 0.95) !default;
 $warningMessageBorder: solid #fde68a !default;
 $warningMessageTextColor: #ca8a04 !default;
 $warningMessageIconColor: #ca8a04 !default;
+
 $errorMessageBg: rgba(254, 242, 242, 0.95) !default;
 $errorMessageBorder: solid #fecaca !default;
 $errorMessageTextColor: #dc2626 !default;
 $errorMessageIconColor: #dc2626 !default;
+
+$helpMessageBg: rgba($helpButtonBg, 0.95)!default;
+$helpMessageBorder: $helpButtonBorder !default;
+$helpMessageTextColor: $helpButtonTextColor !default;
+$helpMessageIconColor: $helpButtonTextColor !default;
+
 $secondaryMessageBg: $shade100 !default;
 $secondaryMessageBorder: solid $shade200 !default;
 $secondaryMessageTextColor: $shade600 !default;

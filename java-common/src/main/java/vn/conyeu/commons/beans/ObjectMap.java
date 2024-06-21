@@ -813,7 +813,7 @@ public class ObjectMap extends LinkedHashMap<String, Object> implements Cloneabl
      * @param clazz Class
      */
     public <T> T delete(String key, Class<T> clazz) {
-        T object = get(key, clazz);
+        T object = get(key, clazz, null);
         delete(key);
         return object;
     }
