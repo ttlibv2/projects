@@ -3,9 +3,23 @@ import { Software } from "./software";
 import { GroupHelp } from "./group-help";
 import { Question } from "./question";
 import { BaseModel } from "./base-model";
-import { JsonObject } from "./common";
+import { AssignObject, JsonObject } from "./common";
 import * as cls from "./od-cls";
 import { Template } from "./template";
+import { LoggerService } from "ts-logger";
+import { Objects } from "ts-helper";
+
+const {isArray, isObject} = Objects;
+
+function setData(object: any,  target: any, field: string, itemCb: (item: any) => any) {
+   if(field in object) {
+      const fieldData = object[field];
+      if(isArray(fieldData)) target[field] = fieldData.map(item => itemCb(item));
+      else if(isObject(fieldData)) target[field] = new Map(Object.keys(fieldData).map(k => [k, fieldData[k]]));
+      else throw new Error(`The field data ${fieldData} not support type for field ${field}`);
+   }
+
+}
 
 export class Catalog extends BaseModel {
    ls_chanel: Chanel[] = [];
@@ -27,12 +41,34 @@ export class Catalog extends BaseModel {
    ls_ticket_type: cls.ClsTicketType[]= [];
    ls_topic: cls.ClsTopic[]= [];
    ls_teamplate: Map<string, Template[]> = new Map();
+   ls_team_head: cls.ClsTeamHead[] = [];
 
-   team_head: cls.ClsTeamHead;
   
 
-   static from(json: JsonObject): Catalog {
+   static from(json: JsonObject, logger?: LoggerService): Catalog {
       return new Catalog().update(json);
    }
 
+   override update(object: AssignObject<this>): this {
+      super.update(object);
+      setData(object, this, 'ls_chanel', item => Chanel.from(item));
+      setData(object, this, 'ls_software', item => Software.from(item));
+      setData(object, this, 'ls_group_help', item => GroupHelp.from(item));
+      setData(object, this, 'ls_question', item => Question.from(item));
+      setData(object, this, 'ls_helpdesk_team', item => cls.ClsTeam.from(item));
+      setData(object, this, 'ls_assign', item => cls.ClsAssign.from(item));
+      setData(object, this, 'ls_product', item => cls.ClsProduct.from(item));
+      setData(object, this, 'ls_subject_type', item => cls.ClsSubjectType.from(item));
+      setData(object, this, 'ls_repiled_status', item => cls.ClsRepiled.from(item));
+      setData(object, this, 'ls_stage', item => cls.ClsStage.from(item));
+      setData(object, this, 'ls_category', item => cls.ClsCategory.from(item));
+      setData(object, this, 'ls_category_sub', item => cls.ClsCategorySub.from(item));
+      setData(object, this, 'ls_ticket_tag', item => cls.ClsTag.from(item));
+      setData(object, this, 'ls_priority', item => cls.ClsPriority.from(item));
+      setData(object, this, 'ls_ticket_type', item => cls.ClsTicketType.from(item));
+      setData(object, this, 'ls_topic', item => cls.ClsTopic.from(item));
+      setData(object, this, 'ls_team_head', item => cls.ClsTeamHead.from(item));
+      setData(object, this, 'ls_teamplate', item => Template.from(item));
+      return this;
+   }
 }
