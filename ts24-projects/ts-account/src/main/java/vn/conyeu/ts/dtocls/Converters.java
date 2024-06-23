@@ -1,14 +1,13 @@
 package vn.conyeu.ts.dtocls;
 
-import vn.conyeu.common.converter.base.ListToString;
-import vn.conyeu.common.converter.base.ObjectToString;
+import vn.conyeu.common.converter.ListToString;
+import vn.conyeu.common.converter.ObjectToString;
 import vn.conyeu.ts.odcore.domain.ClsModel;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.ticket.domain.*;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 
 public final class Converters {
 

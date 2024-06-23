@@ -1,20 +1,17 @@
 package vn.conyeu.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
-import vn.conyeu.common.converter.ObjectMapToString;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Classes;
 import vn.conyeu.commons.utils.Objects;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class ValueDb implements Serializable {
     private final Class javaType;

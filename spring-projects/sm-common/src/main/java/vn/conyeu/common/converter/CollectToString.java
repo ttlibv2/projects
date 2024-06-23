@@ -1,58 +1,57 @@
-package vn.conyeu.common.converter.base;
+package vn.conyeu.common.converter;
 
-import jakarta.persistence.Converter;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.commons.utils.Objects;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-@Converter
-public abstract class ListToString<T> extends ConvertAttrDb<List<T>> {
+public abstract class CollectToString<E, C extends Collection<E>> extends ConvertAttrDb<C> {
     protected static final String DELIMITER = ";";
-    protected final Class<T> objectCls;
+    protected final Class<E> objectCls;
     protected final String delimiter;
     protected final Set<String> fields;
 
-    public ListToString(Class<T> objectCls) {
+    public CollectToString(Class<E> objectCls) {
         this(objectCls, DELIMITER);
     }
 
-    public ListToString(Class<T> objectCls, String delimiter) {
+    public CollectToString(Class<E> objectCls, String delimiter) {
         this(objectCls, delimiter, new LinkedHashSet<>());
     }
 
-    public ListToString(Class<T> objectCls, Set<String> fields) {
+    public CollectToString(Class<E> objectCls, Set<String> fields) {
         this(objectCls, DELIMITER, fields);
     }
 
-    public ListToString(Class<T> objectCls, String delimiter, Set<String> fields) {
+    public CollectToString(Class<E> objectCls, String delimiter, Set<String> fields) {
         this.objectCls = objectCls;
         this.delimiter = delimiter;
         this.fields = fields;
     }
 
-    protected Function<T, String> itemToString() {
+    protected abstract Supplier<C> supplierNew();
+
+    protected Function<E, String> itemToString() {
         return object -> fields.isEmpty()
                 ? MapperHelper.serializeToString(object)
                 : ObjectMap.toJsonString(object, fields);
     }
 
-    protected Function<String, T> stringToItem() {
+    protected Function<String, E> stringToItem() {
         return str -> MapperHelper.convert(str, objectCls);
     }
 
 
-    protected final Function<List<T>, String> objectToString() {
+    protected final Function<C, String> objectToString() {
         return list -> Objects.toString(list, delimiter, itemToString());
     }
 
-    protected final Function<String, List<T>> stringToObject() {
-        return string -> Objects.toList(string, delimiter, stringToItem());
+    protected final Function<String, C> stringToObject() {
+        return string -> Objects.toCollect(string, delimiter, stringToItem(), supplierNew());
     }
-
-
 }

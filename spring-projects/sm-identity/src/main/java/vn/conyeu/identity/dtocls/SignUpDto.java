@@ -1,14 +1,10 @@
 package vn.conyeu.identity.dtocls;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import vn.conyeu.common.converter.ListStringToString;
 import vn.conyeu.identity.domain.SignupType;
 
 import java.io.Serializable;

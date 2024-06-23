@@ -8,15 +8,13 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ListLongToString;
-import vn.conyeu.common.converter.ObjectMapToString;
+import vn.conyeu.common.converter.Converts;
 import vn.conyeu.common.domain.LongUIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.dtocls.Converters.*;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.ticket.domain.*;
-import vn.conyeu.ts.ticket_rest.OdTRHelper;
 
 import java.util.List;
 
@@ -106,7 +104,7 @@ public class Ticket extends LongUIdDate<Ticket> {
     private Software software;
 
     @JsonProperty("chanel_ids")
-    @Convert(converter = ListLongToString.class)
+    @Convert(converter = Converts.ListLongToString.class)
     private List<Long> chanelIds;
 
     @JsonProperty("support_help")
@@ -140,7 +138,7 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JoinColumn(nullable = false, name = "userId")
     private TsUser user;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     @JsonProperty("od_image")
     private ObjectMap odImage;
@@ -210,11 +208,11 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JsonProperty("od_product")
     private ClsProduct odProduct;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap options;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap custom;
 

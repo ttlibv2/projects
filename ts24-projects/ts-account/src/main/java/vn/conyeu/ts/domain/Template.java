@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import vn.conyeu.common.converter.Converts;
 import vn.conyeu.common.domain.LongUIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.common.converter.ObjectMapToString;
 
 //@formatter:off
 @Getter @Setter @NoArgsConstructor
@@ -43,11 +43,11 @@ public class Template extends LongUIdDate<Template> {
 	@ColumnDefault("0")
 	private Boolean shared;
 
-	@Convert(converter = ObjectMapToString.class)
+	@Convert(converter = Converts.MapString.class)
 	@Column(columnDefinition = "json")
 	private ObjectMap data;
 
-	@Convert(converter = ObjectMapToString.class)
+	@Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap custom;
 

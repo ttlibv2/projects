@@ -8,17 +8,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sm-identity" />
+        <module name="sm-oauth2-login" />
         <module name="sm-cookie" />
+        <module name="od-ticket" />
+        <module name="sm-common" />
+        <module name="sm-address" />
+        <module name="od-client" />
         <module name="ts-account" />
         <module name="sm-web" />
-        <module name="od-ticket" />
         <module name="sm-client" />
         <module name="sm-exception" />
         <module name="ts-web" />
-        <module name="sm-common" />
         <module name="sm-dslquery" />
-        <module name="sm-address" />
-        <module name="od-client" />
       </profile>
       <profile name="Annotation profile for java-common" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -49,6 +50,7 @@
       <module name="sm-dslquery" options="-parameters" />
       <module name="sm-exception" options="-parameters" />
       <module name="sm-identity" options="-parameters" />
+      <module name="sm-oauth2-login" options="-parameters" />
       <module name="sm-security" options="-parameters" />
       <module name="sm-web" options="-parameters" />
       <module name="ts-account" options="-parameters" />

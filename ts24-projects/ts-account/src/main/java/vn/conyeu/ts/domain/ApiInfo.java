@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ObjectMapToString;
+import vn.conyeu.common.converter.Converts;
 import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 
@@ -33,11 +33,11 @@ public class ApiInfo extends LongUId<ApiInfo> {
     @Column(length = 100, nullable = false)
     private String loginPath;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap headers;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap queries;
 

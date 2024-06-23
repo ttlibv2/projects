@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ListStringToString;
+import vn.conyeu.common.converter.Converts;
 import vn.conyeu.common.domain.LongUId;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class Software extends LongUId<Software> {
     @Column(length = 500, nullable = false)
     private String value;
 
-    @Convert(converter = ListStringToString.class)
+    @Convert(converter = Converts.StringList.class)
     @Column(length = 500, nullable = false)
     @JsonProperty("soft_names")
     private List<String> softNames;

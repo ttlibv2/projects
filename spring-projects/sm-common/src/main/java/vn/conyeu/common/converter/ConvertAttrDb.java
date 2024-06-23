@@ -1,4 +1,4 @@
-package vn.conyeu.common.converter.base;
+package vn.conyeu.common.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

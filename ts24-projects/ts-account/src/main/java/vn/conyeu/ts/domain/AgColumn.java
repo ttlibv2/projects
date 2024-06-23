@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ObjectMapToString;
+import vn.conyeu.common.converter.Converts;
 import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 
@@ -63,7 +63,7 @@ public class AgColumn extends LongUId<AgColumn> {
     @JoinColumn(name = "parentId")
     private AgColumn parent;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap custom;
 

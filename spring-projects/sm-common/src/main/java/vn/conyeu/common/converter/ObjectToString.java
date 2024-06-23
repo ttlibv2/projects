@@ -1,6 +1,5 @@
-package vn.conyeu.common.converter.base;
+package vn.conyeu.common.converter;
 
-import jakarta.persistence.Converter;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.MapperHelper;
@@ -12,7 +11,6 @@ import java.util.function.Function;
 /**
  * @param <X> the object type
  * */
-@Converter
 public abstract class ObjectToString<X> extends ConvertAttrDb<X> {
     protected final Class<X> objectClass;
     protected final Set<String> onlyFields;
@@ -51,4 +49,5 @@ public abstract class ObjectToString<X> extends ConvertAttrDb<X> {
     protected Function<String, X> stringToObject() {
         return str -> MapperHelper.convert(str, objectClass);
     }
+
 }

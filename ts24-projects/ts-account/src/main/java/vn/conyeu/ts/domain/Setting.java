@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ObjectMapToString;
+import vn.conyeu.common.converter.Converts;
 import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 
@@ -24,7 +24,7 @@ public class Setting extends LongUId<Setting> {
     @Column(length = 100, nullable = false)
     private String fieldType;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = Converts.MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap data;
 

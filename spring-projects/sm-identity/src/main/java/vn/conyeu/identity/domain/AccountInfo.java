@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ListStringToString;
+import vn.conyeu.common.converter.Converts;
 import vn.conyeu.common.domain.LongUIdDate;
 
 import java.time.LocalDate;
@@ -65,7 +65,7 @@ public class AccountInfo extends LongUIdDate<AccountInfo> {
     @Column(length = 100)
     private String education;
 
-    @Convert(converter = ListStringToString.class)
+    @Convert(converter = Converts.StringList.class)
     @Column(length = 300)
     private List<String> languages;
 

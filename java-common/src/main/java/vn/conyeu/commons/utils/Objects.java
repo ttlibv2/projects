@@ -146,12 +146,15 @@ public final class Objects {
     }
 
     public static <E> List<E> toList(String text, String delimiter, Function<String, E> convert) {
-        Asserts.notNull(convert, "@Function<String, E>");
-        if(isBlank(text)) return new ArrayList<>();
-        else return Stream.of(text.split(delimiter)).map(convert)
-                .collect(Collectors.toList());
+        return toCollect(text, delimiter, convert, ArrayList::new);
     }
 
+    public static <E, C extends Collection<E>> C toCollect(String text, String delimiter, Function<String, E> convert, Supplier<C> supplier) {
+        Asserts.notNull(convert, "@Function<String, E>");
+        if(isBlank(text)) return supplier.get();
+        else return Stream.of(text.split(delimiter)).map(convert)
+                .collect(Collectors.toCollection(supplier));
+    }
 
     /**
      * Convert string to array string
@@ -170,7 +173,7 @@ public final class Objects {
      * @param list      List<String>
      * @param delimiter string
      */
-    public static String toString(List<String> list, String delimiter) {
+    public static String toString(Collection<String> list, String delimiter) {
         if (isEmpty(list)) return null;
         else return String.join(delimiter, list);
     }
@@ -495,7 +498,7 @@ public final class Objects {
      * @param delimiter    String
      * @param stringMapper Function<T, String>
      */
-    public static <T> String toString(List<T> list, String delimiter, Function<T, String> stringMapper) {
+    public static <T> String toString(Collection<T> list, String delimiter, Function<T, String> stringMapper) {
         Asserts.notEmpty(delimiter, "@delimiter must be not blank");
         Asserts.notNull(stringMapper, "@stringMapper must be not null");
         return Objects.isEmpty(list) ? null : list.stream().map(stringMapper)

@@ -16,5 +16,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>vn.conyeu</groupId>
+            <artifactId>sm-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.conyeu</groupId>
+            <artifactId>sm-identity</artifactId>
+        </dependency>
     </dependencies>
 </project>
