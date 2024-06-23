@@ -4,12 +4,15 @@
     <file url="file://$PROJECT_DIR$/../java-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../java-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-account/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sm-address/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-client/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-converter/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-cookie/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-dslquery/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-exception/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sm-identity/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sm-oauth2-login/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/sm-web/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />

@@ -59,15 +59,15 @@ public class CatalogRest {
             data.set("ls_group_help", groupHelpService.findAll());
         }
 
-        if(isAll || segments.contains("ls_question")) {
-            data.set("ls_question", questionService.findByUser(userId));
+        if(isAll || segments.contains("questions")) {
+            data.set(".questions", questionService.findByUser(userId));
         }
 
-        if(isAll || segments.contains("ls_teamplate")) {
+        if(isAll || segments.contains("templates")) {
             String codeStr = mapParam.getString("entities", null);
             List<String> codes = codeStr == null ? null : List.of(codeStr.split(","));
             List<Template> templates = templateService.findAll(userId, codes);
-            data.set("ls_teamplate", templates.parallelStream()
+            data.set("templates", templates.parallelStream()
                     .collect(Collectors.toMap(Template::getEntityCode, t -> t)));
         }
 
