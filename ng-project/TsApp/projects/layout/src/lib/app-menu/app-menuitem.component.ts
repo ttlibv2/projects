@@ -6,7 +6,6 @@ import {
   trigger,
 } from "@angular/animations";
 import {
-  AfterViewChecked,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -17,7 +16,6 @@ import {
   ViewChild,
   numberAttribute,
 } from "@angular/core";
-import { MenuItem } from "primeng/api";
 import { Subscription, filter } from "rxjs";
 import { LayoutService } from "../services/layout.service";
 import { IsActiveMatchOptions, NavigationEnd, Router } from "@angular/router";
@@ -28,18 +26,10 @@ import { MenuService } from "../services/menu.service";
   templateUrl: "./app-menuitem.component.html",
   animations: [
     trigger("children", [
-      state(
-        "collapsed",
-        style({
-          height: "0",
-        })
-      ),
-      state(
-        "expanded",
-        style({
-          height: "*",
-        })
-      ),
+      state("collapsed",style({height: "0"})),
+      state("expanded",style({height: "*"})),
+      state("hidden", style({display: "none"})),
+      state("visible", style({display: "block"})),
       transition(
         "collapsed <=> expanded",
         animate("400ms cubic-bezier(0.86, 0, 0.07, 1)")
@@ -49,9 +39,12 @@ import { MenuService } from "../services/menu.service";
 })
 export class AppMenuItemComponent implements OnInit, OnDestroy  {
     @Input() item: any;
-    @Input() index!: number;
+    @Input({ transform: numberAttribute }) index!: number;
     @Input() @HostBinding('class.layout-root-menuitem') root!: boolean;
     @Input() parentKey!: string;
+
+    @ViewChild("submenu")
+    submenu: ElementRef<HTMLUListElement>;
 
     active = false;
     menuSourceSubscription: Subscription;
@@ -59,6 +52,8 @@ export class AppMenuItemComponent implements OnInit, OnDestroy  {
     key: string = "";
 
     matchOptions: IsActiveMatchOptions = { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' };
+
+
 
     constructor(public layoutService: LayoutService, private cd: ChangeDetectorRef, public router: Router, private menuService: MenuService) {
         this.menuSourceSubscription = this.menuService.menuSource$.subscribe(value => {
@@ -123,12 +118,22 @@ export class AppMenuItemComponent implements OnInit, OnDestroy  {
     }
 
     get submenuAnimation() {
-        return this.root ? 'expanded' : (this.active ? 'expanded' : 'collapsed');
+        //return this.root ? 'expanded' : (this.active ? 'expanded' : 'collapsed');
+        return this.isDesktop && this.isSlimOrHorizontal ? (this.active   ? "visible"  : "hidden")
+              : (this.root || this.active ? "expanded" : "collapsed");
     }
 
     @HostBinding('class.active-menuitem') 
     get activeClass() {
         return this.active && !this.root;
+    }
+
+    get isSlimOrHorizontal(): boolean {
+        return this.layoutService.isSlimOrHorizontal();
+    }
+
+    get isDesktop(): boolean {
+        return this.layoutService.isDesktop();
     }
 
     ngOnDestroy() {

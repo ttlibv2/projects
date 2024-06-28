@@ -27,10 +27,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.layoutService.tryAddTheme();
-    this.layoutService.config.update(json => ({...json, ...{
-       // visibleSideBar: true,
-       visibleConfig: true
-    }}));
+    this.layoutService.layoutConfig({
+       visibleSideBar: true,
+       visibleConfig: true,
+       appLogo: 'assets/images/logo-dark.svg',
+       appName: 'ConYeu.Vn'
+    });
 
     this.primengConfig.ripple = true;
     this.translateService.get('primeng').subscribe(s => this.primengConfig.setTranslation(s));

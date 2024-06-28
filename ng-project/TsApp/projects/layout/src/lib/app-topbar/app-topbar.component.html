@@ -1,10 +1,10 @@
 <div class="layout-topbar">
     <div class="layout-topbar-start">
-        <a [routerLink]="['/']" class="layout-topbar-logo" href="/">
-            <img alt="logo" src="assets/images/logo-dark.svg" />
-            <span>ConYeu-App</span>
+        <a [routerLink]="['/']" class="layout-topbar-logo" href="/" *ngIf="!!appLogo || !!appName">
+            <img alt="logo" [src]="appLogo" *ngIf="!!appLogo"/>
+            <span *ngIf="!!appName">{{appName}}</span>
         </a>
-        <p-button icon=" pi pi-bars" 
+        <p-button icon=" pi pi-bars" *ngIf="visibleSideBar"
             styleClass="layout-topbar-button layout-menu-button" 
             rounded="true" (click)="onMenuButtonClick()"></p-button>
      

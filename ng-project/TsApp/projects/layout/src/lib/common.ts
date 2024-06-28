@@ -51,6 +51,9 @@ export interface AppConfig {
   visibleFooter?: boolean;
   visibleConfig?: boolean;
   visibleBreadcrumb?: boolean;
+
+  appLogo?: string;
+  appName?: string;
 }
 
 export interface ComponentThemeLabel {

@@ -19,6 +19,18 @@ export class AppTopbarComponent {
     return this.layoutService.state.topbarMenuActive;
   }
 
+  get appLogo(): string {
+    return this.layoutService.config().appLogo;
+  }
+
+  get appName(): string {
+    return this.layoutService.config().appName;
+  }
+
+  get visibleSideBar(): boolean {
+    return this.layoutService.config().visibleSideBar;
+  }
+
   onMenuButtonClick() {
     this.layoutService.onMenuToggle();
   }

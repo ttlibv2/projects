@@ -131,6 +131,10 @@ export class LayoutService {
     this._configUpdate.next(this.config());
   }
 
+  layoutConfig(config: Partial<AppConfig>): void {
+    this.config.update(json => ({...json, ...config}));
+  }
+
   showConfigSidebar() {
     this.state.configSidebarVisible = true;
   }

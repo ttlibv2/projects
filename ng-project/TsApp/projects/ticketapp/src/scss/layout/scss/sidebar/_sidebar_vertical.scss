@@ -2,6 +2,7 @@
     position: fixed;
     height: 100%;
     left: 0;
+    top: $topbarHeight;
     width: $sidebarWidth;
     background: var(--menu-bg);
     display: flex;
