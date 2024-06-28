@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Observable, of, switchMap } from "rxjs";
+import { Objects } from "ts-helper";
 import { UserService } from "../../services/user.service";
 import { ToastService } from "../../services/toast.service";
 import { ApiInfo } from "../../models/api-info";
 import { ApiInfoService } from "../../services/api-info.service";
-import { Observable, of, switchMap } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
-import { ConfigService } from '../../services/config.service';
-import { Objects } from "ts-helper";
+import {StorageService} from "../../services/storage.service";
 
 @Component({
   selector: 'ts-api-info',
@@ -25,8 +24,7 @@ export class ApiInfoComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     private userSrv: UserService,
-    private config: ConfigService,
-    private i18n: TranslateService,
+    private config: StorageService,
     private apiSrv: ApiInfoService,
     private toast: ToastService) {
   }
@@ -90,7 +88,7 @@ export class ApiInfoComponent implements OnInit {
     else {
       this.asyncLoad = true;
       this.apiSrv.getUserByCode(value.code).subscribe({
-        error: err => this.asyncLoad = false,
+        error: _ => this.asyncLoad = false,
         next: res => {
           this.asyncLoad = false;
           value.user_api = res;
@@ -112,8 +110,8 @@ export class ApiInfoComponent implements OnInit {
     const value = this.formGroup.value;
     const apiCode = value.api_item?.code;
     this.apiSrv.saveUserApi(apiCode, value).subscribe({
-      error: err => this.asyncSave = false,
-      next: res => {
+      error: _ => this.asyncSave = false,
+      next: _ => {
         this.asyncSave = false;
         this.hasChangeData = false;
         this.toast.success({ summary: this.config.i18n.saveOk });
@@ -127,7 +125,7 @@ export class ApiInfoComponent implements OnInit {
     const loadingRef = this.toast.loading({ summary: this.config.i18n.awaitHandle })
 
     this.apiSrv.checkLogin().subscribe({
-      error: err => {
+      error: _ => {
         this.asyncSave = false;
         this.toast.close(loadingRef.toastId);
       },

@@ -1,10 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation, booleanAttribute } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation, booleanAttribute } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MenuItem } from "primeng/api";
 import { Ticket } from "../../models/ticket";
-import { CheckboxChangeEvent } from "primeng/checkbox";
-import { DialogService } from "primeng/dynamicdialog";
-import { TemplateFormComponent } from "../template-form/template-form.component";
 import { TicketOption } from "../../models/ticket-option";
 import { FindPartnerComponent } from "../find-partner/find-partner.component";
 import { CatalogService } from "../../services/catalog.service";
@@ -14,12 +11,18 @@ import { ToastService } from "../../services/toast.service";
 import { Objects, Optional } from "ts-helper";
 import { Software } from "../../models/software";
 import { ClsTeam } from "../../models/od-cls";
-import { ConfigService } from "../../services/config.service";
 import { LoggerService } from "ts-logger";
 import { of } from "rxjs";
 import { Chanel } from "../../models/chanel";
 import { Template } from "../../models/template";
 import { TemplateService } from "../../services/template.service";
+import { GroupHelp } from "../../models/group-help";
+import { Question } from "../../models/question";
+import * as cls from "../../models/od-cls";
+import { JsonObject } from "../../models/common";
+import { CatalogComponent } from "../catalog/catalog.component";
+import { User } from "../../models/user";
+import {StorageService} from "../../services/storage.service";
 
 const { notNull, notBlank, notEmpty } = Objects;
 
@@ -51,7 +54,6 @@ export class TicketFormComponent implements OnInit {
   
 
   catalog: Catalog = new Catalog();
-  template: Template;
 
   lsSoftName: string[] = [];
 
@@ -101,29 +103,9 @@ export class TicketFormComponent implements OnInit {
       hidden: false,
       command: (checked) => {
         this.viewTemplate = checked;
-        this.template = Template.from({
-          title: 'Mẫu mặc định',
-
-        });
       },
     },
   ];
-
-  get isEditTicket(): boolean {
-    return false;
-  }
-
-  get isEmailTicket(): boolean {
-    return this.options.emailTicket ?? false;
-  }
-
-  get isViewAll(): boolean {
-    return this.options.viewAll ?? true;
-  }
-
-  get isViewTs24(): boolean {
-    return this.options.viewTs24 ?? false;
-  }
 
   get options(): TicketOption {
     return this.ticket.get_options();
@@ -133,16 +115,25 @@ export class TicketFormComponent implements OnInit {
     return this.ticketForm.getRawValue();
   }
 
+  get isEditTicket(): boolean {
+    return false;
+  }
+
   @Input()
   set data(ticket: Ticket) {}
 
   @Input({transform: booleanAttribute})
   viewTemplate: boolean = false;
 
+  team_head: cls.ClsTeamHead;
+  templates: Template[] = [];
+  userLogin: User;
+
   constructor(
     private fb: FormBuilder,
     private toast: ToastService,
-    private config: ConfigService,
+    private config: StorageService,
+    private cref: ChangeDetectorRef, 
     private templateSrv: TemplateService,
     private catalogSrv: CatalogService,
     private logger: LoggerService ) {
@@ -150,8 +141,11 @@ export class TicketFormComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.loadCatalogs();
+    this.userLogin = this.config.loginUser;
+    this.loadCatalogs(true);
     this.ticketForm.patchValue(this.ticket);
+
+    console.log(this.userLogin)
   }
 
   private createFormGroup(): void {
@@ -206,29 +200,28 @@ export class TicketFormComponent implements OnInit {
     });
   }
 
-  loadCatalogs() {
-    this.asyncLoadCate = true;
-    
-    const ref = this.toast.loading({
-      summary: "Đang lấy danh mục. Vui lòng chờ",
+  loadCatalogs(autoLoad: boolean = false) {
+
+    const cateRef = this.toast.openDialog(CatalogComponent, { 
+      header: 'Danh mục cần lấy ?',
+      closeOnEscape: true,
+      focusOnShow: false,
+      contentStyle: {width: '800px'},
+      data: {templateCode: 'form_ticket', autoLoad}
     });
 
-    this.catalogSrv.getAll().subscribe({
-      error: (err) => {
-        this.asyncLoadCate = false;
-        this.toast.close(ref);
-        this.logger.warn("load catalog error => ", err);
-      },
-      next: (res) => {
+    cateRef.onClose.subscribe({
+      error: (err) => this.asyncLoadCate = false,
+      next: (res: Catalog) => {
         this.catalog = res;
-        this.logger.info("load catalog success => ", res);
-        this.toast.close(ref);
-        this.toast.success({ summary: this.config.i18n.loadCatalogOk });
-      },
-    });
+        this.templates = this.catalog.get_template('form_ticket');
+        this.logger.debug('aaaaa: ', this.templates);
+        this.cref.detectChanges();
+      }
+    })
   }
 
-  selectTemplate(title: string) {
+  selectTemplate(title: any) {
   }
 
   saveTicket() {
@@ -274,8 +267,7 @@ export class TicketFormComponent implements OnInit {
   }
 
   onSelectHelpdeskTeam(data: ClsTeam) {
-    Optional.ofNullable(data.members)
-      .map((users) => of(users))
+    Optional.ofNullable(data.members).map((users) => of(users))
       .orElseGet(() => this.catalogSrv.searchAssignByIds(data.team_members))
       .subscribe({
         error: (err) => (this.loading.assign = false),
@@ -283,7 +275,7 @@ export class TicketFormComponent implements OnInit {
           this.loading.assign = false;
           data.members = members;
           this.catalog.ls_assign = members;
-          this.catalog.team_head = data?.team_head;
+          this.team_head = data?.team_head;
           this.pathValue("od_team_head", data?.team_head);
         },
       });

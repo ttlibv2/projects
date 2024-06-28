@@ -7,6 +7,7 @@
             <div class="grid">
               <div class="p-fluid col-12 lg:col-12">
                 <label for="chanels">Kênh - Tình trạng <span class="p-text-danger">(*)</span></label>
+                <!-- <ng-select [items]="catalog.ls_chanel"></ng-select> -->
                 <p-multiSelect id="chanels" class="required" [filter]="false" optionLabel="value" [showClear]="true"
                   [showToggleAll]="false" [showHeader]="false" [filter]="true" [options]="catalog.ls_chanel"
                   display="chip" [maxSelectedLabels]="99" formControlName="chanels"
@@ -23,17 +24,17 @@
                 <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help" optionLabel="value"
                   formControlName="group_help"></p-dropdown>
               </div>
-              <div class="p-fluid col-6"*ngIf="isViewAll || viewTemplate">
+              <div class="p-fluid col-6" *ngIf="options.viewAll || viewTemplate">
                 <label for="support_help">Hình thức hỗ trợ <span class="p-text-danger">(*)</span></label>
                 <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false"
                   [showClear]="true" formControlName="support_help"></p-dropdown>
               </div>
-              <div class="p-fluid col-6"*ngIf="isViewAll || viewTemplate">
+              <div class="p-fluid col-6" *ngIf="options.viewAll || viewTemplate">
                 <label for="soft_names">Tên phần mềm <span class="p-text-danger">(*)</span></label>
                 <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" [showClear]="true"
                   formControlName="soft_name" emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
               </div>
-              </div>
+            </div>
 
           </p-fieldset>
           <p-fieldset class="col-12" legend0="Thông tin TS">
@@ -41,7 +42,7 @@
               <div class="p-fluid col-3 md:col-6 lg:col-6 xl:col-6 xxl:col-3">
                 <label for="od_team">Support Team <span class="p-text-danger">(*)</span></label>
                 <p-dropdown formControlName="od_team" id="od_team" [options]="catalog.ls_helpdesk_team"
-                  optionLabel="display_name"
+                  optionLabel="display_name" [filter]="true"
                   (onChange)="onDropdownChange('clsHelpdeskTeam', $event.value)"></p-dropdown>
               </div>
               <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
@@ -72,22 +73,23 @@
               </div>
               <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
                 <label for="od_team_head">Team Head</label>
-                <p-dropdown id="od_team_head" [options]="[catalog.team_head]" formControlName="od_team_head"
+                <p-dropdown id="od_team_head" [options]="[team_head]" formControlName="od_team_head"
                   optionLabel="name"></p-dropdown>
               </div>
-              <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3" 
-                *ngIf="isViewAll || isViewTs24 || viewTemplate">
+              <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                 <label for="od_ticket_type">Loại yêu cầu hỗ trợ</label>
                 <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type" optionLabel="display_name"
                   formControlName="od_ticket_type"></p-dropdown>
               </div>
               <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
-                *ngIf="isViewAll || isViewTs24 || viewTemplate">
+                *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                 <label for="od_priority">Độ ưu tiên</label>
                 <p-dropdown formControlName="od_priority" id="od_priority" [options]="catalog.ls_priority"
                   optionLabel="display_name"></p-dropdown>
               </div>
-              <div class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3" *ngIf="isViewAll || isViewTs24 || viewTemplate">
+              <div class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                 <label for="od_tags">Thẻ -- Tags</label>
                 <p-multiSelect formControlName="od_tags" id="od_tags" [filter]="false" optionLabel="display_name"
                   [showClear]="true" [showToggleAll]="false" [showHeader]="false" [filter]="false"
@@ -97,7 +99,7 @@
           </p-fieldset>
           <p-fieldset class="col-12" legend0="Thông tin KH" *ngIf="!viewTemplate">
             <div class="grid">
-              <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3"> 
+              <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
                 <label for="tax_code">Mã số thuế <span class="p-text-danger">(*)</span></label>
                 <input formControlName="tax_code" id="tax_code" class="required" pInputText />
               </div>
@@ -121,7 +123,7 @@
                 <label for="reception_time">TG tiếp nhận <span class="p-text-danger">(*)</span></label>
                 <input id="reception_time" pInputText formControlName="reception_time" />
               </div>
-                  <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
+              <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
                 <label for="phone">Số DT</label>
                 <input id="phone" pInputText formControlName="phone" />
               </div>
@@ -137,7 +139,7 @@
                 <label for="complete_time">TG hoàn thành <span class="p-text-danger">(*)</span></label>
                 <input id="complete_time" pInputText formControlName="complete_time" />
               </div>
-                      <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
+              <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
                 <label for="customer_name">Tên khách hàng</label>
                 <input id="customer_name" pInputText formControlName="customer_name" />
               </div>
@@ -159,7 +161,7 @@
               <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
               <input pInputText id="subject" formControlName="subject" />
             </div>
-            <div class="p-fluid col-12" *ngIf="isEmailTicket">
+            <div class="p-fluid col-12" *ngIf="options.emailTicket">
               <label for="content_email">Nội dung email</label>
               <p-editor id="content_email" [style]="{height: '150px'}" formControlName="content_email">
                 <ng-template pTemplate="header">
@@ -171,7 +173,7 @@
                 </ng-template>
               </p-editor>
             </div>
-            <div class="p-fluid col-12" *ngIf="isViewAll || isEmailTicket">
+            <div class="p-fluid col-12" *ngIf="options.viewAll || options.emailTicket">
               <label for="body">Hỗ trợ => Body</label>
               <p-editor id="body" [modules]="null" formControlName="body">
                 <ng-template pTemplate="header">
@@ -183,7 +185,7 @@
                 </ng-template>
               </p-editor>
             </div>
-            <div class="p-fluid col-12" *ngIf="isViewAll || isEmailTicket">
+            <div class="p-fluid col-12" *ngIf="options.viewAll || options.emailTicket">
               <label for="note">Hỗ trợ => Note</label>
               <p-editor id="note" formControlName="note">
                 <ng-template pTemplate="header">
@@ -195,7 +197,7 @@
                 </ng-template>
               </p-editor>
             </div>
-            <div class="p-fluid col-12" *ngIf="!isEmailTicket">
+            <div class="p-fluid col-12" *ngIf="!options.emailTicket">
               <label for="content_copy">Hỗ trợ => Copy</label>
               <p-editor id="content_copy" formControlName="content_copy">
                 <ng-template pTemplate="header">
@@ -218,11 +220,17 @@
             </div>
           </p-fieldset>
           <p-fieldset legend="Danh sách mẫu" class="col-12 template_list">
-            <!-- <div class="flex flex-wrap gap-2">
-                          <ng-template ngFor let-title [ngForOf]="templates?.listTitle">
-                            <p-chip [label]="title" [style]="templates.style(title)" (onClick)="selectTemplate(title)"></p-chip>
-                          </ng-template>
-                        </div> -->
+            <div class="flex flex-wrap gap-2">
+              <ng-template ngFor let-item [ngForOf]="templates">
+                <p-button severity="info" [label]="item.title" 
+                  [rounded]="true" [outlined]="true" [icon]="item.icon"
+                  [style.backgroud-color]="item.bg_color"
+                  [style.color]="item.text_color"></p-button>
+
+                <!-- <p-chip [label]="item.title" [icon]="item.icon" [alt]="item.title"
+                  (onClick)="selectTemplate(item)"></p-chip> -->
+              </ng-template>
+            </div>
           </p-fieldset>
         </div>
       </div>
@@ -241,7 +249,7 @@
   </div>
   @if(viewTemplate) {
   <div class="col-5 col-template-form">
-    <ts-template-form [disableList]="true" [template]="template"></ts-template-form>
+    <!-- <ts-template-form [disableList]="true" [template]="template"></ts-template-form> -->
   </div>
   }
 

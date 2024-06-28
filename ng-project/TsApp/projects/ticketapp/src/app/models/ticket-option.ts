@@ -2,12 +2,12 @@ import { BaseModel } from "./base-model";
 import { JsonObject } from "./common";
 
 export class TicketOption extends BaseModel {
-    autoCreate?: boolean;
-    autoFill?: boolean;
-    viewAll?: boolean;
-    viewTs24?: boolean;
-    saveCache?: boolean;
-    emailTicket?: boolean;
+    autoCreate: boolean = true;
+    autoFill: boolean = true;
+    viewAll: boolean = false;
+    viewTs24: boolean = false;
+    saveCache: boolean = false;
+    emailTicket: boolean = false;
 
     static from(data: JsonObject): TicketOption {
       return new TicketOption().update(data);

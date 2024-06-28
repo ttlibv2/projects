@@ -502,7 +502,7 @@ Add support for NO_HEADER tweak in tables  &.no-header {
   // NOTE:
   // Instead of simply applying vertical alignment programmatically the TreeView
   // expects you will do the same thing by adjusting .tree-disclosure-node
-  // paddings manually ¯\_(ツ)_/¯. The below values are adjusted for the theme
+  // paddings manually ¯\_(ツ)_/¯. The below values are adjusted for the themes
   // default font size (14px). If you change the font size, you're supposed to
   // re-adjust paddings as well. Also learn about TreeCellSkin#maxDisclosureWidthMap.
   // #javafx-bug

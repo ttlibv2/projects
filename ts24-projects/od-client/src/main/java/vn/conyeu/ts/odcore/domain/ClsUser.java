@@ -343,10 +343,12 @@ public class ClsUser extends ClsModel<ClsUser> {
         return cls;
     }
 
-    public void setName(String name) {
+    public ClsUser setName(String name) {
         this.name = name;
         this.setDisplay_name(name);
+        return this;
     }
+
 
     @Override
     public String toString() {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="user.404">Bạn chưa đăng ký tài khoản</entry>
+    <entry key="jwt.expired">Mã xác thực đã hết hạn</entry>
+    <entry key="jwt.malformed">Mã xác thực sai định dạng</entry>
+    <entry key="account.emailEmpty">Vui lòng nhập email</entry>
+    <entry key="account.phoneEmpty">Vui lòng nhập số điện thoại</entry>
+    <entry key="clsPartner.name.notEmpty">Tên không được trống.</entry>
+    <entry key="clsPartner.email.notEmpty">E-mail không được trống.</entry>
+    <entry key="clsPartner.vat.notEmpty">Mã số thuế không được trống.</entry>
+    <entry key="account.locked">Tài khoản của bạn bị khóa</entry>
+    <entry key="account.disabled">Tài khoản của bạn chưa được kích hoạt</entry>
+    <entry key="account.expired">Tài khoản của bạn đã hết hạn</entry>
+    <entry key="account.credentialsExpired">Mật khẩu của bạn đã hết hạn</entry>
+    <entry key="AbstractUserDetailsAuthenticationProvider.badCredentials">Thông tin đăng nhập không đúng</entry>
+</properties>

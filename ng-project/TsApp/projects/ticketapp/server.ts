@@ -5,6 +5,11 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import AppServerModule from './src/main.server';
 
+// const setGlobalVars = require('indexeddbshim');
+// global.window = global;
+// setGlobalVars(null, {
+//     checkOrigin: false
+// });
 
 
 // The Express app is exported so that it can be used by serverless Functions.

@@ -1,15 +1,15 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, Signal, ViewChild, ViewEncapsulation, computed, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { DialogService, DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
 import { Objects } from 'ts-helper';
-import { ColDef, GridApi } from "ag-grid-community";
+import { ColDef } from "ag-grid-community";
 import { ToastService } from '../../services/toast.service';
 import { OdTicketService } from '../../services/od.service';
 import { ClsPartner, ClsSearch } from '../../models/od-cls';
-import { ConfigService } from '../../services/config.service';
 import { LoggerService } from 'ts-logger';
 import { Page } from '../../models/common';
 import { AgTableComponent, TableOption } from '../api/ag-table/ag-table.component';
+import {StorageService} from "../../services/storage.service";
 
 const { isBlank, notBlank, notNull } = Objects;
 
@@ -31,14 +31,6 @@ export interface SearchData {
   address?: string;
 }
 
-
-function getColDef(gridApi: GridApi, colId: string, cb: (colDef: ColDef) => void) {
-  let col: ColDef = gridApi.getColumnDef(colId);
-  if (notNull(col)) {
-    console.log(col);
-    cb(col); gridApi.refreshCells();
-  }
-}
 
 @Component({
   selector: 'ts-find-partner',
@@ -96,7 +88,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
 
   constructor(
     private logger: LoggerService,
-    private config: ConfigService,
+    private config: StorageService,
     private cdRef: ChangeDetectorRef,
     private alert: ToastService,
     private fb: FormBuilder,

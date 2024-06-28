@@ -1,7 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {PrimeNGConfig} from "primeng/api";
 import {TranslateService} from "@ngx-translate/core";
-import {ToastContainerDirective, ToastrService} from "ngx-toastr";
+import { ToastrService} from "ngx-toastr";
+import { LayoutService } from 'ts-layout';
 
 @Component({
   selector: 'ts-root',
@@ -19,13 +20,18 @@ export class AppComponent implements OnInit {
 
   constructor(private primengConfig: PrimeNGConfig,
               private toastService: ToastrService,
+              private layoutService: LayoutService,
               private translateService: TranslateService) {
 
   }
 
   ngOnInit() {
-    console.log(`log`);
-    // this.toastService.overlayContainer = this.toastContainer;
+    this.layoutService.tryAddTheme();
+    this.layoutService.config.update(json => ({...json, ...{
+       // visibleSideBar: true,
+       visibleConfig: true
+    }}));
+
     this.primengConfig.ripple = true;
     this.translateService.get('primeng').subscribe(s => this.primengConfig.setTranslation(s));
   }

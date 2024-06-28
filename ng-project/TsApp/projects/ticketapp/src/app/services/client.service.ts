@@ -5,10 +5,10 @@ import {catchError, map, Observable, of, switchMap, tap, throwError} from 'rxjs'
 import {Objects} from "ts-helper";
 import {InjectService} from "./inject.service";
 import {Router} from "@angular/router";
-import { ConfigService } from './config.service';
 import {LocalDbService} from "./local-db.service";
 import {ToastMessage} from "./toast.service";
 import { LoggerService } from 'ts-logger';
+import { StorageService } from './storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -19,7 +19,7 @@ export class ClientService {
     return this.inject.http;
   }
 
-  protected get config(): ConfigService {
+  protected get config(): StorageService {
     return this.inject.config;
   }
 
@@ -56,7 +56,7 @@ export class ClientService {
   }
 
   protected send(method: string, url: string, options?: any): Observable<any> {
-    url = Objects.isUrl(url) ? url : this.config.get_baseUrl() + (url.startsWith('/') ? '' : '/') + url;
+    url = Objects.isUrl(url) ? url : this.config.baseUrl + (url.startsWith('/') ? '' : '/') + url;
 
     // get
     const showError: boolean = options['showError'] ?? true;
@@ -104,7 +104,7 @@ export class ClientService {
     }
 
     if(object.code.startsWith('jwt.')) {
-      this.config.set_authToken(null).pipe(
+      this.config.set_loginToken(null).pipe(
         tap(_ => this.router.navigate(['/']))
       ).subscribe();
     }

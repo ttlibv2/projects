@@ -1,5 +1,7 @@
 package vn.conyeu.ts.ticket_rest;
 
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.conyeu.commons.beans.ObjectMap;
@@ -17,6 +19,7 @@ import java.util.List;
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(TsVar.Rest.odCatalog)
+@CacheConfig(cacheNames = "od_catalogs")
 public class OdCatalogRest extends OdBaseRest {
 
     public OdCatalogRest(OdService odService, UserApiService apiService) {
@@ -24,12 +27,13 @@ public class OdCatalogRest extends OdBaseRest {
     }
 
     @GetMapping("get-all")
-    public ObjectMap getAll(@RequestParam String include) {
-        include = Objects.isBlank(include) ? "all" : include.toLowerCase().trim();
+    @Cacheable(key = "'get-all'+'-'+#catalog")
+    public ObjectMap getAll(@RequestParam String catalog) {
+        catalog = Objects.isBlank(catalog) ? "all" : catalog.toLowerCase().trim();
 
         final OdTicketService service = service();
-        final boolean isAll = include.equalsIgnoreCase("all");
-        final List<String> segments = List.of(include.split(","));
+        final boolean isAll = catalog.equalsIgnoreCase("all");
+        final List<String> segments = List.of(catalog.split(","));
 
         final ObjectMap map = new ObjectMap();
 
@@ -49,7 +53,6 @@ public class OdCatalogRest extends OdBaseRest {
             categories = getAllCate();
             map.set("ls_category", categories);
         }
-
 
         if (isAll || segments.contains("ls_category_sub")) {
             List<ClsCategorySub> subList = categories == null ? getAllCateSub()
@@ -163,6 +166,7 @@ public class OdCatalogRest extends OdBaseRest {
     }
 
     @GetMapping("get-ticket-type")
+    @Cacheable(key = "'get-ticket-type'")
     public List<ClsTicketType> getAllTicketType() {
         return service().ticketType().getAll();
     }

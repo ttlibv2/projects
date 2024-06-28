@@ -27,8 +27,7 @@ public class OdUserRest extends OdBaseRest {
     @PostMapping("login")
     public Object login(@PrincipalId Long userLogin) {
         ClsUser clsUser = service().login();
-        return ObjectMap.setNew("result", clsUser)
-                .set("summary", "Kiểm tra thông tin kết nối thành công");
+        return ObjectMap.setNew("alert_msg", "Kiểm tra thông tin kết nối thành công");
     }
 
     @GetMapping("get-byid/{userId}")

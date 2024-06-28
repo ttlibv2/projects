@@ -1,0 +1,133 @@
+$prefix: '.p-toast';
+$closeIconCls: $prefix + '-icon-close';
+$positionCls: $prefix;
+
+.toast-container {
+  opacity: 1;//$toastOpacity;
+  position: fixed;
+  width: 20rem;
+
+  //toast position
+  &#{$positionCls} {
+
+    &-top-right {
+      top: 20px;
+      right: 20px;
+    }
+
+    &-top-left {
+      top: 20px;
+      left: 20px;
+    }
+
+    &-top-center {
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &-bottom-left {
+      bottom: 20px;
+      left: 20px;
+    }
+
+    &-bottom-right {
+      bottom: 20px;
+      right: 20px;
+    }
+
+    &-bottom-center {
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &-center {
+      left: 50%;
+      top: 50%;
+      min-width: 20vw;
+      transform: translate(-50%, -50%);
+    }
+
+  }
+
+  //toast message
+  #{$prefix}-message {
+    margin: $toastMargin;
+    box-shadow: $toastShadow;
+    border-radius: $borderRadius;
+    cursor: pointer;
+
+    &-content {
+      display: flex;
+      flex-direction: row;
+      gap: .5rem;
+      padding: .5rem;
+
+      .column-left {
+        display: flex;
+        align-items: center;
+      }
+
+      .column-center {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        gap: .5rem;
+        justify-content: center;
+      }
+
+      .column-right {
+        display: flex;
+        align-items: flex-start;
+
+
+      }
+
+
+    }
+
+    &-info {
+      background: $infoMessageBg;
+      border: $infoMessageBorder;
+      border-width: $messageBorderWidth;
+      color: $infoMessageTextColor;
+    }
+
+    &-success {
+      background: $successMessageBg;
+      border: $successMessageBorder;
+      border-width: $messageBorderWidth;
+      color: $successMessageTextColor;
+    }
+
+    &-warning {
+      background: $warningMessageBg;
+      border: $warningMessageBorder;
+      border-width: $messageBorderWidth;
+      color: $warningMessageTextColor;
+    }
+
+    &-error {
+      background: $errorMessageBg;
+      border: $errorMessageBorder;
+      border-width: $messageBorderWidth;
+      color: $errorMessageTextColor;
+    }
+
+    &-help {
+      background: $helpMessageBg;
+      border: $helpMessageBorder;
+      border-width: $messageBorderWidth;
+      color: $helpMessageTextColor;
+    }
+
+  }
+
+
+
+
+
+
+
+}

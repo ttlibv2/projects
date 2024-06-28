@@ -6,11 +6,11 @@ import { JsonObject } from '../models/common';
 import { ClsAssign } from '../models/od-cls';
 import { DbTable, LocalDbService } from './local-db.service';
 import { LoggerService } from 'ts-logger';
-import { Objects } from 'ts-helper';
 
+type CatalogType = Record<string, any[]>;
 
 export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable } = {
-  ls_chanel: db => db.chanel,
+  ls_chanel:db => db.chanel,
   ls_software: db => db.software,
   ls_group_help: db => db.groupHelp,
   ls_question: db => db.question,
@@ -47,9 +47,9 @@ export class CatalogService extends ClientService {
   }
 
 
-  getAll(include: string = 'all'): Observable<Catalog> {
+  getAll(params: JsonObject): Observable<Catalog> {
     const url = '/ts-api/catalog/get-all';
-    return this.get(url, { include }).pipe(map(res => {
+    return this.get(url, params).pipe(map(res => {
       const newData = jsonToCatalog(this.db, res, this.logger);
       this.saveCatalogToDb(newData);
       return newData;

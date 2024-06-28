@@ -1,24 +1,28 @@
 @import "../public/fontawesome/css/all.css";
 
+@import "scss/ng-select/default.theme.scss";
+@import "scss/ng-select/ng-select.component.scss";
 
-// ag-grid theme
+
+// ag-grid themes
 @import "ag-grid-community/styles/ag-grid.min.css";
-@import  "ag-grid-community/styles/ag-theme-quartz.css";
-
+@import "ag-grid-community/styles/ag-theme-quartz.css";
+ 
 //Editor is rich text editor component based on Quill
 @import "quill/dist/quill.core.css";
 @import "quill/dist/quill.snow.css";
-
-
-@import "primeicons/primeicons.css";
+ 
+@import "primeicons/primeicons.css"; 
+// @import "primeng/resources/themes/aura-light-lime/theme.css";
 @import "primeng/resources/primeng.css";
+ 
+@import "scss/primeflex/primeflex.scss";
+// @import "scss/primeng/theme/custom/variables";
+// @import "scss/primeng/theme-base/components";
+// 
 
-@import "primeflex/primeflex.scss";
-@import "primeng/theme/aura/aura-light/lime/theme.scss";
-@import "primeng/theme-base/components";
-@import "primeng/theme-base/custom" ;
-@import "primeng/theme-base/toastr" ;
-//@import "ngx-toastr/toastr";
+// @import "scss/primeng/theme/my-aura/aura-light/lime/theme.scss" ;
+// @import "scss/primeng/theme-base/custom" ;
+// @import "scss/primeng/theme-base/toastr" ;
 
-
-// @import "prime-style";
+@import "scss/layout/scss/layout.scss";

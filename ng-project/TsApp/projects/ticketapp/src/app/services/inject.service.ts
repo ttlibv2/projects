@@ -2,7 +2,7 @@ import {Injectable, InjectOptions, Injector, ProviderToken} from "@angular/core"
 import {HttpClient} from "@angular/common/http";
 import {DialogService} from "primeng/dynamicdialog";
 import {ToastService} from "./toast.service";
-import { ConfigService } from "./config.service";
+import { StorageService } from "./storage.service";
 
 @Injectable({providedIn: 'root'})
 export class InjectService {
@@ -18,8 +18,8 @@ export class InjectService {
     return this.inject.get(ToastService);
   }
 
-  get config(): ConfigService {
-    return this.inject.get(ConfigService);
+  get config(): StorageService {
+    return this.inject.get(StorageService);
   }
 
   get dialog(): DialogService {

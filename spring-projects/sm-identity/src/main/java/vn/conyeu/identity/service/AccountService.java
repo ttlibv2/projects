@@ -21,9 +21,9 @@ public class AccountService extends LongUIdService<Account, AccountRepo> {
         repo().updatePassword(accountId, newPassword);
     }
 
-   // @CacheEvict(value = "principal")
-    public Account save(Account entity) {
-        return super.save(entity);
+    @CacheEvict(value = "principal")
+    public Account save(Account account) {
+        return super.save(account);
     }
 
     public Optional<Account> findByEmail(String email) {
@@ -33,7 +33,6 @@ public class AccountService extends LongUIdService<Account, AccountRepo> {
     public Optional<Account> findByPhone(String phone) {
         return repo().findByPhone(phone);
     }
-
 
     public boolean existsByEmail(String email) {
         return repo().existsByEmail(email);

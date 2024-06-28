@@ -1,0 +1,19 @@
+$inputFocusOutlineOffset: -1px !default;
+$inputIconPadding: .5rem!default;
+
+//fieldSet
+$fieldsetHeaderBorder: 0!default; //1px solid $panelHeaderBorderColor !default;
+$fieldSetLegendPadding: 0 .75rem!default;
+$fieldsetContentPadding: $panelContentPadding!default;
+$fieldsetContentBorderColor:  #adc523!default;
+$fieldsetContentBorder: 1px solid $fieldsetContentBorderColor !default;//$panelContentBorder!default; 
+
+//
+$toolbarHeaderBorderColor: unset!default;//$shade200 !default;
+$toolbarHeaderBorder: unset!default;//1px solid $toolbarHeaderBorderColor !default;
+$toolbarHeaderBg: $shade000 !default;
+
+$helpMessageBg: rgba($helpButtonBg, 0.95)!default;
+$helpMessageBorder: $helpButtonBorder !default;
+$helpMessageTextColor: $helpButtonTextColor !default;
+$helpMessageIconColor: $helpButtonTextColor !default;

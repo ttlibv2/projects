@@ -1,5 +1,6 @@
 import * as crypto from 'crypto-js';
 import {Type} from "@angular/core";
+import { Callback } from './function';
 
 export class Objects {
   
@@ -43,7 +44,7 @@ export class Objects {
    * Returns true if object is null or undefined
    * @param obj the object validate
    * */
-  static isNull(obj: any): boolean {
+  static isNull(obj: any): obj is null | undefined {
     return obj === null || obj === void 0;
   }
 
@@ -122,5 +123,40 @@ export class Objects {
     if(!Objects.isObject(json)) return json;
     else return Object.fromEntries(Object.keys(json).filter(k => Objects.notNull(json[k])).map(k => [k, json[k]]) );
   }
+
+  static valueToMap<K, V>(data: any, callback: Callback<any, V | [string, V]>): Map<K, V> {
+    if(Objects.isNull(data)) return new Map();
+    else if(data instanceof Map) {
+      const arrays: any[] = [...data.keys()].map((k: any) => [k, callback(data.get(k))]);
+      return new Map(arrays);
+    }//
+    else if(Objects.isArray(data)) {
+      const arrays: any[] = data.map(item => callback(item));
+      return new Map(arrays);
+    }//
+    else {
+      const arrays: any[] = Object.keys(data).map(k => [k, callback(data[k])]);
+      return new Map(arrays);
+    }
+
+  }
+
+  static delFieldJson(json: Record<string, any>, ...fields: string[]): any {
+    fields.forEach(field => delete json[field]);
+    return json;
+  }
+
+  static createElement(document: Document, tagName: string, ...attributeValues: string[]): HTMLElement {
+    const el = document.createElement(tagName);
+    let indexNext = 0;
+    while(indexNext < attributeValues.length) {
+        let attr = attributeValues[indexNext++];
+        let value = attributeValues[indexNext++];
+        el.setAttribute(attr, value);
+    }
+
+    return el;
+  }
+
 
 }

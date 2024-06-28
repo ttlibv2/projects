@@ -7,6 +7,7 @@ import vn.conyeu.common.service.LongUIdService;
 import vn.conyeu.ts.domain.ApiInfo;
 import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.Errors;
+import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.repository.SoftwareRepo;
 import vn.conyeu.ts.repository.UserApiRepo;
 
@@ -17,12 +18,8 @@ import java.util.function.Consumer;
 @Service
 public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
 
-    private final SoftwareRepo softwareRepo;
-
-    public UserApiService(UserApiRepo apiRepo,
-                          SoftwareRepo softwareRepo) {
+    public UserApiService(UserApiRepo apiRepo) {
         super(apiRepo);
-        this.softwareRepo = softwareRepo;
     }
 
     @Cacheable(value = "UserApi", key = "{#userId, #apiCode}")
@@ -66,4 +63,5 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
             return save(userApi);
         }
     }
+
 }

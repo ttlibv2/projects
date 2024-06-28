@@ -78,4 +78,10 @@ public class UserApi extends LongUId<UserApi> {
     public boolean isAllowEdit() {
         return allowEdit != null && allowEdit;
     }
+
+    public ClsUser getClsUserBasic() {
+        if(userInfo == null) return null;
+        else return new ClsUser().setName(userInfo.getName())
+                .setEmail(userInfo.getEmail()).setId(userInfo.getId());
+    }
 }

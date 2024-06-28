@@ -1,6 +1,7 @@
 package vn.conyeu.ts.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import vn.conyeu.ts.repository.TemplateRepo;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "templates")
 public class TemplateService extends LongUIdService<Template, TemplateRepo> {
 
     @Autowired
@@ -18,20 +20,45 @@ public class TemplateService extends LongUIdService<Template, TemplateRepo> {
         super(templateRepo);
     }
 
+    @Override
+    protected String getCacheName() {
+        return "templates";
+    }
+
+    @Cacheable()
     public List<Template> findAll(Long userId) {
         return repo().findTemplateByUser(userId);
     }
 
+    @Cacheable()
     public List<Template> findAll(Long userId, List<String> entityCodes) {
         if(entityCodes == null || entityCodes.isEmpty()) return findAll(userId);
         else return repo().findTemplateByUser(userId, entityCodes);
     }
 
+    @Cacheable()
     public Page<Template> findAll(Long userId, Pageable pageable) {
         return repo().findTemplateByUser(userId, pageable);
     }
 
+    @Cacheable()
     public Page<Template> findTemplate(String entityCode, Long userId, Pageable pageable) {
         return repo().findTemplateByUserAndCode(entityCode, userId, pageable);
+    }
+
+    //@CacheEvict(allEntries = true)
+    public Template save(Template template) {
+        cacheService.clearAll();
+        return super.save(template);
+    }
+
+   // @CacheEvict(allEntries = true)
+    public void deleteById(Long entityId) {
+        super.deleteById(entityId);
+    }
+
+    //@CacheEvict(allEntries = true)
+    public void clearCache() {
+
     }
 }

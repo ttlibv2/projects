@@ -6,8 +6,8 @@ import {ChkUser, RememberUser, User} from "../../../models/user";
 import {AuthService} from "../../../services/auth.service";
 import {Router} from "@angular/router";
 import {ToastService} from "../../../services/toast.service";
-import { ConfigService } from '../../../services/config.service';
 import {TranslateService} from "@ngx-translate/core";
+import {StorageService} from "../../../services/storage.service";
 
 
 @Component({
@@ -34,16 +34,17 @@ export class SigninComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private translate: TranslateService,
               private router: Router,
-              private cfg: ConfigService,
+              private cfg: StorageService,
               private auth: AuthService,
               private toast: ToastService) {  }
 
   ngOnInit() {
-    this.cfg.hasLoginAndRedirect(this.lastUrl, () => this.initialize());
+    if(this.cfg.isLogin) this.router.navigate([this.lastUrl]).then();
+    else this.initialize();
   }
 
   initialize() {
-    this.cache = this.cfg.get_rememberUser();
+    this.cache = this.cfg.rememberUser;
    
     this.asyncView = true;
 
@@ -52,7 +53,7 @@ export class SigninComponent implements OnInit {
     this.signinForm = this.fb.group({
       username: [info?.username, [Validators.required, Validators.email]],
       password: [info?.password, Validators.required],
-      url_dev: [info?.url_dev ?? this.cfg.get_baseUrl()],
+      url_dev: [info?.url_dev ?? this.cfg.baseUrl],
       remember: [info?.remember]
     });
   }
@@ -86,6 +87,7 @@ export class SigninComponent implements OnInit {
       error: err => {this.asyncLogin = false; console.log(err)},
       next: (user: User) => {
         this.asyncLogin = false;
+        console.log(user);
         this.toast.success({summary: 'Đăng nhập thành công.'});
 
         if(user.required_update === true) this.router.navigate(['/user-info']);

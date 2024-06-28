@@ -21,6 +21,8 @@ import {TemplateFormModule} from "../template-form/template-form.module";
 import {DialogModule} from "primeng/dialog";
 import {DialogService} from "primeng/dynamicdialog";
 import {ToolbarModule} from "primeng/toolbar";
+import { CatalogModule } from '../catalog/catalog.module';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 @NgModule({
@@ -48,6 +50,8 @@ import {ToolbarModule} from "primeng/toolbar";
         DialogModule,
         TemplateFormModule,
         ToolbarModule,
+        CatalogModule,
+        NgSelectModule 
     ],
   providers: [
     DialogService

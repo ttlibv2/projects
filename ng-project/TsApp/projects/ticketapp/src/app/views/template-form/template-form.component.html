@@ -4,11 +4,11 @@
       <div class="col-6 p-fluid">
         <label for="template">{{'templates' | translate}}</label>
         <p-dropdown id="template" [options]="templates" optionLabel="title" [showClear]="true"
-          (onChange)="selectTemplate($event.value)" formControlName="template_id"></p-dropdown>
+          (onChange)="selectTemplate($event.value)"></p-dropdown>
       </div>
       <div class="col-6 p-fluid">
         <label for="entity_code">{{'entity_code' | translate}}</label>
-        <p-dropdown id="entity_code" [options]="entities" optionLabel="label" optionValue="code"  [showClear]="true"
+        <p-dropdown id="entity_code" [options]="entities"  [showClear]="true"
           (onChange)="selectEntity($event.value)" formControlName="entity_code"></p-dropdown>
       </div>
       <div class="col-6 p-fluid">

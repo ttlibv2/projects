@@ -15,8 +15,12 @@ function setData(object: any,  target: any, field: string, itemCb: (item: any) =
    if(field in object) {
       const fieldData = object[field];
       if(isArray(fieldData)) target[field] = fieldData.map(item => itemCb(item));
-      else if(isObject(fieldData)) target[field] = new Map(Object.keys(fieldData).map(k => [k, fieldData[k]]));
+      else if(isObject(fieldData)) {
+         const arrays: any[] = Object.keys(fieldData).map(k => [k, (<any[]>fieldData[k]).map(i => itemCb(i))]);
+         target[field] = new Map(arrays);
+      }
       else throw new Error(`The field data ${fieldData} not support type for field ${field}`);
+      
    }
 
 }
@@ -40,17 +44,15 @@ export class Catalog extends BaseModel {
    ls_priority: cls.ClsPriority[]= [];
    ls_ticket_type: cls.ClsTicketType[]= [];
    ls_topic: cls.ClsTopic[]= [];
-   ls_teamplate: Map<string, Template[]> = new Map();
    ls_team_head: cls.ClsTeamHead[] = [];
-
-  
+   ls_template: Map<string, Template[]> = new Map();
 
    static from(json: JsonObject, logger?: LoggerService): Catalog {
       return new Catalog().update(json);
    }
 
    override update(object: AssignObject<this>): this {
-      super.update(object);
+      //super.update(object);
       setData(object, this, 'ls_chanel', item => Chanel.from(item));
       setData(object, this, 'ls_software', item => Software.from(item));
       setData(object, this, 'ls_group_help', item => GroupHelp.from(item));
@@ -58,6 +60,7 @@ export class Catalog extends BaseModel {
       setData(object, this, 'ls_helpdesk_team', item => cls.ClsTeam.from(item));
       setData(object, this, 'ls_assign', item => cls.ClsAssign.from(item));
       setData(object, this, 'ls_product', item => cls.ClsProduct.from(item));
+
       setData(object, this, 'ls_subject_type', item => cls.ClsSubjectType.from(item));
       setData(object, this, 'ls_repiled_status', item => cls.ClsRepiled.from(item));
       setData(object, this, 'ls_stage', item => cls.ClsStage.from(item));
@@ -68,7 +71,12 @@ export class Catalog extends BaseModel {
       setData(object, this, 'ls_ticket_type', item => cls.ClsTicketType.from(item));
       setData(object, this, 'ls_topic', item => cls.ClsTopic.from(item));
       setData(object, this, 'ls_team_head', item => cls.ClsTeamHead.from(item));
-      setData(object, this, 'ls_teamplate', item => Template.from(item));
+      setData(object, this, 'ls_template', item => Template.from(item));
+
       return this;
+   }
+
+   get_template(form: string): Template[] {
+      return this.ls_template.get(form);// ?? [];
    }
 }

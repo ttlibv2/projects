@@ -22,6 +22,7 @@
         <module>sm-exception</module>
         <module>sm-identity</module>
         <module>sm-address</module>
+        <module>sm-oauth2-login</module>
     </modules>
     <packaging>pom</packaging>
 

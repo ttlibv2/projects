@@ -4,10 +4,10 @@ import {SocialLink} from "../../../models/common";
 import {ToastService} from "../../../services/toast.service";
 import {AuthService} from "../../../services/auth.service";
 import {SignUpDto} from "../../../models/user";
-import {ActivatedRoute, Route, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import { Objects } from 'ts-helper';
-import { ConfigService } from '../../../services/config.service';
 import { I18N_KEY } from '../../../models/constant';
+import {StorageService} from "../../../services/storage.service";
 
 @Component({
   selector: 'ts-signup',
@@ -30,14 +30,15 @@ export class SignupComponent implements OnInit{
 
   constructor(private active: ActivatedRoute,
               private fb:FormBuilder,
-              private route: Router,
-              private cfg: ConfigService,
+              private router: Router,
+              private cfg: StorageService,
               private toast:ToastService,
               private auth: AuthService) {
   }
 
   ngOnInit() {
-    this.cfg.hasLoginAndRedirect(this.lastUrl, () => this.initialize());
+    if(this.cfg.isLogin) this.router.navigate([this.lastUrl]).then();
+    else this.initialize();
   }
   
   initialize() {
@@ -70,13 +71,13 @@ export class SignupComponent implements OnInit{
 
     this.asyncSignup = true;
     this.auth.signup(dto).subscribe({
-      next: res => {
+      next: _ => {
         this.asyncSignup = false;
         this.toast.success({summary: this.cfg.i18n.signupOk});
-        if(Objects.notBlank(this.lastUrl)) this.route.navigate([this.lastUrl]);
-        else this.route.navigate(['/']);
+        if(Objects.notBlank(this.lastUrl)) this.router.navigate([this.lastUrl]).then();
+        else this.router.navigate(['/']).then();
       },
-      error: err => this.asyncSignup = false,
+      error: _ => this.asyncSignup = false,
       complete: () => this.asyncSignup = false
     });
 

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -10,25 +11,22 @@ import {
   booleanAttribute,
 } from "@angular/core";
 import {
-  DialogService,
   DynamicDialogComponent,
   DynamicDialogRef,
 } from "primeng/dynamicdialog";
 import {
   FormBuilder,
   FormGroup,
-  ValidationErrors,
   Validators,
 } from "@angular/forms";
 import { Ticket } from "../../models/ticket";
 import { TemplateService } from "../../services/template.service";
 import { Template } from "../../models/template";
 import { ToastService } from "../../services/toast.service";
-import { ConfigService } from "../../services/config.service";
 import { LoggerService } from "ts-logger";
 import { Objects } from "ts-helper";
+import {StorageService} from "../../services/storage.service";
 
-const { notNull } = Objects;
 
 @Component({
   selector: "ts-template-form",
@@ -37,18 +35,16 @@ const { notNull } = Objects;
   encapsulation: ViewEncapsulation.None,
 })
 export class TemplateFormComponent implements OnInit, OnChanges {
-  private _template: Template;
+  //private _template: Template;
 
   @Input({ transform: booleanAttribute })
   disableList: boolean = true;
 
   @Input() set template(data: Template) {
-    this._template = data;
-    if (notNull(this.formGroup)) {
-      this.formGroup.patchValue(data);
-    }
+    this.set_template(data);
   }
 
+  @Input() entityCode: string;
   @Output() onNew = new EventEmitter();
   @Output() onSave = new EventEmitter();
   @Output() onDelete = new EventEmitter();
@@ -65,9 +61,10 @@ export class TemplateFormComponent implements OnInit, OnChanges {
   asyncSave: boolean = false;
   labelSave: string = "save";
 
-  entities = [{ code: "form_ticket", label: "Ticket" }];
+  entities = ['form_ticket'];
 
   get templates(): Template[] {
+
     return [...this.templateMap.values()];
   }
 
@@ -75,20 +72,14 @@ export class TemplateFormComponent implements OnInit, OnChanges {
     private fb: FormBuilder,
     private ref: DynamicDialogRef,
     private toast: ToastService,
-    private config: ConfigService,
+    private config: StorageService,
     private logger: LoggerService,
-    private templateSrv: TemplateService
-  ) {}
+    private def: ChangeDetectorRef,
+    private templateSrv: TemplateService ) {
+    this.createFormGroup();
+  }
 
-  ngOnInit() {
-    console.log("ngOnInit");
-    const refView = this.toast.getDialogComponentRef(this.ref);
-    this.instance = refView && refView.instance;
-
-    if (this.instance && this.instance.data) {
-      this.ticket = this.instance.data;
-    }
-
+  createFormGroup() {
     this.formGroup = this.fb.group({
       icon: [null],
       template_id: [{ value: null, disabled: this.disableList }],
@@ -99,10 +90,26 @@ export class TemplateFormComponent implements OnInit, OnChanges {
       text_color: ["#000000", Validators.required],
       data: [{ value: null, disabled: true }, Validators.required],
     });
+  }
 
-    this.formGroup.patchValue(this._template);
+  ngOnInit() {
+    console.log("ngOnInit");
+    const refView = this.toast.getDialogComponentRef(this.ref);
+    this.instance = refView && refView.instance;
 
-    // this.loadTemplate();
+    if (this.instance && this.instance.data) {
+      this.ticket = this.instance.data;
+    }
+
+    // if(Objects.notNull(this._template)){
+    //   this._template.entity_code = this.entityCode;
+    //   this.formGroup.patchValue(this._template);
+    // }
+
+  }
+
+  private set_template(data: Template) {
+    this.formGroup.patchValue(data);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -142,9 +149,9 @@ export class TemplateFormComponent implements OnInit, OnChanges {
   }
 
   selectTemplate(template: Template) {
-    this.template = template ?? new Template();
+    //this.template = template ?? new Template();
     if (Objects.isEmpty(template)) this.resetForm();
-    else this.formGroup.patchValue(this.template);
+    else this.set_template(template);
   }
 
   createNew() {
@@ -164,15 +171,17 @@ export class TemplateFormComponent implements OnInit, OnChanges {
     console.log(formValue);
 
     this.templateSrv.save(formValue).subscribe({
-      next: (data) => {
+      next: (template: Template) => {
         this.asyncSave = false;
-        this.template.update(data);
-        this.templateMap.set(data.template_id, this.template);
+        this.set_template(template);
+        this.templateMap.set(template.template_id, template);
         this.toast.success({ summary: this.config.i18n.saveTemplateOk });
+        this.def.detectChanges();
       },
       error: (err) => {
         this.asyncSave = false;
         this.logger.error(`saveTemplate error: `, err);
+        this.def.detectChanges();
       },
     });
   }

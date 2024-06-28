@@ -31,7 +31,7 @@ $inner-border-radius: math.max($border-radius - $border-width, 0) !default;
 $opacity-disabled: 0.4 !default;
 
 // javafx-controls doesn't have iconic fonts support,
-// this is just a variable that is used across the theme to style font icons
+// this is just a variable that is used across the themes to style font icons
 $font-icon-selector: ".font-icon, .ikonli-font-icon";
 $font-icon-selector-immediate: ">.font-icon, >.ikonli-font-icon";
 

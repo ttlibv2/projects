@@ -1,0 +1,105 @@
+<p-button icon="pi pi-cog" styleClass="layout-config-button p-link" (onClick)="onConfigButtonClick()"></p-button>
+
+<p-sidebar [(visible)]="visible" position="right"
+    [transitionOptions]="'.3s cubic-bezier(0, 0, 0.2, 1)'" styleClass="layout-config-sidebar w-18rem">
+
+    
+    <h5>Scale</h5>
+    <div class="flex align-items-center">
+        <button icon="pi pi-minus" type="button" pButton pRipple (click)="decrementScale()"
+            class="p-button-text p-button-rounded w-2rem h-2rem mr-2" [disabled]="isScaleMin"></button>
+        <div class="flex gap-2 align-items-center">
+            <ng-template ngFor let-item [ngForOf]="scales">
+                <div class="flex align-items-center gap-2">
+                    <i class="pi pi-circle-fill text-300" [ngClass]="{'text-primary-500': item === scale}"
+                        pTooltip="Scale {{item}}" tooltipPosition="top" (click)="selectScale(item)"></i>
+                </div>
+            </ng-template>
+        </div>
+        <button icon="pi pi-plus" type="button" pButton pRipple (click)="incrementScale()"
+            class="p-button-text p-button-rounded w-2rem h-2rem ml-2" [disabled]="isScaleMax"></button>
+    </div>
+
+    <h5>Menu Profile Position</h5>
+    <div class="flex align-items-center gap-3">
+        <p-radioButton name="menuProfilePosition" inputId="input-style-start" value="start" label="Start"
+        [(ngModel)]="menuProfilePosition"></p-radioButton>
+
+        <p-radioButton name="menuProfilePosition" inputId="input-style-end" value="end" label="End"
+            [(ngModel)]="menuProfilePosition"></p-radioButton>
+
+    </div>
+
+
+    <h5>Input Style</h5>
+    <div class="flex align-items-center gap-3">
+        <p-radioButton name="inputStyle" inputId="input-style-outlined" value="outlined" label="Outlined"
+            [(ngModel)]="inputStyle"></p-radioButton>
+
+        <p-radioButton name="inputStyle" inputId="input-style-filled" value="filled" label="Filled"
+            [(ngModel)]="inputStyle"></p-radioButton>
+
+    </div>
+
+    <h5>Ripple Effect</h5>
+    <div class="flex">
+        <p-inputSwitch [(ngModel)]="ripple"></p-inputSwitch>
+    </div>
+
+
+    <h5>Menu Type</h5>
+    <div class="flex flex-wrap flex-row row-gap-3">
+        <ng-template ngFor let-item [ngForOf]="menuModes">
+            <!-- <div class="flex flex-row flex-wrap align-items-center gap-3"> -->
+                <p-radioButton class="w-6" name="menuMode" inputId="menu-mode-+{{item.mode}}" [value]="item.mode"
+                    [label]="item.label"[(ngModel)]="menuMode"></p-radioButton>
+            <!-- </div> -->
+        </ng-template>
+    </div>
+
+    <h5>Theme</h5>
+    <div class="flex flex-wrap gap-3">
+        <ng-template ngFor let-item [ngForOf]="themes">
+            <div class="flex align-items-center gap-2">
+                <p-radioButton name="themeList" inputId="theme-+{{item.id}}" [value]="item.id"
+                    [label]="item.label" [(ngModel)]="theme"></p-radioButton>
+            </div>
+        </ng-template>
+    </div>
+
+    <ng-container *ngIf="theme && colorSchemes.length">
+        <h5>Color Schema</h5>
+        <div class="flex flex-wrap align-items-center gap-3">
+            <ng-template ngFor let-item [ngForOf]="colorSchemes">
+                <button pRipple [style.background-color]="item.color" (click)="changeColorSchema(item)"
+                    class="cursor-pointer p-link w-2rem h-2rem border-circle flex-shrink-0 flex align-items-center justify-content-center">
+                    <i class="pi pi-check" [ngClass]="{'text-white': item.name !== 'white' }"
+                        *ngIf="colorScheme === item.name"></i>
+                </button>
+            </ng-template>
+        </div>
+
+    </ng-container>
+
+    <h5>Topbar Theme</h5>
+    <div class="flex flex-wrap align-items-center gap-3">
+        <ng-template ngFor let-item [ngForOf]="topbarThemes">
+            <button pRipple [style.background-color]="item.color" (click)="changeTopbarTheme(item)"
+                class="cursor-pointer p-link w-2rem h-2rem border-circle flex-shrink-0 flex align-items-center justify-content-center">
+                <i class="pi pi-check" *ngIf="topbarTheme === item.name"
+                    [ngClass]="{'text-white': item.name !== 'white' }"></i>
+            </button>
+        </ng-template>
+    </div>
+
+    <h5>Menu Theme</h5>
+    <div class="flex flex-wrap align-items-center gap-3">
+        <ng-template ngFor let-item [ngForOf]="menuThemes">
+            <button pRipple [style.background-color]="item.color" (click)="changeMenuTheme(item)"
+                class="cursor-pointer p-link w-2rem h-2rem border-circle flex-shrink-0 flex align-items-center justify-content-center">
+                <i class="pi pi-check" *ngIf="menuTheme === item.name" [ngClass]="item.styleClass"></i>
+            </button>
+        </ng-template>
+    </div>
+
+</p-sidebar>

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ModelApi} from "./model-api.service";
 import {User} from "../models/user";
 import {ResponseToModel} from "../models/common";
-import {Observable} from "rxjs";
+import {Observable, map, tap} from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class UserService extends ModelApi<User> {
@@ -16,14 +16,10 @@ export class UserService extends ModelApi<User> {
     return json => User.from(json);
   }
 
-  getConfig(): Observable<any> {
+  getConfig(): Observable<User> {
     const url = this.callBasePath('get-config');
-    return this.get(url);//.pipe(tap(res => this.config.set_userCfg(res)));
-  }
-
-  getProfile(): Observable<User> {
-    const url = this.callBasePath('get-profile');
-    return this.get(url);//.pipe(tap(res => this.config.set_userInfo(res)));
+    return this.get(url).pipe(map(res => User.from(res)))
+      .pipe(tap(_ => this.config.set_loginUser(_)));
   }
 
   override updateById(modelId: number, data: User): Observable<number> {

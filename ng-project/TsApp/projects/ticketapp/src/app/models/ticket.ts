@@ -99,6 +99,8 @@ export class Ticket extends BaseModel {
   is_delete?: boolean;
   is_report?: boolean;
 
+  ticket_on?: string;
+
   constructor() {
     super();
   }

@@ -150,3 +150,12 @@ export class ClsProduct extends ClsModel {
   }
 }
 
+
+
+export class ClsUser extends ClsModel {
+  email: string;
+  
+  static from(json: AssignObject<ClsUser>): ClsUser {
+    return BaseModel.fromJson(ClsUser, json);
+  }
+}

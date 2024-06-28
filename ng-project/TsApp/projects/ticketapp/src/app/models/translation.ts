@@ -11,6 +11,4 @@ export class Translation {
   searchAwait: string = 'Đang tìm kiếm dữ liệu. Vui lòng chờ...';
   loadTemplateOk: string = 'Lấy danh sách mẫu thành công.';
   saveTemplateOk: string = 'Lưu mẫu ticket thành công';
-
-
 }

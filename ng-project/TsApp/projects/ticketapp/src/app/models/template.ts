@@ -6,6 +6,7 @@ export class Template extends BaseModel {
   entity_code?: string;
   title?: string;
   icon?: string;
+  clear?: boolean;
   summary?: string;
   bg_color?: string;
   text_color?: string;

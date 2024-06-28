@@ -3,6 +3,7 @@ package vn.conyeu.ts.repository;
 import org.springframework.data.jpa.repository.Query;
 import vn.conyeu.common.repository.LongUIdRepo;
 import vn.conyeu.ts.domain.UserApi;
+import vn.conyeu.ts.odcore.domain.ClsUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,5 @@ public interface UserApiRepo extends LongUIdRepo<UserApi> {
 
     @Query("select e from #{#entityName} e where e.user.id=?1")
     List<UserApi> getAllByUser(Long userId);
+
 }

@@ -14,12 +14,16 @@ import vn.conyeu.ts.domain.TsUser;
 import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.TsUserDto;
 import vn.conyeu.ts.dtocls.TsVar;
+import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.service.ApiInfoService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.service.UserService;
 import vn.conyeu.ts.ticket.service.OdTicketService;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(TsVar.Rest.tsUser)
@@ -80,8 +84,13 @@ public class UserRest extends LongIdRest<TsUser, UserService> {
     }
 
     @GetMapping("get-config")
-    public ObjectMap getUserConfig() {
-        return ObjectMap.create();
+    public ObjectMap getUserConfig(@PrincipalId Long userId) {
+        ObjectMap map = ObjectMap.fromJson(getProfile(userId));
+
+        List<UserApi> users = userApiService.getAllByUser(userId);
+        Map<String, ClsUser> clsUserMap = users.stream().collect(Collectors.toMap(UserApi::getApiCode, UserApi::getClsUserBasic));
+        map.set("user_api", clsUserMap);
+        return map;
     }
 
 

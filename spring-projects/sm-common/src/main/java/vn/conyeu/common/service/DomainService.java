@@ -4,6 +4,8 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.stereotype.Service;
 import vn.conyeu.common.domain.DomainId;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.NotFound;
@@ -25,11 +28,19 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Service
 public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serializable, R extends DomainRepo<S, Id>> {
+    protected ICacheService cacheService = ICacheService.defaultService();
+
     private final R entityRepo;
 
     public DomainService(R domainRepo) {
         this.entityRepo = domainRepo;
+    }
+
+    @Autowired
+    protected void setCacheService(ICacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public BaseException noId(Id id) {
@@ -373,5 +384,11 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
             S newUp = save(optional.get());
             return Optional.of(newUp);
         }
+    }
+
+    protected String getCacheName() {
+        return getClass().getSimpleName()
+                .replace("Service", "")
+                .trim().toLowerCase()+"s";
     }
 }

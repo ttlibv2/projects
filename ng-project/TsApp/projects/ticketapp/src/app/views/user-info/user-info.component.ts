@@ -3,7 +3,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ToastService} from "../../services/toast.service";
 import {User} from "../../models/user";
 import {UserService} from "../../services/user.service";
-import { ConfigService } from '../../services/config.service';
+import {StorageService} from "../../services/storage.service";
 
 @Component({
   selector: 'ts-user-info',
@@ -21,7 +21,7 @@ export class UserInfoComponent implements OnInit{
 
   constructor(private fb: FormBuilder,
               private userSrv: UserService,
-              private config: ConfigService,
+              private config: StorageService,
               private toast: ToastService) {
   }
 
@@ -38,7 +38,7 @@ export class UserInfoComponent implements OnInit{
   }
 
   private loadUserInfo() {
-    this.userSrv.getProfile().subscribe({
+    this.userSrv.getConfig().subscribe({
       next: res => {
         this.user = res;
         this.formGroup.patchValue(res);

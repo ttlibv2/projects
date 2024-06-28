@@ -21,7 +21,7 @@ export interface TableRowClick<E=any> extends RowClickedEvent<E, any> {
 
 
 export interface PrivateField {
-  themeClass?: string;// = 'ag-theme-quartz';
+  themeClass?: string;// = 'ag-themes-quartz';
   option?: TableOption;
 
 }
@@ -60,6 +60,7 @@ export const defaultOption: TableOption = {
 })
 export class AgTableComponent<E=any>  {
 
+
   @Output()
   tableReady = new EventEmitter<TableReadyEvent>();
 
@@ -82,8 +83,8 @@ export class AgTableComponent<E=any>  {
     //  this.render.removeClass(this.view, this.field.themeClass);
    // }
 
-    //this.field.themeClass = theme ?? 'ag-theme-quartz';
-   // this.render.addClass(this.view, theme);
+    //this.field.themeClass = themes ?? 'ag-themes-quartz';
+   // this.render.addClass(this.view, themes);
 
   }
 
@@ -149,5 +150,8 @@ export class AgTableComponent<E=any>  {
     this.rowClicked.emit(event);
   }
 
+  getSelectedRows(): E[] {
+    return this.tableApi.getSelectedRows();
+  }
 
 }

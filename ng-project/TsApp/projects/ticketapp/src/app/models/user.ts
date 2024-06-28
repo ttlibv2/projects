@@ -1,6 +1,7 @@
 import {BaseModel} from "./base-model";
 import {JsonObject} from "./common";
-import {Objects} from "ts-helper";
+import { ClsUser } from "./od-cls";
+import {Objects} from 'ts-helper';
 
 export interface AuthToken {
   access_token?: string;
@@ -27,25 +28,22 @@ export class User extends BaseModel {
   user_code?: string;
   room_code?: string;
   required_update?: boolean;
-  token?: AuthToken;
   config?: JsonObject;
-
-  set_token(token: AuthToken): this {
-    this.token = token;
-    return this;
-  }
+  user_api: Map<string, ClsUser> = new Map();
 
   set_config(config: any): this {
     this.config = config;
     return this;
   }
 
-  isLogin(): boolean {
-    return Objects.notNull(this.token);
+  set_user_api(users: any): this {
+    this.user_api = Objects.valueToMap(users, item => ClsUser.from(item));
+    return this;
   }
 
+
   static from(data: JsonObject): User {
-    return new User().update(data);
+    return BaseModel.fromJson(User, data);
   }
 
 

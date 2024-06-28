@@ -30,13 +30,12 @@ export interface ToastMessage extends ToastConfig {
 export type CloseRef = ActiveToast<any> | number;
 
 const defaultDialogConfig: DynamicDialogConfig = {
+    position: 'top',
     closable: false,
     closeOnEscape: false,
     maximizable: true,
-    position: 'top',
     draggable: true,
     resizable: true,
-    focusOnShow: true
 }
 
 

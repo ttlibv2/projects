@@ -24,5 +24,6 @@ public interface TsVar {
         String odCatalog =  odTicketApiPrefix + "/catalog";
         String odPartner = odTicketApiPrefix + "/partner";
 
+        String tsTest = tsApiPrefix + "/tests";
     }
 }

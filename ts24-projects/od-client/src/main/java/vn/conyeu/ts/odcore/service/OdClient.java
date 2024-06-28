@@ -193,7 +193,7 @@ public abstract class OdClient {
                 .blockOptional().orElseThrow();
 
         try {
-            log.info(response.toJson(false));
+          //  log.info(response.toJson(false));
             return checkResponse(body, response);
         }//
         catch (BaseException exp) {

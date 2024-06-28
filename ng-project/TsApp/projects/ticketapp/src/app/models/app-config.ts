@@ -1,31 +1,18 @@
-import { BaseModel } from "./base-model";
-import { JsonObject } from "./common";
-import { AuthToken, RememberUser } from "./user";
+import {BaseModel} from "./base-model";
+import {AssignObject} from "./common";
+import {AuthToken, RememberUser, User} from "./user";
+import {Translation} from "./translation";
 
-export interface IAppConfig {
+export class AppConfig extends BaseModel {
+    currentLang?: string;
     baseUrl?: string;
     rememberUser?: RememberUser;
-    authToken?: AuthToken;
-}
+    loginToken?: AuthToken;
+    loginUser?: User;
+    currentI18N?: Translation;
 
-export class AppConfig extends BaseModel implements IAppConfig {
-    baseUrl?: string;
-    rememberUser?: RememberUser;
-    authToken?: AuthToken;
-
-    static from(json: AppConfig | JsonObject): AppConfig {
-        return this.fromJson(AppConfig, json);
+    static from(json: AssignObject<AppConfig>): AppConfig {
+        return BaseModel.fromJson(AppConfig, json);
     }
 
-    updateDefault(object: JsonObject): this {
-        for (const key of Object.keys(object)) {
-            if (!(key in this)) this[key] = object[key];
-        }
-        return this;
-    }
-
-    set_rememberUser(info: any): this {
-        this.rememberUser = RememberUser.from(info);
-        return this;
-    }
 }

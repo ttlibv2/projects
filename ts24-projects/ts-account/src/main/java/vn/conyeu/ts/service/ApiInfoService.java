@@ -1,5 +1,6 @@
 package vn.conyeu.ts.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.service.LongUIdService;
 import vn.conyeu.ts.domain.ApiInfo;
@@ -15,6 +16,7 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
         super(apiRepo);
     }
 
+    @Cacheable(cacheNames = "apiInfo", key = "#apiCode")
     public Optional<ApiInfo> findByCode(String apiCode) {
         return repo().findByCode(apiCode);
     }
