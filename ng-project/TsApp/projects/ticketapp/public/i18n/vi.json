@@ -228,13 +228,15 @@
   "template": {
     "entity_code": "Mã mẫu",
     "data": "Nội dung",
-    "icon": "Icon"
+    "icon": "Icon",
+    "setting": "Thiết lập nội dung"
   },
   "actions": {
     "save": "Lưu lại",
     "create": "Tạo mới",
     "update": "Cập nhật",
     "cancel": "Hủy bỏ",
+    "delete": "Xóa",
     "check_api": "Kết nối",
     "close": "Đóng"
   }

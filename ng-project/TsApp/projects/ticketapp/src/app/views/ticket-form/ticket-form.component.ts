@@ -25,6 +25,8 @@ import { Dropdown } from "primeng/dropdown";
 import { DatePipe } from "@angular/common";
 import { TicketUtil2 } from "./ticket-util";
 import { Question } from "../../models/question";
+import { DynamicDialogRef } from "primeng/dynamicdialog";
+import { Router } from "@angular/router";
 
 const { notNull, notEmpty, isEmpty } = Objects;
 
@@ -99,8 +101,6 @@ export interface ControlKey {
 })
 export class TicketFormComponent implements OnInit {
 
-
-
   toolActions: MenuItem[] = [
     {
       label: "Tải danh mục",
@@ -115,7 +115,7 @@ export class TicketFormComponent implements OnInit {
     {
       label: "Cập nhật mẫu",
       icon: "pi pi-home",
-      command: (event) => this.saveTemplate(),
+      command: _ => this.router.navigate(['/admin/templates'], {queryParams: {entity: 'form_ticket'}}),
     }
   ];
 
@@ -186,9 +186,7 @@ export class TicketFormComponent implements OnInit {
   set data(ticket: Ticket) { }
 
   @Input({ transform: booleanAttribute })
-  set viewTemplate(flag: boolean) {
-    this.options.viewTemplate = flag;
-  }
+  viewTemplate: boolean = false;
 
   loading: Loading = {};
   ticketForm: FormGroup;
@@ -211,11 +209,26 @@ export class TicketFormComponent implements OnInit {
     private templateSrv: TemplateService,
     private catalogSrv: CatalogService,
     private logger: LoggerService,
-    private datePipe: DatePipe) {
+    private router: Router,
+    private datePipe: DatePipe,
+
+
+    private dialogRef: DynamicDialogRef     // dialog
+  
+  
+  ) {
     this.createFormGroup();
   }
 
   ngOnInit() {
+
+    const dialogInstance = this.toast.getDialogComponentRef(this.dialogRef)?.instance;
+    if(dialogInstance && dialogInstance.data) {
+      const log = dialogInstance.data;
+      this.viewTemplate = true;
+    }
+
+
     this.userLogin = this.storage.loginUser;
     this.loadCatalogs(true, true);
   }

@@ -9,7 +9,6 @@ export class TicketOption extends BaseModel {
     viewTs24: boolean = false;
     saveCache: boolean = false;
     emailTicket: boolean = false;
-    viewTemplate: boolean = false;
 
     static from(data: JsonObject): TicketOption {
       return BaseModel.fromJson(TicketOption, {...defaultOption, ...data});
@@ -29,5 +28,4 @@ export const defaultOption = TicketOption.from({
   viewTs24: false,
   saveCache: false,
   emailTicket: false,
-  viewTemplate: false
 });

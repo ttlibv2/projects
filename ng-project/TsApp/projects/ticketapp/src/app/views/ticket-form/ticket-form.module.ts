@@ -17,9 +17,8 @@ import {SplitButtonModule} from "primeng/splitbutton";
 import {ChipModule} from "primeng/chip";
 import {ChipsModule} from "primeng/chips";
 import {FieldsetModule} from "primeng/fieldset";
-import {TemplateFormModule} from "../template-form/template-form.module";
 import {DialogModule} from "primeng/dialog";
-import {DialogService} from "primeng/dynamicdialog";
+import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ToolbarModule} from "primeng/toolbar";
 import { CatalogModule } from '../catalog/catalog.module';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -48,13 +47,13 @@ import { NgSelectModule } from '@ng-select/ng-select';
         FieldsetModule,
         FormsModule,
         DialogModule,
-        TemplateFormModule,
         ToolbarModule,
         CatalogModule,
         NgSelectModule 
     ],
   providers: [
-    DialogService
+    DialogService,
+    DynamicDialogRef
   ]
 })
 export class TicketFormModule { }

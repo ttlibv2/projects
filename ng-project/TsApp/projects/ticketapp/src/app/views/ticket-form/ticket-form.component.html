@@ -221,7 +221,7 @@
                 </ng-template>
               </div>
             </p-fieldset>
-            <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list">
+            <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list" *ngIf="!viewTemplate">
               <div class="flex flex-wrap gap-2">
                 <ng-template ngFor let-item [ngForOf]="templates">
                   <p-button [severity]="item === currentTemplate ? 'danger': undefined"  [label]="item.title" 
@@ -232,7 +232,7 @@
               </div>
             </p-fieldset>
           </div>
-        </div>
+        </div> 
       </div>
       <!-- @if(!viewTemplate) { -->
       <div class="grid toolbar">

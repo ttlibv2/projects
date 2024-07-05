@@ -28,18 +28,18 @@ import { JsonObject } from "../../models/common";
 import { AgTableComponent, TableColumn, TableOption, TableRowClick } from "ts-ui/ag-table";
 import { AgCellColor } from "./renderer";
 import { GetRowIdParams, IRowNode, RowNode } from "ag-grid-community";
+import { TicketFormComponent } from "../ticket-form/ticket-form.component";
 
-const {isEmpty} = Objects;
+const {notEmpty, notBlank, isBlank} = Objects;
 
 interface TemplateInput {
-  currentEntity?: string;
-  currentTemplate?: Template;
+  entity?: string;
   templates?: Template[];
-  entities?: string[];
   data?: JsonObject;
 }
 
 interface State {
+  hasInputTemplates?: boolean; // true if input ?
   hasChange?: boolean;
   asyncTemplate?: boolean;// = false;
   asyncSave?: boolean;// = false;
@@ -53,27 +53,19 @@ interface State {
 })
 export class TemplateFormComponent implements OnInit {
 
-
   get template(): Partial<Template> {
     return this.formGroup?.getRawValue();
   }
   
-  get hasInstance(): boolean {
-    return Objects.notNull(this.instance);
-  }
-    
   get hasPreview(): boolean {
-    return Objects.notBlank(this.template?.title);
+    return notBlank(this.formGroup?.get('title').value);
   }
 
-  instance: DynamicDialogComponent | undefined;
   formGroup: FormGroup;
   state: State = {};
   labelSave: string = "save";
   rows: Template[] = []; 
-  inputData: TemplateInput;
-
-  @Input() entities: string[] = [];
+  lsEntity: string[] = ['form_ticket'];
 
   columns: TableColumn[] = [
     {field: 'entity_code', headerName: 'Mã Form', width: 121},
@@ -97,7 +89,6 @@ export class TemplateFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private ref: DynamicDialogRef,
     private toast: ToastService,
     private config: StorageService,
     private logger: LoggerService,
@@ -110,7 +101,7 @@ export class TemplateFormComponent implements OnInit {
     this.formGroup = this.fb.group({
       icon: [null],
       template_id: [null],
-      entity_code: [null, Validators.required],
+      entity_code: [this.lsEntity[0], Validators.required],
       title: [null, Validators.required],
       summary: [null, Validators.required],
       bg_color: ["#ffffff", Validators.required],
@@ -118,32 +109,16 @@ export class TemplateFormComponent implements OnInit {
       data: [null, Validators.required],
       edit_data: [true]
     });
-
-   // this.formGroup.valueChanges.subscribe({next: res => this.state.hasChange = true});
   }
 
   ngOnInit() {
-    console.log("ngOnInit");
     this.loadTemplate();
-
-    const refView = this.toast.getDialogComponentRef(this.ref);
-    this.instance = refView && refView.instance;
-
-    if (this.instance && this.instance.data) {
-      this.inputData = this.instance.data;
-    }
-
   }
 
-  resetForm(): void {
-    this.formGroup.reset({
-      bg_color: "#ffffff",
-      text_color: "#000000",
-    });
-  }
+  createTempate() {  
+    this.resetForm();
+    this.formGroup.get('entity_code').enable();
 
-  closeDialog(): void {
-    //this.ref.close(this.ticket);
   }
 
   loadTemplate() {
@@ -160,10 +135,6 @@ export class TemplateFormComponent implements OnInit {
         this.logger.error(`loadTemplate error: `, err);
       },
     });
-  }
-
-  createNew() {
-    this.resetForm();
   }
 
   saveTemplate() {
@@ -193,13 +164,40 @@ export class TemplateFormComponent implements OnInit {
     });
   }
 
-  clickEditData(checked: boolean): void { }
+  deleteTemplate() {}
 
   selectTemplate(template: Template): void {
     const data = JSON.stringify(template?.data, null, 0);
     this.formGroup.patchValue({...template, data});
     this.formGroup.get('entity_code').disable();
     this.formGroup.get('data').disable();
+
+    if(!this.lsEntity.includes(template.entity_code)) {
+      this.toast.warning({summary: `Mã mẫu ${template.entity_code} không tồn tại.`})
+    }
   }
 
+  
+  resetForm(data?: any): void {
+    this.formGroup.reset({
+      bg_color: "#ffffff",
+      text_color: "#000000",
+      ...data
+    });
+  }
+
+  settingData() {
+    const entity = this.template.entity_code;
+    if(isBlank(entity)) {
+      this.toast.warning({summary: 'Vui lòng chọn <b>[Mã mẫu]</b>'});
+      return;
+    }
+
+    this.toast.openDialog(TicketFormComponent, {
+     data: {item: this.template}
+    });
+
+    
+
+  }
 }
