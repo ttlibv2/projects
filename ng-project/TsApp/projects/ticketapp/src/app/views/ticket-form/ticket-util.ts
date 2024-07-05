@@ -1,84 +1,128 @@
 import { FormGroup } from "@angular/forms";
 import { Ticket } from "../../models/ticket";
 import { User } from "../../models/user";
-import { Objects } from "ts-helper";
+import { Consumer, Objects } from "ts-helper";
+import { TicketFormComponent } from "./ticket-form.component";
+import { merge, mergeAll, mergeMap, of, scheduled } from "rxjs";
+import { Mode } from "fs";
+import { TicketOption } from "../../models/ticket-option";
 
 const { isBlank, isEmpty, isNull, notBlank, notNull } = Objects;
 
-function dirty(fg: FormGroup, key: string): boolean {
-  if (isNull(fg)) return true;
-  if (isNull(fg.get(key))) return false;
-  else return fg.get(key).dirty;
-  //else return fg.get(key)['_pendingDirty'];
+export const controlEditors: string[] = [];
+
+
+export interface ValueOption {
+  onlySelf?: boolean;
+  emitEvent?: boolean
 }
 
-export class TicketUtil {
-  static createSubject(user: User, obj: Ticket): string {
-    if (isBlank(obj.tax_code) || isEmpty(obj.chanels)) return undefined;
-    else
-      return `[${user.room_code}-${obj.support_help.code}]-${user.user_code}-${obj.tax_code}-${obj.ticket_on}`;
+export class TicketUtil2 {
+
+
+  get user(): User { return this.comp.userLogin; }
+  get form(): FormGroup { return this.comp.ticketForm; }
+  get formValue(): Ticket { return this.form.getRawValue(); }
+  get options(): TicketOption { return this.comp.options; }
+  get autoCreate(): boolean { return this.options.autoCreate; }
+
+  constructor(public comp: TicketFormComponent) {}
+
+  registerListener() {
+
+    this.valueChangeFor(['tax_code', 'support_help'], json => {
+      if(this.autoCreate === true)
+        this.pathValueForm({subject: this.createSubject()});
+    });
+
+    this.valueChangeFor(['support_help', 'complete_time', 'group_help', 'content_help'], json => {
+      if(this.autoCreate === true){
+        this.pathValueForm({note: this.createNote()});
+     }
+    });
+    
+    this.valueChangeFor(['phone', 'content_required', 'soft_name', 'support_help', 'reception_time'], json => {
+      if(this.autoCreate === true)
+         this.pathValueForm({body: this.createBody()})
+    });
+
+    this.valueChangeFor(['subject', 'body', 'note', 'email', 'tax_code', 'customer_name'], json => {
+      if(this.autoCreate === true) 
+        this.pathValueForm({content_copy: this.createContentCopy()})
+    });
+
+    this.valueChangeFor(['options'], json => this.options.update(json));
+    
+    this.valueChangeFor(['od_partner_id'], json => {
+      if(isBlank(json['od_partner_id'])) this.pathValueForm({od_partner: undefined});
+    });
+
   }
 
-  static createNote(obj: Ticket, fg: FormGroup): string[] {
-    const lines: string[] = [];
-
-    if (dirty(fg, "full_name") && notBlank(obj.full_name)) {
-      lines.push(`- Họ tên: ${obj.full_name}`);
-    }
-
-    if (dirty(fg, "support_help") && !isNull(obj.support_help)) {
-      lines.push(`- Hình thức hỗ trợ: ${obj.support_help["value"]}`);
-    }
-
-    if (dirty(fg, "group_help") && !isNull(obj.group_help)) {
-      lines.push(`- Nhóm hỗ trợ: ${obj.group_help.title}`);
-    }
-
-    if (dirty(fg, "content_help") && notBlank(obj.content_help)) {
-      lines.push(`- Nội dung đã hỗ trợ: ${obj.content_help} `);
-    }
-
-    if (dirty(fg, "complete_time") && notBlank(obj.complete_time)) {
-      lines.push(`- Thời gian hoàn tất: ${obj.complete_time}`);
-    }
-
-    if (lines.length > 0) {
-      obj.edit_ticket = true;
-      obj.edit_note = true;
-    }
-
-    return lines;
+  createSubject(): string {
+    const {tax_code, chanels, support_help, ticket_on} = this.formValue;
+    const {room_code, user_code} = this.user;
+    if (isBlank(tax_code) || isEmpty(chanels)) return undefined;
+    else return `[${room_code}-${support_help.code}]-${user_code}-${tax_code}-${ticket_on}`;
   }
 
-  static createBody(obj: Ticket, fg: FormGroup) {
-    const lines: string[] = [];
+  createNote(): string {
+    const {complete_time, group_help, support_help, content_help, full_name} = this.formValue;
 
-    if (dirty(fg, "phone") && notBlank(obj.phone)) {
-      lines.push(`- Số điện thoại liên hệ: ${obj.phone}`);
+    const lines: string[] = [], fg = this.form;
+
+  
+    lines.push(`- Họ tên: ${full_name}`);
+
+    if (!isNull(support_help)) {
+      lines.push(`- Hình thức hỗ trợ: ${support_help["value"]}`);
     }
 
-    if (dirty(fg, "content_required") && notBlank(obj.content_required)) {
-      let body = obj.content_required;
-      let soft_name = notBlank(obj.soft_name) ? `${obj.soft_name} - ` : "";
-      let support = !isNull(obj.support_help)
-        ? ` - ${obj.support_help.support}`
-        : "";
-      lines.push(`- Nội dung cần hỗ trợ: ${soft_name}${body}${support}`);
+    if ( !isNull(group_help)) {
+      lines.push(`- Nhóm hỗ trợ: ${group_help.title}`);
     }
 
-    if (dirty(fg, "full_name") && notBlank(obj.full_name)) {
-      lines.push(`- Nhân viên gửi thông tin: ${obj.full_name}`);
+    if (notBlank(content_help)) {
+      lines.push(`- Nội dung đã hỗ trợ: ${content_help} `);
     }
 
-    if (dirty(fg, "reception_time") && notBlank(obj.reception_time)) {
-      lines.push(`- Thời gian tiếp nhận: ${obj.reception_time}`);
+    if (notBlank(complete_time)) {
+      lines.push(`- Thời gian hoàn tất: ${complete_time}`);
     }
 
-    if (lines.length > 0) {
-      obj.edit_ticket = true;
+    if (lines.length > 1) {
+      this.pathValueForm({edit_ticket: true, edit_note: true});
     }
 
-    return lines;
+    return lines.join('\n');
+  }
+
+  createBody(): string {
+    const lines: string[] = [], fg = this.form;
+    const {phone, content_required, soft_name, support_help, reception_time, full_name} = this.formValue;
+
+    if (notBlank(phone)) {
+      lines.push(`- Số điện thoại liên hệ: ${phone}`);
+    }
+
+    if ( notBlank(content_required)) {
+      let soft_name2 = notBlank(soft_name) ? `${soft_name} - ` : "";
+      let support = !isNull(support_help)  ? ` - ${support_help.support}`  : "";
+      lines.push(`- Nội dung cần hỗ trợ: ${soft_name2}${content_required}${support}`);
+    }
+
+    lines.push(`- Nhân viên gửi thông tin: ${full_name}`);
+    
+
+    if ( notBlank(reception_time)) {
+      lines.push(`- Thời gian tiếp nhận: ${reception_time}`);
+    }
+
+    if (lines.length > 1) {
+      this.pathValueForm({edit_ticket: true})
+    }
+
+    return lines.join('\n');
   }
 
   /**
@@ -86,48 +130,70 @@ export class TicketUtil {
    * @param obj {[key: string]: any}
    * @param createIfExist boolean
    * */
-  static createContentCopy(
-    user: User,
-    obj: Ticket,
-    fg: FormGroup,
-    createIfExist: boolean = false,
-    options: any = {}
-  ): string {
-    createIfExist = createIfExist || false;
+  createContentCopy(options?: {createIfExist?: boolean, subject?: string, body?: string, note?: string}): string {
+    //createIfExist = createIfExist || false;
     options = Object.assign({}, options);
 
     const notes: string[] = [];
+    const {email, tax_code, customer_name, body, note} = this.formValue;
 
     // email
-    if (notBlank(obj.email)) {
-      notes.push(`${obj.email}`);
-    }
+    if (notBlank(email))  notes.push(`${email}`);
 
     //-- subject email
-    const subject = options.subject || TicketUtil.createSubject(user, obj);
-    if (notNull(subject)) {
-      notes.push(subject);
+    const subject = options.subject ?? this.createSubject();
+    if (notNull(subject)) notes.push(subject);
+    
+    if (notBlank(tax_code)) {
+      notes.push(`- Mã số thuế / Mã đơn vị: ${tax_code}`);
     }
 
-    if (notBlank(obj.tax_code)) {
-      notes.push(`- Mã số thuế / Mã đơn vị: ${obj.tax_code}`);
+    if (notBlank(customer_name)) {
+      notes.push(`- Tên khách hàng: ${customer_name}`);
     }
 
-    if (notBlank(obj.customer_name)) {
-      notes.push(`- Tên khách hàng: ${obj.customer_name}`);
+    if (notBlank(email)) {
+      notes.push(`- Email: ${email}`);
     }
 
-    if (notBlank(obj.email)) {
-      notes.push(`- Email: ${obj.email}`);
-    }
+    const bodyFnc = () => this.createBody();
+    const noteFnc = () => this.createNote();
 
-    const body = () => TicketUtil.createBody(obj, fg).join("<br>");
-    const note = () => TicketUtil.createNote(obj, fg).join("<br>");
-
-    notes.push(createIfExist ? body() : options.body || obj.body || body());
+    notes.push(options.createIfExist ? bodyFnc() : options.body || body || bodyFnc());
     notes.push(`--------------------------------------------`);
-    notes.push(createIfExist ? note() : options.note || obj.note || note());
+    notes.push(options.createIfExist ? noteFnc() : options.note || note || noteFnc());
 
     return notes.join(`\n`);
   }
+
+  pathValueForm(data: Partial<Ticket>, options?: ValueOption) {
+    this.form.patchValue(data, {onlySelf: false, emitEvent: true, ...options});
+  }
+
+  valueChangeFor(controls: (keyof Ticket)[], nextCb: Consumer<any>) {
+   controls.forEach((c: any) => this.form.get(c).valueChanges.subscribe({
+    next: res => nextCb({[c]: res})
+   }))
+  }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

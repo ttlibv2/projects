@@ -1,7 +1,7 @@
 import { Objects } from "ts-helper";
 import { BaseModel } from "./base-model";
 import { Chanel } from "./chanel";
-import { AssignObject, ImageObject, JsonObject } from "./common";
+import { AssignObject, ImageObject } from "./common";
 import { GroupHelp } from "./group-help";
 import { Question } from "./question";
 import { Software } from "./software";
@@ -9,14 +9,7 @@ import { TicketDetail } from "./ticket-detail";
 import { TicketOption } from "./ticket-option";
 import * as cls from "./od-cls";
 
-// export interface TemplateObj  {
-//   code?: string;
-//   title?: string;
-//   icon?: string;
-//   summary?: string;
-//   bg_color?: string;
-//   text_color?: string;
-// }
+
 
 export enum TicketStatus {
   NEW,
@@ -27,28 +20,34 @@ export enum TicketStatus {
   OPENING
 }
 
-// export class TemplateMap extends Map<string, Ticket> {
+export interface TicketTemplateData {
+  software_id?: number;
+  chanel_ids?: number[];
+  group_help_id?: number;
+  support_help_id?: number;
+  soft_name?: string;
+  team_id?: number;
+  assign_id?: number;
+  subject_type_id?: number;
+  category_id?: number;
+  category_sub_id?: number;
+  team_head_id?: number;
+  priority_id?: number;
+  tag_ids?: number[];
+  repiled_id?: number;
+  ticket_type_id?: number;
+  options?: {
+    [key: keyof TicketOption]: any
+  }
 
-//   save(data: Ticket) {
-//     const title = data.template.title;
-//     this.set(title, data);
-//   }
+}
 
-//   get listTitle(): string[] {
-//     return [...this.keys()];
-//   }
 
-//   style(title: string): any {
-//     const temp: TemplateObj = this.get(title)?.template ?? {};
-//     return {
-//       'background-color': temp.bg_color,
-//       'color': temp.text_color
-//     };
-//   }
-// }
+
+
 
 export class Ticket extends BaseModel {
-  ticket_id?: number;
+  ticket_id: number;
   full_name?: string;
   tax_code?: string;
   company_name?: string;
@@ -86,7 +85,7 @@ export class Ticket extends BaseModel {
   od_priority?: cls.ClsPriority;
   od_repiled?: cls.ClsRepiled;
   od_subject_type?: cls.ClsSubjectType;
-  od_tags?: cls.ClsTag;
+  od_tags?: cls.ClsTag[];
   od_team?: cls.ClsTeam;
   od_team_head?: cls.ClsTeamHead;
   od_ticket_type?: cls.ClsTicketType;

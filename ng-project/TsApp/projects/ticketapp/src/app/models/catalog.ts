@@ -5,11 +5,11 @@ import { Question } from "./question";
 import { BaseModel } from "./base-model";
 import { AssignObject, JsonObject } from "./common";
 import * as cls from "./od-cls";
-import { Template } from "./template";
+import { Template, Templates } from "./template";
 import { LoggerService } from "ts-logger";
-import { Objects } from "ts-helper";
+import { Asserts, Objects } from "ts-helper";
 
-const {isArray, isObject} = Objects;
+const {isArray, isObject, notEmpty} = Objects;
 
 function setData(object: any,  target: any, field: string, itemCb: (item: any) => any) {
    if(field in object) {
@@ -24,6 +24,8 @@ function setData(object: any,  target: any, field: string, itemCb: (item: any) =
    }
 
 }
+
+
 
 export class Catalog extends BaseModel {
    ls_chanel: Chanel[] = [];
@@ -45,7 +47,7 @@ export class Catalog extends BaseModel {
    ls_ticket_type: cls.ClsTicketType[]= [];
    ls_topic: cls.ClsTopic[]= [];
    ls_team_head: cls.ClsTeamHead[] = [];
-   ls_template: Map<string, Template[]> = new Map();
+   ls_template: Templates = new Templates();
 
    static from(json: JsonObject, logger?: LoggerService): Catalog {
       return new Catalog().update(json);
@@ -73,10 +75,15 @@ export class Catalog extends BaseModel {
       setData(object, this, 'ls_team_head', item => cls.ClsTeamHead.from(item));
       setData(object, this, 'ls_template', item => Template.from(item));
 
+      if('ls_template' in object) {
+         const ls = object['ls_template'];
+         this.ls_template = Templates.fromAny(ls);
+      }
+
       return this;
    }
 
-   get_template(form: string): Template[] {
-      return this.ls_template.get(form);// ?? [];
-   }
+  
+
+
 }

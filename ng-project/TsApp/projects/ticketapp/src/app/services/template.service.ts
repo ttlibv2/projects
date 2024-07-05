@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ModelApi } from "./model-api.service";
 import { Page, ResponseToModel } from "../models/common";
 import { Template } from '../models/template';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TemplateService extends ModelApi<Template> {

@@ -3,6 +3,8 @@ import {JsonObject} from "./common";
 import { ClsUser } from "./od-cls";
 import {Objects} from 'ts-helper';
 
+export type ApiCode = 'od.ticket';
+
 export interface AuthToken {
   access_token?: string;
   token_type?: string;
@@ -23,13 +25,20 @@ export interface SignUpDto {
 }
 
 export class User extends BaseModel {
-  user_id?: number;
-  full_name?: string;
-  user_code?: string;
-  room_code?: string;
-  required_update?: boolean;
-  config?: JsonObject;
-  user_api: Map<string, ClsUser> = new Map();
+  
+  static from(data: JsonObject): User {
+    return BaseModel.fromJson(User, data);
+  }
+
+  user_id: number;
+  full_name: string;
+  user_code: string;
+  room_code: string;
+  required_update: boolean;
+  config: JsonObject;
+  uts_id?: number;
+
+  user_api: Map<ApiCode, ClsUser> = new Map();
 
   set_config(config: any): this {
     this.config = config;
@@ -42,9 +51,7 @@ export class User extends BaseModel {
   }
 
 
-  static from(data: JsonObject): User {
-    return BaseModel.fromJson(User, data);
-  }
+
 
 
 }

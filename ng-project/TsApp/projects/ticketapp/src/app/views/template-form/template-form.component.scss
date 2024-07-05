@@ -5,7 +5,19 @@
   max-width: 700px;
 }
 
-ts-template-form {
-  // display: block;
-  // max-width: 700px;
+.template-form {
+  max-width: 1000px;
+
+  .p-preview {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .ag-cell {
+    &[col-id=bg_color],
+    &[col-id=text_color] {
+      display: flex;
+      justify-content: center;
+    }
+  }
 }
+

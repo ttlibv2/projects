@@ -59,7 +59,105 @@
               }
             ],
             "styles": [
-              "projects/ticketapp/src/styles.scss"
+              "projects/ticketapp/src/styles.scss",
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/lime/theme.scss",
+                "bundleName": "aura-light-lime",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/amber/theme.scss",
+                "bundleName": "aura-light-amber",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/blue/theme.scss",
+                "bundleName": "aura-light-blue",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/cyan/theme.scss",
+                "bundleName": "aura-light-cyan",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/green/theme.scss",
+                "bundleName": "aura-light-green",
+                "inject": false
+              }, {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/indigo/theme.scss",
+                "bundleName": "aura-light-indigo",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/noir/theme.scss",
+                "bundleName": "aura-light-noir",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/pink/theme.scss",
+                "bundleName": "aura-light-pink",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/purple/theme.scss",
+                "bundleName": "aura-light-purple",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/teal/theme.scss",
+                "bundleName": "aura-light-teal",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/lime/theme.scss",
+                "bundleName": "aura-dark-lime",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/amber/theme.scss",
+                "bundleName": "aura-dark-amber",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/blue/theme.scss",
+                "bundleName": "aura-dark-blue",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/cyan/theme.scss",
+                "bundleName": "aura-dark-cyan",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/green/theme.scss",
+                "bundleName": "aura-dark-green",
+                "inject": false
+              }, {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/indigo/theme.scss",
+                "bundleName": "aura-dark-indigo",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/noir/theme.scss",
+                "bundleName": "aura-dark-noir",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/pink/theme.scss",
+                "bundleName": "aura-dark-pink",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/purple/theme.scss",
+                "bundleName": "aura-dark-purple",
+                "inject": false
+              },
+              {
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-dark/teal/theme.scss",
+                "bundleName": "aura-dark-teal",
+                "inject": false
+              }
             ],
             "scripts": [],
 
@@ -183,72 +281,6 @@
         }
       }
     },
-    "ts-ui": {
-      "projectType": "library",
-      "schematics": {
-        "@schematics/angular:component": {
-          "inlineTemplate": true,
-          "inlineStyle": true,
-          "style": "scss",
-          "skipTests": true,
-          "standalone": false,
-          "displayBlock": true
-        },
-        "@schematics/angular:class": {
-          "skipTests": true
-        },
-        "@schematics/angular:directive": {
-          "skipTests": true,
-          "standalone": false
-        },
-        "@schematics/angular:guard": {
-          "skipTests": true
-        },
-        "@schematics/angular:interceptor": {
-          "skipTests": true
-        },
-        "@schematics/angular:pipe": {
-          "skipTests": true,
-          "standalone": false
-        },
-        "@schematics/angular:resolver": {
-          "skipTests": true
-        },
-        "@schematics/angular:service": {
-          "skipTests": true
-        }
-      },
-      "root": "projects/ts-ui",
-      "sourceRoot": "projects/ts-ui/src",
-      "prefix": "ts",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/ts-ui/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/ts-ui/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/ts-ui/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/ts-ui/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
-          }
-        }
-      }
-    },
     "ts-layout": {
       "projectType": "library",
       "schematics": {
@@ -307,6 +339,39 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/layout/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
+    },
+    "ts-ui": {
+      "projectType": "library",
+      "root": "projects/tsui",
+      "sourceRoot": "projects/tsui/src",
+      "prefix": "ts",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/tsui/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/tsui/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/tsui/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/tsui/tsconfig.spec.json",
             "polyfills": [
               "zone.js",
               "zone.js/testing"

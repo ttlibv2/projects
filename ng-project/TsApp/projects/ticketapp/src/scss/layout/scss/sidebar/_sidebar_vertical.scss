@@ -1,3 +1,7 @@
+.layout-topbar-inactive .layout-sidebar {
+    top: 0!important;
+}
+
 .layout-sidebar {
     position: fixed;
     height: 100%;
@@ -7,6 +11,8 @@
     background: var(--menu-bg);
     display: flex;
     flex-direction: column;
+    box-shadow: var(--sidebar-shadow);
+    border: var( --sidebar-border);
 
     .layout-topbar-logo {
         display: flex;
@@ -39,7 +45,7 @@
         padding-bottom: 2rem;
         overflow: scroll;
         scrollbar-width: thin;
-        scrollbar-color: var(--menu-scrollbar-color-thumb) var(--menu-scrollbar-color-bg);
+        scrollbar-color: var(--menu-scroll-thumb) var(--menu-bg);
 
     }
 

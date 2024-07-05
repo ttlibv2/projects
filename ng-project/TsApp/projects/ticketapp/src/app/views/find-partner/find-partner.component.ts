@@ -8,7 +8,7 @@ import { OdTicketService } from '../../services/od.service';
 import { ClsPartner, ClsSearch } from '../../models/od-cls';
 import { LoggerService } from 'ts-logger';
 import { Page } from '../../models/common';
-import { AgTableComponent, TableOption } from '../api/ag-table/ag-table.component';
+import { AgTableComponent, TableOption } from 'ts-ui/ag-table';
 import {StorageService} from "../../services/storage.service";
 
 const { isBlank, notBlank, notNull } = Objects;

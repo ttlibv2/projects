@@ -1,5 +1,7 @@
 package vn.conyeu.ts.restapi;
 
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -7,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import vn.conyeu.common.service.ICacheService;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.identity.annotation.PrincipalId;
 import vn.conyeu.ts.domain.Template;
@@ -17,7 +20,6 @@ import vn.conyeu.ts.ticket_rest.OdCatalogRest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -29,14 +31,24 @@ public class CatalogRest {
     final QuestionService questionService;
     final OdCatalogRest odCatalogRest;
     final TemplateService templateService;
+    final ICacheService cacheService;
 
-    public CatalogRest(ChanelService chanelService, SoftwareService softwareService, GroupHelpService groupHelpService, QuestionService questionService, OdCatalogRest odCatalogRest, TemplateService templateService) {
+    public CatalogRest(ChanelService chanelService, SoftwareService softwareService, GroupHelpService groupHelpService, QuestionService questionService, OdCatalogRest odCatalogRest, TemplateService templateService,ICacheService cacheService) {
         this.chanelService = chanelService;
         this.softwareService = softwareService;
         this.groupHelpService = groupHelpService;
         this.questionService = questionService;
         this.odCatalogRest = odCatalogRest;
         this.templateService = templateService;
+        this.cacheService = cacheService;
+    }
+
+    @GetMapping("clear-cache")
+    public Object clearCache() {
+        cacheService.clearAll();
+
+        return ObjectMap.setNew("alert_msg", "Xoa cache xong")
+                .set("result", cacheService.getCacheNames());
     }
 
     @GetMapping("/get-all")

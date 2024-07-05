@@ -1,6 +1,7 @@
 import { BaseModel } from "./base-model";
 import { JsonObject } from "./common";
 
+
 export class TicketOption extends BaseModel {
     autoCreate: boolean = true;
     autoFill: boolean = true;
@@ -8,20 +9,25 @@ export class TicketOption extends BaseModel {
     viewTs24: boolean = false;
     saveCache: boolean = false;
     emailTicket: boolean = false;
+    viewTemplate: boolean = false;
 
     static from(data: JsonObject): TicketOption {
-      return new TicketOption().update(data);
+      return BaseModel.fromJson(TicketOption, {...defaultOption, ...data});
     }
 
     static createDef(): TicketOption {
-      return TicketOption.from({
-        autoCreate: true,
-        autoFill: true,
-        viewAll: true,
-        viewTs24: false,
-        saveCache: false,
-        emailTicket: false,
-      });
+      return defaultOption;
     }
 
   }
+
+  
+export const defaultOption = TicketOption.from({
+  autoCreate: true,
+  autoFill: true,
+  viewAll: true,
+  viewTs24: false,
+  saveCache: false,
+  emailTicket: false,
+  viewTemplate: false
+});

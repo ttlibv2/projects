@@ -1,7 +1,17 @@
+import { MenuItem } from "primeng/api";
+
 export interface MenuChangeEvent {
   key: string;
   routeEvent?: boolean;
 }
+
+export interface ThemeInfo {
+  label: string;
+  name: string;
+  url?: string;
+  colorSchemes?: IColorScheme[];
+}
+
 
 export interface LayoutState {
   staticMenuDesktopInactive: boolean;
@@ -34,26 +44,32 @@ export type MenuPosition = "end" | "start";
 export type InputStyle = "outlined" | "filled";
 
 export interface AppConfig {
+  listMenu?: MenuItem[];
   inputStyle: InputStyle;
-  colorScheme: string;
+ 
   componentTheme: string;
   menuTheme: string;
   topbarTheme: string;
-  theme: string;
+ 
   ripple: boolean;
   menuMode: MenuMode;
   scale: number;
   menuProfilePosition: MenuPosition;
+  
   elThemeId: string | "theme-css" | "theme-link";
   themeUrlPrefix: string;
-
+  colorScheme: string;
+  theme: string;
   visibleSideBar?: boolean;
   visibleFooter?: boolean;
   visibleConfig?: boolean;
   visibleBreadcrumb?: boolean;
-
+  visibleTopBar?: boolean;
+  
   appLogo?: string;
   appName?: string;
+
+  listTheme?: Record<string, ThemeInfo>;
 }
 
 export interface ComponentThemeLabel {
@@ -76,15 +92,9 @@ export interface TopbarThemeLabel {
 export interface IColorScheme {
   name: string;
   color: string;
+  url: string;
 }
 
-export interface ITheme {
-  label: string;
-  id: string;
-  path: string;
-  resolveUrl?: (theme: string, color: string) => string;
-  colors?: IColorScheme[];
-}
 
 export const defaultLayoutState: LayoutState = {
   profileSidebarVisible: false,
@@ -108,77 +118,6 @@ export const allMenuModeLabel: MenuModeLabel[] = [
   { label: "Reveal", mode: "reveal" },
   { label: "Drawer", mode: "drawer" },
   { label: "Horizontal", mode: "horizontal" },
-];
-
-export const allComponentTheme: any[] = [
-  {
-    name: "indigo",
-    color: "#3F51B5",
-  },
-  //   {
-  //     name: "pink",
-  //     color: "#E91E63",
-  //   },
-  {
-    name: "purple",
-    color: "#9C27B0",
-  },
-  //   {
-  //     name: "deeppurple",
-  //     color: "#673AB7",
-  //   },
-  {
-    name: "blue",
-    color: "#2196F3",
-  },
-  //   {
-  //     name: "lightblue",
-  //     color: "#03A9F4",
-  //   },
-  //   {
-  //     name: "cyan",
-  //     color: "#00BCD4",
-  //   },
-  {
-    name: "teal",
-    color: "#009688",
-  },
-  {
-    name: "green",
-    color: "#4CAF50",
-  },
-  //   {
-  //     name: "lightgreen",
-  //     color: "#8BC34A",
-  //   },
-  //   {
-  //     name: "lime",
-  //     color: "#CDDC39",
-  //   },
-  {
-    name: "yellow",
-    color: "#FFEB3B",
-  },
-  //   {
-  //     name: "amber",
-  //     color: "#FFC107",
-  //   },
-  {
-    name: "orange",
-    color: "#FF9800",
-  },
-  //   {
-  //     name: "deeporange",
-  //     color: "#FF5722",
-  //   },
-  //   {
-  //     name: "brown",
-  //     color: "#795548",
-  //   },
-  //   {
-  //     name: "bluegrey",
-  //     color: "#607D8B",
-  //   },
 ];
 
 export const allMenuThemeLabel: MenuThemeLabel[] = [
@@ -326,17 +265,13 @@ export const allTopbarThemeLabel: TopbarThemeLabel[] = [
   },
 ];
 
-export const allTheme: Record<string, ITheme> = {
+export const allTheme: Record<string, ThemeInfo> = {
   "theme-freya-light": {
     label: "Theme Light",
-    id: "theme-freya-light",
-    path: "theme-freya-light",
-    colors: allComponentTheme,
+    name: 'theme-freya-light',
   },
   "theme-freya-dark": {
-    id: "theme-freya-dark",
+    name: "theme-freya-dark",
     label: "Theme Dark",
-    path: "theme-freya-dark",
-    colors: allComponentTheme,
   },
 };

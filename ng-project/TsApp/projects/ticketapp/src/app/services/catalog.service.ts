@@ -82,6 +82,10 @@ export class CatalogService extends ClientService {
     }
   }
 
+  clearCache(): Observable<any> {
+    const url = '/ts-api/catalog/clear-cache';
+    return this.get(url);
+  }
 
 
 }

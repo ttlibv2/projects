@@ -3,7 +3,7 @@ import { JsonObject } from "./common";
 
 export class Software extends BaseModel {
 
-    software_id?: number;
+    id?: number;
     code?: string;
     soft_names?: string[];
     value?: string;

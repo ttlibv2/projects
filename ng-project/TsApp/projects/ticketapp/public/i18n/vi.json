@@ -225,6 +225,11 @@
     "auto_login": "Tự động đăng nhập",
     "allow_edit": "Cho phép sửa"
   },
+  "template": {
+    "entity_code": "Mã mẫu",
+    "data": "Nội dung",
+    "icon": "Icon"
+  },
   "actions": {
     "save": "Lưu lại",
     "create": "Tạo mới",

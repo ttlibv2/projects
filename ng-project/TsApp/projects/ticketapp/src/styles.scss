@@ -26,3 +26,21 @@
 // @import "scss/primeng/theme-base/toastr" ;
 
 @import "scss/layout/scss/layout.scss";
+
+.overlay-container {
+    position: absolute;
+    z-index: 9999999;
+}
+
+.p-inputgroup .p-inputwrapper {
+    width: unset;
+}
+
+.p-inputgroup .p-autocomplete-input {
+    padding: 0.5rem;
+}
+
+.p-dynamic-dialog {
+    flex: 1 1 auto;
+    max-width: 60%;
+}

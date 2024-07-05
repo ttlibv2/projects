@@ -1,52 +1,75 @@
-<div class="template-form">
-  <form [formGroup]="formGroup" (ngSubmit)="saveTemplate()">
-    <div class="grid">
-      <div class="col-6 p-fluid">
-        <label for="template">{{'templates' | translate}}</label>
-        <p-dropdown id="template" [options]="templates" optionLabel="title" [showClear]="true"
-          (onChange)="selectTemplate($event.value)"></p-dropdown>
-      </div>
-      <div class="col-6 p-fluid">
-        <label for="entity_code">{{'entity_code' | translate}}</label>
-        <p-dropdown id="entity_code" [options]="entities"  [showClear]="true"
-          (onChange)="selectEntity($event.value)" formControlName="entity_code"></p-dropdown>
-      </div>
-      <div class="col-6 p-fluid">
-        <label for="title">{{'title' | translate}}</label>
-        <input id="title" placeholder="{{'title.holder' | translate}}" pInputText formControlName="title" />
-      </div>
-      <div class="col-3 p-fluid">
-        <label for="bgColor">{{ 'bg_color' | translate }}</label>
-        <div class="group flex flex-row gap-1 align-items-center" id="bgColor">
-          <p-colorPicker format="hex" #bgColor formControlName="bg_color"></p-colorPicker>
-          <input [value]="'#'+bgColor.HSBtoHEX(bgColor.value)" pInputText readonly />
+<p-card class="grid template-form">
+  <div class="col-12">
+    <form [formGroup]="formGroup" (ngSubmit)="saveTemplate()">
+      <div class="grid">
+        <div class=" p-fluid col-6 xxl:col-4">
+          <label for="title">{{'title' | translate}}</label>
+          <input id="title" placeholder="{{'title.holder' | translate}}" pInputText formControlName="title" />
+        </div>
+        <div class=" p-fluid col-6 xxl:col-4">
+          <label for="icon">{{'template.icon' | translate}}</label>
+          <input pInputText  formControlName="icon" placeholder="pi pi-user" />
+        </div>
+        <div class=" p-fluid col-6 xxl:col-4">
+          <label for="entity_code">{{'template.entity_code' | translate}}</label>
+          <p-dropdown [options]="entities" formControlName="entity_code" [editable]="true"></p-dropdown>
+          <!-- <input pInputText  formControlName="entity_code" readonly /> -->
+        </div>
+        <div class="col-4 p-fluid">
+          <label for="bgColor">{{ 'bg_color' | translate }}</label>
+          <div class="group flex flex-row gap-1 align-items-center" id="bgColor">
+            <p-inputGroup>
+              <input [value]="'#'+bgColor.HSBtoHEX(bgColor.value)" pInputText readonly />
+              <p-inputGroupAddon> <p-colorPicker format="hex" #bgColor
+                  formControlName="bg_color"></p-colorPicker></p-inputGroupAddon>
+            </p-inputGroup>
+          </div>
+        </div>
+        <div class="col-4 p-fluid xxl:col-4">
+          <label for="textColor">{{ 'text_color' | translate }}</label>
+          <div class="group flex flex-row gap-1 align-items-center" id="textColor">
+            <p-inputGroup>
+              <input [value]="'#'+textColor.HSBtoHEX(textColor.value)" pInputText readonly />
+              <p-inputGroupAddon>
+                <p-colorPicker format="hex" #textColor formControlName="text_color"></p-colorPicker>
+              </p-inputGroupAddon>
+            </p-inputGroup>
+          </div>
+        </div>
+        <div class=" p-fluid col-4 xxl:col-4 flex" *ngIf="hasPreview">
+          <button pRipple class="align-self-end flex-1 p-element p-button p-component p-button-outlined p-preview"
+            [style.background-color]="template.bg_color" [style.color]="template.text_color">
+            <span class="p-button-label">{{template.title}}</span>
+            <span class="p-ink" aria-hidden="true" role="presentation"></span>
+          </button>
+        </div>
+        <div class="col-12 p-fluid">
+          <label for="summary">{{'summary' | translate}}</label>
+          <input id="summary" placeholder="{{'summary.holder' | translate}}" pInputText formControlName="summary" />
+        </div>
+        <div class="col-12 p-fluid">
+          <label for="data">{{'template.data' | translate}}</label>
+          <textarea id="data" placeholder="{{'template.data.holder' | translate}}" pInputTextarea formControlName="data"
+            rows="5" [autoResize]="true" readonly></textarea>
+          <p-checkbox class="mt-2" label="Cập nhật lại nội dung mẫu" [binary]="true" formControlName="edit_data"
+            (onChange)="clickEditData($event.checked)"></p-checkbox>
+        </div>
+        <div class="col-12 flex gap-2">
+          <p-button type="submit" severity="help" label="{{'actions.'+labelSave | translate}}" [loading]="state.asyncSave"
+            [disabled]="formGroup.invalid"></p-button>
+          <p-button label="{{'actions.create' | translate}}" (onClick)="createNew()" *ngIf="hasInstance"></p-button>
+          <p-button label="Tải DS" (onClick)="loadTemplate()" [loading]="state.asyncTemplate"></p-button>
+          <p-button severity="warning" label="{{'actions.close' | translate}}" (click)="closeDialog()"
+            *ngIf="hasInstance"></p-button>
+
         </div>
       </div>
-      <div class="col-3 p-fluid">
-        <label for="textColor">{{ 'text_color' | translate }}</label>
-        <div class="group flex flex-row gap-1 align-items-center" id="textColor">
-          <p-colorPicker format="hex" #textColor formControlName="text_color"></p-colorPicker>
-          <input [value]="'#'+textColor.HSBtoHEX(textColor.value)" pInputText readonly />
-        </div>
-      </div>
-      <div class="col-6 p-fluid">
-        <label for="summary">{{'summary' | translate}}</label>
-        <textarea id="summary" placeholder="{{'summary.holder' | translate}}" pInputTextarea
-          formControlName="summary" rows="5"></textarea>
-      </div>
-      <div class="col-6 p-fluid">
-        <label for="data">{{'template.data' | translate}}</label>
-        <textarea id="data" placeholder="{{'template.data.holder' | translate}}" pInputTextarea
-          formControlName="data" rows="5" ></textarea>
-      </div> 
-      <div class="col-12 flex gap-2">
-        <p-button type="submit" severity="help" label="{{'actions.'+labelSave | translate}}" [loading]="asyncSave" [disabled]="formGroup.invalid"></p-button>
-        <p-button label="{{'actions.create' | translate}}" (onClick)="createNew()"></p-button>
-        <p-button label="Tải DS" (onClick)="loadTemplate()" [loading]="asyncTemplate"></p-button>
-        <p-button severity="warning" label="{{'actions.close' | translate}}" (click)="closeDialog()"></p-button>
-
-      </div>
-    </div>
-  </form>
-
-</div>
+    </form>
+  </div>
+  <div class="col-12">
+    <ts-ag-table [columns]="columns" 
+    [rows]="rows"lic [option]="agOption"
+    (rowClicked)="selectTemplate($event.data)"
+    ></ts-ag-table>
+  </div>
+</p-card>

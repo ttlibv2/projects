@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { TemplateFormComponent } from './template-form.component';
 import {CardModule} from "primeng/card";
 import {DropdownModule} from "primeng/dropdown";
@@ -19,12 +19,17 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TemplateRoutingModule } from './template-routing.module';
+import { AgTableModule } from 'ts-ui/ag-table';
+import { ChipModule } from 'primeng/chip';
+import { RippleModule } from 'primeng/ripple';
+import { AgCellColor } from './renderer';
 
 
 
 @NgModule({
   declarations: [
-    TemplateFormComponent
+    TemplateFormComponent,
+    AgCellColor
   ],
   exports: [
     TemplateFormComponent
@@ -32,6 +37,8 @@ import { TemplateRoutingModule } from './template-routing.module';
   imports: [
     CommonModule,
     TemplateRoutingModule,
+    ChipModule,
+    AgTableModule,
     CardModule,
     DropdownModule,
     DialogModule,
@@ -49,10 +56,12 @@ import { TemplateRoutingModule } from './template-routing.module';
     ReactiveFormsModule,
     FormsModule,
     CheckboxModule,
+    RippleModule
   ],
   providers: [
     DialogService,
-    DynamicDialogRef
+    DynamicDialogRef,
+    JsonPipe
   ]
 })
 export class TemplateFormModule { }

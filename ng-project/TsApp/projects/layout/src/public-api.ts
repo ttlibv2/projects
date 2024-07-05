@@ -1,6 +1,7 @@
 export * from './lib/common';
 export * from './lib/services/layout.service';
 export * from './lib/services/menu.service';
+export * from './lib/services/theme.service';
 export * from './lib/app-layout/layout.module';
 export * from './lib/app-layout/layout.component';
 export * from './lib/app-config/app-config.component';

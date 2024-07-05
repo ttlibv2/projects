@@ -3,6 +3,7 @@ import { AppConfig, LayoutState, defaultLayoutState } from "../common";
 import { Subject } from "rxjs";
 import { DOCUMENT } from "@angular/common";
 import { Objects } from "ts-helper";
+import { StyleManager } from "./theme.service";
 
 const { isNull, notNull } = Objects;
 
@@ -17,8 +18,8 @@ export const defaultAppConfig: AppConfig = {
   topbarTheme: "white",
   menuProfilePosition: "end",
 
-  theme: "theme-freya-light",
-  colorScheme: "indigo",
+  theme: "aura-lime",
+  colorScheme: "light",
 
   elThemeId: "theme-link",
   themeUrlPrefix: "/assets/themes",
@@ -26,6 +27,7 @@ export const defaultAppConfig: AppConfig = {
 
 @Injectable()
 export class LayoutService {
+ 
   private _config: AppConfig = { ...defaultAppConfig };
   private _configUpdate = new Subject<AppConfig>();
   private _overlayOpen = new Subject<any>();
@@ -40,7 +42,11 @@ export class LayoutService {
   topbarMenuOpen$ = this._topbarMenuOpen.asObservable();
   menuProfileOpen4 = this._menuProfileOpen.asObservable();
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
+  constructor(
+    private style: StyleManager,
+
+    @Inject(DOCUMENT) 
+    private document: Document) {
     effect(() => {
       const config = this.config();
       if (this.updateStyle(config)) {
@@ -69,14 +75,16 @@ export class LayoutService {
   }
 
   changeTheme() {
-    const { theme, colorScheme, elThemeId } = this.config();
+    const { theme, colorScheme, elThemeId, themeUrlPrefix } = this.config();
     this.document.getElementById(elThemeId)?.remove();
     
     if(notNull(theme) && notNull(colorScheme)) {
-      const themeUrl = this._config.themeUrlPrefix + '/' + theme + '/' + colorScheme + '/theme.css';
-      const linkEl = Objects.createElement(this.document, 'link', 'id', elThemeId,  
-        'rel', 'stylesheet',  'type', 'text/css',  'href', themeUrl);
-      this.document.getElementsByTagName('body').item(0).appendChild(linkEl);
+      const themeUrl = `${themeUrlPrefix}${theme}-${colorScheme}.css`;
+      this.style.setStyle(elThemeId, themeUrl);
+
+      //const themeUrl = this._config.themeUrlPrefix + '/' + theme + '/' + colorScheme + '/theme.css';
+      //const linkEl = Objects.createElement(this.document, 'link', 'id', elThemeId,   'rel', 'stylesheet',  'type', 'text/css',  'href', themeUrl);
+      //this.document.getElementsByTagName('body').item(0).appendChild(linkEl);
     }
   }
 
@@ -139,6 +147,14 @@ export class LayoutService {
     this.state.configSidebarVisible = true;
   }
 
+  toggleMenuHoverActive(): void {
+    this.state.menuHoverActive = !this.state.menuHoverActive;
+  }
+  
+  toggleAnchor() {
+    this.state.anchored = !this.state.anchored
+  }
+
   isOverlay() {
     return "overlay" === this.config().menuMode;
   }
@@ -170,4 +186,13 @@ export class LayoutService {
   isRightMenuActive() {
     return this.state.rightMenuActive;
   }
+
+  isVisibleToggleMenuButton(): boolean {
+    const {visibleSideBar, menuMode} = this.config();
+    return visibleSideBar && (menuMode === 'static' || menuMode === 'overlay');
+  }
+
+  isMenuDrawer(): boolean {
+    return this.config().menuMode === 'drawer';
+}
 }

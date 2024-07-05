@@ -4,11 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --hmr true",
-    "build": "ng build --base-href /tsweb/ --ssr false --prerender false --source-map true ",
+    "build": "ng build ticketapp --base-href /tsweb/ --ssr false --prerender false --source-map true",
     "watch": "ng build --watch --configuration development",
     "build:logger": "ng build ts-logger --watch",
     "build:helper": "ng build ts-helper --watch",
-    "build:layout": "ng build ts-layout --watch"
+    "build:layout": "ng build ts-layout --watch",
+    "build:ui": "ng build ts-ui --watch"
   },
   "private": true,
   "dependencies": {

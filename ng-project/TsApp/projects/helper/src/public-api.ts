@@ -4,3 +4,4 @@ export * from './lib/function';
 export * from './lib/errors';
 export * from './lib/optional';
 export * from './lib/links';
+export * from './lib/map';

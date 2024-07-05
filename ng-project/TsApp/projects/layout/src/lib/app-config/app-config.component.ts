@@ -5,15 +5,14 @@ import {
   AppConfig,
   ComponentThemeLabel,
   IColorScheme,
-  ITheme,
   InputStyle,
   LayoutState,
   MenuMode,
   MenuModeLabel,
   MenuPosition,
   MenuThemeLabel,
+  ThemeInfo,
   TopbarThemeLabel,
-  allComponentTheme,
   allMenuModeLabel,
   allMenuThemeLabel,
   allTheme,
@@ -30,13 +29,13 @@ const {isNull, isEmpty} = Objects;
 export class AppConfigComponent implements OnInit {
   @Input() minimal: boolean = false;
   @Input() scales: number[] = [12, 13, 14, 15, 16, 17, 18];
-  @Input() componentThemes: ComponentThemeLabel[] = allComponentTheme;
+  @Input() componentThemes: ComponentThemeLabel[] = [];
   @Input() menuModes: MenuModeLabel[] = allMenuModeLabel;
   @Input() menuThemes: MenuThemeLabel[] = allMenuThemeLabel;
   @Input() topbarThemes: TopbarThemeLabel[] = allTopbarThemeLabel;
 
   //--
-  allTheme: Record<string, ITheme> = allTheme;
+  allTheme: Record<string, ThemeInfo> = this.config.listTheme ?? {};
 
   private get state(): LayoutState {
     return this.layoutService.state;
@@ -50,12 +49,12 @@ export class AppConfigComponent implements OnInit {
     this.layoutService.config.update((cfg) => ({ ...cfg, ...data }));
   }
 
-  get themes(): ITheme[] {
+  get themes(): ThemeInfo[] {
     return [...Object.values(this.allTheme)];
   }
 
   get colorSchemes(): IColorScheme[] {
-    return  this.allTheme[this.theme]?.colors || [];
+    return  this.allTheme[this.theme]?.colorSchemes || [];
   }
 
   get visible(): boolean {
@@ -173,7 +172,7 @@ export class AppConfigComponent implements OnInit {
     this.layoutService.tryAddTheme();
 
     if(isNull(this.theme)) {
-      this.theme = this.allTheme[Object.keys(this.allTheme)[0]].id;
+      this.theme = this.allTheme[Object.keys(this.allTheme)[0]].name;
     }
 
 

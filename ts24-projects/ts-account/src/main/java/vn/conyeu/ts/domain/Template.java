@@ -55,6 +55,13 @@ public class Template extends LongUIdDate<Template> {
 	@JoinColumn(name = "userId", nullable = false)
 	private TsUser user;
 
+	@ColumnDefault("0")
+	private Long position;
+
+	@ColumnDefault("0")
+	@JsonProperty("is_default")
+	private Boolean isDefault;
+
 	@JsonProperty("template_id")
 	public Long getId() {
 		return super.getId();
@@ -63,6 +70,13 @@ public class Template extends LongUIdDate<Template> {
 	@JsonProperty("user_id")
 	public Long getUserId() {
 		return user == null ? null : user.getId();
+	}
+
+	/**
+	 * Returns the position
+	 */
+	public Long getPosition() {
+		return position == null || position == 0 ? getId() : position;
 	}
 
 	public ObjectMap getData() {

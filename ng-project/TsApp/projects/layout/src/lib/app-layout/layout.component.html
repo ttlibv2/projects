@@ -1,6 +1,6 @@
 <div class="layout-container" [ngClass]="containerClass">
-    <ts-app-topbar></ts-app-topbar>
-    <ts-app-rightmenu></ts-app-rightmenu>
+    <ts-app-topbar *ngIf="visibleTopBar"></ts-app-topbar>
+    <!-- <ts-app-rightmenu></ts-app-rightmenu> -->
     <ts-app-sidebar *ngIf="visibleSideBar"></ts-app-sidebar> 
     <div class="layout-content-wrapper">
         <ts-app-breadcrumb *ngIf="visibleBreadcrumb"></ts-app-breadcrumb>

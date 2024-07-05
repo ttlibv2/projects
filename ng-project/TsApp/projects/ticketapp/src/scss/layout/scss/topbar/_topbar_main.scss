@@ -8,7 +8,8 @@
     display: flex;
     color: var(--topbar-item-text-color);
     background-color: var(--topbar-bg);
-
+    box-shadow: 2px 0 4px -1px #0003, 4px 0 5px #00000024, 1px 0 10px #0000001f;
+    
     ul {
         margin: 0;
         padding: 0;
@@ -28,7 +29,7 @@
         align-items: center;
         justify-content: space-between;
         position: relative;
-        width: 17rem;
+        width: $sidebarWidth;
         background-color: var(--topbar-start-bg);
 
         .layout-topbar-logo {
@@ -46,7 +47,7 @@
             }
 
             span {
-                color: var(--surface-900);
+                color: var( --logo-name-color);
                 font-size: 1.5rem;
                 font-weight: 500;
             }

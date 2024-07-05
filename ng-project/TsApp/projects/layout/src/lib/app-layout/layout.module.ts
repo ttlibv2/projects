@@ -11,6 +11,7 @@ import { AppSidebarModule } from "../app-sidebar/app-sidebar.module";
 import { AppRightmenuModule } from "../app-rightmenu/app-rightmenu.module";
 import { LayoutService } from "../services/layout.service";
 import { MenuService } from "../services/menu.service";
+import { StyleManager  } from "../services/theme.service";
 
 @NgModule({
   declarations: [AppLayoutComponent],
@@ -35,7 +36,7 @@ export class AppLayoutModule {
   static forRoot(): ModuleWithProviders<AppLayoutModule> {
     return {
       ngModule: AppLayoutModule,
-      providers: [LayoutService, MenuService],
+      providers: [LayoutService, MenuService, StyleManager ],
     };
   }
 }

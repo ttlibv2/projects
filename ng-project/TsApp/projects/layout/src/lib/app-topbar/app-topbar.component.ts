@@ -9,12 +9,11 @@ import { MenuItem } from "primeng/api";
 export class AppTopbarComponent {
   items!: MenuItem[];
 
-  @ViewChild('menubutton') menuButton!: ElementRef;
-  @ViewChild('topbar_mobile_menubutton') topbarMenuButton!: ElementRef;
+  @ViewChild('menubutton') menuButton!: any;
+  @ViewChild('topbarmenubutton') topbarMenuButton!: any;
   @ViewChild('topbarmenu') menu!: ElementRef;
 
-  constructor(public layoutService: LayoutService, public el: ElementRef) {}
-
+  
   get mobileTopbarActive() {
     return this.layoutService.state.topbarMenuActive;
   }
@@ -27,9 +26,14 @@ export class AppTopbarComponent {
     return this.layoutService.config().appName;
   }
 
-  get visibleSideBar(): boolean {
-    return this.layoutService.config().visibleSideBar;
+  get visibleToggleMenuButton(): boolean {
+    return this.layoutService.isVisibleToggleMenuButton();
   }
+
+  constructor(
+    public layoutService: LayoutService,
+     public el: ElementRef) {}
+
 
   onMenuButtonClick() {
     this.layoutService.onMenuToggle();

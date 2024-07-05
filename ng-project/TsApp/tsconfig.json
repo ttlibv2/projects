@@ -30,8 +30,8 @@
       "ts-logger": [
         "./dist/ts-logger"
       ],
-      "ts-ui": [
-        "./dist/ts-ui"
+      "ts-ui/*": [
+        "./dist/ts-ui/*"
       ]
     },
     "lib": [

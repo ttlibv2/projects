@@ -16,7 +16,7 @@ import {DialogModule} from "primeng/dialog";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {AgGridAngular} from "ag-grid-angular";
 import { ToolbarModule } from 'primeng/toolbar';
-import { AgTableModule } from '../api/ag-table/ag-table.module';
+import { AgTableModule } from 'ts-ui/ag-table';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DividerModule } from 'primeng/divider';
 

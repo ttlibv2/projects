@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnInit,
   ViewChild,
@@ -10,7 +11,7 @@ import {
   AgTableComponent,
   TableColumn,
   TableOption,
-} from "../api/ag-table/ag-table.component";
+} from "ts-ui/ag-table";
 import { ToastService } from "../../services/toast.service";
 import { CatalogService } from "../../services/catalog.service";
 import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -76,25 +77,26 @@ export class CatalogComponent implements OnInit, AfterViewInit {
   templateCode: string;
 
   constructor(
+    private def: ChangeDetectorRef,
     private logger: LoggerService,
     private toast: ToastService,
     private catalogSrv: CatalogService,
-    private ref: DynamicDialogRef) {}
+    private ref: DynamicDialogRef) { }
 
   ngOnInit(): void {
     this.instance = this.toast.getDialogComponentRef(this.ref)?.instance;
-    if(Objects.notNull(this.instance) && this.instance.data) {
-      const {templateCode, autoLoad} = this.instance.data;
+    if (Objects.notNull(this.instance) && this.instance.data) {
+      const { templateCode, autoLoad } = this.instance.data;
       this.autoLoad = autoLoad;
       this.templateCode = templateCode;
     }
 
-    
+
   }
 
   ngAfterViewInit(): void {
     this.agTable.tableApi.selectAll();
-    if(this.autoLoad) {
+    if (this.autoLoad) {
       this.loadCatalog();
     }
   }
@@ -110,21 +112,25 @@ export class CatalogComponent implements OnInit, AfterViewInit {
       return;
     }
 
-   this.asyncLoading = true;
+    this.asyncLoading = true;
 
     const catalog = 'all';//ls.map((i) => i.action).join(",");
     const entities = this.templateCode;
 
-    this.catalogSrv.getAll({catalog, entities}).pipe(delay(1000)).subscribe({
+    this.catalogSrv.getAll({ catalog, entities }).pipe(delay(1000)).subscribe({
       next: (res) => {
-       this.asyncLoading = false;
+        this.asyncLoading = false;
         this.toast.success({ summary: "Lấy danh mục thành công." });
         this.ref.close(res);
+        this.def.detectChanges();
       },
       error: (err) => {
-       this.asyncLoading = false;
-        this.toast.error({ summary: "Lấy danh mục bị lỗi" });
+        this.asyncLoading = false;
+        if (err.code !== 'disconnect') {
+          this.toast.error({ summary: "Lấy danh mục bị lỗi" });
+        }
         this.logger.error("Lấy danh mục bị lỗi: ", err);
+        this.def.detectChanges();
       },
     });
   }

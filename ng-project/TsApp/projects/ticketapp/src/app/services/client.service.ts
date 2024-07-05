@@ -88,6 +88,7 @@ export class ClientService {
       if(err.status === 0) {
         object.code = 'disconnect';
         object.timeOut = 20000;
+        //object.disableTimeOut = true;
         object.title = 'Lỗi không kết nối được tới máy chủ';
         object.summary = `Vui lòng kiểm tra kết nối: ${baseUrl('Kiểm tra')}`;
       }

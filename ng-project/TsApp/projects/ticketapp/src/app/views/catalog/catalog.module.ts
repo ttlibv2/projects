@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CatalogComponent } from './catalog.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
-import { AgTableModule } from '../api/ag-table/ag-table.module';
+import { AgTableModule } from 'ts-ui/ag-table';
 import { TranslateModule } from '@ngx-translate/core';
 
 
@@ -19,7 +19,7 @@ import { TranslateModule } from '@ngx-translate/core';
     AgTableModule,
     TranslateModule
   ],
-  exports: [
+  exports: [ 
     CatalogComponent
   ]
 })

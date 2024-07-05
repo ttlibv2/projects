@@ -1,22 +1,22 @@
 <div class="layout-topbar">
     <div class="layout-topbar-start">
         <a [routerLink]="['/']" class="layout-topbar-logo" href="/" *ngIf="!!appLogo || !!appName">
-            <img alt="logo" [src]="appLogo" *ngIf="!!appLogo"/>
+            <img alt="logo" [src]="appLogo" *ngIf="!!appLogo" />
             <span *ngIf="!!appName">{{appName}}</span>
         </a>
-        <p-button icon=" pi pi-bars" *ngIf="visibleSideBar"
-            styleClass="layout-topbar-button layout-menu-button" 
-            rounded="true" (click)="onMenuButtonClick()"></p-button>
-     
+        <p-button #menubutton icon=" pi pi-bars" *ngIf="visibleToggleMenuButton"
+            styleClass="layout-topbar-button layout-menu-button" rounded="true"
+            (click)="onMenuButtonClick()"></p-button>
 
-         <!-- <button #topbar_mobile_menubutton class="p-link layout-topbar-button layout-topbar-mobile-button"
+        <button #topbarmenubutton class="p-link layout-topbar-button layout-topbar-mobile-button"
             (click)="onMobileTopbarMenuButtonClick()" *ngIf="mobileTopbarActive">
             <i class="pi pi-ellipsis-v"></i>
-        </button> -->
+        </button>
 
 
     </div>
-    <div class="layout-topbar-end"[ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+    <div #topbarmenu class="layout-topbar-end"
+        [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <div class="layout-topbar-actions-start"></div>
         <div class="layout-topbar-actions-end">
             <ul class="layout-topbar-items">
@@ -24,13 +24,13 @@
                     <a pRipple><i class="pi pi-bell" pBadge severity="warning"></i> </a>
                 </li>
                 <li>
-                    <a pRipple><i class="pi pi-table"></i>  </a>
+                    <a pRipple><i class="pi pi-table"></i> </a>
                 </li>
                 <li>
-                    <a pRipple><img src="assets/images/amyelsner.png" alt="avatar" class="w-2rem h-2rem">  </a>
+                    <a pRipple><img src="assets/images/amyelsner.png" alt="avatar" class="w-2rem h-2rem"> </a>
                 </li>
                 <li (click)="onRightMenuButtonClick()">
-                    <a pRipple><i class="pi pi-arrow-left"></i>  </a>
+                    <a pRipple><i class="pi pi-arrow-left"></i> </a>
                 </li>
 
             </ul>

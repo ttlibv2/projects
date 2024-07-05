@@ -1,0 +1,58 @@
+// /* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+// /* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+// {
+//   "extends": "../../tsconfig.json",
+//   "compilerOptions": {
+//     "outDir": "../../out-tsc/lib",
+//     "declaration": true,
+//     "declarationMap": true,
+//     "inlineSources": true,
+//     "baseUrl": ".",
+//     "types": [],
+//     "paths": {
+//       "ts-ui/*": ["src/lib/*/public_api"]
+//   }
+//   },
+//   "exclude": [
+//     "**/*.spec.ts"
+//   ]
+// }
+
+{
+  "compilerOptions": {
+      "declaration": true,
+      "module": "es2022",
+      "target": "es2022",
+      "baseUrl": ".",
+      "stripInternal": true,
+      "emitDecoratorMetadata": false,
+      "experimentalDecorators": true,
+      "moduleResolution": "node",
+      "outDir": "../build",
+      "rootDir": ".",
+      "lib": [
+          "es2022",
+          "dom"
+      ],
+      "skipLibCheck": true,
+      "types": [],
+      "paths": {
+          "ts-ui/*": ["./*/public_api"],
+          "ts-helper": ["../../dist/ts-helper"],
+          "ts-logger": ["../../dist/ts-logger"],
+      }
+  },
+  "angularCompilerOptions": {
+      "annotateForClosureCompiler": false,
+      "strictMetadataEmit": true,
+      "skipTemplateCodegen": true,
+      "enableI18nLegacyMessageIdFormat": false,
+      "strictInjectionParameters": true,
+      "strictInputAccessModifiers": true,
+      "flatModuleOutFile": "primeng.js",
+      "flatModuleId": "primeng"
+  },
+  "files": [
+      "./public_api.ts"
+  ]
+}

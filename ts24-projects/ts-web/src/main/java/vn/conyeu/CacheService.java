@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import vn.conyeu.common.service.ICacheService;
 
 import java.util.Collection;
+import java.util.Set;
 
 @Service
 public class CacheService implements ICacheService {
@@ -15,6 +16,11 @@ public class CacheService implements ICacheService {
     @Autowired
     public CacheService(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
+    }
+
+    @Override
+    public Collection<String> getCacheNames() {
+        return cacheManager.getCacheNames();
     }
 
     @Override

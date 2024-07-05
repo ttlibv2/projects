@@ -2,7 +2,7 @@
     .layout-drawer {
         .layout-sidebar {
             height: 100%;
-            top: 0;
+           // top: 0;
             transition: width 0.3s cubic-bezier(0, 0, 0.2, 1);
             width: 4.25rem;
             z-index: 999;
@@ -126,13 +126,13 @@
             }
         }
 
-        .layout-topbar {
-            padding-left: 4.25rem;
+        //.layout-topbar {
+            //padding-left: 4.25rem;
 
-            .layout-topbar-start {
-                display: none;
-            }
-        }
+            //.layout-topbar-start {
+                //display: none;
+            //}
+        //}
 
         &.layout-drawer {
             .layout-content-wrapper {

@@ -2,7 +2,7 @@ import { BaseModel } from "./base-model";
 import { JsonObject } from "./common";
 
 export class Chanel  extends BaseModel{
-    chanel_id?: number;
+    id?: number;
     code?: string;
     extend_code?: string;
     has_image?: boolean;

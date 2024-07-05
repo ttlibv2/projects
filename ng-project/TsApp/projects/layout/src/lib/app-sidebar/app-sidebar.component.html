@@ -1,11 +1,11 @@
-<div class="layout-sidebar">
+<div class="layout-sidebar" (mouseleave)="onMouseLeave()" (mouseenter)="onMouseEnter()">
     <!-- <div class="sidebar-header">
         <a [routerLink]="['/']" class="layout-topbar-logo" href="/">
             <img alt="logo" src="assets/images/logo-dark.svg" />
             <span>ConYeu-App</span>
         </a>
     </div> -->
-    <div class="layout-menu-container">
+    <div class="layout-menu-container" #menuContainer>
         <ts-app-menu></ts-app-menu>
     </div>
 </div>
