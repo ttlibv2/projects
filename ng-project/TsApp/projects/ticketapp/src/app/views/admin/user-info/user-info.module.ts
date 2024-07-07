@@ -8,7 +8,7 @@ import {CardModule} from "primeng/card";
 import {InputTextModule} from "primeng/inputtext";
 import {TranslateModule} from "@ngx-translate/core";
 import {ButtonModule} from "primeng/button";
-import {ApiInfoModule} from "../api-info/api-info.module";
+import {ApiInfoModule} from "../../api-info/api-info.module";
 
 
 @NgModule({

@@ -6,7 +6,7 @@ import {Translation} from "./translation";
 export class AppConfig extends BaseModel {
     currentLang?: string;
     baseUrl?: string;
-    rememberUser?: RememberUser;
+    rememberUser?: RememberUser = new RememberUser();
     loginToken?: AuthToken;
     loginUser?: User;
     currentI18N?: Translation;

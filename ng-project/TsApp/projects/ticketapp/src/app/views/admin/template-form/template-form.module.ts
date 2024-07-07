@@ -14,7 +14,7 @@ import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 import {InputIconModule} from "primeng/inputicon";
 import {IconFieldModule} from "primeng/iconfield";
 import {TranslateModule} from "@ngx-translate/core";
-import {ColorPipe} from "../../pipes/color.pipe";
+import {ColorPipe} from "../../../pipes/color.pipe";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';

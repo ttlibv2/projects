@@ -12,6 +12,7 @@ import {ButtonModule} from "primeng/button";
 import {CardModule} from "primeng/card";
 import {MessagesModule} from "primeng/messages";
 import {MessageService} from "primeng/api";
+import {PasswordModule} from "primeng/password";
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import {MessageService} from "primeng/api";
         AutoCompleteModule,
         CheckboxModule,
         ButtonModule,
-        CardModule
+        CardModule,
+        PasswordModule
     ],
   providers: [
     MessageService

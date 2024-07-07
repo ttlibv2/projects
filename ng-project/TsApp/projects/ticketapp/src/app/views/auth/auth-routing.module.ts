@@ -11,10 +11,7 @@ const routes: Routes = [
     path: 'signup',
     loadChildren: () => import('./signup/signup.module').then(m => m.SignupModule)
   },
-  {
-    path: 'error',
-    canActivate: [userGuard], loadChildren: () => import('./error/error.module').then(m => m.ErrorModule)
-  },
+
   {
     path: 'forgot-pwd',
     loadChildren: () => import('./forgot-pwd/forgot-pwd.module').then(m => m.ForgotPwdModule)

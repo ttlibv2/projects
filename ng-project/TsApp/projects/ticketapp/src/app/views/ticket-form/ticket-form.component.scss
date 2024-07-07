@@ -1,3 +1,7 @@
+ts-ticket-form {
+  display: block;
+}
+
 .ticket-form {
 
   .template_list .p-chip {
@@ -5,9 +9,7 @@
   }
 
   &.template {
-    .col-ticket-form {
-      width: 58.3333%!important;
-    }
+    display: block;
 
     .col-left {
      width: 100%!important;

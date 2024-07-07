@@ -22,6 +22,7 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ToolbarModule} from "primeng/toolbar";
 import { CatalogModule } from '../catalog/catalog.module';
 import { NgSelectModule } from '@ng-select/ng-select';
+import {TranslateModule} from "@ngx-translate/core";
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
         DialogModule,
         ToolbarModule,
         CatalogModule,
-        NgSelectModule 
+        NgSelectModule,
+        TranslateModule
     ],
   providers: [
     DialogService,

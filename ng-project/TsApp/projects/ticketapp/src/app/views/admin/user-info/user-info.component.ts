@@ -1,9 +1,9 @@
 import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ToastService} from "../../services/toast.service";
-import {User} from "../../models/user";
-import {UserService} from "../../services/user.service";
-import {StorageService} from "../../services/storage.service";
+import {ToastService} from "../../../services/toast.service";
+import {User} from "../../../models/user";
+import {UserService} from "../../../services/user.service";
+import {StorageService} from "../../../services/storage.service";
 
 @Component({
   selector: 'ts-user-info',

@@ -22,7 +22,7 @@ export const defaultAppConfig: AppConfig = {
   colorScheme: "light",
 
   elThemeId: "theme-link",
-  themeUrlPrefix: "/assets/themes",
+  themeUrlPrefix: "",
 };
 
 @Injectable()

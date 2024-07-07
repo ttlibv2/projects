@@ -94,7 +94,9 @@ export class StorageService {
 
 	get loginToken(): AuthToken {return this.config().loginToken;}
 	get baseUrl(): string {return this.config().baseUrl;}
-	get rememberUser(): RememberUser {return this.config().rememberUser;}
+	get rememberUser(): RememberUser {
+        return this.config().rememberUser ?? new RememberUser();
+    }
 	get loginUser(): User {return this.config().loginUser;}
     get i18n(): Translation { return this.config().currentI18N; }
 

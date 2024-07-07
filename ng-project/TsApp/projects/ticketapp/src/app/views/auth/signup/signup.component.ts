@@ -37,7 +37,7 @@ export class SignupComponent implements OnInit{
   }
 
   ngOnInit() {
-    if(this.cfg.isLogin) this.router.navigate([this.lastUrl]).then();
+    if(this.cfg.isLogin) this.router.navigate([this.lastUrl??'/']).then();
     else this.initialize();
   }
   
@@ -77,7 +77,10 @@ export class SignupComponent implements OnInit{
         if(Objects.notBlank(this.lastUrl)) this.router.navigate([this.lastUrl]).then();
         else this.router.navigate(['/']).then();
       },
-      error: _ => this.asyncSignup = false,
+      error: _ => {
+        this.asyncSignup = false;
+        console.log(_);
+      },
       complete: () => this.asyncSignup = false
     });
 

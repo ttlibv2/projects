@@ -39,8 +39,9 @@ export class SigninComponent implements OnInit {
               private toast: ToastService) {  }
 
   ngOnInit() {
-    if(this.cfg.isLogin) this.router.navigate([this.lastUrl]).then();
-    else this.initialize();
+    if(this.cfg.isLogin) this.router.navigate([this.lastUrl??'/']).then();
+    else
+      this.initialize();
   }
 
   initialize() {

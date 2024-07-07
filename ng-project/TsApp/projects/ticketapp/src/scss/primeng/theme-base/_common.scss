@@ -3,7 +3,7 @@
 }
 
 .p-component {
-    font-family: var(--font-family);
+    font-family: var(--font-family), serif;
     font-feature-settings: var(--font-feature-settings, normal);
     font-size: $fontSize;
     font-weight: $fontWeight;
@@ -36,7 +36,7 @@
 }
 
 .p-link {
-    font-family: var(--font-family);
+    font-family: var(--font-family), serif;
     font-feature-settings: var(--font-feature-settings, normal);
     font-size: $fontSize;
     border-radius: $borderRadius;
