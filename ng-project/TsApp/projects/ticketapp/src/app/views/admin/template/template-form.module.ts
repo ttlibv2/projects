@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule,  } from '@angular/common';
 import { TemplateFormComponent } from './template-form.component';
 import {CardModule} from "primeng/card";
 import {DropdownModule} from "primeng/dropdown";
@@ -23,6 +23,7 @@ import { AgTableModule } from 'ts-ui/ag-table';
 import { ChipModule } from 'primeng/chip';
 import { RippleModule } from 'primeng/ripple';
 import { AgCellColor } from './renderer';
+import { JsonPipe } from '../../../pipes/json.pipe';
 
 
 

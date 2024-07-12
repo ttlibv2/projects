@@ -8,7 +8,7 @@ import { AgGridModule } from 'ag-grid-angular';
   declarations: [ 
     AgTableComponent
   ],
-  imports: [
+  imports: [ 
     CommonModule,
     AgGridModule,
   ],

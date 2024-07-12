@@ -59,7 +59,7 @@
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
                                     <label for="od_assign">Phân công cho <span class="p-text-danger">(*)</span></label>
                                     <p-dropdown id="od_assign" formControlName="od_assign" [options]="catalog.ls_assign"
-                                                optionLabel="display_name" [filter]="true" [loading]="loading.assign"
+                                                optionLabel="display_name" [filter]="true" [loading]="state.assign"
                                                 (onFilter)="searchAssign($event.filter)"
                                                 formControlName="od_assign"></p-dropdown>
                                 </div>
@@ -255,8 +255,7 @@
                                 </ng-template>
                             </div>
                         </p-fieldset>
-                        <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list"
-                                    *ngIf="!viewTemplate">
+                        <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list"  >
                             <div class="flex flex-wrap gap-2">
                                 <ng-template ngFor let-item [ngForOf]="templates">
                                     <p-button [severity]="item === currentTemplate ? 'danger': undefined"

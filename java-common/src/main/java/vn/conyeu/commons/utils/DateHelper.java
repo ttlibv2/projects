@@ -208,6 +208,15 @@ public final class DateHelper {
                 .toInstant().getEpochSecond();
     }
 
+    public static long epochMilli() {
+        return epochSecond(LocalDateTime.now());
+    }
+
+    public static long epochMilli(LocalDateTime dateTime) {
+        return dateTime.atZone(ZoneId.systemDefault())
+                .toInstant().toEpochMilli();
+    }
+
     public static Object localTime(DateTimeFormatter dtf, String source, ParsePosition pos) {
         TemporalAccessor accessor = dtf.parse(source, pos);
         return LocalTime.from(accessor);

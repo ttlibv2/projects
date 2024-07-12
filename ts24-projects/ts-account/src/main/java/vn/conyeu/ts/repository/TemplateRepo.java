@@ -23,4 +23,7 @@ public interface TemplateRepo extends LongUIdRepo<Template> {
 
     @Query("select e from #{#entityName} e where e.user.id=?1 and e.entityCode in ?2")
     List<Template> findTemplateByUser(Long userId, List<String> entityCodes);
+
+    @Query("select count(e) > 0 from #{#entityName} e where e.user.id=?1 and e.entityCode=?2 and e.title=?3")
+    boolean existsByTitle(Long userId, String entity, String title);
 }

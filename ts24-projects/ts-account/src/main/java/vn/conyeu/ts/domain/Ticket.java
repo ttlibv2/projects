@@ -9,14 +9,13 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.converter.ListLongToString;
-import vn.conyeu.common.converter.ObjectMapToString;
+import vn.conyeu.common.converter.MapString;
 import vn.conyeu.common.domain.LongUIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.dtocls.Converters.*;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.ticket.domain.*;
-import vn.conyeu.ts.ticket_rest.OdTRHelper;
 
 import java.util.List;
 
@@ -25,8 +24,13 @@ import java.util.List;
 @Getter @Setter @NoArgsConstructor
 @DynamicInsert @DynamicUpdate
 @JsonIgnoreProperties({"user"})
+@AttributeOverride(name = "id", column = @Column(name = "ticketId"))
 //@formatter:on
 public class Ticket extends LongUIdDate<Ticket> {
+
+    @JsonProperty("ticket_on")
+    @Column(length = 150, nullable = false)
+    private String ticketOn;
 
     @JsonProperty("full_name")
     @Column(length = 150, nullable = false)
@@ -140,7 +144,7 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JoinColumn(nullable = false, name = "userId")
     private TsUser user;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = MapString.class)
     @Column(columnDefinition = "json")
     @JsonProperty("od_image")
     private ObjectMap odImage;
@@ -210,11 +214,11 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JsonProperty("od_product")
     private ClsProduct odProduct;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap options;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap custom;
 
@@ -222,12 +226,16 @@ public class Ticket extends LongUIdDate<Ticket> {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket")
     private TicketDetail detail;
 
+    @JsonProperty("template_id")
+    private Long templateId;
+
     //-------------------@Transient
 
     @JsonProperty("group_helpid") @Transient private Long groupHelpId;
     @JsonProperty("support_helpid") @Transient  private Long supportHelpId;
     @JsonProperty("software_id") @Transient private Long softwareId;
     @JsonProperty("question_id") @Transient private Long questionId;
+    @JsonProperty("chanels") @Transient private List<Chanel> chanels;
 
 
     public void setStage(ClsStage stage) {
@@ -283,6 +291,11 @@ public class Ticket extends LongUIdDate<Ticket> {
      */
     public Long getOdPartnerId() {
         return odPartner == null ? null : odPartner.getId();
+    }
+
+    @JsonProperty("ticket_id")
+    public Long getId() {
+        return super.getId();
     }
 
     /**

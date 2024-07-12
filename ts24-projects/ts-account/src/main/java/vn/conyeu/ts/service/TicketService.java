@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.identity.helper.IdentityHelper;
 import vn.conyeu.ts.domain.Template;
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.domain.TicketDetail;
@@ -35,6 +36,16 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
     }
 
     @Override
+    public Page<Ticket> findAll(Pageable pageable) {
+        Long userId = IdentityHelper.extractUserId();
+        return findAll(userId, pageable);
+    }
+
+    public Page<Ticket> findAll(Long userId, Pageable pageable) {
+        return repo().findAll(userId, pageable);
+    }
+
+    @Override
     public Page<Ticket> findAll(ObjectMap search, Pageable pageable) {
         TicketFindOption option = search.asObject(TicketFindOption.class);
         return findAll(option, pageable);
@@ -46,12 +57,12 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
 
             if(option.getCreatedMin() != null) {
                 Path<LocalDateTime> ct = rt.get("createdAt");
-                predicates.add(cb.lessThanOrEqualTo(ct, option.getCreatedMin()));
+                predicates.add(cb.greaterThanOrEqualTo(ct, option.getCreatedMin()));
             }
 
             if(option.getCreatedMax() != null) {
                 Path<LocalDateTime> ct = rt.get("createdAt");
-                predicates.add(cb.greaterThanOrEqualTo(ct, option.getCreatedMax()));
+                predicates.add(cb.lessThanOrEqualTo(ct, option.getCreatedMax()));
             }
 
             if(option.getUpdatedMin() != null) {

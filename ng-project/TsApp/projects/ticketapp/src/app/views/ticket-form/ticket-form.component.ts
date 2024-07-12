@@ -12,7 +12,7 @@ import { Objects } from "ts-helper";
 import { Software } from "../../models/software";
 import { ClsTeam } from "../../models/od-cls";
 import { LoggerService } from "ts-logger";
-import { Observable, of } from "rxjs";
+import { last, Observable, Observer, of } from "rxjs";
 import { Chanel } from "../../models/chanel";
 import { Template } from "../../models/template";
 import { TemplateService } from "../../services/template.service";
@@ -25,11 +25,14 @@ import { TicketUtil2 } from "./ticket-util";
 import { Question } from "../../models/question";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { Router } from "@angular/router";
+import { TicketService } from "../../services/ticket.service";
 
 const { notNull, notEmpty, isEmpty } = Objects;
 
-export interface Loading {
+export interface State {
   assign?: boolean;
+  asyncLoadCate?: boolean;
+  asyncSaveTicket?: boolean;
 }
 
 export interface OptionLabel {
@@ -120,11 +123,16 @@ export class TicketFormComponent implements OnInit {
     return (emailTicket === false || autoFill === true);
   }
 
+  get templateDefault(): Template {
+    if(notNull(this.currentTemplate)) return this.currentTemplate;
+    else return this.currentTemplate = this.catalog?.ls_template?.get_ticket_def();
+  }
+
   readonly toolActions: MenuItem[] = [
     {
       label: "Tải danh mục",
       icon: "pi pi-home",
-      command: (event) => this.loadCatalogs(),
+      command: (event) => this.loadCatalogs().subscribe(),
     },
     {
       label: "Xóa cache",
@@ -134,9 +142,11 @@ export class TicketFormComponent implements OnInit {
     {
       label: "Cập nhật mẫu",
       icon: "pi pi-home",
-      command: _ => this.router.navigate(['/admin/templates'], {queryParams: {entity: 'form_ticket'}}),
+      command: _ => this.router.navigate(['/admin/templates'], {queryParams: {
+        entity: 'form_ticket', lastUrl: '/admin/ticket-form'}}),
     }
   ];
+
   readonly labelOptions: OptionLabel[] = [
     {
       label: "Tự động tạo > Copy",
@@ -171,9 +181,9 @@ export class TicketFormComponent implements OnInit {
     }
   ];
 
-  loading: Loading = {};
+  state: State = {};
   ticketForm: FormGroup;
-  ticket: Ticket = new Ticket();
+  ticket1: Ticket = new Ticket();
   asyncLoadCate: boolean = false;
   catalog: Catalog = new Catalog();
   lsSoftName: string[] = [];
@@ -189,31 +199,28 @@ export class TicketFormComponent implements OnInit {
     private toast: ToastService,
     private storage: StorageService,
     private cref: ChangeDetectorRef,
+    private ticketSrv: TicketService,
     private catalogSrv: CatalogService,
     private logger: LoggerService,
     private router: Router,
     private datePipe: DatePipe,
-
-
-    private dialogRef: DynamicDialogRef     // dialog
-  
-  
-  ) {
+    private dialogRef: DynamicDialogRef ) {
     this.createFormGroup();
   }
 
   ngOnInit() {
-
+   
     const dialogInstance = this.toast.getDialogComponentRef(this.dialogRef)?.instance;
     if(dialogInstance && dialogInstance.data?.template) {
       this.viewTemplate = true;
-      const template = dialogInstance.data.template;
-      this.selectTemplate(template);
+      this.currentTemplate = dialogInstance.data.template;
     }
 
-
     this.userLogin = this.storage.loginUser;
-    this.loadCatalogs(true, true);
+    this.loadCatalogs(true).subscribe({next: _ => {
+      this.createNew(this.currentTemplate);
+    }});
+
   }
 
   private createFormGroup(): void {
@@ -278,25 +285,31 @@ export class TicketFormComponent implements OnInit {
 
   }
 
-  loadCatalogs(autoLoad: boolean = false, createNew: boolean = false) {
-
-    const cateRef = this.toast.openDialog(CatalogComponent, {
-      header: 'Danh mục cần lấy ?',
-      closeOnEscape: true,
-      focusOnShow: false,
-      data: { templateCode: 'form_ticket', autoLoad }
+  loadCatalogs(autoLoad: boolean = false): Observable<any> {
+    return new Observable((observer: Observer<any>) => {
+      const cateRef = this.toast.openDialog(CatalogComponent, {
+        header: 'Danh mục cần lấy ?',
+        closeOnEscape: true,
+        focusOnShow: false,
+        data: { templateCode: 'form_ticket', autoLoad }
+      });
+  
+      cateRef.onClose.subscribe({
+        error: (err) => {
+          this.asyncLoadCate = false;
+          observer.error(err);
+        },
+        next: (res: Catalog) => {
+          this.catalog = res;
+          //this.currentTemplate = res.ls_template.get_ticket_def();
+          this.cref.detectChanges();
+        
+          observer.next(res);
+          observer.complete();
+        }
+      })
     });
 
-    cateRef.onClose.subscribe({
-      error: (err) => this.asyncLoadCate = false,
-      next: (res: Catalog) => {
-        this.catalog = res;
-        this.currentTemplate = res.ls_template.get_ticket_def();
-        this.cref.detectChanges();
-
-        if(createNew) this.createNew();
-      }
-    })
   }
 
   clearCache() {
@@ -386,18 +399,38 @@ export class TicketFormComponent implements OnInit {
   }
 
   resetTemplate(): void {
-
+    if(this.currentTemplate) {
+      this.createNew(this.currentTemplate);
+    }
   }
 
-  
-  createNew() {
-    const template = this.currentTemplate ?? this.catalog.ls_template.get_ticket_def();
+  createNew(template?: Template) {
+    template = template ?? this.currentTemplate ?? this.catalog.ls_template.get_ticket_def();
+    console.log(template);
     this.logger.info('create new - use template ', template?.title);
     this.selectTemplate(template);
     
   }
 
   saveTicket() {
+    const data: Ticket = this.ticketForm.getRawValue();
+    data.chanel_ids = data.chanels?.map(c => c.id);
+    data.company_name = data.od_partner?.company_name;
+    data.template_id = this.currentTemplate?.template_id;
+    data.source = data.source ?? 'tsweb';
+    
+    ['chanels', 'od_partner_id'].forEach(k => delete data[k]);
+
+    this.ticketSrv.save(data).subscribe({
+      error: err => {
+        this.state.asyncSaveTicket = false;
+        this.toast.error({summary: `Đã xảy ra lỗi tạo ticket -> ${err}`});
+      },
+      next: res => {
+        this.toast.success({summary: `[${res.ticket_id}] Tạo ticket thành công`});
+        this.pathValue(res);
+      }
+    });
   }
 
   searchUser() {
@@ -434,9 +467,9 @@ export class TicketFormComponent implements OnInit {
       // Optional.ofNullable(data.members).map((users) => of(users))
       //   .orElseGet(() => this.catalogSrv.searchAssignByIds(data.team_members))
       .subscribe({
-        error: (_) => (this.loading.assign = false),
+        error: (_) => (this.state.assign = false),
         next: (members) => {
-          this.loading.assign = false;
+          this.state.assign = false;
           data.members = members;
           this.catalog.ls_assign = members;
           this.team_head = data?.team_head;

@@ -1,6 +1,5 @@
 package vn.conyeu.identity.restapi;
 
-import io.jsonwebtoken.JwtBuilder;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +11,7 @@ import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.identity.domain.*;
 import vn.conyeu.identity.dtocls.SignUpDto;
 import vn.conyeu.identity.service.AccountService;
-import vn.conyeu.identity.service.JwtService;
+import vn.conyeu.identity.service.TokenService;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,14 +19,14 @@ public class AuthRest {
     private final AuthenticationManager manager;
     private final AccountService service;
     private final PasswordEncoder encoder;
-    private final JwtService jwtService;
+    private final TokenService tokenService;
 
     @Autowired
-    public AuthRest(AuthenticationManager manager, AccountService accountService, PasswordEncoder encoder, JwtService jwtService) {
+    public AuthRest(AuthenticationManager manager, AccountService accountService, PasswordEncoder encoder,TokenService tokenService) {
         this.manager = manager;
         this.service = accountService;
         this.encoder = encoder;
-        this.jwtService = jwtService;
+        this.tokenService = tokenService;
     }
 
     @PostMapping("check-email")
@@ -76,8 +75,6 @@ public class AuthRest {
 
 
         account = service.createNew(account);
-
-        Principal principal = new Principal(account);
-        return jwtService.buildAuthToken(principal);
+        return tokenService.buildToken(account);
     }
 }

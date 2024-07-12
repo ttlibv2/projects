@@ -1,15 +1,18 @@
 package vn.conyeu.identity.security;
 
+import io.jsonwebtoken.io.Decoders;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 //@Configuration
 @Component
 @ConfigurationProperties("security.jwt")
 public class JwtConfig {
 
-    private String secretKey = "33743677397A24432646294A404D635166546A576E5A7234753778214125442A";
+    private String secret = "33743677397A24432646294A404D635166546A576E5A7234753778214125442A";
     private Long expiration = 3600000L;
     private String algorithm = "HmacSHA256";
     private String publicKeyLocation;
@@ -36,17 +39,17 @@ public class JwtConfig {
     /**
      * Returns the secretKey
      */
-    public String getSecretKey() {
-        return secretKey;
+    public String getSecret() {
+        return secret;
     }
 
     /**
      * Set the secretKey
      *
-     * @param secretKey the value
+     * @param secret the value
      */
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     /**
@@ -128,4 +131,6 @@ public class JwtConfig {
     public void setAuthUri(String authUri) {
         this.authUri = authUri;
     }
+
+
 }

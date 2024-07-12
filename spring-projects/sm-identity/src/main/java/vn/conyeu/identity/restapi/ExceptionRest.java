@@ -2,6 +2,7 @@ package vn.conyeu.identity.restapi;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 @RestController
 @RestControllerAdvice
+@Slf4j
 public class ExceptionRest extends ResponseEntityExceptionHandler implements ErrorController {
 
 
@@ -70,8 +72,10 @@ public class ExceptionRest extends ResponseEntityExceptionHandler implements Err
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
-        ResponseEntity<Object> responseEntity = super.handleExceptionInternal(ex, body, headers, statusCode, request);
-        return responseEntity;
+        log.warn("{}::handleExceptionInternal()", getClass().getName());
+        ex.printStackTrace();
+
+        return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
     @Override
@@ -82,4 +86,5 @@ public class ExceptionRest extends ResponseEntityExceptionHandler implements Err
         }
         return super.createResponseEntity(body, headers, statusCode, request);
     }
+
 }

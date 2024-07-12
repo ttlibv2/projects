@@ -20,9 +20,9 @@ export class TemplateService extends ModelApi<Template> {
     return this.getPage(url, {code});
   }
 
-  getAllByUser(): Observable<Page<Template>> {
+  getAllByUser(...entities: string[]): Observable<Page<Template>> {
     const url = this.callBasePath('/user/get-all');
-    return this.getPage(url);
+    return this.getPage(url, {entities});
   }
 
 

@@ -25,8 +25,8 @@ public abstract class DomainRest<E extends DomainId<E, Id>, Id extends Serializa
     }
 
     @GetMapping("search")
-    public Page<E> getAll(@RequestParam ObjectMap params, Pageable pageable) {
-        return service.findAll(params, pageable);
+    public Page<E> getAll(@RequestParam Map<String, Object> params, Pageable pageable) {
+        return service.findAll(ObjectMap.fromMap(params), pageable);
     }
 
     @GetMapping("get-all")

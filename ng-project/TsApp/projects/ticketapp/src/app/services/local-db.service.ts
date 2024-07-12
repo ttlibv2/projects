@@ -5,7 +5,7 @@ import {AuthToken, User} from "../models/user";
 import {Software} from '../models/software';
 import {GroupHelp} from '../models/group-help';
 import {Ticket} from '../models/ticket';
-import {AgColumn, AgTable} from '../models/ag-table';
+import {AgTable} from '../models/ag-table';
 import {ApiInfo} from '../models/api-info';
 import {Objects} from 'ts-helper';
 import {Question} from '../models/question';
@@ -41,7 +41,7 @@ export const TB_NAMES = {
     clsTag: "clsTag",
     clsTopic: "clsTopic",
     agTable: "agTable",
-    agColumn: "agColumn",
+  //  agColumn: "agColumn",
     apiInfo: "apiInfo",
     user: "user",
     appConfig: "appConfig",
@@ -78,7 +78,7 @@ const tables: TableName[] = [
     {tbName: TB_NAMES.clsTag, keyOrIndex: 'id', entityType: od.ClsTag, tableType: () => DbTable},
     {tbName: TB_NAMES.clsTopic, keyOrIndex: 'id', entityType: od.ClsTopic, tableType: () => DbTable},
     {tbName: TB_NAMES.agTable, keyOrIndex: 'code', entityType: AgTable, tableType: () => DbAgTable},
-    {tbName: TB_NAMES.agColumn, keyOrIndex: '[field_name+ag_code]', entityType: AgColumn, tableType: () => DbTable},
+   // {tbName: TB_NAMES.agColumn, keyOrIndex: '[field_name+ag_code]', entityType: AgColumn, tableType: () => DbTable},
     {tbName: TB_NAMES.apiInfo, keyOrIndex: 'api_id', entityType: ApiInfo, tableType: () => DbTable},
     {tbName: TB_NAMES.user, keyOrIndex: 'user_id', entityType: User, tableType: () => DbUserTable},
     {tbName: TB_NAMES.appConfig, keyOrIndex: '', entityType: AppConfig, tableType: () => ConfigTable},

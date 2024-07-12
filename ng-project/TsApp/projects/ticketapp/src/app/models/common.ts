@@ -5,6 +5,8 @@ import { Callback } from 'ts-helper';
 
 export type AssignObject<E = any> = JsonObject | E | Partial<E>;
 
+export type Severity = 'primary' | 'secondary' | 'success' | 'info' | 'danger' | 'help' | 'warning' | 'contrast';
+
 export type ResponseToModel<E> = (response: any) => E;
 export type JsonObject = Record<string, any>;
 export type ClientParams = HttpParams | {

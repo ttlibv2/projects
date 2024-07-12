@@ -6,8 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { AgTableModule } from 'ts-ui/ag-table';
 import { TranslateModule } from '@ngx-translate/core';
 
-
-
 @NgModule({
   declarations: [
     CatalogComponent

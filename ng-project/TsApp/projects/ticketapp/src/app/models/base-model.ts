@@ -16,6 +16,11 @@ export abstract class BaseModel {
     return this;
   }
 
+  delete(...fields: string[]): this {
+    const self = this;
+    fields.forEach(field => delete self[field]);
+    return self;
+  }
   protected static fromJson<E extends BaseModel>(modelType: Type<E>, data: AssignObject<E>): E {
     return data instanceof modelType ? data : new modelType().update(data);
 

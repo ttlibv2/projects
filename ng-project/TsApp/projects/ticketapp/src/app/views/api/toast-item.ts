@@ -1,6 +1,6 @@
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {ChangeDetectionStrategy, Component, NgZone, OnInit} from '@angular/core';
-import {NgIf} from '@angular/common';
+import {CommonModule, NgIf} from '@angular/common';
 import {Toast, ToastPackage, ToastrService} from "ngx-toastr";
 import {ToastConfig} from "../../services/toast.service";
 import {InputIconModule} from "primeng/inputicon";
@@ -27,10 +27,10 @@ const  { isBlank } = Objects;
         ]),
     ],
     preserveWhitespaces: false,
-    imports: [NgIf, InputIconModule, Ripple, TimesIcon, ButtonModule, ProgressBarModule, ToolbarModule, IconFieldModule],
+    imports: [NgIf, InputIconModule, Ripple, TimesIcon, ButtonModule, ProgressBarModule, ToolbarModule, IconFieldModule, CommonModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-       <div class="p-toast-message-content">
+       <div class="p-toast-message-content" [ngClass]="config.messageClass">
            <div class="column-left" *ngIf="config.messageIcon">
                <p-button [icon]="config.messageIcon" [rounded]="true" [text]="true" [severity]="severity" size="large" />
            </div>

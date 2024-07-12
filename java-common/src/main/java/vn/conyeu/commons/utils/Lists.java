@@ -417,15 +417,15 @@ public final class Lists {
 
         //--Collection
         if (object instanceof Collection<?> cl) {
-            return cl.stream().map(itemMapper).toList();
+            return cl.stream().map(itemMapper).collect(Collectors.toList());
         }
 
         //--isArray
         if (object.getClass().isArray()) {
-            return Stream.of(object).map(itemMapper).toList();
+            return Stream.of(object).map(itemMapper).collect(Collectors.toList());
         } else {
             T value = itemMapper.apply(object);
-            return Collections.singletonList(value);
+            return new ArrayList<>(List.of(value));
         }
     }
 

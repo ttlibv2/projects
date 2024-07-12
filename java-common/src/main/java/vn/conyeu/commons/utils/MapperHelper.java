@@ -163,6 +163,14 @@ public final class MapperHelper {
             return mapper().readValue(src, valueTypeRef);
     }
 
+    public static <T> T readValue(String jsonContent, TypeReference<T> valueTypeRef) throws ConvertException {
+        try {
+            return mapper().readValue(jsonContent, valueTypeRef);
+        }catch (IOException exp) {
+            throw new ConvertException(exp.getMessage(), exp);
+        }
+    }
+
     public static <T> T readValue(InputStream src, Class<T> valueType) throws IOException {
             return mapper().readValue(src, valueType);
     }

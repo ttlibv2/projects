@@ -1,14 +1,16 @@
 package vn.conyeu.ts.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedBy;
+import vn.conyeu.common.converter.MapString;
 import vn.conyeu.common.domain.LongUId;
+import vn.conyeu.commons.beans.ObjectMap;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ import java.util.List;
 @Entity @Table
 @Getter @Setter @NoArgsConstructor
 @DynamicInsert @DynamicUpdate
-@JsonIgnoreProperties({"createBy"})
+@JsonIgnoreProperties({"parent", "user"})
 @AttributeOverride(name = "id", column = @Column(name = "tableId"))
 //@formatter:on
 public class AgTable extends LongUId<AgTable> {
@@ -24,15 +26,59 @@ public class AgTable extends LongUId<AgTable> {
     @Column(length = 50, nullable = false, unique = true)
     private String code;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100)
     private String title;
 
+    @Column(length = 300)
+    private String summary;
+
+    @Column(length = 100)
+    @JsonProperty("svg_icon")
+    private String svgIcon;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @CreatedBy() @JoinColumn(name = "createBy")
-    private TsUser createBy;
+    @JoinColumn(name = "userId")
+    private TsUser user;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "table")
-    private List<AgColumn> columns;
+    @ColumnDefault("0")
+    private Integer position;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentId")
+    private AgTable parent;
+
+    @JsonIgnore
+    @JsonAnySetter
+    @Convert(converter = MapString.class)
+    @Column(columnDefinition = "json")
+    private ObjectMap config;
+
+    @Transient
+    private List<AgTable> children;
+
+    @JsonAnyGetter
+    public ObjectMap getConfig() {
+        if(config == null) config = new ObjectMap();
+        return config;
+    }
+
+    public Object get(String field) {
+        return getConfig().get(field);
+    }
+
+    @JsonProperty("table_id")
+    public Long getId() {
+        return super.getId();
+    }
+
+    @JsonProperty("user_id")
+    public Long getUserId() {
+        return user == null ? null : user.getId();
+    }
+
+    @JsonProperty("parent_id")
+    public Long getParentId() {
+        return parent == null ? null : parent.getId();
+    }
 
 }

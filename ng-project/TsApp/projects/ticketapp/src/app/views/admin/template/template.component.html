@@ -2,20 +2,20 @@
   <div class="col-12">
     <form [formGroup]="formGroup" (ngSubmit)="saveTemplate()">
       <div class="grid">
-        <div class=" p-fluid col-6 xxl:col-4">
+        <div class=" p-fluid col-6 xxl:col-6">
           <label for="title">{{'title' | translate}}</label>
           <input id="title" placeholder="{{'title.holder' | translate}}" pInputText formControlName="title" />
         </div>
-        <div class=" p-fluid col-6 xxl:col-4">
+        <div class=" p-fluid col-6 xxl:col-3">
           <label for="icon">{{'template.icon' | translate}}</label>
           <input pInputText  formControlName="icon" placeholder="pi pi-user" />
         </div>
-        <div class=" p-fluid col-6 xxl:col-4">
+        <div class=" p-fluid col-6 xxl:col-3">
           <label for="entity_code">{{'template.entity_code' | translate}}</label>
-          <p-dropdown [options]="lsEntity" formControlName="entity_code" [showClear]="true"></p-dropdown>
+          <p-dropdown [options]="lsEntity" formControlName="entity_code" [showClear]="true" #entity></p-dropdown>
         </div>
-        <div class="col-4 p-fluid">
-          <label for="bgColor">{{ 'bg_color' | translate }}</label>
+        <div class="col-4 p-fluid xxl:col-3">
+          <label for="bgColor">{{ 'style.bg_color' | translate }}</label>
           <div class="group flex flex-row gap-1 align-items-center" id="bgColor">
             <p-inputGroup>
               <input [value]="'#'+bgColor.HSBtoHEX(bgColor.value)" pInputText readonly />
@@ -24,20 +24,24 @@
             </p-inputGroup>
           </div>
         </div>
-        <div class="col-4 p-fluid xxl:col-4">
-          <label for="textColor">{{ 'text_color' | translate }}</label>
+        <div class="col-4 p-fluid xxl:col-3">
+          <label for="textColor">{{ 'style.text_color' | translate }}</label>
           <div class="group flex flex-row gap-1 align-items-center" id="textColor">
             <p-inputGroup>
               <input [value]="'#'+textColor.HSBtoHEX(textColor.value)" pInputText readonly />
-              <p-inputGroupAddon>
+              <p-inputGroupAddon> 
                 <p-colorPicker format="hex" #textColor formControlName="text_color"></p-colorPicker>
               </p-inputGroupAddon>
             </p-inputGroup>
           </div>
         </div>
-        <div class=" p-fluid col-4 xxl:col-4 flex" *ngIf="hasPreview">
-          <button pRipple class="align-self-end flex-1 p-element p-button p-component p-button-outlined p-preview"
-            [style.background-color]="template.bg_color" [style.color]="template.text_color">
+        <div class=" p-fluid col-6 xxl:col-3">
+          <label for="severity">{{'template.severity' | translate}}</label>
+          <p-dropdown [options]="lsSeverity" formControlName="severity" [showClear]="true" (onChange)="selectSeverity($event.value)"></p-dropdown>
+        </div>
+        <div class=" p-fluid flex align-items-end col-4 xxl:col-3 ">
+          <button pRipple class="align-self-end flex-1 p-element p-button p-component p-button-rounded p-preview"
+            [ngStyle]="btnPreviewStyle" [ngClass]="btnPreviewClass">
             <span class="p-button-label">{{template.title}}</span>
             <span class="p-ink" aria-hidden="true" role="presentation"></span>
           </button>
@@ -51,11 +55,23 @@
           <textarea id="data" placeholder="{{'template.data.holder' | translate}}" pInputTextarea formControlName="data"
             rows="2" [autoResize]="true" readonly></textarea>
         </div>
+        <div class="p-fluid col-12 flex flex-inline gap-2 align-items-center">
+          <p-checkbox label="Đặt mặc định" [binary]="true" formControlName="is_default"></p-checkbox>
+          <p-divider [layout]="'horizontal'"></p-divider>
+          <div class="flex flex-inline gap-2 align-items-center">
+            <label>STT</label>
+            <input formControlName="position" pInputText placeholder="STT" [style]="{'max-width': '50px'}"/>
+          </div>
+          
+        </div> 
         <div class="col-12 flex gap-2 mt-3">
           <p-button type="submit" severity="help" label="{{'actions.'+labelSave | translate}}" [loading]="state.asyncSave"[disabled]="formGroup.invalid"></p-button>
           <p-button label="{{'actions.create' | translate}}" (onClick)="createTemplate()" ></p-button>
-          <p-button label="{{'template.setting' | translate}}" (onClick)="settingData()" ></p-button>
+          <p-button label="{{'actions.copy' | translate}}" (onClick)="copyTemplate()" *ngIf="state.visibleCopy"></p-button>
+          <p-button label="{{'actions.delete' | translate}}" (onClick)="deleteTemplate()" *ngIf="state.visibleDelete" ></p-button>
+          <p-button label="{{'template.setting' | translate}}" (onClick)="settingData()"  *ngIf="entity.value"></p-button>
           <p-button label="Tải DS" (onClick)="loadTemplate()" [loading]="state.asyncTemplate"></p-button>
+          <p-button label="Quay Lại" (onClick)="previousPage()" *ngIf="lastUrl"></p-button>
 
 
         </div>

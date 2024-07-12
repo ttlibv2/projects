@@ -61,8 +61,8 @@
             "styles": [
               "projects/ticketapp/src/styles.scss",
               {
-                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/lime/theme.scss",
-                "bundleName": "aura-light-lime",
+                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/indigo/theme.scss",
+                "bundleName": "aura-light-indigo",
                 "inject": false
               }
 
@@ -258,7 +258,7 @@
     "ts-ui": {
       "projectType": "library",
       "root": "projects/tsui",
-      "sourceRoot": "projects/tsui/src",
+      "sourceRoot": "projects/tsui",
       "prefix": "ts",
       "architect": {
         "build": {

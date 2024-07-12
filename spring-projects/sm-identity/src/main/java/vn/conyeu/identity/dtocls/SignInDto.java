@@ -6,6 +6,7 @@ import vn.conyeu.commons.utils.MapperHelper;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Base64;
 
 public class SignInDto implements Serializable {
     private String username;
@@ -48,6 +49,11 @@ public class SignInDto implements Serializable {
     public String getPassword() {
         return password;
     }
+
+    public String getDecodePassword() {
+        return new String(Base64.getDecoder().decode(password));
+    }
+
 
     /**
      * Set the password

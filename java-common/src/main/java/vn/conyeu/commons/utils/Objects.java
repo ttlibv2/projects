@@ -145,13 +145,20 @@ public final class Objects {
         return false;
     }
 
-    public static <E> List<E> toList(String text, String delimiter, Function<String, E> convert) {
-        Asserts.notNull(convert, "@Function<String, E>");
-        if(isBlank(text)) return new ArrayList<>();
-        else return Stream.of(text.split(delimiter)).map(convert)
-                .collect(Collectors.toList());
+
+    public static <E, C extends Collection<E>> C toCollection(String text, String delimiter, Supplier<C> supplierCreate, Function<String, E> convert) {
+        Asserts.allNotNull(convert, supplierCreate);
+        if(isBlank(text)) return supplierCreate.get();
+        else return Stream.of(text.split(delimiter)).map(convert).collect(Collectors.toCollection(supplierCreate));
     }
 
+    public static <E> List<E> toArrayList(String text, String delimiter, Function<String, E> convert) {
+        return toCollection(text, delimiter, ArrayList::new, convert);
+    }
+
+    public static <E> Set<E> toHashSet(String text, String delimiter, Function<String, E> convert) {
+        return toCollection(text, delimiter, HashSet::new, convert);
+    }
 
     /**
      * Convert string to array string
@@ -159,7 +166,7 @@ public final class Objects {
      * @param text      string
      * @param delimiter string
      */
-    public static List<String> toList(String text, String delimiter) {
+    public static List<String> toArrayList(String text, String delimiter) {
         if (hasText(text)) return Arrays.asList(text.split(delimiter));
         else return new LinkedList<>();
     }
@@ -495,7 +502,7 @@ public final class Objects {
      * @param delimiter    String
      * @param stringMapper Function<T, String>
      */
-    public static <T> String toString(List<T> list, String delimiter, Function<T, String> stringMapper) {
+    public static <T> String toString(Collection<T> list, String delimiter, Function<T, String> stringMapper) {
         Asserts.notEmpty(delimiter, "@delimiter must be not blank");
         Asserts.notNull(stringMapper, "@stringMapper must be not null");
         return Objects.isEmpty(list) ? null : list.stream().map(stringMapper)
@@ -1346,7 +1353,7 @@ public final class Objects {
 
     }
 
-    public static List<Object> toList(Object source) {
+    public static List<Object> toArrayList(Object source) {
         if(source instanceof Collection col) return Lists.copyOf(col);
         else if(source instanceof Object[] objects) return Arrays.stream(objects).toList();
         else return Arrays.stream(toObjectArray(source)).toList();

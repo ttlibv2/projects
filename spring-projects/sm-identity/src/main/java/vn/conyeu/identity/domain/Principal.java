@@ -3,6 +3,7 @@ package vn.conyeu.identity.domain;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.DateHelper;
 import vn.conyeu.commons.utils.Objects;
 
 import java.util.Collection;
@@ -10,12 +11,13 @@ import java.util.Collection;
 public class Principal implements UserDetails {
     private final ObjectMap custom = new ObjectMap();
     private final Account account;
+    private final String sessionId;
 
-    public Principal(Account account) {
+    public Principal(Account account, String sessionId) {
         this.account = account;
-        this.account.setInfo(null);
+        this.sessionId = sessionId;
+        //this.account.setInfo(null);
     }
-
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return account.getAuthorities();
     }
@@ -46,6 +48,10 @@ public class Principal implements UserDetails {
 
     public Long getUserId() {
         return account.getId();
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 
     /**

@@ -1,6 +1,5 @@
 package vn.conyeu.ts.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -10,9 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ObjectMapToString;
 import vn.conyeu.common.domain.LongUId;
-import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.dtocls.Converters;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import vn.conyeu.common.converter.ObjectMapToString;
+import vn.conyeu.common.converter.MapString;
 import vn.conyeu.common.domain.LongUIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
 
@@ -36,7 +36,7 @@ public class AccountLink extends LongUIdDate<AccountLink> {
     @JoinColumn(name = "deviceId")
     private Device device;
 
-    @Convert(converter = ObjectMapToString.class)
+    @Convert(converter = MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap custom;
 

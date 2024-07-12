@@ -97,7 +97,7 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
 
   save(data: any): Observable<E> {
     const converterNew = this.resToModel();
-    const url = this.callBasePath(`save`);
+    const url = this.callBasePath(`create`);
     return this.post(url, data).pipe(map(data => converterNew(data)));
   }
 

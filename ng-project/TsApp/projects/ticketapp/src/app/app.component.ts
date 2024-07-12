@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
       menuTheme: 'light',
       menuMode: 'slim',
       theme: 'aura-light',
-      colorScheme: 'lime',
+      colorScheme: 'indigo',
       themeUrlPrefix: '',
 
       listTheme: {

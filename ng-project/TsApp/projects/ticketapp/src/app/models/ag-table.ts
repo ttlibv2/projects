@@ -1,41 +1,82 @@
-import {BaseModel} from "./base-model";
-import {JsonObject} from "./common";
-import {Objects} from "ts-helper";
+import { ColumnPinnedType, ColumnState, IAggFunc } from "ag-grid-community";
+import { BaseModel } from "./base-model";
+import { AssignObject } from "./common";
 
-export class AgTable extends BaseModel{
-  table_id?: number;
-  code?: string;
-  title?: string;
-  summary?: string;
-  columns?: AgColumn[];
+export class AgTable extends BaseModel {
+  columns: AgColumn[];
+  children: AgMenuItem[];
 
-  static from(data: JsonObject): AgTable {
-    return new AgTable().update(data);
+  set_columns(data: AssignObject<AgColumn>[]) {
+    this.columns = (data || []).map(c => AgColumn.from(c)).sort((c1, c2) => c1.position - c2.position);
   }
 
-  override update(data: JsonObject): this {
-    super.update(data);
-    Objects.ifListNotEmpty(data['columns'],
-        items => items.flatMap(item => AgColumn.from(item)) );
-    return this;
+  set_children(data: AssignObject<AgMenuItem>[]) {
+    this.children = (data || []).map(c => AgMenuItem.from(c)).sort((c1, c2) => c1.position - c2.position);
+  }
+
+  static from(data: AssignObject<AgTable>):AgTable {
+    console.log({...data, columns: undefined});
+    return BaseModel.fromJson(AgTable, data);
+  }
+
+}
+
+export class AgColumn extends BaseModel{
+  position: number = 0;
+  field: string;
+  colId: string;
+  headerName: string;
+  width: number;
+  hide: boolean;
+  valueGetter: any;
+
+  asColumn(): any {
+    return Object.assign({}, this, {position: undefined});
+  }
+
+  static from(data: AssignObject<AgColumn>):AgColumn {
+    return BaseModel.fromJson(AgColumn, data);
+  }
+
+}
+
+
+export class AgMenuItem extends BaseModel {
+  position: number;
+  state: AgColumnState[];
+
+  set_children(data: AssignObject<AgMenuItem>[]) {
+    this.children = (data || []).map(c => AgMenuItem.from(c)).sort((c1, c2) => c1.position - c2.position);
+  }
+
+  
+  static from(data: AssignObject<AgMenuItem>):AgMenuItem {
+    return BaseModel.fromJson(AgMenuItem, data);
   }
 }
 
-export class AgColumn extends BaseModel {
-  column_id?: number;
-  field_name?: string;
-  header_name?: string;
-  column_type?: string;
-  visible?: boolean;
-  sort?: boolean;
-  resizable?: boolean;
-  pinned?: boolean;
-  position?: number;
-  width?: number;
-  ag_code?: string;
 
-  static from(data: JsonObject): AgColumn {
-    return new AgColumn().update(data);
+export class AgColumnState extends BaseModel implements ColumnState {
+  position: number;
+  colId: string;
+  hide: boolean;
+  width: number;
+  flex: number;
+  sort: "asc" | "desc";
+  sortIndex: number;
+  aggFunc: string | IAggFunc<any, any>;
+  pivot: boolean;
+  pivotIndex: number;
+  pinned: ColumnPinnedType;
+  rowGroup: boolean;
+  rowGroupIndex: number;
+
+  asColumnState(): ColumnState {
+    return Object.assign({}, this, {position: undefined});
+  }
+
+  static from(data: AssignObject<AgColumnState>):AgColumnState {
+    return BaseModel.fromJson(AgColumnState, data);
   }
 
 }

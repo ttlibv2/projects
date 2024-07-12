@@ -8,7 +8,7 @@ import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
     HttpClient,
-    provideHttpClient,
+    provideHttpClient, 
     withFetch,
     withInterceptors
 } from '@angular/common/http';

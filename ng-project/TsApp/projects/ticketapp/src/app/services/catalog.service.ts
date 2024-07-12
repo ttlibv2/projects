@@ -7,8 +7,6 @@ import { ClsAssign } from '../models/od-cls';
 import { DbTable, LocalDbService } from './local-db.service';
 import { LoggerService } from 'ts-logger';
 
-type CatalogType = Record<string, any[]>;
-
 export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable } = {
   ls_chanel:db => db.chanel,
   ls_software: db => db.software,
@@ -37,6 +35,7 @@ function jsonToCatalog(db: LocalDbService, data: JsonObject, logger?: LoggerServ
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService extends ClientService {
+  private cacheMap: Map<string, any> = new Map();
 
   read_db(lsName: string = 'all'): Observable<Catalog> {
     const allKey = lsName === 'all' ? Object.keys(CATALOG_MAP) : lsName.split(',');
@@ -84,6 +83,7 @@ export class CatalogService extends ClientService {
 
   clearCache(): Observable<any> {
     const url = '/ts-api/catalog/clear-cache';
+    this.cacheMap.clear();
     return this.get(url);
   }
 

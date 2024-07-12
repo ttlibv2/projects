@@ -23,6 +23,7 @@
         <module>sm-identity</module>
         <module>sm-address</module>
         <module>sm-oauth2-login</module>
+        <module>sm-i18n</module>
     </modules>
     <packaging>pom</packaging>
 

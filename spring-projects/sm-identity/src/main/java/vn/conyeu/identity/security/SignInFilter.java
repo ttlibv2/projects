@@ -1,12 +1,12 @@
 package vn.conyeu.identity.security;
 
-import io.jsonwebtoken.JwtBuilder;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,23 +15,26 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Component;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.identity.domain.AuthToken;
 import vn.conyeu.identity.domain.Principal;
 import vn.conyeu.identity.dtocls.SignInDto;
 import vn.conyeu.identity.helper.IdentityHelper;
-import vn.conyeu.identity.service.JwtService;
+import vn.conyeu.identity.service.TokenService;
 
 import java.io.IOException;
 import java.util.Collections;
 
+@Component
 public class SignInFilter extends UsernamePasswordAuthenticationFilter {
-    private final JwtService jwtService;
+    private final TokenService tokenService;
     private boolean postOnly = true;
 
-    public SignInFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
+    @Autowired
+    public SignInFilter(AuthenticationManager authenticationManager, TokenService jwtService) {
         super(authenticationManager);
-        this.jwtService = Asserts.notNull(jwtService);
+        this.tokenService = Asserts.notNull(jwtService);
 
         // By default, UsernamePasswordAuthenticationFilter listens to "/login" path.
         // In our case, we use "/auth". So, we need to override the defaults.
@@ -42,7 +45,7 @@ public class SignInFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     protected RequestMatcher defaultAntUri() {
-        String authUri = jwtService.getConfig().getAuthUri();
+        String authUri = tokenService.getConfig().getAuthUri();
         return new AntPathRequestMatcher(authUri, "POST");
     }
 
@@ -64,7 +67,7 @@ public class SignInFilter extends UsernamePasswordAuthenticationFilter {
 
             // 2. Create auth object (contains credentials) which will be used by auth manager
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    dto.getUser(), dto.getPassword(), Collections.emptyList());
+                    dto.getUser(), dto.getDecodePassword(), Collections.emptyList());
 
             // 3. Authentication manager authenticate the user, and use PrincipalService::loadUserByUsername() method to load the user.
             return getAuthenticationManager().authenticate(authToken);
@@ -80,7 +83,7 @@ public class SignInFilter extends UsernamePasswordAuthenticationFilter {
     // The 'auth' passed to successfulAuthentication() is the current authenticated user.
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         Principal principal = (Principal) authResult.getPrincipal();
-        AuthToken authToken = jwtService.buildAuthToken(principal);
+        AuthToken authToken = tokenService.buildToken(principal);
         IdentityHelper.sendResponse(200, response, authToken);
     }
 

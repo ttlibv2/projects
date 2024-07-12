@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {ModelApi} from "./model-api.service";
 import {AgTable} from "../models/ag-table";
 import {ResponseToModel} from "../models/common";
-import {Observable, switchMap} from "rxjs";
+import {Observable} from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class AgTableService extends ModelApi<AgTable> {
@@ -12,13 +12,14 @@ export class AgTableService extends ModelApi<AgTable> {
   }
 
   override resToModel(): ResponseToModel<AgTable> {
-    return response => AgTable.from(response);
+    return json => AgTable.from(json);
   }
 
   getByCode(tableCode: string, includeCol: boolean = true): Observable<AgTable> {
-    const url = (`get-by-code/${tableCode}`);
-    return this.getOne(url, {includeCol});
+    return this.getOne(`get-by-code`, {code: tableCode, includeCol});
   }
+
+  
 
 
 }

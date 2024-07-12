@@ -187,8 +187,6 @@
       "zoomOut": "Thu nhỏ"
     }
   },
-  "text_color": "Màu chữ",
-  "bg_color": "Màu nền",
 
   "summary": "Diễn giải",
   "summary.holder": "Nhập diễn giải",
@@ -229,7 +227,8 @@
     "entity_code": "Mã mẫu",
     "data": "Nội dung",
     "icon": "Icon",
-    "setting": "Thiết lập nội dung"
+    "setting": "Thiết lập nội dung",
+    "severity": "Severity"
   },
   "actions": {
     "save": "Lưu lại",
@@ -238,7 +237,13 @@
     "cancel": "Hủy bỏ",
     "delete": "Xóa",
     "check_api": "Kết nối",
-    "close": "Đóng"
+    "close": "Đóng",
+    "reset": "Nhập lại",
+    "copy": "Sao chép"
+  },
+  "style": {
+    "text_color": "Màu chữ",
+    "bg_color": "Màu nền"
   }
 
 }

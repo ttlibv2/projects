@@ -1,11 +1,11 @@
 import { Asserts, TsMap } from "ts-helper";
 import { BaseModel } from "./base-model";
-import { AssignObject, JsonObject } from "./common";
+import { AssignObject, JsonObject, Severity } from "./common";
 
 export type TemplateCode = 'form_ticket';
 
 export class Template extends BaseModel {
-  template_id?: number;
+  template_id?: number | null;
   entity_code?: string;
   title?: string;
   icon?: string;
@@ -13,10 +13,16 @@ export class Template extends BaseModel {
   summary?: string;
   bg_color?: string;
   text_color?: string;
+  severity?: Severity;
   user_id?: number;
   position?: number;
   is_default?: boolean;
   data?: any;
+
+  set_data(data: string | any): this {
+    this.data = typeof data === 'string' ? JSON.parse(data) : data;
+    return this;
+  }
 
   static from(json: AssignObject<Template>): Template {
     return BaseModel.fromJson(Template, json);

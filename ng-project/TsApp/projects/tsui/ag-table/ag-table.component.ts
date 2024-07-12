@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { GridApi, GridReadyEvent, IRowNode } from 'ag-grid-community';
+import { Column, GridApi, GridReadyEvent, IRowNode } from 'ag-grid-community';
 import { defaultOption, PrivateField, TableColumn, TableOption, TableReadyEvent, TableRowClick } from './ag-table.common';
 import * as helper from 'ts-helper';
 import { _Util } from 'ag-grid-enterprise';
@@ -89,6 +89,34 @@ export class AgTableComponent<E=any>  {
 
   updateRows(...data: E[]): IRowNode<E>[] {
     return this.tableApi.applyTransaction({update: data}).update;
+  }
+
+  save(...data: E[]): void {
+
+  }
+
+  hideAllColumn(): void {
+    this.setColumnsVisible(this.tableApi.getColumns(), false);
+  }
+
+  setColumnsVisible(columns: (string | Column)[], visible: boolean) {
+   // this.tableApi.setColumnsVisible(columns, visible);
+    
+    this.tableApi.applyColumnState({
+      applyOrder: true,
+      state: columns.map(col => ({
+        colId: typeof col === 'string' ? col : col.getColId(),
+        hide: !visible
+      }))
+    })
+  }
+
+
+
+
+   /** Sets the state back to match the originally provided column definitions. */
+  resetColumnState(): void {
+    this.tableApi.resetColumnState();
   }
 
   onRowClicked(event: TableRowClick<E>) {

@@ -79,8 +79,11 @@ public final class Asserts {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object is not {@code null}
      */
-    public static void isNull(Object object, String message) {
-        if (object != null) throw new IllegalArgumentException(message);
+    public static void isNull(Object object, String message, Object...arguments) {
+        if (object != null) {
+            message = Objects.formatString(message, arguments);
+            throw new IllegalArgumentException(message);
+        }
     }
 
     /**

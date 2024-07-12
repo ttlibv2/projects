@@ -17,7 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import vn.conyeu.common.domain.I18N;
 import vn.conyeu.common.exception.Unauthorized;
+import vn.conyeu.identity.domain.Account;
+import vn.conyeu.identity.domain.AccountToken;
 import vn.conyeu.identity.domain.Principal;
+import vn.conyeu.identity.helper.IdentityHelper;
+import vn.conyeu.identity.helper.InvalidToken;
 import vn.conyeu.identity.repository.AccountRepo;
 
 import java.util.Optional;
@@ -26,8 +30,10 @@ import java.util.Optional;
 public class PrincipalService implements UserDetailsService, UserDetailsChecker, MessageSourceAware {
     private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
     private final AccountRepo accountRepo;
+    private final TokenService tokenRepo;
 
-    public PrincipalService(AccountRepo accountRepo) {
+    public PrincipalService(TokenService tokenRepo, AccountRepo accountRepo) {
+        this.tokenRepo = tokenRepo;
         this.accountRepo = accountRepo;
     }
 
@@ -38,7 +44,7 @@ public class PrincipalService implements UserDetailsService, UserDetailsChecker,
     }
 
 
-    @Cacheable(value = "principal", key = "#username")
+    //@Cacheable(value = "principal", key = "#username")
     public Principal loadUserByUsername(String username) throws UsernameNotFoundException {
 
         if(username.startsWith("uid::")) {
@@ -60,15 +66,19 @@ public class PrincipalService implements UserDetailsService, UserDetailsChecker,
     }
 
     protected Optional<Principal> findByEmail(String email) {
-        return accountRepo.findByEmail(email).map(Principal::new);
+        return accountRepo.findByEmail(email).map(this::createPrincipal);
     }
 
     protected Optional<Principal> findByPhone(String phone) {
-        return accountRepo.findByPhone(phone).map(Principal::new);
+        return accountRepo.findByPhone(phone).map(this::createPrincipal);
     }
 
     protected Optional<Principal> findById(Long accountId) {
-        return accountRepo.findById(accountId).map(Principal::new);
+        return accountRepo.findById(accountId).map(this::createPrincipal);
+    }
+
+    protected Principal createPrincipal(Account account) {
+        return tokenRepo.buildPrincipal(account);
     }
 
     protected Unauthorized noUser(String field, Object data) {
@@ -97,6 +107,30 @@ public class PrincipalService implements UserDetailsService, UserDetailsChecker,
             throw new CredentialsExpiredException(this.messages
                     .getMessage("account.credentialsExpired", "User credentials have expired"));
         }
+    }
+
+    public Principal authenticationByToken(String accessToken) {
+
+        // session.v2.1234567899789
+        String subject = tokenRepo.extractSubject(accessToken);
+
+        // find token
+        Optional<AccountToken> optional = tokenRepo.findByToken(subject);
+        if(optional.isEmpty()) {
+            String message = this.messages.getMessage("token.invalid", "The token not exist");
+            throw new InvalidToken(message);
+        }
+
+        Account account = optional.get().getAccount();
+        Principal principal = new Principal(account, subject);
+
+        // validate info + state user
+        check(principal);
+
+        // update authentication to security
+        IdentityHelper.setAuthentication(principal);
+
+        return principal;
     }
 
 }

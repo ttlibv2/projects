@@ -69,7 +69,8 @@ export class ToastService {
         const config: Partial<IndividualConfig<any>> = {
             ...message,
             toastClass: this.prefixWith('message'),
-            positionClass: positionClass
+            positionClass: positionClass,
+
         };
 
         return this.message.show(message.summary, message.title, config, toastType);
@@ -100,7 +101,7 @@ export class ToastService {
     }
 
     loading(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
-        return this.show({ messageIcon: 'pi pi-spin pi-spinner', ...message, severity: 'info' }, ...closeRef);
+        return this.show({ messageIcon: 'pi pi-spin pi-cog', ...message, severity: 'info' }, ...closeRef);
     }
 
     close(...refs: CloseRef[]): void {

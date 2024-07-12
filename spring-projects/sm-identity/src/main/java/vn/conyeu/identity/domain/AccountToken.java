@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import vn.conyeu.common.converter.MapString;
 import vn.conyeu.common.domain.LongUIdDate;
+import vn.conyeu.commons.beans.ObjectMap;
 
 //@formatter:off
 @Entity @Table
@@ -14,15 +16,17 @@ import vn.conyeu.common.domain.LongUIdDate;
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "tokenId"))
 //@formatter:on
-public class JwtToken extends LongUIdDate<JwtToken> {
+public class AccountToken extends LongUIdDate<AccountToken> {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "accountId", nullable = false)
     private Account account;
 
-    @Column(length = 1000, nullable = false)
-    private String bearerToken;
+    @Column(length = 50, nullable = false, unique = true)
+    private String token;
 
-    @Column(length = 50, nullable = false)
-    private String ipAddress;
+    @Convert(converter = MapString.class)
+    @Column(columnDefinition = "json")
+    private ObjectMap device;
+
 }

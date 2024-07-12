@@ -5,8 +5,8 @@ import vn.conyeu.common.converter.base.ObjectToString;
 import vn.conyeu.commons.beans.ObjectMap;
 
 @Converter(autoApply = true)
-public class ObjectMapToString extends ObjectToString<ObjectMap> {
-    public ObjectMapToString() {
+public class MapString extends ObjectToString<ObjectMap> {
+    public MapString() {
         super(ObjectMap.class);
     }
 }

@@ -1,6 +1,5 @@
 package vn.conyeu.identity.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -14,19 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import vn.conyeu.common.context.AppContext;
-import vn.conyeu.identity.service.JwtService;
 import vn.conyeu.identity.service.PrincipalService;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class IdentitySecurityConfigurer extends SecurityAdapter {
-    private final PrincipalService userDetailsService;
-
-    @Autowired
-    public IdentitySecurityConfigurer(PrincipalService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,10 +31,10 @@ public class IdentitySecurityConfigurer extends SecurityAdapter {
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
+    public DaoAuthenticationProvider daoAuthenticationProvider(PrincipalService principalService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService);
+        provider.setUserDetailsService(principalService);
         //provider.setAuthoritiesMapper();
         //provider.setUserDetailsPasswordService();
         return provider;
@@ -61,9 +53,7 @@ public class IdentitySecurityConfigurer extends SecurityAdapter {
                 .requestMatchers("/accounts/**").authenticated()
         );
 
-        AuthenticationManager authenticationManager = AppContext.getBean(AuthenticationManager.class);
-        JwtService jwtService = AppContext.getBean(JwtService.class);
-        http.addFilter(new SignInFilter(authenticationManager, jwtService));
+        http.addFilter( AppContext.getBean(SignInFilter.class));
 
         http.exceptionHandling(cfg -> {
            cfg.authenticationEntryPoint(new SimpleAuthenticationEntryPoint());

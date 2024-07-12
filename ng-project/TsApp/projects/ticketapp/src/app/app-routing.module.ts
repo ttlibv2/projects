@@ -1,42 +1,17 @@
 import {NgModule} from '@angular/core';
-import {Route, RouterModule, Routes} from '@angular/router';
+import {Route, RouterModule} from '@angular/router';
 import {userGuard} from "./guards/auth.guard";
-import {AppLayoutModule, AppLayoutComponent} from 'ts-layout';
+import { AppLayoutComponent} from 'ts-layout';
 
 const appRoutes: Route[] = [
     {
-        path: '',
+        path: 'admin',
         component: AppLayoutComponent,
         children: [
             {
                 path: '',
                 canActivate: [userGuard],
-                loadChildren: () => import('./views/admin/dashboard/dashboard.module').then(m => m.DashboardModule)
-            },
-            {
-                path: 'admin',
-                canActivate: [userGuard],
                 loadChildren: () => import('./views/admin/admin.module').then(m => m.AdminModule)
-            },
-            {
-                path: 'find-partner',
-                canActivate: [userGuard],
-                loadChildren: () => import('./views/find-partner/find-partner.module').then(m => m.FindPartnerModule)
-            },
-            {
-                path: 'find-partner',
-                canActivate: [userGuard],
-                loadChildren: () => import('./views/find-partner/find-partner.module').then(m => m.FindPartnerModule)
-            },
-            {
-                path: 'ticket-list',
-                canActivate: [userGuard],
-                loadChildren: () => import('./views/ticket-list/ticket-list.module').then(m => m.TicketListModule)
-            },
-            {
-                path: 'api-info',
-                canActivate: [userGuard],
-                loadChildren: () => import('./views/api-info/api-info.module').then(m => m.ApiInfoModule)
             }
         ]
     },
@@ -50,7 +25,7 @@ const appRoutes: Route[] = [
     },
     {
         path: '**',
-        pathMatch: 'full', redirectTo: '/e404'
+        pathMatch: 'full', redirectTo: '/admin'
     }
 ];
 

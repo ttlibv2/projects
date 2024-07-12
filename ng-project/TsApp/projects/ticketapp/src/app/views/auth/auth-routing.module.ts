@@ -22,7 +22,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    pathMatch: 'full', redirectTo: 'signin'
+    pathMatch: 'prefix', redirectTo: 'signin'
   }
 ];
 
