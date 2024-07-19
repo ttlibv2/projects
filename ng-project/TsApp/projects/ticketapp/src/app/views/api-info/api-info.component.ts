@@ -216,7 +216,7 @@ export class ApiInfoComponent implements OnInit {
 
   static showDialog(modal: ToastService, apiCode: string) {
     modal.openDialog(ApiInfoComponent, {
-      header: 'Cấu hình thông tin xác thực',
+     // header: 'Cấu hình thông tin xác thực',
       data: { apiCode }
     })
 
