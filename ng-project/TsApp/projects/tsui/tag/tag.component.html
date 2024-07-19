@@ -1,0 +1,14 @@
+<div pRipple *ngIf="visible" [ngClass]="containerClass()" [class]="styleClass" [ngStyle]="uiStyle" [attr.aria-label]="ariaLabel">
+    <ng-content></ng-content>
+    <img [src]="image" *ngIf="image;else iconTemplate" (error)="imageError($event)" [alt]="alt" />
+    <div class="ts-tag-text" *ngIf="label" [innerHtml]="labelView"></div>
+    <span *ngIf="removable" tabindex="0" [class]="removeIcon" [ngClass]="'ts-tag-remove-icon'"
+        [attr.data-pc-section]="'removeicon'" (click)="handleRemove($event)" (keydown)="onKeydown($event)"
+        [attr.aria-label]="removeAriaLabel" role="button">
+        <ng-template *ngTemplateOutlet="removeIconTemplate"></ng-template>
+    </span>
+</div>
+
+<ng-template #iconTemplate>
+    <span *ngIf="icon" [class]="icon" [ngClass]="'ts-tag-icon'"></span>
+</ng-template>

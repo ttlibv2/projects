@@ -73,7 +73,7 @@ public class OdFile extends OdTicketClient<ClsFile> {
         bodyBuilder.add("thread_id", thread_id);
         bodyBuilder.add("thread_model", thread_model);
 
-        return applyDefaultBuilder().build().post()
+        return createClient().post()
                 .uri("/mail/attachment/upload")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .header(HttpHeaders.COOKIE, cfg.getCookieValue())

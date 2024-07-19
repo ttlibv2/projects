@@ -210,7 +210,7 @@ export class TemplateFormComponent implements OnInit {
 
                     const isNew = isNull(formValue.template_id);
 
-                    this.templateSrv.save(formValue).subscribe({ 
+                    this.templateSrv.create(formValue).subscribe({ 
                         next: (template: Template) => {
                             this.state.asyncSave = false;
                             if(isNew) this.agTable.addRows(template );

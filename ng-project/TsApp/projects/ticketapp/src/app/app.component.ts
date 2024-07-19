@@ -3,8 +3,6 @@ import { PrimeNGConfig } from "primeng/api";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { LayoutService } from 'ts-layout';
-import { DeviceDetectorService } from 'ts-ui/device-info';
-import {DeviceUUID} from 'device-uuid';
 
 @Component({
   selector: 'ts-root',
@@ -21,7 +19,6 @@ export class AppComponent implements OnInit {
   // toastContainer: ToastContainerDirective;
 
   constructor(
-    private deviceSrv: DeviceDetectorService,
     private primengConfig: PrimeNGConfig,
     private toastService: ToastrService,
     private layoutService: LayoutService,
@@ -30,14 +27,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-
-
-    console.log(new DeviceUUID().parse());
-
-
-
-
-
 
     this.layoutService.tryAddTheme();
     this.layoutService.layoutConfig({

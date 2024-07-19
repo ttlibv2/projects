@@ -5,7 +5,7 @@ import { Consumer, Objects } from "ts-helper";
 import { TicketFormComponent } from "./ticket-form.component";
 import { merge, mergeAll, mergeMap, of, scheduled } from "rxjs";
 import { Mode } from "fs";
-import { TicketOption } from "../../models/ticket-option";
+import { ITicketOption, TicketOption } from "../../models/ticket-option";
 
 const { isBlank, isEmpty, isNull, notBlank, notNull } = Objects;
 
@@ -23,7 +23,7 @@ export class TicketUtil2 {
   get user(): User { return this.comp.userLogin; }
   get form(): FormGroup { return this.comp.ticketForm; }
   get formValue(): Ticket { return this.form.getRawValue(); }
-  get options(): TicketOption { return this.comp.options; }
+  get options(): ITicketOption { return this.comp.options; }
   get autoCreate(): boolean { return this.options.autoCreate; }
 
   constructor(public comp: TicketFormComponent) {}
@@ -51,7 +51,7 @@ export class TicketUtil2 {
         this.pathValueForm({content_copy: this.createContentCopy()})
     });
 
-    this.valueChangeFor(['options'], json => this.options.update(json));
+    //this.valueChangeFor(['options'], json => this.options.update(json));
     
     this.valueChangeFor(['od_partner_id'], json => {
       if(isBlank(json['od_partner_id'])) this.pathValueForm({od_partner: undefined});

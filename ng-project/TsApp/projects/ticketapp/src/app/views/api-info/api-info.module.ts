@@ -14,6 +14,7 @@ import {CheckboxModule} from "primeng/checkbox";
 import {PasswordModule} from "primeng/password";
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
         PasswordModule,
         InputGroupModule,
         InputGroupAddonModule
-    ]
+    ],
+    providers: [DynamicDialogRef]
 })
 export class ApiInfoModule { }

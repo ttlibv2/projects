@@ -19,8 +19,11 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
   abstract resToModel(): ResponseToModel<any>;
 
   protected callBasePath(path: string): string {
-    if (!path.startsWith('/')) path = '/' + path;
-    return this.basePath() + path;
+    if(path.startsWith(this.basePath())) return path;
+    else{
+      if (!path.startsWith('/')) path = '/' + path;
+      return this.basePath() + path;
+    }
   }
 
   protected responseToPage(response: any): Page<E> {
@@ -80,9 +83,9 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
   * Delete model without id
   * @param modelId  the id to delete
   * */
-  deleteById(modelId: number): Observable<boolean> {
+  deleteById(modelId: number): Observable<{alert_msg: string, model_id: number}> {
     const url = this.callBasePath(`delete-by-id/${modelId}`);
-    return this.delete(url).pipe(map(data => data.result));
+    return this.delete(url);//.pipe(map(data => data.result));
   }
 
   /** 
@@ -95,11 +98,19 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
     return this.post(url, data).pipe(map(data => converterNew(data)));
   }
 
-  save(data: any): Observable<E> {
+  create(data: any): Observable<E> {
     const converterNew = this.resToModel();
     const url = this.callBasePath(`create`);
     return this.post(url, data).pipe(map(data => converterNew(data)));
   }
+
+  protected savePost<R>(path: string, data: any, callbackResponse?:ResponseToModel<any>): Observable<R> {
+    const url = this.callBasePath(path);
+    const converterNew = callbackResponse ?? this.resToModel();
+    return this.post(url, data).pipe(map(data => converterNew(data)));
+  }
+
+
 
 
 

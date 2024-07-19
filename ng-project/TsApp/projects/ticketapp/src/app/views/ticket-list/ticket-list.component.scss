@@ -13,6 +13,38 @@
       padding: 0.3rem 0.5rem;
     }
   }
+
+  .ag-table {
+
+    .ag-cell[col-id=send_status] {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-left: unset;
+
+      > div[ts-ag-cell-status] {
+        display: flex;
+      }
+    }
+
+    .pi-icon {
+      font-size: 2rem;
+
+      &-state-error {
+        color: red;
+      }
+
+      &-state-success {
+        color: rgb(20, 172, 71);
+      }
+
+      &-state-loading {
+        color: rgb(221, 18, 194);
+      }
+
+    }
+  }
+
 }
 
 .p-ticket-msg {
@@ -21,4 +53,10 @@
 
 .ag-header-cell-label {
   justify-content: center;
+}
+
+@media(min-height: 500px) {
+  .ag-table {
+    border-color: red;
+  }
 }

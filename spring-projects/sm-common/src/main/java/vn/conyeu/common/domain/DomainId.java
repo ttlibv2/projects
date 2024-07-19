@@ -38,7 +38,7 @@ public abstract class DomainId<E extends DomainId<E, Id>, Id extends Serializabl
     }
 
     public void assignFromMap(ObjectMap map) {
-        MapperHelper.update(this, map);
+        MapperHelper.updateToMap(this, map, "id");
     }
 
     /**

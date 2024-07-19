@@ -5,7 +5,7 @@
 
     .p-dialog-header {
         border-bottom: $dialogHeaderBorder;
-        background: $dialogHeaderBg;
+        background: transparent;//$dialogHeaderBg;
         color: $dialogHeaderTextColor;
         padding: $dialogHeaderPadding;
         border-top-right-radius: $borderRadius;

@@ -42,11 +42,8 @@ public class ApiInfo extends LongUId<ApiInfo> {
     private ObjectMap queries;
 
     @Transient
-    private String username;
-
-    @Transient
-    private String password;
-
+    @JsonProperty("user_api")
+    private UserApi userApi;
 
     @JsonProperty("api_id")
     public Long getId() {

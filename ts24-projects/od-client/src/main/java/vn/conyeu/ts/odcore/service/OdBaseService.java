@@ -14,14 +14,14 @@ public abstract class OdBaseService<T extends OdClient> {
     protected final String serviceName = determineServiceName(getClass());
     protected BiConsumer<String, ClsUser> saveConfigDbConsumer;
 
-    protected ClsApiCfg clsConfig;
+    protected final ClsApiCfg clsConfig;
 
     protected OdBaseService(ClsApiCfg clsConfig) {
         this.clsConfig = clsConfig;
     }
 
-    public final void setConfig(ClsApiCfg config) {
-        this.clsConfig = config;
+    public final void updateConfig(ClsApiCfg config) {
+        this.clsConfig.updateFrom(config);
     }
 
     /**

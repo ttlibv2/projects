@@ -3,19 +3,13 @@
         <div class="grid">
             <div class="p-fluid col-12">
                 <label for="api_info">{{ 'forms.api_info.list' | translate }}</label>
-                <div class="flex gap-1">
-                    <p-dropdown id="api_info" [options]="infos | async" optionLabel="displayName"
-                        formControlName="api_item" (onChange)="onSelectApi($event.value)"
-                        [loading]="asyncLoad" class="flex-1" [showClear]="true"></p-dropdown>
-
-                    <p-button icon="pi pi-ellipsis-h" severity="help" [outlined]="true"
-                    [style]="{'padding': '0.1rem 0'}" (onClick)="loadData()"></p-button>
-                </div>
-
+                <p-dropdown id="api_info" [options]="lsApiCode" optionLabel="displayName"
+                formControlName="api_item" (onChange)="onSelectApi($event.value)"
+                [loading]="asyncLoad" class="flex-1" [showClear]="true"></p-dropdown>
             </div>
             <div class="p-fluid col-6">
                 <label for="user_name">{{ 'users.user_name'|translate }}</label>
-                <input id="user_name" pInputText formControlName="user_name" />
+                <input id="user_name" pInputText formControlName="username" />
             </div>
             <div class="p-fluid col-6">
                 <label for="password">{{ 'users.password' | translate }}</label>
@@ -40,8 +34,15 @@
             <div class="col-12 flex gap-2">
                 <p-button label="{{'actions.save' | translate}}" type="submit" [disabled]="formGroup.invalid"
                     [loading]="asyncSave"></p-button>
-                <p-button label="{{'actions.check_api' | translate}}" [disabled]="disabledCheckApi"
+                <p-button type="button" label="{{'actions.check_api' | translate}}" [disabled]="disabledCheckApi"
                     [loading]="asyncSave" (click)="checkApi()"></p-button>
+                    @if(!hasSetApiCode){
+                        <p-button type="button" label="Lấy DS API" (click)="findApiCode()" ></p-button>
+                    }
+
+                    @if(hasDialogRef){
+                        <p-button type="button" label="Đóng" (click)="closeDialogRef()" ></p-button>
+                    }
             </div>
         </div>
     </form>

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, V
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import { MenuItem } from "primeng/api";
 import { Ticket, TicketTemplateData } from "../../models/ticket";
-import { TicketOption } from "../../models/ticket-option";
+import { ITicketOption, TicketOption } from "../../models/ticket-option";
 import { FindPartnerComponent } from "../find-partner/find-partner.component";
 import { CatalogService } from "../../services/catalog.service";
 
@@ -42,56 +42,6 @@ export interface OptionLabel {
   command?: (event: any) => void;
 }
 
-export interface ControlKey {
-  ticket_on: any,
-      full_name: any,
-      tax_code: any,
-      company_name: any,
-      phone: any,
-      teamviewer: any,
-      customer_name: any,
-      content_required: any,
-      content_help: any,
-      reception_time: any,
-      complete_time: any,
-      content_copy: any,
-      email: any,
-      subject: any,
-      body: any,
-      note: any,
-      reply: any,
-      content_email: any,
-      group_help: any,
-      question: any,
-      software: any,
-      chanels: any,
-      support_help: any,
-      soft_name: any,
-      od_image: any,
-      od_assign: any,
-      od_category_sub: any,
-      od_category: any,
-      od_partner: any,
-      od_partner_id: null,
-      od_priority: any,
-      od_repiled: any,
-      save_question: any,
-      od_subject_type: any,
-      od_tags: any,
-      od_team: any,
-      od_team_head: any,
-      od_ticket_type: any,
-      od_topic: any,
-      options: {
-        autoCreate: any,
-        autoFill: any,
-        viewAll: any,
-        viewTs24: any,
-        saveCache: any,
-        emailTicket: any,
-        viewTemplate: any,
-      },
-}
 
 @Component({
   selector: "ts-ticket-form",
@@ -128,6 +78,10 @@ export class TicketFormComponent implements OnInit {
     else return this.currentTemplate = this.catalog?.ls_template?.get_ticket_def();
   }
 
+  get options(): ITicketOption {
+    return this.formRawValue['options'];
+  }
+
   readonly toolActions: MenuItem[] = [
     {
       label: "Tải danh mục",
@@ -144,7 +98,12 @@ export class TicketFormComponent implements OnInit {
       icon: "pi pi-home",
       command: _ => this.router.navigate(['/admin/templates'], {queryParams: {
         entity: 'form_ticket', lastUrl: '/admin/ticket-form'}}),
-    }
+    },
+    {
+      label: "Sao chép mẫu",
+      icon: "pi pi-home",
+      command: _ => this.copyTicket(),
+    },
   ];
 
   readonly labelOptions: OptionLabel[] = [
@@ -183,7 +142,6 @@ export class TicketFormComponent implements OnInit {
 
   state: State = {};
   ticketForm: FormGroup;
-  ticket1: Ticket = new Ticket();
   asyncLoadCate: boolean = false;
   catalog: Catalog = new Catalog();
   lsSoftName: string[] = [];
@@ -191,8 +149,12 @@ export class TicketFormComponent implements OnInit {
   currentTemplate: Template;
   userLogin: User;
   utils: TicketUtil2;
-  options: TicketOption = TicketOption.createDef();
   viewTemplate: boolean = false;
+
+  @Input()
+  set data(ticket: Ticket) {
+    this.logger.debug('set data ', ticket);
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -223,8 +185,9 @@ export class TicketFormComponent implements OnInit {
 
   }
 
-  private createFormGroup(): void {
+  createFormGroup(): void {
     this.ticketForm = this.fb.group({
+      ticket_id: [null],
       ticket_on: [null],
       full_name: [null],
       tax_code: [null],
@@ -300,7 +263,7 @@ export class TicketFormComponent implements OnInit {
           observer.error(err);
         },
         next: (res: Catalog) => {
-          this.catalog = res;
+          this.catalog = Objects.isNull(this.catalog) ? res : this.catalog.update(res);
           //this.currentTemplate = res.ls_template.get_ticket_def();
           this.cref.detectChanges();
         
@@ -405,11 +368,14 @@ export class TicketFormComponent implements OnInit {
   }
 
   createNew(template?: Template) {
-    template = template ?? this.currentTemplate ?? this.catalog.ls_template.get_ticket_def();
-    console.log(template);
+    template = template ?? this.get_defaultTemplate();
     this.logger.info('create new - use template ', template?.title);
     this.selectTemplate(template);
     
+  }
+
+  get_defaultTemplate(): Template {
+    return this.currentTemplate ?? this.catalog.ls_template.get_ticket_def();
   }
 
   saveTicket() {
@@ -421,7 +387,9 @@ export class TicketFormComponent implements OnInit {
     
     ['chanels', 'od_partner_id'].forEach(k => delete data[k]);
 
-    this.ticketSrv.save(data).subscribe({
+    console.log(data)
+
+    this.ticketSrv.create(data).subscribe({
       error: err => {
         this.state.asyncSaveTicket = false;
         this.toast.error({summary: `Đã xảy ra lỗi tạo ticket -> ${err}`});
@@ -461,7 +429,6 @@ export class TicketFormComponent implements OnInit {
     //this.catalogSrv.searchAssign(data);
   }
 
-
   onSelectHelpdeskTeam(data: ClsTeam) {
     this.loadMemberOfTeam(data, true)
       // Optional.ofNullable(data.members).map((users) => of(users))
@@ -492,6 +459,16 @@ export class TicketFormComponent implements OnInit {
     });
   }
 
+  copyTicket(): void {
+    
+
+
+
+
+
+
+  }
+
   private pathValue(data: Partial<Ticket>, options?: {onlySelf?: boolean, emitEvent?: boolean}) {
     console.log('pathValue', data, options)
     this.ticketForm.patchValue(data, options);
@@ -510,8 +487,6 @@ export class TicketFormComponent implements OnInit {
 
   }
 
-  private control(key: keyof ControlKey) {
-    return this.ticketForm.get(key);
-  } 
+
 
 }

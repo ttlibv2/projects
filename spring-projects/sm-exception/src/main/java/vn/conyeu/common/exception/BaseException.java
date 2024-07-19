@@ -131,6 +131,11 @@ public class BaseException extends RuntimeException {
         return this;
     }
 
+    public BaseException details(ObjectMap map) {
+        object.detail(map);
+        return this;
+    }
+
     public BaseException detail(String field, Object data) {
         object.detail(field, data);
         return this;

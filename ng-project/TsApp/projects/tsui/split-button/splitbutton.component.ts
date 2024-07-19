@@ -260,7 +260,7 @@ export class SplitButton {
             'p-button-rounded': this.rounded,
             'p-button-outlined': this.outlined,
             'p-button-text': this.text,
-            'p-has-menu-button': this.visibleMenuButton,
+            'p-not-menu-button': this.visibleMenuButton === false,
             [`p-button-${this.size === 'small' ? 'sm' : 'lg'}`]: this.size
         };
 

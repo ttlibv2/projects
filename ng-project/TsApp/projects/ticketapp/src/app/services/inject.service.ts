@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {DialogService} from "primeng/dynamicdialog";
 import {ToastService} from "./toast.service";
 import { StorageService } from "./storage.service";
+import { Alert } from "./ui/alert/alert.service";
 
 @Injectable({providedIn: 'root'})
 export class InjectService {
@@ -16,6 +17,10 @@ export class InjectService {
 
   get toast(): ToastService {
     return this.inject.get(ToastService);
+  }
+
+  get alert(): Alert {
+    return this.inject.get(Alert);
   }
 
   get config(): StorageService {

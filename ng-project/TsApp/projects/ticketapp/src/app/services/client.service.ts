@@ -9,6 +9,7 @@ import {LocalDbService} from "./local-db.service";
 import {ToastMessage} from "./toast.service";
 import { LoggerService } from 'ts-logger';
 import { StorageService } from './storage.service';
+import { ApiInfoComponent } from '../views/api-info/api-info.component';
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -73,6 +74,7 @@ export class ClientService {
    * */
   protected handlerError(err: any, url: string, showError: boolean = true): Observable<any> {
     let object: ToastMessage = {};
+    let alertType: 'toast' | 'modal' = 'toast';
 
     if(err instanceof HttpErrorResponse) {
       const error: ErrorResponse = err.error ?? {};
@@ -96,14 +98,24 @@ export class ClientService {
       else if(err.status === 500) {
         object.code = error.code === 'e_500' ? 'e_server' : error.code;
         object.summary = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')} <br>-> (${object.summary})`;
+        this.inject.alert.danger({summary: object.summary});
+        showError = false;
+      }
+
+      else if(err.status === 401 && object.code === 'ts_api') {
+        const apiCode = error?.details['ts_api'];
+        this.showUpdateApiToken(object.summary, apiCode);
+        showError = false;
       }
 
     }
 
-    if(showError) {
-      this.inject.toast.error(object);
+    // view alert error
+    if(showError === true){
+      this.showError(object, true, alertType);
     }
 
+    // logout if session expired
     if(object.code.startsWith('jwt.')) {
       this.config.set_loginToken(null).pipe(
         tap(_ => this.router.navigate(['/']))
@@ -119,7 +131,7 @@ export class ClientService {
   protected handlerResponse(response: any, url: string,showError: boolean): Observable<any> {
     if(Objects.notBlank(response?.error)) {
       const object = {summary: response.error_desc, code: response.error_code};
-      if(showError) this.inject.toast.error(object);
+      this.showError(object, showError, 'toast');
       return throwError(() => object)
     }
 
@@ -130,4 +142,23 @@ export class ClientService {
     return of(response);
   }
 
+  private showError(object: any,visible: boolean, alertType: 'toast' | 'modal' = 'toast') {
+    if(visible) this.inject.toast.error(object);
+  }
+
+  private showUpdateApiToken(summary: string, apiCode: string) {
+    this.inject.alert.danger({        
+      title: 'Cảnh báo !!',
+      okLabel: 'Kiểm tra',
+      cancelLabel: 'Không kiểm tra',
+      summary: summary,
+      okClick: evt => {
+        evt.dynamicRef.close();
+        ApiInfoComponent.showDialog(this.inject.toast, apiCode);
+      }
+    })
+  }
+
 }
+
+

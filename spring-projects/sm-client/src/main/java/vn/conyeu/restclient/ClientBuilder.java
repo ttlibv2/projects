@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 
 public class ClientBuilder implements WebClient.Builder {
@@ -32,6 +33,7 @@ public class ClientBuilder implements WebClient.Builder {
     private Map<String, Object> defaultUriVariables;
     private UriBuilderFactory uriBuilderFactory;
     private Consumer<SimpleUriFactory> uriBuilderFactoryConsumer;
+
     private Boolean disableCookieManagement = true;
     private Boolean followRedirect = true;
     private Duration responseTimeout = Duration.ofMinutes(2);
@@ -39,7 +41,6 @@ public class ClientBuilder implements WebClient.Builder {
     private Duration connectTimeout = Duration.ofMinutes(2);
     private Integer maxRedirects = -1;
     private Boolean trustAllCertificate;
-    private Boolean showLog;
     private String baseUrl;
 
     public ClientBuilder() {
@@ -59,8 +60,7 @@ public class ClientBuilder implements WebClient.Builder {
         maxRedirects = other.maxRedirects;
         trustAllCertificate = other.trustAllCertificate;
         uriBuilderFactoryConsumer = other.uriBuilderFactoryConsumer;
-        showLog = other.showLog;
-        
+
         if(other.defaultQueries != null) {
             defaultQueries = new LinkedMultiValueMap<>(other.defaultQueries);
         }
@@ -200,6 +200,12 @@ public class ClientBuilder implements WebClient.Builder {
      */
     public ClientBuilder defaultHeader(String header, String... values) {
         delegate.defaultHeader(header, values);
+        return this;
+    }
+
+    public ClientBuilder defaultHeader(String header, Object... values) {
+        List<String> list = Stream.of(values).filter(Objects::nonNull).map(Object::toString).toList();
+        delegate.defaultHeaders(headers -> headers.addAll(header, list));
         return this;
     }
 

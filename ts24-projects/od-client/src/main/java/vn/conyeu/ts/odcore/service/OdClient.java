@@ -1,8 +1,7 @@
 package vn.conyeu.ts.odcore.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.http.MediaType;
 import org.springframework.web.util.UriBuilder;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
@@ -32,17 +31,27 @@ public abstract class OdClient {
         this.cfg = apiConfig;
     }
 
-
     /**
      * Returns the model api
      */
     public abstract String getModel();
 
+    public String getLogModel() {
+        String name = getClass().getSimpleName();
+        if(name.startsWith("Od")) {
+            return "od."+name.substring(2).toLowerCase();
+        }
+        return name;
+    }
+
     /**
      * Create RestClient ClientBuilder
      */
     protected ClientBuilder clientBuilder() {
-        return RestClient.builder().baseUrl(getApiUrl());
+        return RestClient.builder().baseUrl(getApiUrl())
+                .defaultContentType(MediaType.APPLICATION_JSON)
+                .defaultHeader("tsModelName", getLogModel())
+                .defaultHeader("tsApiUserId", cfg.getUserId());
     }
 
     /**
@@ -108,7 +117,7 @@ public abstract class OdClient {
         return cfg.getBaseUrl();
     }
 
-    protected ClientBuilder applyDefaultBuilder() {
+    protected RestClient createClient() {
         ClientBuilder clientBuilder = clientBuilder();
         clientBuilder.defaultQueries(cfg.getQueries());
         clientBuilder.defaultHeaders(cfg.getHeaders());
@@ -118,7 +127,12 @@ public abstract class OdClient {
         //    filters.add(ExchangeFilterFunction.ofRequestProcessor());
         //    filters.add(ExchangeFilterFunction.ofResponseProcessor());
         //});
-        return clientBuilder;
+
+        if(cfg.getCustomBuilderConsumer() != null) {
+            cfg.getCustomBuilderConsumer().accept(clientBuilder);
+        }
+
+        return clientBuilder.build();
     }
 
     /**
@@ -181,15 +195,12 @@ public abstract class OdClient {
     private ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer, int count) {
         Asserts.notNull(consumer, "Consumer<RequestBodyUriSpec>");
 
-        ClientBuilder clientBuilder = applyDefaultBuilder();
-        RequestBodyUriSpec uriSpec = clientBuilder.build().post();
+        RequestBodyUriSpec uriSpec = createClient().post();
         consumer.accept(uriSpec);
 
         ObjectMap response = uriSpec
                 .bodyValue(ClsRequest.fromObject(body))
                 .retrieve().bodyToMono(ObjectMap.class)
-                // .flatMap(object -> checkResponse(uri, body, object))
-                //.doOnSuccess(res -> checkResponse(uri, body, res))
                 .blockOptional().orElseThrow();
 
         try {
@@ -207,7 +218,7 @@ public abstract class OdClient {
     }
 
     protected ObjectMap checkResponse(Object requestBody, ObjectMap responseData) {
-        ClsHelper.checkResponse(responseData);
+        ClsHelper.checkResponse(cfg, responseData);
         return responseData;
     }
 

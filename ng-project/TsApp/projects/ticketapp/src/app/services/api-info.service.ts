@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import {ModelApi} from "./model-api.service";
-import {ApiInfo, UserApiInfo} from "../models/api-info";
+import {ApiInfo, EMPTY_PWD, UserApiInfo} from "../models/api-info";
 import {ResponseToModel} from "../models/common";
 import {Observable, of, switchMap, tap} from "rxjs";
+
+
 
 @Injectable({providedIn: 'root'})
 export class ApiInfoService extends ModelApi<ApiInfo> {
@@ -12,17 +14,19 @@ export class ApiInfoService extends ModelApi<ApiInfo> {
   }
 
   resToModel(): ResponseToModel<any> {
-    return json => new ApiInfo().update(json);
+    return json => ApiInfo.from(json);
   }
 
-  getUserByCode(code: string): Observable<UserApiInfo> {
-    const url = this.callBasePath(`/user/get-by-code/${code}`);
-    return this.get(url).pipe(tap(res => of(UserApiInfo.from(res))));
+  getByCode(code: string, userid?: number): Observable<ApiInfo> {
+    const url = (`get-by-code/${code}`);
+    return this.getOne(url, {userid});//.pipe(tap(res => of(ApiInfo.from(res))));
   }
 
   saveUserApi(apiCode: string, info: UserApiInfo): Observable<UserApiInfo> {
-    const url = this.callBasePath(`/user/save-info/${apiCode}`);
-    return this.post(url, {api_code: apiCode, ...info}).pipe(tap(res => of(UserApiInfo.from(res))));
+    if(info.password === EMPTY_PWD) info.password = undefined;
+    const url = (`save-user/${apiCode}`);
+    const data =  {api_code: apiCode, ...info};
+    return this.savePost<UserApiInfo>(url, data, res => UserApiInfo.from(res));
   }
 
   checkLogin(): Observable<any> {

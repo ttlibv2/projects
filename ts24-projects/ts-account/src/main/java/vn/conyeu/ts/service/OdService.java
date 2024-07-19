@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.conyeu.commons.utils.Classes;
 import vn.conyeu.identity.helper.IdentityHelper;
+import vn.conyeu.restclient.ClientLogger;
+import vn.conyeu.restclient.LoggingFilter;
 import vn.conyeu.ts.domain.ApiInfo;
 import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.Errors;
@@ -25,11 +27,13 @@ public class OdService {
 
     private final UserApiService userApiService;
     private final ApiInfoService apiInfoService;
+    private final HttpLogService logService;
 
     @Autowired
-    public OdService(UserApiService userApiService, ApiInfoService apiInfoService) {
+    public OdService(UserApiService userApiService, ApiInfoService apiInfoService, HttpLogService logService) {
         this.userApiService = userApiService;
         this.apiInfoService = apiInfoService;
+        this.logService = logService;
     }
 
     public ServiceForUser load() {
@@ -92,7 +96,7 @@ public class OdService {
             String apiCode = clsApi.getApiCode();
             apiCfgMap.put(apiCode, clsApi);
             if (services.containsKey(apiCode)) {
-                services.get(apiCode).setConfig(clsApi);
+                services.get(apiCode).updateConfig(clsApi);
             }
         }
 
@@ -134,26 +138,9 @@ public class OdService {
          * @see OdBaseService#determineServiceName(Class)
          */
         public <S extends OdBaseService> S loadService(String apiCode, Function<ClsApiCfg, S> function) {
-
-            // get from cache
-            //if (services.containsKey(apiCode)) {
-           //     return (S) services.get(apiCode);
-         //   }
-
-            // get from config
-           // if (apiCfgMap.containsKey(apiCode)) {
-           //     ClsApiCfg clsApi = apiCfgMap.get(apiCode);
-          //      return setService(clsApi, function);
-          //  }
-
-            // get from db
-          //  else {
-                ClsApiCfg clsApi = loadApi(apiCode, true);
-                return setService(clsApi, function);
-           // }
-
+            ClsApiCfg clsApi = loadApi(apiCode, true);
+            return setService(clsApi, function);
         }
-
 
         private ClsApiCfg createClsApi(UserApi ua) {
             ApiInfo ai = ua.getApi();
@@ -170,6 +157,29 @@ public class OdService {
             cls.setCookieValue(ua.getCookie());
             cls.setClsUser(ua.getUserInfo());
             cls.setAutoLogin(ua.isAutoLogin());
+            cls.setCustomBuilderConsumer(builder -> {
+                LoggingFilter loggingFilter = new LoggingFilter(requestId -> {
+                    ClientLogger logger = new ClientLogger(requestId);
+                    logger.userLogin(IdentityHelper.extractUserId());
+
+                    logger.submitResponseConsumer(response -> {
+                        logService.save(requestId, response);
+                    });
+
+                    logger.submitRequestConsumer(request -> {
+                        logService.save(requestId, request);
+                    });
+
+                    logger.submitLoggerConsumer(log -> {
+                        logService.save(requestId, logger);
+                    });
+
+                    return logger;
+                });
+
+                builder.filter(loggingFilter);
+            });
+
             return cls;
         }
 
@@ -187,4 +197,6 @@ public class OdService {
         }
 
     }
+
+
 }

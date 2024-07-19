@@ -39,21 +39,26 @@ public class TicketRest extends LongUIdRest<Ticket, TicketService> {
         return super.getAll(pageable);
     }
 
-    @PostMapping("create")
-    public Ticket createObject(@RequestBody @Valid Ticket object, @PrincipalId Long userId) {
-        object.setUser(new TsUser(userId));
-
-        if(Objects.notEmpty(object.getChanels())) {
-            object.setChanelIds(object.getChanels().stream().map(LongUId::getId).toList());
-
-            if(Objects.isNull(object.getSupportHelp()) && Objects.isNull(object.getSupportHelpId())) {
-                object.setSupportHelp(object.getChanels().get(0));
-            }
-
-        }
+    @PostMapping("save")
+    public Ticket saveTicket(@RequestBody @Valid ObjectMap object, @PrincipalId Long userId) {
+        return service.saveTicket(userId, object);
 
 
 
-        return super.createObject(object);
+
+//        object.setUser(new TsUser(userId));
+//
+//        if(Objects.notEmpty(object.getChanels())) {
+//            object.setChanelIds(object.getChanels().stream().map(LongUId::getId).toList());
+//
+//            if(Objects.isNull(object.getSupportHelp()) && Objects.isNull(object.getSupportHelpId())) {
+//                object.setSupportHelp(object.getChanels().get(0));
+//            }
+//
+//        }
+//
+//        return super.createObject(object);
     }
+
+
 }

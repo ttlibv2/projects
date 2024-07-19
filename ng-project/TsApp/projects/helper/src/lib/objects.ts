@@ -1,4 +1,4 @@
-import * as crypto from 'crypto-js';
+import crypto from 'crypto-js';
 import { Type } from "@angular/core";
 import { Callback } from './function';
 
@@ -6,18 +6,20 @@ export class Objects {
 
 
 
-  static assign(target: any, source: any): any {
+  static assign(target: any, source: any, excludeFields: string[] = []): any {
     if (Objects.isObject(target) && Objects.isObject(source)) {
       for (const key of Object.keys(source)) {
-        const srcFncGet = source[`get_${key}`];
-        const srcVal = typeof srcFncGet === 'function' ? srcFncGet() : source[key];
-        if (typeof target[`set_${key}`] === 'function') target[`set_${key}`](srcVal);
-        else if (!Objects.isObject(srcVal)) target[key] = srcVal;
-        else if (key in target) Objects.assign(target[key], srcVal);
-        else target[key] = srcVal;
+        if (!excludeFields.includes(key)) {
+          const get = `get_${key}`, set = `set_${key}`;
+          const srcVal = typeof source[get] === 'function' ? source[get]() : source[key];
+          if (typeof target[set] === 'function') target[set](srcVal);
+          else if (!Objects.isObject(srcVal)) target[key] = srcVal;
+          else if (key in target) Objects.assign(target[key], srcVal);
+          else target[key] = srcVal;
+        }
       }
     }
-    else return target;
+    return target;
   }
 
 
@@ -110,11 +112,11 @@ export class Objects {
 
 
       // check equals()
-      if('equals' in obj1 && typeof obj1['equals'] === 'function') {
+      if ('equals' in obj1 && typeof obj1['equals'] === 'function') {
         return obj1['equals'](obj2);
       }
 
-      else if('equals' in obj2 && typeof obj2['equals'] === 'function') {
+      else if ('equals' in obj2 && typeof obj2['equals'] === 'function') {
         return obj2['equals'](obj1);
       }
 
@@ -123,9 +125,9 @@ export class Objects {
         const arrA = Array.isArray(obj1), arrB = Array.isArray(obj2);
         const dateA = Objects.isDate(obj1), dateB = Objects.isDate(obj2);
         const regexpA = obj1 instanceof RegExp, regexpB = obj2 instanceof RegExp;
-  
+
         let i, length, key;
-  
+
         // check array
         if (arrA && arrB) {
           length = obj1.length;
@@ -134,29 +136,29 @@ export class Objects {
           return true;
         }
         else if (arrA != arrB) return false;
-  
+
         // check date
         else if (dateA != dateB) return false;
         else if (dateA && dateB) return obj1.getTime() == obj2.getTime();
-  
+
         // check regex
         else if (regexpA != regexpB) return false;
         else if (regexpA && regexpB) return obj1.toString() == obj2.toString();
-  
+
         // other 
         else {
           var keys = Object.keys(obj1);
           length = keys.length;
-  
+
           if (length !== Object.keys(obj2).length) return false;
-  
+
           for (i = length; i-- !== 0;) if (!Object.prototype.hasOwnProperty.call(obj2, keys[i])) return false;
-  
+
           for (i = length; i-- !== 0;) {
             key = keys[i];
             if (!Objects.equals(obj1[key], obj2[key])) return false;
           }
-  
+
           return true;
         }
       }
@@ -255,12 +257,12 @@ export class Objects {
       Object.keys(source).forEach((key: any) => {
         if (Objects.isObject(source[key])) {
           if (!(key in target)) {
-            Object.assign(output, {[key]: source[key]});
+            Object.assign(output, { [key]: source[key] });
           } else {
             output[key] = Objects.mergeDeep(target[key], source[key]);
           }
         } else {
-          Object.assign(output, {[key]: source[key]});
+          Object.assign(output, { [key]: source[key] });
         }
       });
     }

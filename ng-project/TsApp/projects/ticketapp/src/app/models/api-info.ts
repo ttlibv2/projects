@@ -1,20 +1,26 @@
 import {BaseModel} from "./base-model";
-import {JsonObject} from "./common";
+import {AssignObject, JsonObject} from "./common";
+
+export const EMPTY_PWD: string = "*".repeat(8);
 
 export class UserApiInfo  extends BaseModel {
-
-  static from(info: JsonObject): any {
-      return new UserApiInfo().update(info);
-  }
-
   csrf_token?: string;
   headers?: JsonObject;
   queries?: JsonObject;
-  user_name?: string;
+  username?: string;
   password?: string;
   user_info?: JsonObject;
   auto_login?: boolean;
   allow_edit?: boolean;
+
+
+  static from(data: AssignObject<UserApiInfo>): any {
+    data.password = EMPTY_PWD;
+    return BaseModel.fromJson(UserApiInfo, data);
+  }
+
+
+
 }
 
 export class ApiInfo extends BaseModel {
@@ -30,8 +36,12 @@ export class ApiInfo extends BaseModel {
   login_info?: JsonObject;
   user_api?: UserApiInfo;
 
-  static from(json: JsonObject): ApiInfo {
-    return new ApiInfo().update(json);
+  set_user_api(data: AssignObject<UserApiInfo>) {
+    this.user_api = UserApiInfo.from(data);
+  }
+
+  static from(json: AssignObject<ApiInfo>): ApiInfo {
+    return BaseModel.fromJson(ApiInfo, json);
   }
 
   get displayName(): string {

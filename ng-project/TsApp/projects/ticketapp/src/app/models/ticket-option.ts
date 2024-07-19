@@ -1,14 +1,22 @@
 import { BaseModel } from "./base-model";
 import { JsonObject } from "./common";
 
+export interface ITicketOption {
+  autoCreate?: boolean;
+  autoFill?: boolean;
+  viewAll?: boolean ;
+  viewTs24?: boolean ; 
+  saveCache?: boolean;
+  emailTicket?: boolean ;
+}
 
 export class TicketOption extends BaseModel {
-    autoCreate: boolean = true;
-    autoFill: boolean = true;
-    viewAll: boolean = false;
-    viewTs24: boolean = false;
-    saveCache: boolean = false;
-    emailTicket: boolean = false;
+    autoCreate?: boolean = true;
+    autoFill?: boolean = true;
+    viewAll?: boolean = false;
+    viewTs24?: boolean = false;
+    saveCache?: boolean = false;
+    emailTicket?: boolean = false;
 
     static from(data: JsonObject): TicketOption {
       return BaseModel.fromJson(TicketOption, {...defaultOption, ...data});

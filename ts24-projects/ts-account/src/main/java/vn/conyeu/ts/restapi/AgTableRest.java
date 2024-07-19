@@ -10,6 +10,7 @@ import vn.conyeu.ts.service.AgTableService;
 import vn.conyeu.common.restapi.LongUIdRest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -25,8 +26,7 @@ public class AgTableRest extends LongUIdRest<AgTable, AgTableService> {
         AgTable agTable = service.findByCode(code).orElseThrow(() -> new NotFound("noId")
                 .message("Bảng không tồn tại").arguments("ag_code", code));
 
-        List<AgTable> children = service.findByParentId(agTable.getId());
-        agTable.setChildren(children);
+        agTable.setChildren(service.findByParentId(agTable.getId()));
 
         return agTable;
     }

@@ -20,7 +20,6 @@ import vn.conyeu.ts.odcore.domain.*;
 import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsNameSearchOption;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -108,7 +107,7 @@ public class OdUser extends OdTicketClient<ClsUser> implements IOdUserLogin {
     public ClsUser login(String userName, String password) {
         String loginUrl = cfg.getLoginPath();
 
-        ClientBuilder builder = applyDefaultBuilder()
+        ClientBuilder builder = createClient().mutate()
                 .defaultContentType(MediaType.TEXT_HTML)
                 .defaultHeader(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/117.0");
 

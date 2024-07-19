@@ -2,6 +2,7 @@ package vn.conyeu.ts.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import vn.conyeu.ts.odcore.domain.ClsUser;
 @Getter @Setter @NoArgsConstructor @DynamicInsert @DynamicUpdate
 @Entity @Table(uniqueConstraints = @UniqueConstraint(name = "USER_API_UID", columnNames = "apiId,userId"))
 @AttributeOverride(name = "id", column = @Column(name = "uniqueId"))
-@JsonIgnoreProperties({"api", "id"})
+@JsonIgnoreProperties({"api", "id", "user", "password", "userInfo"})
 //@formatter:on
 public class UserApi extends LongUId<UserApi> {
 
@@ -29,7 +30,7 @@ public class UserApi extends LongUId<UserApi> {
     @JoinColumn(name = "apiId")
     private ApiInfo api;
 
-    @JsonProperty("user_name")
+    @JsonProperty("username")
     @Column(length = 100, nullable = false)
     private String userName;
 
@@ -76,6 +77,7 @@ public class UserApi extends LongUId<UserApi> {
         return allowEdit != null && allowEdit;
     }
 
+    @JsonProperty("user_info")
     public ClsUser getClsUserBasic() {
         if(userInfo == null) return null;
         else return new ClsUser().setName(userInfo.getName())

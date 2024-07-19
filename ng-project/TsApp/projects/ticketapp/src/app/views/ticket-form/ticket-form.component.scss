@@ -21,4 +21,11 @@ ts-ticket-form {
 
   }
 
+  .toolbar.border-end {
+    border-bottom: 5px solid var(--primary-color);
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+  }
+
+
 }

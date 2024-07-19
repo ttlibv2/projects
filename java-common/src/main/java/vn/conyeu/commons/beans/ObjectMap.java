@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -906,5 +907,9 @@ public class ObjectMap extends LinkedHashMap<String, Object> implements Cloneabl
 
     public static ObjectMap clone(Map<String, ?> map) {
         return map == null ? null : fromMap(map);
+    }
+
+    public void removeIf(String field, Predicate<Object> predicate) {
+        if(predicate.test(get(field))) remove(field);
     }
 }

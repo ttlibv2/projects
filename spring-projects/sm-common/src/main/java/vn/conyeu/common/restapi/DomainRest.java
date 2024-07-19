@@ -46,12 +46,13 @@ public abstract class DomainRest<E extends DomainId<E, Id>, Id extends Serializa
     }
 
     @DeleteMapping("delete-by-id/{entityId}")
-    public boolean deleteById(@PathVariable Id entityId) {
+    public Object deleteById(@PathVariable Id entityId) {
         boolean bool = service.existsById(entityId);
         if(!bool) throw noId(entityId);
 
         service.deleteById(entityId);
-        return true;
+        return ObjectMap.setNew("model_id", entityId)
+                .set("alert_msg", "Đã xóa thành công dữ liệu");
     }
 
     @PostMapping("create-new")

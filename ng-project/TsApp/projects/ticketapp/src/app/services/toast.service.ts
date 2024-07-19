@@ -33,6 +33,7 @@ const defaultDialogConfig: DynamicDialogConfig = {
     position: 'top',
     closable: false,
     closeOnEscape: false,
+    focusOnShow: false,
     maximizable: true,
     draggable: true,
     resizable: true,
@@ -59,7 +60,7 @@ export class ToastService {
     }
 
     show(message: ToastMessage, ...closeRef: CloseRef[]): ActiveToast<any> {
-        if (notEmpty(closeRef)) this.close(...closeRef);
+        if (notEmpty(closeRef)) this.closeToast(...closeRef);
 
         message.position = message.position ?? 'top-right';
 
@@ -104,11 +105,16 @@ export class ToastService {
         return this.show({ messageIcon: 'pi pi-spin pi-cog', ...message, severity: 'info' }, ...closeRef);
     }
 
-    close(...refs: CloseRef[]): void {
+    closeToast(...refs: CloseRef[]): void {
         for (const ref of refs) {
             const toastId = typeof ref === 'object' ? ref.toastId : ref;
             this.message.clear(toastId);
         }
+    }
+
+    closeAllDialog(): void {
+        const dialogRefs = this.dialog.dialogComponentRefMap.keys();
+        [...dialogRefs].forEach(ref => ref.close());
     }
 
     openDialog<E>(componentType: Type<E>, config: DynamicDialogConfig): DynamicDialogRef<E> {

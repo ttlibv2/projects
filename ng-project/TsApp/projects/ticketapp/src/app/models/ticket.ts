@@ -47,7 +47,7 @@ export interface TicketTemplateData {
 
 
 export class Ticket extends BaseModel {
-  ticket_id: number;
+  ticket_id?: number;
   full_name?: string;
   tax_code?: string;
   company_name?: string;
@@ -66,7 +66,7 @@ export class Ticket extends BaseModel {
   reply?: string;
   content_email?: string;
   group_help?: GroupHelp;
-  question: Question;
+  question?: Question;
   software?: Software;
   chanels?: Chanel[];
   support_help?: Chanel;
@@ -77,7 +77,7 @@ export class Ticket extends BaseModel {
   user_id?: number;
   chanel_ids?: number[];
   template_id?: number;
-  options: TicketOption = TicketOption.createDef();
+  options?: TicketOption = TicketOption.createDef();
   details?: TicketDetail;
   od_image?: ImageObject;
   od_assign?: cls.ClsAssign;
@@ -102,6 +102,8 @@ export class Ticket extends BaseModel {
 
   ticket_on?: string;
 
+  send_status?: 'loading' | 'success' | 'error' | undefined;
+
   constructor() {
     super();
   }
@@ -119,7 +121,7 @@ export class Ticket extends BaseModel {
     Objects.ifNotNull(object['software'], val => ticket.software = Software.from(val));
     Objects.ifNotNull(object['support_help'], val => ticket.support_help = Chanel.from(val));
     Objects.ifListNotEmpty(object['chanels'], val => ticket.chanels = Chanel.fromList(val));
-    return ticket;
+    return this;
   }
 
   get_options(): TicketOption {
@@ -127,6 +129,11 @@ export class Ticket extends BaseModel {
       this.options = TicketOption.createDef();
     }
     return  this.options;
+  }
+
+  cloneWithChanel(): Ticket[] {
+    const object = Objects.assign({}, this);
+    return this.chanels.map(chanel => Ticket.from({...object, support_help: chanel}));
   }
 
 }

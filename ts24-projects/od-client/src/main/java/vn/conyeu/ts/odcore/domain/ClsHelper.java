@@ -112,14 +112,17 @@ public final class ClsHelper {
 
     }
 
-    public static void checkResponse(Object response) {
-        ObjectMap detail = ObjectMap.create().set("client_response", response);
-        BaseException exp = BaseException.e500("client_error").arguments("od_error", detail);
+    public static void checkResponse(ClsApiCfg cfg, Object response) {
+        ObjectMap detail = ObjectMap.setNew("client_response", response);
+
+        BaseException exp = BaseException.e500("ts_api")
+                .detail("ts_api", cfg.getApiCode())
+                .detail("ts_detail", detail);
 
         if (response instanceof String html) {
 
             if (html.contains("invalid CSRF token")) {
-                throw exp.code("invalid_csrf_token")
+                throw exp.status(401).detail("ts_code", "invalid_csrf_token")
                         .message("csrf_token bị sai -> vui lòng cập nhật.");
             }
 
@@ -139,10 +142,9 @@ public final class ClsHelper {
                 }
 
                 if (Objects.equals(keyw, "odoo.exceptions.AccessError")) {
-                    throw exp.status(401).code("AccessError")
+                    throw exp.status(401).detail("ts_code", "AccessError")
                             .message("Rất tiếc, bạn không được phép truy cập tài liệu này");
                 }
-
 
                 throw exp.code("client_error").message(msg);
             }
@@ -152,9 +154,8 @@ public final class ClsHelper {
     }
 
     public static BaseException SessionExpired(BaseException exp) {
-        return exp.status(401).code("SessionExpired")
-                .message("<b>Mã kích hoạt đã hết hạn sử dụng. Vui lòng cập nhật để sử dụng tiếp. <br>" +
-                        "<i class='ps'>P/s: Vào menu [Khác] -> [Mã kích hoạt].</i>");
+        return exp.status(401).detail("ts_code", "SessionExpired")
+                .message("Mã xác thực không đúng hoặc đã hết hạn. Vui lòng kiểm tra lại");
     }
 
     public static void updateConfig(ClsApiCfg userApi, ClsUser clsUser) {

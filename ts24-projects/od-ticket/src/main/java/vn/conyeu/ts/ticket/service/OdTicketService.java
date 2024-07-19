@@ -8,7 +8,6 @@ import vn.conyeu.ts.odcore.service.OdBaseService;
 public class OdTicketService extends OdBaseService<OdTicketClient> {
     public static final String SERVICE_NAME = determineServiceName(OdTicketService.class);
 
-
     public static final ClsApiCfg DEFAULT_INFO = new ClsApiCfg()
             .setApiTitle("Ticket Api").setApiCode(SERVICE_NAME)
             .setBaseUrl("https://web.ts24.com.vn/web")
@@ -137,8 +136,6 @@ public class OdTicketService extends OdBaseService<OdTicketClient> {
     public OdMailComposeMsg composeMsg() {
         return service(OdMailComposeMsg.class, () -> new OdMailComposeMsg(clsConfig));
     }
-
-
 
     /**
      * Returns {@link OdUser}

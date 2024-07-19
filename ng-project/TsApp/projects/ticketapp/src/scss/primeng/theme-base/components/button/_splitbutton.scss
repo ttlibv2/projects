@@ -1,4 +1,9 @@
-.p-splitbutton {
+
+$prefix: '.p-splitbutton';
+
+#{$prefix} {
+    display: inline-flex;
+    position: relative;
     border-radius: $borderRadius;
 
     &.p-button-rounded {
@@ -12,4 +17,43 @@
     &.p-button-raised {
         box-shadow: $raisedButtonShadow;
     }
+
+    .p-menu {
+        min-width: 100%;
+    }
+
+    &.p-not-menu-button {
+        &#{$prefix}-defaultbutton,
+            &.p-button-rounded > #{$prefix}-defaultbutton.p-button,
+            &.p-button-outlined > #{$prefix}-defaultbutton.p-button {
+                flex: 1 1 auto;
+                border-radius: $borderRadius;
+                border: 1px solid;
+            }
+    }
+
+    #{$prefix}-defaultbutton,
+    &.p-button-rounded > #{$prefix}-defaultbutton.p-button,
+    &.p-button-outlined > #{$prefix}-defaultbutton.p-button {
+        flex: 1 1 auto;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-right: 0 none;
+    }
+
+    #{$prefix}-menubutton,
+    &.p-button-rounded > #{$prefix}-menubutton.p-button,
+    &.p-button-outlined > #{$prefix}-menubutton.p-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+
+}
+
+.p-fluid #{$prefix} {
+    display: flex;
 }

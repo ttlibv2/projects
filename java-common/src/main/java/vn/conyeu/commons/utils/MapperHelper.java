@@ -57,7 +57,7 @@ public final class MapperHelper {
     }
 
     public static <T> T updateToMap(T valueToUpdate, Object overrides, String... excludeField) {
-        ObjectMap mapOverride = ObjectMap.fromJson(overrides);
+        ObjectMap mapOverride = overrides instanceof  ObjectMap map ? map : ObjectMap.fromJson(overrides);
         if (Objects.notEmpty(excludeField)) mapOverride.deleteKeys(excludeField);
         return update(valueToUpdate, mapOverride);
     }

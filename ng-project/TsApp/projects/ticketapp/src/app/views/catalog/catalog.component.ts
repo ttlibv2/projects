@@ -114,7 +114,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
 
     this.asyncLoading = true;
 
-    const catalog = 'all';//ls.map((i) => i.action).join(",");
+    const catalog = ls.map((i) => i.action).join(",");
     const entities = this.templateCode;
 
     this.catalogSrv.getAll({ catalog, entities }).pipe(delay(1000)).subscribe({

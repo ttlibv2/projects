@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
+import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.commons.utils.Objects;
+import vn.conyeu.restclient.ClientBuilder;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -26,6 +28,8 @@ public class ClsApiCfg implements Serializable, Cloneable {
     private ClsUser clsUser;
     private boolean autoLogin = true;
     private int maxTryLogin = 1;
+
+    private Consumer<ClientBuilder> customBuilderConsumer;
 
     public void validate() {
         Map<String, String> params = new HashMap<>();
@@ -264,6 +268,23 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
+    /**
+     * Returns the customBuilderConsumer
+     */
+    public Consumer<ClientBuilder> getCustomBuilderConsumer() {
+        return customBuilderConsumer;
+    }
+
+    /**
+     * Set the customBuilderConsumer
+     *
+     * @param customBuilderConsumer the value
+     */
+    public ClsApiCfg setCustomBuilderConsumer(Consumer<ClientBuilder> customBuilderConsumer) {
+        this.customBuilderConsumer = customBuilderConsumer;
+        return this;
+    }
+
     @Override
     public ClsApiCfg clone()  {
         return new ClsApiCfg()
@@ -275,10 +296,12 @@ public class ClsApiCfg implements Serializable, Cloneable {
                 .setApiTitle(apiTitle)
                 .setApiTitle(apiTitle)
                 .setHeaders(getHeaders().copy())
-                .setQueries(getQueries().copy());
+                .setQueries(getQueries().copy())
+                .setCustomBuilderConsumer(customBuilderConsumer);
     }
 
     public void updateFrom(ClsApiCfg config) {
+        //MapperHelper.update(this, config);
         ClsApiCfg self = this;
         set(config.getBaseUrl(), self::setBaseUrl);
         set(config.getLoginPath(), self::setLoginPath);
@@ -287,6 +310,7 @@ public class ClsApiCfg implements Serializable, Cloneable {
         set(config.getApiTitle(), self::setApiTitle);
         set(config.getHeaders(), self::setHeaders);
         set(config.getQueries(), self::setQueries);
+        set(config.getCustomBuilderConsumer(), self::setCustomBuilderConsumer);
     }
 
     public <T> void set(T value, Consumer<T> consumer) {
@@ -298,4 +322,5 @@ public class ClsApiCfg implements Serializable, Cloneable {
             consumer.accept(value.copy());
         }
     }
+
 }

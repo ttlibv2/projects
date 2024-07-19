@@ -25,5 +25,12 @@ export class TemplateService extends ModelApi<Template> {
     return this.getPage(url, {entities});
   }
 
+  
+  override create(data: any): Observable<Template> {
+    const converterNew = this.resToModel();
+    const url = this.callBasePath(`save`);
+    return this.post(url, data).pipe(map(data => converterNew(data)));
+  }
+
 
 }

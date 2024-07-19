@@ -57,7 +57,7 @@ public class RestClient implements WebClient {
     }
 
     /**{@inheritDoc}*/
-    public Builder mutate() {
+    public ClientBuilder mutate() {
         return new ClientBuilder(builder);
     }
 

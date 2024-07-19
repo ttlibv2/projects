@@ -13,7 +13,7 @@ import {EditorModule} from "primeng/editor";
 import {DividerModule} from "primeng/divider";
 import {CheckboxModule} from "primeng/checkbox";
 import {ButtonModule} from "primeng/button";
-import {SplitButtonModule} from "primeng/splitbutton";
+import {SplitButtonModule} from "ts-ui/split-button";
 import {ChipModule} from "primeng/chip";
 import {ChipsModule} from "primeng/chips";
 import {FieldsetModule} from "primeng/fieldset";
@@ -29,6 +29,7 @@ import {TranslateModule} from "@ngx-translate/core";
   declarations: [
     TicketFormComponent
   ],
+  exports: [TicketFormComponent],
     imports: [
         CommonModule,
         TicketFormRoutingModule,
@@ -51,7 +52,8 @@ import {TranslateModule} from "@ngx-translate/core";
         ToolbarModule,
         CatalogModule,
         NgSelectModule,
-        TranslateModule
+        TranslateModule,
+      
     ],
   providers: [
     DialogService,

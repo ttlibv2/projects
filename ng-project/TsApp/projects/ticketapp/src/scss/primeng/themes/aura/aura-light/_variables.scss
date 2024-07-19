@@ -57,7 +57,7 @@ $loadingIconFontSize: 2rem !default;
 $errorColor: #f87171 !default;
 
 //scale
-$scaleSM: 0.875 !default;
+$scaleSM: 1 !default; //0.875 !default;
 $scaleLG: 1.25 !default;
 
 //focus
@@ -136,7 +136,7 @@ $passwordMediumBg: #f59e0b !default;
 $passwordStrongBg: #22c55e !default;
 
 //button
-$buttonPadding: 0.5rem 1rem !default;
+$buttonPadding: 0.35rem 0.5rem;//0.5rem 1rem !default;
 $buttonIconOnlyWidth: 2.5rem !default;
 $buttonIconOnlyPadding: 0.5rem 0 !default;
 $buttonBg: $primaryColor !default;
@@ -678,7 +678,7 @@ $progressSpinnerColorThree: $successMessageTextColor !default;
 $progressSpinnerColorFour: $warningMessageTextColor !default;
 
 //menu (e.g. menu, menubar, tieredmenu)
-$menuWidth: 12.5rem !default;
+$menuWidth: 16rem !default;
 $menuBg: $shade000 !default;
 $menuBorder: 1px solid $shade200 !default;
 $menuTextColor: $shade700 !default;

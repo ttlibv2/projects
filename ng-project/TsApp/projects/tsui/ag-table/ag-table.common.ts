@@ -26,20 +26,24 @@ export interface PrivateField {
 export const defaultOption: TableOption = {
   domLayout: 'normal',
   animateRows: true,
-  rowSelection: 'single',
+  rowSelection: 'multiple',
   scrollbarWidth: 20,
   enableRangeSelection: true,
   overlayLoadingTemplate: '<i class="fal fa-sync fa-spin"></i>',
   overlayNoRowsTemplate: 'Không có dòng nào',
   maintainColumnOrder: true,
+  sideBar: { toolPanels: ['columns'] },
+  pivotPanelShow: 'always',
   defaultColDef: {
-    editable: true,
+    editable: false,
     enableValue: true,
     enableRowGroup: true,
     enablePivot: true,
     sortable: false,
     resizable: true,
-    filter: true
+    filter: true,
+    wrapHeaderText: true,
+    suppressHeaderMenuButton: true
   },
 
   getRowClass: (p: any) => {

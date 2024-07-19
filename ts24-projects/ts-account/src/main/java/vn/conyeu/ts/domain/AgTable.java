@@ -12,6 +12,7 @@ import vn.conyeu.common.converter.MapString;
 import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.commons.beans.ObjectMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //@formatter:off
@@ -56,6 +57,14 @@ public class AgTable extends LongUId<AgTable> {
     @Transient
     private List<AgTable> children;
 
+    /**
+     * Returns the children
+     */
+    public List<AgTable> getChildren() {
+        if(children == null) children = new ArrayList<>();
+        return children;
+    }
+
     @JsonAnyGetter
     public ObjectMap getConfig() {
         if(config == null) config = new ObjectMap();
@@ -81,4 +90,10 @@ public class AgTable extends LongUId<AgTable> {
         return parent == null ? null : parent.getId();
     }
 
+    public AgTable createChild() {
+        AgTable table = new AgTable();
+        table.setParent(this);
+        getChildren().add(table);
+        return table;
+    }
 }

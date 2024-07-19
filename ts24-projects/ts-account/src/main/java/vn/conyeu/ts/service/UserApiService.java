@@ -4,6 +4,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.service.LongUIdService;
+import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.domain.ApiInfo;
 import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.Errors;
@@ -17,6 +19,7 @@ import java.util.function.Consumer;
 
 @Service
 public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
+    static final String EMPTY_PWD = "*".repeat(8);
 
     public UserApiService(UserApiRepo apiRepo) {
         super(apiRepo);
@@ -51,17 +54,13 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
         }
     }
 
-    public UserApi save(Long userId, ApiInfo api,  UserApi info) {
-        info.setUniqueId(userId, api);
+    @Override
+    public UserApi save(UserApi entity) {
 
-        Optional<UserApi> optional = findByApiCode(userId, api.getCode());
-        if(optional.isEmpty()) return save(info);
-        else {
-            UserApi userApi = optional.get();
-            String[] exludeFields = info.isAllowEdit() ? new String[] { " id"} : new String[] {"id", "cookie", "csrkToken", "userInfo"};
-            userApi.assignFromEntity(info, exludeFields);
-            return save(userApi);
+        if(Objects.equals(entity.getPassword(), EMPTY_PWD)) {
+            entity.setPassword(null);
         }
-    }
 
+        return super.save(entity);
+    }
 }

@@ -14,14 +14,20 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
 import { SplitButtonModule } from 'ts-ui/split-button';
-import { AgTicketCell } from './ag-ticket-cell';
+import { AgStatusRenderer, AgTagCell, AgTicketCell } from './ag-ticket-cell';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ChipModule } from 'primeng/chip';
+import { TagModule } from 'ts-ui/tag';
+import { AgTableTemplate } from './ag-table-template';
+import { TicketFormModule } from '../ticket-form/ticket-form.module';
 
 @NgModule({
   declarations: [
     TicketListComponent,
-    AgTicketCell
+    AgTicketCell,
+    AgStatusRenderer,
+    AgTagCell,
+    AgStatusRenderer,
   ],
   imports: [
     CommonModule,
@@ -39,7 +45,11 @@ import { ChipModule } from 'primeng/chip';
     DividerModule,
     SplitButtonModule,
     IconFieldModule,
-    ChipModule
+    ChipModule,
+    TagModule,
+    AgTableTemplate,
+    TicketFormModule
+
   ],
   providers: [
     DatePipe,

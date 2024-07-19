@@ -7,10 +7,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.identity.helper.IdentityHelper;
 import vn.conyeu.ts.domain.Template;
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.domain.TicketDetail;
+import vn.conyeu.ts.domain.TsUser;
 import vn.conyeu.ts.dtocls.TicketFindOption;
 import vn.conyeu.ts.repository.TicketDetailRepo;
 import vn.conyeu.ts.repository.TicketRepo;
@@ -84,7 +86,7 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
             Path<TicketDetail> detail = rt.get("detail");
 
             if(option.getIsReport() != null) {
-                Path<LocalDateTime> ct = detail.get("report");
+                Path<LocalDateTime> ct = detail.get("reportAt");
                 predicates.add(option.getIsReport() ? ct.isNotNull(): ct.isNull());
             }
 
@@ -115,4 +117,28 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
     }
 
 
+    public Ticket saveTicket(Long userId, ObjectMap object) {
+        Long ticketId = object.getLong("ticket_id");
+
+        // create new
+        if(ticketId == null) {
+            Ticket ticket = object.asObject(Ticket.class);
+            ticket.setUser(new TsUser(userId));
+            return createNew(ticket);
+        }
+
+        // update
+        else {
+            Optional<Ticket> optional = findById(ticketId);
+            if(optional.isEmpty()) throw noId(ticketId);
+
+            Ticket ticket = optional.get();
+            if(Objects.equals(ticket.getUserId(), userId)) {
+                throw new BadRequest("user_invalid").message("Ticket này khong dung userId [%s]", userId);
+            }
+
+            ticket.assignFromMap(object);
+            return save(ticket);
+        }
+    }
 }

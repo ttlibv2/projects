@@ -182,7 +182,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
       next: (page: Page) => {
         this.rowData = [...page?.data] ;
         this.asyncLoading = false;
-        this.alert.close(ref);
+        this.alert.closeToast(ref);
         this.cdRef.detectChanges();
         this.alert.success({ summary: `Đã tìm được ${page?.total ?? 0} dòng.` });
         
@@ -190,7 +190,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
       error: err => {
         this.logger.error('search partner error: ', err);
         this.asyncLoading = false;
-        this.alert.close(ref);
+        this.alert.closeToast(ref);
         this.rowData = [];
         this.cdRef.detectChanges();
       }

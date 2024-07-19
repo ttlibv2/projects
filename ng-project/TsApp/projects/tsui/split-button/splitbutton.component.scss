@@ -1,42 +1,44 @@
-@layer primeng {
-    $css: '.p-splitbutton';
+// @layer primeng {
+//     $css: '.p-splitbutton';
 
-    #{$css} {
-        display: inline-flex;
-        position: relative;
+//     #{$css} {
+//         display: inline-flex;
+//         position: relative;
 
-        &.p-has-menu-button {
-            &-defaultbutton,
-            &.p-button-rounded > #{$css}-defaultbutton.p-button,
-            &.p-button-outlined > #{$css}-defaultbutton.p-button {
-                flex: 1 1 auto;
-                border-top-right-radius: 0;
-                border-bottom-right-radius: 0;
-                border-right: 0 none;
-            }
-        }
+//         &.p-not-menu-button {
+//             &-defaultbutton,
+//             &.p-button-rounded > #{$css}-defaultbutton.p-button,
+//             &.p-button-outlined > #{$css}-defaultbutton.p-button {
+//                 flex: 1 1 auto;
+//                 //border-top-right-radius: 0;
+//                 //border-bottom-right-radius: 0;
+//                 //border-right: 0 none;
+//                 border-radius: $borderRadius;
+//                 border: 1px solid;
+//             }
+//         }
 
        
     
-        &-menubutton,
-        &.p-button-rounded > #{$css}-menubutton.p-button,
-        &.p-button-outlined > #{$css}-menubutton.p-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
+//         &-menubutton,
+//         &.p-button-rounded > #{$css}-menubutton.p-button,
+//         &.p-button-outlined > #{$css}-menubutton.p-button {
+//             display: flex;
+//             align-items: center;
+//             justify-content: center;
+//             border-top-left-radius: 0;
+//             border-bottom-left-radius: 0;
+//         }
     
-        .p-menu {
-            min-width: 100%;
-        }
+//         .p-menu {
+//             min-width: 100%;
+//         }
 
         
-    }
+//     }
 
    
-    .p-fluid #{$css} {
-        display: flex;
-    }
-}
+//     .p-fluid #{$css} {
+//         display: flex;
+//     }
+// }
