@@ -1,0 +1,153 @@
+@use 'sass:math';
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-treeselect {
+    background: cfg.$inputBg;
+    border: cfg.$inputBorder;
+    transition: cfg.$formElementTransition;
+    border-radius: cfg.$borderRadius;
+
+    &:not(.p-disabled):hover {
+        border-color: cfg.$inputHoverBorderColor;
+    }
+
+    &:not(.p-disabled).p-focus {
+        @include util.focused-input();
+    }
+
+    .p-treeselect-label {
+        padding: cfg.$inputPadding;
+        transition: cfg.$formElementTransition;
+
+        &.p-placeholder {
+            color: cfg.$inputPlaceholderTextColor;
+        }
+    }
+
+    &.p-treeselect-chip {
+        .p-treeselect-token {
+            padding: math.div(nth(cfg.$inputPadding, 1), 2) nth(cfg.$inputPadding, 2);
+            margin-right: cfg.$inlineSpacing;
+            background: cfg.$chipBg;
+            color: cfg.$chipTextColor;
+            border-radius: cfg.$chipBorderRadius;
+        }
+    }
+
+    .p-treeselect-trigger {
+        background: transparent;
+        color: cfg.$inputIconColor;
+        width: cfg.$inputGroupAddOnMinWidth;
+        border-top-right-radius: cfg.$borderRadius;
+        border-bottom-right-radius: cfg.$borderRadius;
+    }
+
+    &.p-variant-filled {
+        background-color: cfg.$inputFilledBg;
+
+        &:enabled:hover {
+            background-color: cfg.$inputFilledHoverBg;
+        }
+
+        &:enabled:focus {
+            background-color: cfg.$inputFilledFocusBg;
+        }
+    }
+}
+
+p-treeselect.ng-invalid.ng-dirty > .p-treeselect {
+    @include util.invalid-input();
+}
+
+.p-inputwrapper-filled {
+    .p-treeselect {
+        &.p-treeselect-chip {
+            .p-treeselect-label {
+                padding: math.div(nth(cfg.$inputPadding, 1), 2) nth(cfg.$inputPadding, 2);
+            }
+        }
+    }
+}
+
+.p-treeselect-panel {
+    background: cfg.$inputOverlayBg;
+    color: cfg.$inputListTextColor;
+    border: cfg.$inputOverlayBorder;
+    border-radius: cfg.$borderRadius;
+    box-shadow: cfg.$inputOverlayShadow;
+
+    .p-treeselect-header {
+        padding: cfg.$inputListHeaderPadding;
+        border-bottom: cfg.$inputListHeaderBorder;
+        color: cfg.$inputListHeaderTextColor;
+        background: cfg.$inputOverlayHeaderBg;
+        margin: cfg.$inputListHeaderMargin;
+        border-top-right-radius: cfg.$borderRadius;
+        border-top-left-radius: cfg.$borderRadius;
+
+        .p-treeselect-filter-container {
+            margin-right: cfg.$inlineSpacing;
+
+            .p-treeselect-filter {
+                padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+            }
+    
+            .p-treeselect-filter-icon {
+                right: nth(cfg.$inputPadding, 2);
+                color: cfg.$inputIconColor;
+            }
+    
+            &.p-treeselect-clearable-filter {
+                .p-treeselect-filter {
+                    padding-right: 2 * (nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize);
+                }
+        
+                .p-treeselect-filter-clear-icon {
+                    right: (2 * nth(cfg.$inputPadding, 2)) + cfg.$primeIconFontSize;
+                }
+            }
+        }
+
+        .p-treeselect-close {
+            @include util.action-icon();
+        }
+    }
+    
+    .p-treeselect-items-wrapper {
+        .p-tree {
+            border: 0 none;
+        }
+
+        .p-treeselect-empty-message {
+            padding: cfg.$inputListItemPadding;
+            color: cfg.$inputListItemTextColor;
+            background: cfg.$inputListItemBg;
+        }
+    }
+}
+
+.p-input-filled {
+    .p-treeselect {
+        background: cfg.$inputFilledBg;
+
+        &:not(.p-disabled):hover {
+            background-color: cfg.$inputFilledHoverBg;
+        }
+
+        &:not(.p-disabled).p-focus {
+            background-color: cfg.$inputFilledFocusBg;
+        }
+    }
+}
+
+p-treeselect.p-treeselect-clearable {
+    .p-treeselect-label-container {
+        padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+    }
+    
+    .p-treeselect-clear-icon {
+        color: cfg.$inputIconColor;
+        right: cfg.$buttonIconOnlyWidth;
+    }
+}

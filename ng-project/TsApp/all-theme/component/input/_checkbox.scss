@@ -1,0 +1,118 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-checkbox {
+    width: cfg.$checkboxWidth;
+    height: cfg.$checkboxHeight;
+
+    .p-checkbox-box {
+        border: cfg.$checkboxBorder;
+        background: cfg.$inputBg;
+        width: cfg.$checkboxWidth;
+        height: cfg.$checkboxHeight;
+        color: cfg.$textColor;
+        border-radius: cfg.$borderRadius;
+        transition: cfg.$formElementTransition;
+        outline-color: transparent;
+
+        .p-checkbox-icon {
+            transition-duration: cfg.$transitionDuration;
+            color: cfg.$checkboxIconActiveColor;
+            font-size: cfg.$checkboxIconFontSize;
+        }
+
+        .p-icon {
+            width: cfg.$checkboxIconFontSize;
+            height: cfg.$checkboxIconFontSize;
+        }
+
+        &.p-highlight {
+            border-color: cfg.$checkboxActiveBorderColor;
+            background: cfg.$checkboxActiveBg;
+        }
+    }
+
+    &:not(.p-checkbox-disabled) {
+        .p-checkbox-box {
+            &:hover {
+                border-color: cfg.$inputHoverBorderColor;
+            }
+
+            &.p-focus {
+                @include util.focused-input();
+            }
+
+            &.p-highlight:hover {
+                border-color: cfg.$checkboxActiveHoverBorderColor;
+                background: cfg.$checkboxActiveHoverBg;
+                color: cfg.$checkboxIconActiveHoverColor;
+            }
+        }
+    }
+
+    &.p-variant-filled {
+        .p-checkbox-box {
+            background-color: cfg.$inputFilledBg;
+
+            &.p-highlight {
+                background: cfg.$checkboxActiveBg;
+            }
+        }
+
+        &:not(.p-checkbox-disabled) {
+            .p-checkbox-box {
+                &:hover {
+                    background-color: cfg.$inputFilledHoverBg;
+                }
+
+                &.p-highlight:hover {
+                    background: cfg.$checkboxActiveHoverBg;
+                }
+            }
+        }
+    }
+}
+
+p-checkbox.ng-dirty.ng-invalid > .p-checkbox > .p-checkbox-box {
+    @include util.invalid-input();
+}
+
+.p-input-filled {
+    .p-checkbox {
+        .p-checkbox-box {
+            background-color: cfg.$inputFilledBg;
+
+            &.p-highlight {
+                background: cfg.$checkboxActiveBg;
+            }
+        }
+        &:not(.p-checkbox-disabled) {
+            .p-checkbox-box {
+                &:hover {
+                    background-color: cfg.$inputFilledHoverBg;
+                }
+                &.p-highlight:hover {
+                    background: cfg.$checkboxActiveHoverBg;
+                }
+            }
+        }
+    }
+}
+
+.p-checkbox-label {
+    margin-left: cfg.$inlineSpacing;
+}
+
+@if (cfg.$highlightBg == cfg.$checkboxActiveBg) {
+    .p-highlight {
+        .p-checkbox {
+            .p-checkbox-box {
+                border-color: cfg.$checkboxIconActiveColor;
+            }
+        }
+    }
+}
+
+p-tristatecheckbox.ng-dirty.ng-invalid > .p-checkbox > .p-checkbox-box {
+    @include util.invalid-input();
+}

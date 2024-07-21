@@ -1,0 +1,38 @@
+@use "../setting/config" as cfg;
+
+@layer primeng  {
+    
+    .p-inputgroup .p-inputtext,
+    .p-fluid .p-inputgroup .p-inputtext,
+    .p-inputgroup .p-inputwrapper,
+    .p-inputgroup .p-inputwrapper > .p-component {
+        flex: 1 1 auto;
+        width: unset;
+    }
+
+    .p-fluid > p-iconfield {
+        display: block;
+    } 
+
+    .p-text-danger {
+        color: cfg.$dangerButtonBg;
+    }
+
+    .p-multiselect-token-label {
+        max-width: unset!important;
+    }
+
+    .overlay-container {
+        position: absolute;
+        z-index: 999999;
+    }
+
+    .font-weight-bold {
+        font-weight: bold;
+    }
+ 
+    p-fieldset {
+        display: block;
+    }
+
+}

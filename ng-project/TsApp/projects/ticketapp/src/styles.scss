@@ -12,18 +12,10 @@
 @import "quill/dist/quill.core.css";
 @import "quill/dist/quill.snow.css";
  
-@import "primeicons/primeicons.css"; 
-// @import "primeng/resources/themes/aura-light-lime/theme.css";
+@import "primeicons/primeicons.css";
 @import "primeng/resources/primeng.css";
  
 @import "scss/primeflex/primeflex.scss";
-// @import "scss/primeng/theme/custom/variables";
-// @import "scss/primeng/theme-base/components";
-// 
-
-// @import "scss/primeng/theme/my-aura/aura-light/lime/theme.scss" ;
-// @import "scss/primeng/theme-base/custom" ;
-// @import "scss/primeng/theme-base/toastr" ;
 
 @import "scss/layout/scss/layout.scss";
 
@@ -37,7 +29,7 @@
 }
 
 .p-inputgroup .p-autocomplete-input {
-    padding: 0.5rem;
+    //padding: 0.5rem;
 }
 
 .p-dynamic-dialog {

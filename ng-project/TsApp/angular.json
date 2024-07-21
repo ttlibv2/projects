@@ -61,8 +61,13 @@
             "styles": [
               "projects/ticketapp/src/styles.scss",
               {
-                "input": "projects/ticketapp/src/scss/primeng/themes/aura/aura-light/indigo/theme.scss",
-                "bundleName": "aura-light-indigo",
+                "input": "scss/primeng/themes/aura/aura-light/lime/theme.scss",
+                "bundleName": "aura-light-lime",
+                "inject": false
+              },
+              {
+                "input": "all-theme/theme/aura/aura-light-lime.scss",
+                "bundleName": "aura-light-lime2",
                 "inject": false
               }
 

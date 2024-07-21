@@ -1,0 +1,84 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-tabview {
+    .p-tabview-nav-content {
+        scroll-padding-inline: cfg.$buttonIconOnlyWidth;
+    }
+
+    .p-tabview-nav {
+        background: cfg.$tabviewNavBg;
+        border: cfg.$tabviewNavBorder;
+        //border-width: cfg.$tabviewNavBorderWidth;
+
+        li {
+            margin-right: cfg.$tabviewHeaderSpacing;
+
+            .p-tabview-nav-link {
+                border-style: solid;//cfg.$tabviewHeaderBorder;
+                border-width: cfg.$tabviewHeaderBorderWidth;
+                border-color: cfg.$tabviewHeaderBorderColor;
+                background: cfg.$tabviewHeaderBg;
+                color: cfg.$tabviewHeaderTextColor;
+                padding: cfg.$tabviewHeaderPadding;
+                font-weight: cfg.$tabviewHeaderFontWeight;
+                border-top-right-radius: cfg.$borderRadius;
+                border-top-left-radius: cfg.$borderRadius;
+                transition: cfg.$listItemTransition;
+                margin: cfg.$tabviewHeaderMargin;
+
+                &:not(.p-disabled):focus-visible {
+                    @include util.focused-inset();
+                }
+            }
+
+            &:not(.p-highlight):not(.p-disabled):hover {
+                .p-tabview-nav-link {
+                    background: cfg.$tabviewHeaderHoverBg;
+                    border-color: cfg.$tabviewHeaderHoverBorderColor;
+                    color: cfg.$tabviewHeaderTextHoverColor;
+                }
+            }
+
+            &.p-highlight {
+                .p-tabview-nav-link {
+                    background: cfg.$tabviewHeaderActiveBg;
+                    border-color: cfg.$tabviewHeaderActiveBorderColor;
+                    color: cfg.$tabviewHeaderTextActiveColor;
+                }
+            }
+        }
+    }
+
+    .p-tabview-left-icon {
+        margin-right: cfg.$inlineSpacing;
+    }
+
+    .p-tabview-right-icon {
+        margin-left: cfg.$inlineSpacing;
+    }
+
+    .p-tabview-close {
+        margin-left: cfg.$inlineSpacing;
+    }
+
+    .p-tabview-nav-btn.p-link {
+        background: cfg.$tabviewHeaderActiveBg;
+        color: cfg.$tabviewHeaderTextActiveColor;
+        width: cfg.$buttonIconOnlyWidth;
+        box-shadow: cfg.$raisedButtonShadow;
+        border-radius: 0;
+
+        &:focus-visible {
+            @include util.focused-inset();
+        }
+    }
+
+    .p-tabview-panels {
+        background: cfg.$tabviewContentBg;
+        padding: cfg.$tabviewContentPadding;
+        border: cfg.$tabviewContentBorder;
+        color: cfg.$tabviewContentTextColor;
+        border-bottom-right-radius: cfg.$borderRadius;
+        border-bottom-left-radius: cfg.$borderRadius;
+    }
+}

@@ -14,6 +14,7 @@
         <module name="sm-i18n" />
         <module name="sm-common" />
         <module name="sm-address" />
+        <module name="java-common" />
         <module name="od-client" />
         <module name="ts-account" />
         <module name="sm-web" />
@@ -21,15 +22,6 @@
         <module name="sm-exception" />
         <module name="ts-web" />
         <module name="sm-dslquery" />
-      </profile>
-      <profile name="Annotation profile for java-common" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/springframework/boot/spring-boot-configuration-processor/unknown/spring-boot-configuration-processor-unknown.jar" />
-        </processorPath>
-        <module name="java-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

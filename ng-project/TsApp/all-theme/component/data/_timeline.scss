@@ -1,0 +1,41 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-timeline {
+    .p-timeline-event-marker {
+        border: cfg.$timelineEventMarkerBorder; 
+        border-radius: cfg.$timelineEventMarkerBorderRadius;
+        width: cfg.$timelineEventMarkerWidth;
+        height: cfg.$timelineEventMarkerHeight;
+        background-color: cfg.$timelineEventMarkerBackground;
+    }
+
+    .p-timeline-event-connector {
+        background-color: cfg.$timelineEventColor;
+    }
+
+    &.p-timeline-vertical {
+        .p-timeline-event-opposite,
+        .p-timeline-event-content  {
+            padding: cfg.$timelineVerticalEventContentPadding;
+        }
+
+        .p-timeline-event-connector {
+            width: cfg.$timelineEventConnectorSize;
+        }
+    }
+
+    &.p-timeline-horizontal {
+        .p-timeline-event-opposite,
+        .p-timeline-event-content  {
+            padding: cfg.$timelineHorizontalEventContentPadding;
+        }
+
+        .p-timeline-event-connector {
+            height: cfg.$timelineEventConnectorSize;
+        }
+    }
+}
+
+
+

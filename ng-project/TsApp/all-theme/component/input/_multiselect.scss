@@ -1,0 +1,196 @@
+@use 'sass:math';
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-multiselect {
+    background: cfg.$inputBg;
+    border: cfg.$inputBorder;
+    transition: cfg.$formElementTransition;
+    border-radius: cfg.$borderRadius;
+
+    &:not(.p-disabled):hover {
+        border-color: cfg.$inputHoverBorderColor;
+    }
+
+    &:not(.p-disabled).p-focus {
+        @include util.focused-input();
+    }
+
+    .p-multiselect-label {
+        padding: cfg.$inputPadding;
+        transition: cfg.$formElementTransition;
+
+        &.p-placeholder {
+            color: cfg.$inputPlaceholderTextColor;
+        }
+    }
+
+    &.p-multiselect-chip {
+        .p-multiselect-token {
+            padding: math.div(nth(cfg.$inputPadding, 1), 2) nth(cfg.$inputPadding, 2);
+            margin-right: cfg.$inlineSpacing;
+            background: cfg.$chipBg;
+            color: cfg.$chipTextColor;
+            border-radius: cfg.$chipBorderRadius;
+
+            .p-multiselect-token-icon {
+                margin-left: cfg.$inlineSpacing;
+            }
+        }
+    }
+
+    .p-multiselect-trigger {
+        background: transparent;
+        color: cfg.$inputIconColor;
+        width: cfg.$inputGroupAddOnMinWidth;
+        border-top-right-radius: cfg.$borderRadius;
+        border-bottom-right-radius: cfg.$borderRadius;
+    }
+
+    &.p-variant-filled {
+        background: cfg.$inputFilledBg;
+
+        &:not(.p-disabled):hover {
+            background-color: cfg.$inputFilledHoverBg;
+        }
+
+        &:not(.p-disabled).p-focus {
+            background-color: cfg.$inputFilledFocusBg;
+        }
+    }
+}
+
+.p-inputwrapper-filled {
+    .p-multiselect {
+        &.p-multiselect-chip {
+            .p-multiselect-label {
+                padding: math.div(nth(cfg.$inputPadding, 1), 2) nth(cfg.$inputPadding, 2);
+            }
+        }
+    }
+}
+    
+.p-multiselect-clearable {
+    .p-multiselect-label-container {
+        padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+    }
+
+    .p-multiselect-clear-icon {
+        color: cfg.$inputIconColor;
+        right: cfg.$inputGroupAddOnMinWidth;
+    }
+}
+
+.p-multiselect-panel {
+    background: cfg.$inputOverlayBg;
+    color: cfg.$inputListTextColor;
+    border: cfg.$inputOverlayBorder;
+    border-radius: cfg.$borderRadius;
+    box-shadow: cfg.$inputOverlayShadow;
+
+    .p-multiselect-header {
+        padding: cfg.$inputListHeaderPadding;
+        border-bottom: cfg.$inputListHeaderBorder;
+        color: cfg.$inputListHeaderTextColor;
+        background: cfg.$inputOverlayHeaderBg;
+        margin: cfg.$inputListHeaderMargin;
+        border-top-right-radius: cfg.$borderRadius;
+        border-top-left-radius: cfg.$borderRadius;
+
+        .p-multiselect-filter-container {
+            .p-inputtext {
+                padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+            }
+
+            .p-multiselect-filter-icon {
+                right: nth(cfg.$inputPadding, 2);
+                color: cfg.$inputIconColor;
+            }
+        }
+
+        .p-checkbox {
+            margin-right: cfg.$inlineSpacing;
+        }
+
+        .p-multiselect-close {
+            margin-left: cfg.$inlineSpacing;
+            @include util.action-icon();
+        }
+    }
+
+    .p-multiselect-items {
+        padding: cfg.$inputListPadding;
+
+        .p-multiselect-item {
+            margin: cfg.$inputListItemMargin;
+            padding: cfg.$inputListItemPadding;
+            border: cfg.$inputListItemBorder;
+            color: cfg.$inputListItemTextColor;
+            background: cfg.$inputListItemBg;
+            transition: cfg.$listItemTransition;
+            border-radius: cfg.$inputListItemBorderRadius;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            &.p-highlight {
+                color: cfg.$highlightTextColor;
+                background: cfg.$highlightBg;
+
+                &.p-focus {
+                    background: cfg.$highlightFocusBg;
+                }
+            }
+
+            &:not(.p-highlight):not(.p-disabled) {
+                &.p-focus {
+                    color: cfg.$inputListItemTextFocusColor;
+                    background: cfg.$inputListItemHoverBg;
+                }
+
+                &:hover {
+                    color: cfg.$inputListItemTextHoverColor;
+                    background: cfg.$inputListItemHoverBg;
+                }
+            }
+
+            .p-checkbox {
+                margin-right: cfg.$inlineSpacing;
+            }
+        }
+
+        .p-multiselect-item-group {
+            margin: cfg.$submenuHeaderMargin;
+            padding: cfg.$submenuHeaderPadding;
+            color: cfg.$submenuHeaderTextColor;
+            background: cfg.$submenuHeaderBg;
+            font-weight: cfg.$submenuHeaderFontWeight;
+        }
+
+        .p-multiselect-empty-message {
+            padding: cfg.$inputListItemPadding;
+            color: cfg.$inputListItemTextColor;
+            background: cfg.$inputListItemBg;
+        }
+    }
+}
+
+.p-input-filled {
+    .p-multiselect {
+        background: cfg.$inputFilledBg;
+
+        &:not(.p-disabled):hover {
+            background-color: cfg.$inputFilledHoverBg;
+        }
+    
+        &:not(.p-disabled).p-focus {
+            background-color: cfg.$inputFilledFocusBg;
+        }
+    }
+
+}
+
+p-multiselect.ng-dirty.ng-invalid > .p-multiselect {
+    @include util.invalid-input();
+}

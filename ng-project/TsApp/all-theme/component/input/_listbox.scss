@@ -1,0 +1,108 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-listbox {
+    background: cfg.$inputListBg;
+    color: cfg.$inputListTextColor;
+    border: cfg.$inputListBorder;
+    border-radius: cfg.$borderRadius;
+    transition: cfg.$formElementTransition;
+
+    .p-listbox-header {
+        padding: cfg.$inputListHeaderPadding;
+        border-bottom: cfg.$inputListHeaderBorder;
+        color: cfg.$inputListHeaderTextColor;
+        background: cfg.$inputListHeaderBg;
+        margin: cfg.$inputListHeaderMargin;
+        border-top-right-radius: cfg.$borderRadius;
+        border-top-left-radius: cfg.$borderRadius;
+
+        .p-listbox-filter {
+            padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+        }
+
+        .p-listbox-filter-icon {
+            right: nth(cfg.$inputPadding, 2);
+            color: cfg.$inputIconColor;
+        }
+        
+        .p-checkbox {
+            margin-right: cfg.$inlineSpacing;
+        }
+    }
+
+    .p-listbox-list {
+        padding: cfg.$inputListPadding;
+        outline: 0 none;
+
+        .p-listbox-item {
+            margin: cfg.$inputListItemMargin;
+            padding: cfg.$inputListItemPadding;
+            border: cfg.$inputListItemBorder;
+            color: cfg.$inputListItemTextColor;
+            transition: cfg.$listItemTransition;
+            border-radius: cfg.$inputListItemBorderRadius;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            &.p-highlight {
+                color: cfg.$highlightTextColor;
+                background: cfg.$highlightBg;
+            }
+
+            .p-checkbox {
+                margin-right: cfg.$inlineSpacing;
+            }
+        }
+
+        .p-listbox-item-group {
+            margin: cfg.$submenuHeaderMargin;
+            padding: cfg.$submenuHeaderPadding;
+            color: cfg.$submenuHeaderTextColor;
+            background: cfg.$submenuHeaderBg;
+            font-weight: cfg.$submenuHeaderFontWeight;
+        }
+
+        .p-listbox-empty-message {
+            padding: cfg.$inputListItemPadding;
+            color: cfg.$inputListItemTextColor;
+            background: cfg.$inputListItemBg;
+        }
+    }
+
+    &:not(.p-disabled) {
+        .p-listbox-item {
+            &.p-highlight {
+                &.p-focus {
+                    background: cfg.$highlightFocusBg;
+                }
+            }
+
+            &:not(.p-highlight):not(.p-disabled) {
+                &.p-focus {
+                    color: cfg.$inputListItemTextHoverColor;
+                    background: cfg.$inputListItemHoverBg;
+                }
+
+                &:hover {
+                    color: cfg.$inputListItemTextHoverColor;
+                    background: cfg.$inputListItemHoverBg;
+
+                    &.p-focus {
+                        color: cfg.$inputListItemTextHoverColor;
+                        background: cfg.$inputListItemHoverBg;
+                    }
+                }
+            }
+        }
+    }
+    &.p-focus {
+        @include util.focused-input();
+    }
+}
+
+p-listbox.ng-dirty.ng-invalid > .p-listbox {
+    @include util.invalid-input();
+}

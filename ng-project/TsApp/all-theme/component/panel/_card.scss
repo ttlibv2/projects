@@ -1,0 +1,32 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-card {
+    background: cfg.$panelContentBg;
+    color: cfg.$panelContentTextColor;
+    box-shadow: cfg.$cardShadow;
+    border-radius: cfg.$borderRadius;
+
+    .p-card-body {
+        padding: cfg.$cardBodyPadding;
+    }
+
+    .p-card-title {
+        font-size: cfg.$cardTitleFontSize;
+        font-weight: cfg.$cardTitleFontWeight;
+        margin-bottom: cfg.$inlineSpacing;
+    }
+
+    .p-card-subtitle {
+        font-weight: cfg.$cardSubTitleFontWeight;
+        margin-bottom: cfg.$inlineSpacing;
+        color: cfg.$cardSubTitleColor;
+    }
+
+    .p-card-content {
+        padding: cfg.$cardContentPadding;
+    }
+
+    .p-card-footer {
+        padding: cfg.$cardFooterPadding;
+    }
+}

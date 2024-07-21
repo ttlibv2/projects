@@ -1,0 +1,71 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-dialog {
+    border-radius: cfg.$borderRadius;
+    box-shadow: cfg.$overlayContainerShadow;
+    border: cfg.$overlayContentBorder;
+
+    .p-dialog-header {
+        border-bottom: cfg.$dialogHeaderBorder;
+        background: transparent;//cfg.$dialogHeaderBg;
+        color: cfg.$dialogHeaderTextColor;
+        padding: cfg.$dialogHeaderPadding;
+        border-top-right-radius: cfg.$borderRadius;
+        border-top-left-radius: cfg.$borderRadius;
+
+        .p-dialog-title {
+            font-weight: cfg.$dialogHeaderFontWeight;
+            font-size: cfg.$dialogHeaderFontSize;
+        }
+
+        .p-dialog-header-icon {
+            @include util.action-icon();
+            margin-right: cfg.$inlineSpacing;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .p-dialog-content {
+        background: cfg.$overlayContentBg;
+        color: cfg.$panelContentTextColor;
+        padding: cfg.$dialogContentPadding;
+
+        &:last-of-type {
+            border-bottom-right-radius: cfg.$borderRadius;
+            border-bottom-left-radius: cfg.$borderRadius;
+        }
+    }
+
+    .p-dialog-footer {
+        border-top:  cfg.$dialogFooterBorder;
+        background: cfg.$overlayContentBg;
+        color: cfg.$panelFooterTextColor;
+        padding: cfg.$dialogFooterPadding;
+        text-align: right;
+        border-bottom-right-radius: cfg.$borderRadius;
+        border-bottom-left-radius: cfg.$borderRadius;
+
+        button {
+            margin: 0 cfg.$inlineSpacing 0 0;
+            width: auto;
+        }
+    }
+
+    &.p-confirm-dialog {
+        .p-confirm-dialog-icon {
+            font-size: cfg.$primeIconFontSize * 2;
+
+            &.p-icon {
+                width: cfg.$primeIconFontSize * 2;
+                height: cfg.$primeIconFontSize * 2;
+            }
+        }
+
+        .p-confirm-dialog-message {
+            margin-left: cfg.$inlineSpacing * 2;
+        }
+    }
+}

@@ -1,0 +1,90 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-inputgroup {
+   // border-radius: cfg.$borderRadius;
+
+    > .p-component,
+    > .p-inputwrapper > .p-inputtext,
+    > .p-float-label > .p-component {
+        border-radius: 0;
+        margin: 0;
+
+        + .p-inputgroup-addon {
+            border-left: 0 none;
+        }
+
+        &:focus {
+            z-index: 1;
+
+            ~ label {
+                z-index: 1;
+            }
+        }
+    }
+
+    &-addon {
+        background: cfg.$inputGroupBg;
+        color: cfg.$inputGroupTextColor;
+        border-top: cfg.$inputBorder;
+        border-left: cfg.$inputBorder;
+        border-bottom: cfg.$inputBorder;
+        //padding: cfg.$inputPadding;
+        min-width: cfg.$inputGroupAddOnMinWidth;
+
+        &:last-child {
+            border-right: cfg.$inputBorder;
+        }
+    }
+
+    &:hover {
+        //border: 1px solid cfg.$inputHoverBorderColor;
+    }
+
+
+}
+
+.p-inputgroup-addon:first-child,
+.p-inputgroup button:first-child,
+.p-inputgroup input:first-child,
+.p-inputgroup > .p-inputwrapper:first-child > .p-component,
+.p-inputgroup > .p-inputwrapper:first-child > .p-component > .p-inputtext{
+    border-top-left-radius: cfg.$borderRadius;
+    border-bottom-left-radius: cfg.$borderRadius;
+}
+
+
+.p-inputgroup .p-float-label:first-child input {
+    border-top-left-radius: cfg.$borderRadius;
+    border-bottom-left-radius: cfg.$borderRadius;
+}
+
+.p-inputgroup-addon:last-child,
+.p-inputgroup button:last-child,
+.p-inputgroup input:last-child,
+.p-inputgroup > .p-inputwrapper:last-child > .p-component,
+.p-inputgroup > .p-inputwrapper:last-child > .p-component > .p-inputtext {
+    border-top-right-radius: cfg.$borderRadius;
+    border-bottom-right-radius: cfg.$borderRadius;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    //border-left-width: 0;
+
+}
+
+.p-inputgroup .p-float-label:last-child input {
+    border-top-right-radius: cfg.$borderRadius;
+    border-bottom-right-radius: cfg.$borderRadius;
+}
+
+.p-fluid {
+    .p-inputgroup {
+        .p-button {
+            width: auto;
+
+            &.p-button-icon-only {
+                width: cfg.$buttonIconOnlyWidth;
+            }
+        }
+    }
+}

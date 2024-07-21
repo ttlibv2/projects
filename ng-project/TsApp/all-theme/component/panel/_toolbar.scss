@@ -1,0 +1,14 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-toolbar {
+    background: cfg.$panelHeaderBg;
+    border: cfg.$panelHeaderBorder;
+    padding: cfg.$panelHeaderPadding;
+    border-radius: cfg.$borderRadius;
+    gap: cfg.$inlineSpacing;
+
+    .p-toolbar-separator {
+        margin: 0 cfg.$inlineSpacing;
+    }
+}

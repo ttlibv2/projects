@@ -1,0 +1,16 @@
+@use "../../../setting/config" as cfg;
+@use "../../../setting/mixins" as util;
+.p-overlaypanel {
+  box-shadow: cfg.$inputOverlayShadow;
+
+  .p-overlaypanel-content {
+    padding: .75rem;
+  }
+
+  .p-overlaypanel-close {
+    @include util.action-icon();
+    position: absolute;
+    top: .25rem;
+    right: .25rem;
+  }
+}

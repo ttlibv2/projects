@@ -1,0 +1,49 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-dataview {
+    .p-paginator-top {
+        border-width: cfg.$tableTopPaginatorBorderWidth;
+        border-radius: 0;
+    }
+
+    .p-paginator-bottom {
+        border-width: cfg.$tableBottomPaginatorBorderWidth;
+        border-radius: 0;
+    }
+
+    .p-dataview-header {
+        background: cfg.$tableHeaderBg;
+        color: cfg.$tableHeaderTextColor;
+        border: cfg.$tableHeaderBorder;
+        border-width: cfg.$tableHeaderBorderWidth;
+        padding: cfg.$tableHeaderPadding;
+        font-weight: cfg.$tableHeaderFontWeight;
+    }
+
+    .p-dataview-content {
+        background: cfg.$tableBodyRowBg;
+        color: cfg.$tableBodyRowTextColor;
+        border: cfg.$dataViewContentBorder;
+        padding: cfg.$dataViewContentPadding;
+    }
+
+    .p-dataview-footer {
+        background: cfg.$tableFooterBg;
+        color: cfg.$tableFooterTextColor;
+        //border-width: cfg.$tableFooterBorderWidth;
+        border: cfg.$tableFooterBorder;
+        padding: cfg.$tableFooterPadding;
+        font-weight: cfg.$tableFooterFontWeight;
+        border-bottom-left-radius: cfg.$borderRadius;
+        border-bottom-right-radius: cfg.$borderRadius;
+    }
+
+    .p-dataview-loading-icon {
+        font-size: cfg.$loadingIconFontSize;
+    }
+
+    .p-dataview-emptymessage {
+        padding: cfg.$panelContentPadding;
+    }
+}

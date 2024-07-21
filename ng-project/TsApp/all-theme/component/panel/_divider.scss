@@ -1,0 +1,34 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-divider {
+    .p-divider-content {
+        background-color: cfg.$panelContentBg;
+    }
+
+    &.p-divider-horizontal {
+        margin: cfg.$dividerHorizontalMargin;
+        padding: cfg.$dividerHorizontalPadding;
+
+        &:before {
+            border-top: cfg.$dividerSize cfg.$dividerColor;
+            border-style: cfg.$dividerStyle;
+        }
+
+        .p-divider-content {
+            padding: 0 cfg.$inlineSpacing;
+        }
+    }
+
+    &.p-divider-vertical {
+        margin: cfg.$dividerVerticalMargin;
+        padding: cfg.$dividerVerticalPadding;
+
+        &:before {
+            border-left: cfg.$dividerSize cfg.$dividerColor;
+        }
+
+        .p-divider-content {
+            padding: cfg.$inlineSpacing 0;
+        }
+    }
+}

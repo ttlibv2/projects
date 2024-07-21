@@ -1,0 +1,28 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-colorpicker-preview,
+.p-fluid .p-colorpicker-preview.p-inputtext  {
+    width: cfg.$colorPickerPreviewWidth;
+    height: cfg.$colorPickerPreviewHeight;
+}
+
+.p-colorpicker-panel {
+    background: cfg.$colorPickerBg;
+    border: cfg.$colorPickerBorder;
+
+    .p-colorpicker-color-handle,
+    .p-colorpicker-hue-handle {
+        border-color: cfg.$colorPickerHandleColor;
+    }
+}
+
+.p-colorpicker-overlay-panel {
+    box-shadow: cfg.$inputOverlayShadow;
+}
+
+.p-inputgroup input.p-colorpicker-preview.p-inputtext:last-child {
+    border-top-left-radius: cfg.$borderRadius;
+    border-bottom-left-radius: cfg.$borderRadius;
+    border-left-width: 1px;
+}

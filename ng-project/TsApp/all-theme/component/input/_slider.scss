@@ -1,0 +1,76 @@
+@use 'sass:math';
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-slider {
+    background: cfg.$sliderBg;
+    border: cfg.$sliderBorder;
+    border-radius: cfg.$borderRadius;
+
+    &.p-slider-horizontal {
+        height: cfg.$sliderHorizontalHeight;
+
+        .p-slider-handle {
+            margin-top: math.div(-1 * cfg.$sliderHandleHeight, 2);
+            margin-left: math.div(-1 * cfg.$sliderHandleWidth, 2);
+        }
+    }
+
+    &.p-slider-vertical {
+        height: 100%;
+        width: cfg.$sliderVerticalWidth;
+
+        .p-slider-handle {
+            height: cfg.$sliderHandleWidth;
+            width: cfg.$sliderHandleHeight;
+            margin-left: math.div(-1 * cfg.$sliderHandleWidth, 2);
+            margin-bottom: math.div(-1 * cfg.$sliderHandleHeight, 2);
+        }
+    }
+
+    .p-slider-handle {
+        height: cfg.$sliderHandleHeight;
+        width: cfg.$sliderHandleWidth;
+        background: cfg.$sliderHandleBg;
+        border: cfg.$sliderHandleBorder;
+        border-radius: cfg.$sliderHandleBorderRadius;
+        transition: cfg.$formElementTransition;
+
+        &:focus {
+            @include util.focused();
+        }
+    }
+
+    .p-slider-range {
+        background: cfg.$sliderRangeBg;
+    }
+
+    &:not(.p-disabled) {
+        .p-slider-handle:hover {
+            background: cfg.$sliderHandleHoverBg;
+            border-color: cfg.$sliderHandleHoverBorderColor;
+        }
+    }
+
+    &.p-slider-animate {
+        &.p-slider-horizontal {
+            .p-slider-handle {
+                transition: cfg.$formElementTransition, left cfg.$transitionDuration;
+            }
+
+            .p-slider-range {
+                transition: width cfg.$transitionDuration;
+            }
+        }
+
+        &.p-slider-vertical {
+            .p-slider-handle {
+                transition: cfg.$formElementTransition, bottom cfg.$transitionDuration;
+            }
+
+            .p-slider-range {
+                transition: height cfg.$transitionDuration;
+            }
+        }
+    }
+}

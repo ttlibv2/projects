@@ -1,0 +1,140 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+$prefix: ".p-alert";
+
+
+.p-dialog-top #{$prefix} {
+  margin-top: 3rem!important;
+}
+
+
+#{$prefix} {
+  flex: 0 auto !important;
+
+
+  .p-dialog-content {
+    padding: 0.7rem 1rem;
+    background: transparent;
+
+    > div {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-direction: row;
+
+      #{$prefix}-content-body-icon span {
+        font-size: 2rem;
+      }
+
+      #{$prefix}-content-body-summary {
+        margin-left: 1rem;
+        span {
+          font-size: 1.5rem;
+        }
+      }
+    }
+  }
+
+  .p-dialog-header {
+    padding: unset;
+    //padding: 0.7rem 1rem;
+    background: transparent;
+  }
+
+  .p-dialog-footer {
+    padding: 0 1rem 1rem;
+    background: transparent;
+  }
+
+  &-warning {
+    background: cfg.$warningMessageBg !important;
+    border: cfg.$warningMessageBorder !important;
+    //border-width: cfg.$messageBorderWidth !important;
+    color: cfg.$warningMessageTextColor !important;
+
+    .p-icon {
+      color: cfg.$warningMessageIconColor;
+    }
+
+    .p-dialog-header,
+    .p-dialog-content {
+      color: inherit;
+    }
+  }
+
+  &-info {
+    background: cfg.$infoMessageBg !important;
+    border: cfg.$infoMessageBorder;
+    //border-width: cfg.$messageBorderWidth;
+    color: cfg.$infoMessageTextColor;
+
+    .p-icon {
+      color: cfg.$infoMessageIconColor;
+    }
+
+    .p-dialog-header,
+    .p-dialog-content {
+      color: inherit;
+    }
+  }
+
+  &-success {
+    background: cfg.$successMessageBg !important;
+    border: cfg.$successMessageBorder;
+    //border-width: cfg.$messageBorderWidth;
+    color: cfg.$successMessageTextColor;
+
+    .p-icon {
+      color: cfg.$successMessageIconColor;
+    }
+    .p-dialog-header,
+    .p-dialog-content {
+      color: inherit;
+    }
+  }
+
+  &-danger {
+    background: cfg.$errorMessageBg !important;
+    border: cfg.$errorMessageBorder;
+    //border-width: cfg.$messageBorderWidth;
+    color: cfg.$errorMessageTextColor;
+
+    .p-icon {
+      color: cfg.$errorMessageIconColor;
+    }
+    .p-dialog-header,
+    .p-dialog-content {
+      color: inherit;
+    }
+  }
+
+  &-secondary {
+    background: cfg.$secondaryMessageBg !important;
+    border: cfg.$secondaryMessageBorder;
+    //border-width: cfg.$messageBorderWidth;
+    color: cfg.$secondaryMessageTextColor;
+
+    .p-icon {
+      color: cfg.$secondaryMessageIconColor;
+    }
+    .p-dialog-header,
+    .p-dialog-content {
+      color: inherit;
+    }
+  }
+
+  &-contrast {
+    background: cfg.$contrastMessageBg !important;
+    border: cfg.$contrastMessageBorder;
+    //border-width: cfg.$messageBorderWidth;
+    color: cfg.$contrastMessageTextColor;
+
+    .p-icon {
+      color: cfg.$contrastMessageIconColor;
+    }
+    .p-dialog-header,
+    .p-dialog-content {
+      color: inherit;
+    }
+  }
+}

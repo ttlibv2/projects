@@ -1,0 +1,62 @@
+@use 'sass:math';
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-inputswitch {
+    width: cfg.$inputSwitchWidth;
+    height: cfg.$inputSwitchHeight;
+
+    .p-inputswitch-slider {
+        background: cfg.$inputSwitchSliderOffBg;
+        transition: cfg.$formElementTransition;
+        border-radius: cfg.$inputSwitchBorderRadius;
+
+        &:before {
+            background: cfg.$inputSwitchHandleOffBg;
+            width: cfg.$inputSwitchHandleWidth;
+            height: cfg.$inputSwitchHandleHeight;
+            left: cfg.$inputSwitchSliderPadding;
+            margin-top: math.div(-1 * cfg.$inputSwitchHandleHeight, 2);
+            border-radius: cfg.$inputSwitchHandleBorderRadius;
+            transition-duration: cfg.$transitionDuration;
+        }
+    }
+
+    &.p-inputswitch-checked {
+        .p-inputswitch-slider:before {
+            transform: translateX(cfg.$inputSwitchHandleWidth);
+        }
+    }
+
+    &.p-focus {
+        .p-inputswitch-slider {
+            @include util.focused();
+        }
+    }
+
+    &:not(.p-disabled):hover {
+        .p-inputswitch-slider {
+            background: cfg.$inputSwitchSliderOffHoverBg;
+        }
+    }
+
+    &.p-inputswitch-checked {
+        .p-inputswitch-slider {
+            background: cfg.$inputSwitchSliderOnBg;
+
+            &:before {
+                background: cfg.$inputSwitchHandleOnBg;
+             }
+        }
+
+        &:not(.p-disabled):hover {
+            .p-inputswitch-slider {
+                background: cfg.$inputSwitchSliderOnHoverBg;
+            }
+        }
+    }
+}
+
+p-inputswitch.ng-dirty.ng-invalid > .p-inputswitch > .p-inputswitch-slider {
+    @include util.invalid-input();
+}

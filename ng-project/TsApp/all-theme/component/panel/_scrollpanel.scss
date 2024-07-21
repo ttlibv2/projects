@@ -1,0 +1,13 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-scrollpanel {
+    .p-scrollpanel-bar {
+        background: cfg.$scrollPanelTrackBg;
+        border: cfg.$scrollPanelTrackBorder;
+        transition: cfg.$formElementTransition;
+
+        &:focus-visible {
+            @include util.focused();
+        }
+    }
+}

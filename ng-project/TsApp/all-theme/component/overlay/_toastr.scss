@@ -1,0 +1,135 @@
+@use "../../setting/config" as cfg;
+
+$prefix: '.p-toast';
+$closeIconCls: $prefix + '-icon-close';
+$positionCls: $prefix;
+
+.toast-container {
+  opacity: 1;//$toastOpacity;
+  position: fixed;
+  min-width: 20rem;
+
+  //toast position
+  &#{$positionCls} {
+
+    &-top-right {
+      top: 20px;
+      right: 20px;
+    }
+
+    &-top-left {
+      top: 20px;
+      left: 20px;
+    }
+
+    &-top-center {
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &-bottom-left {
+      bottom: 20px;
+      left: 20px;
+    }
+
+    &-bottom-right {
+      bottom: 20px;
+      right: 20px;
+    }
+
+    &-bottom-center {
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    &-center {
+      left: 50%;
+      top: 50%;
+      min-width: 20vw;
+      transform: translate(-50%, -50%);
+    }
+
+  }
+
+  //toast message
+  #{$prefix}-message {
+    margin: cfg.$toastMargin;
+    box-shadow: cfg.$toastShadow;
+    border-radius: cfg.$borderRadius;
+    cursor: pointer;
+
+    &-content {
+      display: flex;
+      flex-direction: row;
+      gap: .5rem;
+      padding: .5rem;
+
+      .column-left {
+        display: flex;
+        align-items: center;
+      }
+
+      .column-center {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        gap: .5rem;
+        justify-content: center;
+      }
+
+      .column-right {
+        display: flex;
+        align-items: flex-start;
+
+
+      }
+
+
+    }
+
+    &-info {
+      background: cfg.$infoMessageBg;
+      border: cfg.$infoMessageBorder;
+      //border-width: cfg.$messageBorderWidth;
+      color: cfg.$infoMessageTextColor;
+    }
+
+    &-success {
+      background: cfg.$successMessageBg;
+      border: cfg.$successMessageBorder;
+      //border-width: cfg.$messageBorderWidth;
+      color: cfg.$successMessageTextColor;
+    }
+
+    &-warning {
+      background: cfg.$warningMessageBg;
+      border: cfg.$warningMessageBorder;
+      //border-width: cfg.$messageBorderWidth;
+      color: cfg.$warningMessageTextColor;
+    }
+
+    &-error {
+      background: cfg.$errorMessageBg;
+      border: cfg.$errorMessageBorder;
+      //border-width: cfg.$messageBorderWidth;
+      color: cfg.$errorMessageTextColor;
+    }
+
+    &-help {
+      //background: cfg.$helpMessageBg;
+      //border: cfg.$helpMessageBorder;
+      //border-width: cfg.$messageBorderWidth;
+      //color: cfg.$helpMessageTextColor;
+    }
+
+  }
+
+
+
+
+
+
+
+}

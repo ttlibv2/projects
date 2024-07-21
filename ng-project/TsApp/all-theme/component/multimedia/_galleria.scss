@@ -1,0 +1,157 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-galleria {
+    .p-galleria-close {
+        margin: cfg.$galleriaCloseIconMargin;
+        background: cfg.$galleriaCloseIconBg;
+        color: cfg.$galleriaCloseIconColor;
+        width: cfg.$galleriaCloseIconWidth;
+        height: cfg.$galleriaCloseIconHeight;
+        transition: cfg.$actionIconTransition;
+        border-radius: cfg.$galleriaCloseIconBorderRadius;
+
+        .p-galleria-close-icon {
+            font-size: cfg.$galleriaCloseIconFontSize;
+        }
+
+        .p-icon-wrapper {
+            .p-icon {
+                width: cfg.$galleriaCloseIconFontSize;
+                height: cfg.$galleriaCloseIconFontSize;
+            }
+        }
+
+        &:hover {
+            background: cfg.$galleriaCloseIconHoverBg;
+            color: cfg.$galleriaCloseIconHoverColor;
+        }
+    }
+
+    .p-galleria-item-nav {
+        background: cfg.$galleriaItemNavigatorBg;
+        color: cfg.$galleriaItemNavigatorColor;
+        width: cfg.$galleriaItemNavigatorWidth;
+        height: cfg.$galleriaItemNavigatorHeight;
+        transition: cfg.$actionIconTransition;
+        border-radius: cfg.$galleriaItemNavigatorBorderRadius;
+        margin: cfg.$galleriaItemNavigatorMargin;
+
+        .p-galleria-item-prev-icon,
+        .p-galleria-item-next-icon {
+            font-size: cfg.$galleriaItemNavigatorFontSize;
+        }
+
+        .p-icon-wrapper {
+            .p-icon {
+                width: cfg.$galleriaCloseIconFontSize;
+                height: cfg.$galleriaCloseIconFontSize;
+            }
+        }
+
+        &:not(.p-disabled) {
+            &:hover {
+                background: cfg.$galleriaItemNavigatorHoverBg;
+                color: cfg.$galleriaItemNavigatorHoverColor;
+            }
+        }
+    }
+
+    .p-galleria-caption {
+        background: cfg.$galleriaCaptionBg;
+        color: cfg.$galleriaCaptionTextColor;
+        padding: cfg.$galleriaCaptionPadding;
+    }
+
+    .p-galleria-indicators {
+        padding: cfg.$galleriaIndicatorsPadding;
+
+        .p-galleria-indicator {
+            button {
+                background-color: cfg.$galleriaIndicatorBg;
+                width: cfg.$galleriaIndicatorWidth;
+                height: cfg.$galleriaIndicatorHeight;
+                transition: cfg.$actionIconTransition;
+                border-radius: cfg.$galleriaIndicatorBorderRadius;
+
+                &:hover {
+                    background: cfg.$galleriaIndicatorHoverBg;
+                }
+            }
+
+            &.p-highlight {
+                button {
+                    background: cfg.$highlightBg;
+                    color: cfg.$highlightTextColor;
+                }
+            }
+        }
+    }
+
+    &.p-galleria-indicators-bottom,
+    &.p-galleria-indicators-top {
+        .p-galleria-indicator {
+            margin-right: cfg.$inlineSpacing;
+        }
+    }
+
+    &.p-galleria-indicators-left,
+    &.p-galleria-indicators-right {
+        .p-galleria-indicator {
+            margin-bottom: cfg.$inlineSpacing;
+        }
+    }
+
+    &.p-galleria-indicator-onitem {
+        .p-galleria-indicators {
+            background: cfg.$galleriaIndicatorsBgOnItem;
+
+            .p-galleria-indicator {
+                button {
+                    background: cfg.$galleriaIndicatorBgOnItem;
+
+                    &:hover {
+                        background: cfg.$galleriaIndicatorHoverBgOnItem;
+                    }
+                }
+
+                &.p-highlight {
+                    button {
+                        background: cfg.$highlightBg;
+                        color: cfg.$highlightTextColor;
+                    }
+                }
+            }
+        }
+    }
+
+    .p-galleria-thumbnail-container {
+        background: cfg.$galleriaThumbnailContainerBg;
+        padding: cfg.$galleriaThumbnailContainerPadding;
+
+        .p-galleria-thumbnail-prev,
+        .p-galleria-thumbnail-next {
+            margin: cfg.$inlineSpacing;
+            background-color: cfg.$galleriaThumbnailNavigatorBg;
+            color: cfg.$galleriaThumbnailNavigatorColor;
+            width: cfg.$galleriaThumbnailNavigatorWidth;
+            height: cfg.$galleriaThumbnailNavigatorHeight;
+            transition: cfg.$actionIconTransition;
+            border-radius: cfg.$galleriaThumbnailNavigatorBorderRadius;
+
+            &:hover {
+                background: cfg.$galleriaThumbnailNavigatorHoverBg;
+                color: cfg.$galleriaThumbnailNavigatorHoverColor;
+            }
+        }
+
+        .p-galleria-thumbnail-item-content {
+            &:focus-visible {
+                @include util.focused();
+            }
+        }
+    }
+}
+
+.p-galleria-mask {
+    --maskbg: #{cfg.$galleriaMaskBg};
+}

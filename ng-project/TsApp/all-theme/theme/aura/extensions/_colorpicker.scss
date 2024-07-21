@@ -1,0 +1,11 @@
+@use "../../../setting/config" as cfg;.p-colorpicker-preview {
+    padding: 0;
+
+    &:enabled:focus {
+        outline-offset: cfg.$focusOutlineOffset;
+    }
+
+    &.p-inputtext.p-disabled {
+        opacity: cfg.$disabledOpacity;
+    }
+}

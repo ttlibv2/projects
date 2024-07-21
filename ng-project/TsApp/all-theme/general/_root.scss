@@ -1,0 +1,47 @@
+@use "../setting/config" as cfg;
+@use "../setting/mixins" as util;
+@use "../setting/colors" as clr;
+
+$primaryColor: clr.$primary;
+
+:root {
+  --font-family: cfg.$fontFamily;
+  --font-feature-settings: cfg.$fontFeatureSettings;
+  --text-color: clr.$shade700;
+  --text-color-secondary: clr.$shade500;
+  --primary-color-text: cfg.$primaryTextColor;
+
+  --content-padding: 1.125rem;
+  --inline-spacing: cfg.$inlineSpacing;
+  --border-radius: cfg.$borderRadius;
+  --surface-ground: #f8fafc;
+  --surface-section: #ffffff;
+  --surface-card: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-border: #e2e8f0;
+  --surface-hover: #f1f5f9;
+  --focus-ring: cfg.$focusShadow;
+  --maskbg: cfg.$maskBg;
+  --highlight-bg: cfg.$highlightBg;
+  --highlight-text-color: cfg.$highlightTextColor;
+  --p-anchor-gutter: 2px;
+  --p-focus-ring-color: var(--primary-color);
+
+  color-scheme: cfg.$colorSchema;
+
+  // color-[50, 100, ..., 900]
+  @include util.randomColor(clr.$colors);
+
+  // theme-color
+  @include util.eachColor(clr.$surfaceColors);
+  @include util.eachColor(clr.$grayColors);
+
+  // theme-color
+  @include util.eachColor(clr.$severityColors, '-color');
+
+
+  font-family: cfg.$fontFamily;
+  font-feature-settings: cfg.$fontFeatureSettings;
+  font-variation-settings: cfg.$fontVariationSettings;
+
+}

@@ -1,0 +1,59 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-megamenu {
+    padding: cfg.$horizontalMenuPadding;
+    background: cfg.$horizontalMenuBg;
+    color: cfg.$horizontalMenuTextColor;
+    border: cfg.$horizontalMenuBorder;
+    border-radius: cfg.$borderRadius;
+
+    .p-megamenu-root-list {  
+        outline: 0 none;
+    }
+
+    .p-menuitem {
+        @include util.menuitem();
+    }
+
+    .p-megamenu-panel {
+        background: cfg.$overlayMenuBg;
+        color: cfg.$menuTextColor;
+        border: cfg.$overlayMenuBorder;
+        box-shadow: cfg.$overlayMenuShadow;
+        border-radius: cfg.$borderRadius;
+    }
+
+    .p-submenu-header {
+        margin: cfg.$submenuHeaderMargin;
+        padding: cfg.$submenuHeaderPadding;
+        color: cfg.$submenuHeaderTextColor;
+        background: cfg.$submenuHeaderBg;
+        font-weight: cfg.$submenuHeaderFontWeight;
+        border-top-right-radius: cfg.$borderRadius; 
+        border-top-left-radius: cfg.$borderRadius; 
+    }
+
+    .p-submenu-list {
+        padding: cfg.$verticalMenuPadding;
+        width: cfg.$menuWidth;
+
+        .p-menuitem-separator {
+            border-top: cfg.$divider;
+            margin: cfg.$menuSeparatorMargin;
+        }
+    }
+
+    &.p-megamenu-vertical {
+        width: cfg.$menuWidth;
+        padding: cfg.$verticalMenuPadding;
+    }
+
+    &.p-megamenu-horizontal {
+        .p-megamenu-root-list {  
+            > .p-menuitem {
+                @include util.horizontal-rootmenuitem();
+            }
+        }
+    }
+}

@@ -1,0 +1,128 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-orderlist {
+	.p-orderlist-controls {
+		padding: cfg.$panelContentPadding;
+
+		.p-button {
+			margin-bottom: cfg.$inlineSpacing;
+		}
+	}
+	
+	.p-orderlist-list-container {
+        background: cfg.$panelContentBg;
+        border: cfg.$panelContentBorder;
+        border-radius: cfg.$borderRadius;
+        transition: cfg.$formElementTransition;
+        outline-color: transparent;
+
+        &.p-focus {
+            @include util.focused-input();
+        }
+    }
+
+	.p-orderlist-header {
+		color: cfg.$panelHeaderTextColor;
+        padding: cfg.$panelHeaderPadding;
+        font-weight: cfg.$panelHeaderFontWeight;
+		.p-orderlist-title {
+			font-weight: cfg.$panelHeaderFontWeight;
+		}
+	}
+
+	.p-orderlist-filter-container {
+		padding: cfg.$panelHeaderPadding;
+		background: cfg.$panelContentBg;
+		border: cfg.$panelHeaderBorder;
+		//border-bottom: 0 none!important;
+
+		.p-orderlist-filter-input {
+			padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+		}
+
+		.p-orderlist-filter-icon {
+			right: nth(cfg.$inputPadding, 2);
+			color: cfg.$inputIconColor;
+		}
+	}
+
+	.p-orderlist-list {
+		color: cfg.$panelContentTextColor;
+        padding: cfg.$inputListPadding;
+		outline: 0 none;
+
+		&:not(:first-child) {
+            border-top: cfg.$panelContentBorder;
+        }
+        
+		.p-orderlist-item {
+			padding: cfg.$inputListItemPadding;
+			margin: cfg.$inputListItemMargin;
+			border: cfg.$inputListItemBorder;
+			color: cfg.$inputListItemTextColor;
+			background: cfg.$inputListItemBg;
+			transition: cfg.$listItemTransition;
+
+            &:first-child {
+                margin-top: 0;
+            }
+            
+			&:not(.p-highlight):hover {
+				background: cfg.$inputListItemHoverBg;
+				color: cfg.$inputListItemTextHoverColor;
+			}
+
+			&.p-focus {
+				color: cfg.$inputListItemTextFocusColor;
+				background: cfg.$inputListItemFocusBg;
+			}
+
+			&.p-highlight {
+				color: cfg.$highlightTextColor;
+				background: cfg.$highlightBg;
+
+				&.p-focus {
+					background: cfg.$highlightFocusBg;
+				}
+			}
+		}
+
+		.p-orderlist-empty-message {
+			padding: cfg.$inputListItemPadding;
+			color: cfg.$inputListItemTextColor;
+		}
+
+		&:not(.cdk-drop-list-dragging) {
+			.p-orderlist-item {
+				&:not(.p-highlight):hover {
+					background: cfg.$inputListItemHoverBg;
+					color: cfg.$inputListItemTextHoverColor;
+				}
+			}
+		}
+	}
+
+	&.p-orderlist-striped {
+		.p-orderlist-list {
+			.p-orderlist-item:nth-child(even) {
+				background: cfg.$panelContentEvenRowBg;
+
+				&:hover {
+					background: cfg.$inputListItemHoverBg;
+				}
+			}
+		}
+	}
+}
+
+.p-orderlist-item {
+	&.cdk-drag-preview {
+		padding: cfg.$inputListItemPadding;
+		box-shadow: cfg.$inputOverlayShadow;
+		border: cfg.$inputListItemBorder;
+		color: cfg.$inputListItemTextColor;
+		background: cfg.$panelContentBg;
+		margin: 0;
+	}
+}

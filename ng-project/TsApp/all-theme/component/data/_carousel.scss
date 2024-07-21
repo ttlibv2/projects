@@ -1,0 +1,40 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-carousel {
+    .p-carousel-content {
+        .p-carousel-prev,
+        .p-carousel-next {
+            @include util.action-icon();
+            margin: cfg.$inlineSpacing;
+        }
+    }
+
+    .p-carousel-indicators {
+        padding: cfg.$carouselIndicatorsPadding;
+
+        .p-carousel-indicator {
+            margin-right: cfg.$inlineSpacing;
+            margin-bottom: cfg.$inlineSpacing;
+           
+            button {
+                background-color: cfg.$carouselIndicatorBg;
+                width: cfg.$carouselIndicatorWidth;
+                height: cfg.$carouselIndicatorHeight;
+                transition: cfg.$actionIconTransition;
+                border-radius: cfg.$carouselIndicatorBorderRadius;
+
+                &:hover {
+                    background: cfg.$carouselIndicatorHoverBg;
+                }
+            }
+
+            &.p-highlight {
+                button {
+                    background: cfg.$highlightBg;
+                    color: cfg.$highlightTextColor;
+                }
+            }
+        }
+    }
+}

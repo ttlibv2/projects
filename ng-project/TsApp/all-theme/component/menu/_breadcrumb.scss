@@ -1,0 +1,45 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-breadcrumb {
+    background: cfg.$breadcrumbBg;
+    border: cfg.$breadcrumbBorder;
+    border-radius: cfg.$borderRadius;
+    padding: cfg.$breadcrumbPadding;
+
+    .p-breadcrumb-list {
+        li {
+            .p-menuitem-link {
+                transition: cfg.$listItemTransition;
+                border-radius: cfg.$borderRadius;
+
+                &:focus-visible {
+                    @include util.focused();
+                }
+
+                .p-menuitem-text {
+                    color: cfg.$breadcrumbItemTextColor;
+                }
+
+                .p-menuitem-icon {
+                    color: cfg.$breadcrumbItemIconColor;
+                }
+            }
+
+            &.p-menuitem-separator {
+                margin: 0 cfg.$inlineSpacing 0 cfg.$inlineSpacing;
+                color: cfg.$breadcrumbSeparatorColor;
+            }
+
+            &:last-child {
+                .p-menuitem-text {
+                    color: cfg.$breadcrumbLastItemTextColor;
+                }
+
+                .p-menuitem-icon {
+                    color: cfg.$breadcrumbLastItemIconColor;
+                }
+            }
+        }
+    }
+}

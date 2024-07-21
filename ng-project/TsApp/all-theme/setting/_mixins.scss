@@ -1,0 +1,392 @@
+@use "config" as cfg;
+
+@mixin icon-override($icon) {
+    &:before {
+        content: $icon;
+    }
+}
+
+@mixin focused() {
+    outline: cfg.$focusOutline;
+    outline-offset: cfg.$focusOutlineOffset;
+    box-shadow: cfg.$focusShadow;
+}
+
+@mixin focused-inset() {
+    outline: cfg.$focusOutline;
+    outline-offset: -1 * cfg.$focusOutlineOffset;
+    box-shadow: inset cfg.$focusShadow;
+}
+
+@mixin focused-input() {
+    outline: cfg.$focusOutline;
+    outline-offset: cfg.$inputFocusOutlineOffset;
+    box-shadow: cfg.$focusShadow;
+	border-color: cfg.$inputFocusBorderColor;
+}
+
+@mixin focused-listitem() {
+    outline: cfg.$focusOutline;
+    outline-offset: cfg.$focusOutlineOffset;
+    box-shadow: cfg.$inputListItemFocusShadow;
+}
+
+@mixin focused-button-ring($ring-color) {
+    outline-color: $ring-color;
+}
+
+@mixin invalid-input() {
+    border-color: cfg.$inputErrorBorderColor;
+}
+
+@mixin menuitem-link {
+    padding: cfg.$menuitemPadding;
+    color: cfg.$menuitemTextColor;
+    border-radius: cfg.$menuitemBorderRadius;
+    transition: cfg.$listItemTransition;
+    user-select: none;
+
+    .p-menuitem-text {
+        color: cfg.$menuitemTextColor;
+    }
+
+    .p-menuitem-icon {
+        color: cfg.$menuitemIconColor;
+        margin-right: cfg.$inlineSpacing;
+    }
+
+    .p-submenu-icon {
+        color: cfg.$menuitemIconColor;
+    }
+
+    &:not(.p-disabled):hover {
+        background: cfg.$menuitemHoverBg;
+
+        .p-menuitem-text {
+            color: cfg.$menuitemTextHoverColor;
+        }
+
+        .p-menuitem-icon {
+            color: cfg.$menuitemIconHoverColor;
+        }
+
+        .p-submenu-icon {
+            color: cfg.$menuitemIconHoverColor;
+        }
+    }
+
+    &:focus {
+        @include focused-listitem();
+    }
+}
+
+@mixin menuitem {
+    > .p-menuitem-content {
+        color: cfg.$menuitemTextColor;
+        transition: cfg.$listItemTransition;
+        border-radius: cfg.$menuitemBorderRadius;
+
+        .p-menuitem-link {
+            color: cfg.$menuitemTextColor;
+            padding: cfg.$menuitemPadding;
+            user-select: none;
+
+            .p-menuitem-text {
+                color: cfg.$menuitemTextColor;
+            }
+
+            .p-menuitem-icon {
+                color: cfg.$menuitemIconColor;
+                margin-right: cfg.$inlineSpacing;
+            }
+
+            .p-submenu-icon {
+                color: cfg.$menuitemIconColor;
+            }
+        }
+    }
+
+    &.p-highlight {
+        > .p-menuitem-content {
+            color: cfg.$menuitemTextActiveColor;
+            background: cfg.$menuitemActiveBg;
+
+            .p-menuitem-link {
+                .p-menuitem-text {
+                    color: cfg.$menuitemTextActiveColor;
+                }
+
+                .p-menuitem-icon,
+                .p-submenu-icon {
+                    color: cfg.$menuitemIconActiveColor;
+                }
+            }
+        }
+
+        &.p-focus {
+            > .p-menuitem-content {
+                background: cfg.$menuitemActiveFocusBg;
+            }
+        }
+    }
+
+    &:not(.p-highlight):not(.p-disabled) {
+        &.p-focus {
+            > .p-menuitem-content {
+                color: cfg.$menuitemTextFocusColor;
+                background: cfg.$menuitemFocusBg;
+
+                .p-menuitem-link {
+                    .p-menuitem-text {
+                        color: cfg.$menuitemTextFocusColor;
+                    }
+
+                    .p-menuitem-icon,
+                    .p-submenu-icon {
+                        color: cfg.$menuitemIconFocusColor;
+                    }
+                }
+            }
+        }
+
+        > .p-menuitem-content {
+            &:hover {
+                color: cfg.$menuitemTextHoverColor;
+                background: cfg.$menuitemHoverBg;
+
+                .p-menuitem-link {
+                    .p-menuitem-text {
+                        color: cfg.$menuitemTextHoverColor;
+                    }
+
+                    .p-menuitem-icon,
+                    .p-submenu-icon {
+                        color: cfg.$menuitemIconHoverColor;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin horizontal-rootmenuitem-link {
+    padding: cfg.$horizontalMenuRootMenuitemPadding;
+    color: cfg.$horizontalMenuRootMenuitemTextColor;
+    border-radius: cfg.$horizontalMenuRootMenuitemBorderRadius;
+    transition: cfg.$listItemTransition;
+    user-select: none;
+
+    .p-menuitem-text {
+        color: cfg.$horizontalMenuRootMenuitemTextColor;
+    }
+
+    .p-menuitem-icon {
+        color: cfg.$horizontalMenuRootMenuitemIconColor;
+        margin-right: cfg.$inlineSpacing;
+    }
+
+    .p-submenu-icon {
+        color: cfg.$horizontalMenuRootMenuitemIconColor;
+        margin-left: cfg.$inlineSpacing;
+    }
+
+    &:not(.p-disabled):hover {
+        background: cfg.$horizontalMenuRootMenuitemHoverBg;
+
+        .p-menuitem-text {
+            color: cfg.$horizontalMenuRootMenuitemTextHoverColor;
+        }
+
+        .p-menuitem-icon {
+            color: cfg.$horizontalMenuRootMenuitemIconHoverColor;
+        }
+
+        .p-submenu-icon {
+            color: cfg.$horizontalMenuRootMenuitemIconHoverColor;
+        }
+    }
+
+    &:focus {
+        @include focused-listitem();
+    }
+}
+
+@mixin horizontal-rootmenuitem {
+    > .p-menuitem-content {
+        color: cfg.$horizontalMenuRootMenuitemTextColor;
+        transition: cfg.$listItemTransition;
+        border-radius: cfg.$horizontalMenuRootMenuitemBorderRadius;
+
+        .p-menuitem-link {
+            padding: cfg.$horizontalMenuRootMenuitemPadding;
+            user-select: none;
+
+            .p-menuitem-text {
+                color: cfg.$horizontalMenuRootMenuitemTextColor;
+            }
+
+            .p-menuitem-icon {
+                color: cfg.$horizontalMenuRootMenuitemIconColor;
+                margin-right: cfg.$inlineSpacing;
+            }
+
+            .p-submenu-icon {
+                color: cfg.$horizontalMenuRootMenuitemIconColor;
+                margin-left: cfg.$inlineSpacing;
+            }
+        }
+    }
+
+    &:not(.p-highlight):not(.p-disabled) {
+        > .p-menuitem-content {
+            &:hover {
+                color: cfg.$horizontalMenuRootMenuitemTextHoverColor;
+                background: cfg.$horizontalMenuRootMenuitemHoverBg;
+
+                .p-menuitem-link {
+                    .p-menuitem-text {
+                        color: cfg.$horizontalMenuRootMenuitemTextHoverColor;
+                    }
+
+                    .p-menuitem-icon,
+                    .p-submenu-icon {
+                        color: cfg.$horizontalMenuRootMenuitemIconHoverColor;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@mixin placeholder {
+    ::-webkit-input-placeholder {
+        @content;
+    }
+    :-moz-placeholder {
+        @content;
+    }
+    ::-moz-placeholder {
+        @content;
+    }
+    :-ms-input-placeholder {
+        @content;
+    }
+}
+
+@mixin scaledPadding($val, $scale) {
+    padding: nth($val, 1) * $scale nth($val, 2) * $scale;
+}
+
+@mixin scaledFontSize($val, $scale) {
+    font-size: $val * $scale;
+}
+
+@mixin nested-submenu-indents($val, $index, $length) {
+    .p-submenu-list {
+        .p-menuitem {
+            .p-menuitem-content {
+                .p-menuitem-link {
+                    padding-left: $val * ($index + 1);
+                }
+            }
+            @if $index < $length {
+                @include nested-submenu-indents($val, $index + 2, $length);
+            }
+        }
+    }
+}
+
+@mixin action-icon($enabled: true) {
+    width: cfg.$actionIconWidth;
+    height: cfg.$actionIconHeight;
+    color: cfg.$actionIconColor;
+    border: cfg.$actionIconBorder;
+    background: cfg.$actionIconBg;
+    border-radius: cfg.$actionIconBorderRadius;
+    transition: cfg.$actionIconTransition;
+
+    &:enabled:hover {
+        color: cfg.$actionIconHoverColor;
+        border-color: cfg.$actionIconHoverBorderColor;
+        background: cfg.$actionIconHoverBg;
+    }
+
+    &:focus-visible {
+        @include focused();
+    }
+}
+
+@function tint($color, $percentage) {
+    @return mix(#fff, $color, $percentage);
+}
+
+@function shade($color, $percentage) {
+    @return mix(#000, $color, $percentage);
+}
+
+@mixin focused-inset() {
+    outline: cfg.$focusOutline;
+    outline-offset: cfg.$focusOutlineOffset;
+    box-shadow: inset cfg.$focusShadow;
+}
+
+@mixin menuitem-badge {
+    background: cfg.$badgeBg;
+    color: cfg.$badgeTextColor;
+    font-size: cfg.$badgeFontSize;
+    font-weight: cfg.$badgeFontWeight;
+    min-width: cfg.$badgeMinWidth;
+    height: cfg.$badgeHeight;
+    line-height: cfg.$badgeHeight;
+    border-radius: cfg.$borderRadius;
+    margin-left: cfg.$inlineSpacing;
+    padding-left: cfg.$inlineSpacing;
+    padding-right: cfg.$inlineSpacing;
+}
+
+
+@mixin secondary-button {
+    color: cfg.$secondaryButtonTextColor;
+    background: cfg.$secondaryButtonBg;
+    border: cfg.$secondaryButtonBorder;
+
+    &:not(:disabled){
+        &:hover {
+            background: cfg.$secondaryButtonHoverBg;
+            color: cfg.$secondaryButtonTextHoverColor;
+            border-color: cfg.$secondaryButtonHoverBorderColor;
+        }
+
+        &:focus {
+            box-shadow: cfg.$secondaryButtonFocusShadow;
+        }
+
+        &:active {
+            background: cfg.$secondaryButtonActiveBg;
+            color: cfg.$secondaryButtonTextActiveColor;
+            border-color: cfg.$secondaryButtonActiveBorderColor;
+        }
+    }
+}
+
+@mixin randomColor($colors) {
+    @each $name, $color in $colors {
+        @for $i from 0 through 5 {
+            @if ($i == 0) {
+                --#{$name}-50: #{tint($color, (5 - $i) * 19%)};
+            } @else {
+                --#{$name}-#{$i * 100}: #{tint($color, (5 - $i) * 19%)};
+            }
+        }
+
+        @for $i from 1 through 4 {
+            --#{$name}-#{($i + 5) * 100}: #{shade($color, $i * 15%)};
+        }
+    }
+}
+
+@mixin eachColor($mapColor, $suffixName: '') {
+    @each $color, $value in $mapColor {
+        --#{$color}#{$suffixName}: #{$value};
+    }
+}

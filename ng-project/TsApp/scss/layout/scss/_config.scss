@@ -1,0 +1,19 @@
+.layout-config-button.p-button {
+    z-index: 999;
+    position: fixed;
+    top: 50%;
+    right: 0;
+    width: 3rem;
+    height: 3rem;
+    background: var(--primary-color);
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    transition: background-color var(--transition-duration);
+
+    .p-button-icon {
+        font-size: 2rem;
+    }
+}
+

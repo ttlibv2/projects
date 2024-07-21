@@ -1,0 +1,145 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-menubar {
+    padding: cfg.$horizontalMenuPadding;
+    background: cfg.$horizontalMenuBg;
+    color: cfg.$horizontalMenuTextColor;
+    border: cfg.$horizontalMenuBorder;
+    border-radius: cfg.$borderRadius;
+
+    .p-menubar-root-list {
+        outline: 0 none;
+
+        > .p-menuitem {
+            @include util.horizontal-rootmenuitem();
+        }
+    }
+
+    .p-menuitem {
+        @include util.menuitem();
+    }
+
+    .p-submenu-list {
+        padding: cfg.$verticalMenuPadding;
+        background: cfg.$overlayMenuBg;
+        border: cfg.$overlayMenuBorder;
+        box-shadow: cfg.$overlayMenuShadow;
+        width: cfg.$menuWidth;
+        border-radius: cfg.$borderRadius;
+
+        .p-menuitem-separator {
+            border-top: cfg.$divider;
+            margin: cfg.$menuSeparatorMargin;
+        }
+
+        .p-submenu-icon {
+            font-size: cfg.$menuitemSubmenuIconFontSize;
+        }
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .p-menubar {
+        position: relative;
+
+        .p-menubar-button {
+            display: flex;
+            width: cfg.$actionIconWidth;
+            height: cfg.$actionIconHeight;
+            color: cfg.$horizontalMenuRootMenuitemIconColor;
+            border-radius: cfg.$actionIconBorderRadius;
+            transition: cfg.$actionIconTransition;
+        
+            &:hover {
+                color: cfg.$horizontalMenuRootMenuitemIconHoverColor;
+                background: cfg.$horizontalMenuRootMenuitemHoverBg;
+            }
+        
+            &:focus {
+                @include util.focused();
+            }
+        }
+
+        .p-menubar-root-list {
+            position: absolute;
+            display: none;
+            padding: cfg.$verticalMenuPadding;
+            background: cfg.$overlayMenuBg;
+            border: cfg.$overlayMenuBorder;
+            box-shadow: cfg.$overlayMenuShadow;
+            width: 100%;
+    
+            .p-menuitem-separator {
+                border-top: cfg.$divider;
+                margin: cfg.$menuSeparatorMargin;
+            }
+    
+            .p-submenu-icon {
+                font-size: cfg.$menuitemSubmenuIconFontSize;
+            }
+
+            .p-menuitem {
+                width: 100%;
+                position: static;
+
+                .p-menuitem-content {
+                    .p-menuitem-link {
+                        .p-submenu-icon {
+                            margin-left: auto;
+                            transition: transform cfg.$transitionDuration;
+                        }
+                    }
+                }
+
+
+                &.p-menuitem-active {
+                    > .p-menuitem-content {
+                        > .p-menuitem-link {
+                            > .p-submenu-icon {
+                                transform: rotate(-180deg);
+                            }
+                        }
+                    }
+                }
+            }
+
+            .p-submenu-list {
+                width: 100%;
+                position: static;
+                box-shadow: none;
+                border: 0 none;
+
+                .p-submenu-icon {
+                    transition: transform cfg.$transitionDuration;
+                    transform: rotate(90deg);
+                }
+
+                .p-menuitem-active {
+                    > .p-menuitem-content {
+                        > .p-menuitem-link {
+                            > .p-submenu-icon {
+                                transform: rotate(-90deg);
+                            }
+                        }
+                    }
+                }
+            }
+    
+            .p-menuitem {
+                width: 100%;
+                position: static;
+            }
+
+            @include util.nested-submenu-indents(nth(cfg.$menuitemPadding, 1), 2, 10);
+        }
+
+        &.p-menubar-mobile-active .p-menubar-root-list {
+            display: flex;
+            flex-direction: column;
+            top: 100%;
+            left: 0;
+            z-index: 1;
+        }
+    }
+}

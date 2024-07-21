@@ -1,0 +1,44 @@
+@use 'sass:math';
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-chip {
+    background-color: cfg.$chipBg;
+    color: cfg.$chipTextColor;
+    border-radius: cfg.$chipBorderRadius;
+    padding: 0 nth(cfg.$inputPadding, 2);
+
+    .p-chip-text {
+        line-height: 1.5;
+        margin-top: math.div(nth(cfg.$inputPadding, 1), 2);
+        margin-bottom: math.div(nth(cfg.$inputPadding, 1), 2);
+    }
+
+    .p-chip-icon {
+        margin-right: cfg.$inlineSpacing;
+    }
+
+    .pi-chip-remove-icon {
+        margin-left: cfg.$inlineSpacing;
+    }
+
+    img {
+        width: 1.5 + nth(cfg.$inputPadding, 1);
+        height: 1.5 + nth(cfg.$inputPadding, 1);
+        margin-left: -1 * nth(cfg.$inputPadding, 2);
+        margin-right: cfg.$inlineSpacing;
+    }
+
+    .pi-chip-remove-icon {
+        border-radius: cfg.$borderRadius;
+        transition: cfg.$actionIconTransition;
+        
+        &:focus-visible {
+            @include util.focused();
+        }
+
+        &:focus {
+            outline: 0 none;
+        }
+    }
+}
