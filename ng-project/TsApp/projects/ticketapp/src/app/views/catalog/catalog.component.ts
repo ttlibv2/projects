@@ -90,8 +90,6 @@ export class CatalogComponent implements OnInit, AfterViewInit {
       this.autoLoad = autoLoad;
       this.templateCode = templateCode;
     }
-
-
   }
 
   ngAfterViewInit(): void {

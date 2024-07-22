@@ -18,12 +18,12 @@ export interface ValueOption {
 }
 
 export class TicketUtil2 {
-
+ 
 
   get user(): User { return this.comp.userLogin; }
   get form(): FormGroup { return this.comp.ticketForm; }
   get formValue(): Ticket { return this.form.getRawValue(); }
-  get options(): ITicketOption { return this.comp.options; }
+  get options(): TicketOption { return this.comp.options; }
   get autoCreate(): boolean { return this.options.autoCreate; }
 
   constructor(public comp: TicketFormComponent) {}
@@ -51,7 +51,7 @@ export class TicketUtil2 {
         this.pathValueForm({content_copy: this.createContentCopy()})
     });
 
-    //this.valueChangeFor(['options'], json => this.options.update(json));
+    this.valueChangeFor(['options'], json => this.options.update(json));
     
     this.valueChangeFor(['od_partner_id'], json => {
       if(isBlank(json['od_partner_id'])) this.pathValueForm({od_partner: undefined});
@@ -174,6 +174,10 @@ export class TicketUtil2 {
    controls.forEach((c: any) => this.form.get(c).valueChanges.subscribe({
     next: res => nextCb({[c]: res})
    }))
+  }
+
+  resetForm(data?: any) {
+    this.form.reset(data);
   }
 
 }

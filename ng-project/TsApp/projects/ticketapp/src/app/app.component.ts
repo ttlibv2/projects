@@ -28,7 +28,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
-    this.layoutService.tryAddTheme();
     this.layoutService.layoutConfig({
       visibleTopBar: false,
       visibleSideBar: false,
@@ -38,7 +37,7 @@ export class AppComponent implements OnInit {
       menuTheme: 'light',
       menuMode: 'slim',
       theme: 'aura-light',
-      colorScheme: 'lime2',
+      colorScheme: 'indigo',
       themeUrlPrefix: '',
 
       listTheme: {
@@ -86,6 +85,9 @@ export class AppComponent implements OnInit {
       
       // ]
     });
+
+    
+    this.layoutService.tryAddTheme();
 
     this.primengConfig.ripple = true;
     this.translateService.get('primeng').subscribe(s => this.primengConfig.setTranslation(s));

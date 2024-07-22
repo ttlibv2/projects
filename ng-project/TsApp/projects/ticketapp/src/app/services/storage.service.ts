@@ -10,6 +10,7 @@ import {Question} from "../models/question";
 import * as cls from "../models/od-cls";
 import {Translation} from "../models/translation";
 import {AppConfig} from "../models/app-config";
+import { Catalog } from "../models/catalog";
 
 
 export interface StorageData {
@@ -28,6 +29,7 @@ export interface StorageData {
     lsTicketType?: cls.ClsTicketType[];
     lsProduct?: cls.ClsProduct[];
     lsReplied?: cls.ClsRepiled[];
+    allCatalog?: Catalog;
 }
 
 const defaultConfig = AppConfig.from({
@@ -49,6 +51,13 @@ export class StorageService {
         const local = () => this.config.update(cls => cls.update({[field]: data}));
         return this.db.appCfg.set(field, data).pipe(tap(_ => local()));
     }
+
+    clearCache(): void {
+        this.data.update(json => ({...json, 
+            allCatalog: undefined
+        }));
+    }
+    
 
     set_loginToken(token: AuthToken): Observable<AuthToken> {
         return this.updateConfig('loginToken', token);
@@ -115,7 +124,9 @@ export class StorageService {
 	get lsTicketType(): cls.ClsTicketType[] { return this.data().lsTicketType;}
 	get lsProduct(): cls.ClsProduct[] { return this.data().lsProduct;}
 	get lsReplied(): cls.ClsRepiled[] { return this.data().lsReplied;}
+    get allCatalog(): Catalog { return this.data().allCatalog;}
     get isLogin(): boolean { return Objects.notNull(this.loginToken);}
+    
 
 
 

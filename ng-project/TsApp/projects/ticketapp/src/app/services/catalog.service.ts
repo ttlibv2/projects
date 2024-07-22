@@ -50,6 +50,7 @@ export class CatalogService extends ClientService {
     const url = '/ts-api/catalog/get-all';
     return this.get(url, params).pipe(map(res => {
       const newData = jsonToCatalog(this.db, res, this.logger);
+      this.config.data.update(s => ({...s, allCatalog: newData}));
       this.saveCatalogToDb(newData);
       return newData;
     }));

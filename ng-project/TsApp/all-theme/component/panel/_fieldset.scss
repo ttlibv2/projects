@@ -1,51 +1,51 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
+
 .p-fieldset {
-    border: cfg.$panelContentBorder;
-    background: cfg.$panelContentBg;
-    color: cfg.$panelContentTextColor;
+  border: cfg.$panelContentBorder;
+  background: cfg.$panelContentBg;
+  color: cfg.$panelContentTextColor;
+  border-radius: cfg.$borderRadius;
+
+  &-legend:has(span:not(:empty)) {
+    padding: cfg.$fieldsetHeaderPadding;
+    border: cfg.$panelHeaderBorder;
+    color: cfg.$panelHeaderTextColor;
+    background: cfg.$panelHeaderBg;
+    font-weight: cfg.$panelHeaderFontWeight;
     border-radius: cfg.$borderRadius;
+  }
 
-   
+  &-content {
+    padding: cfg.$fieldsetContentPadding;
+  }
 
+  &-toggleable {
     .p-fieldset-legend {
+      padding: 0;
+      transition: cfg.$actionIconTransition;
+
+      a {
         padding: cfg.$panelHeaderPadding;
-        border: cfg.$panelHeaderBorder;
         color: cfg.$panelHeaderTextColor;
-        background: cfg.$panelHeaderBg;
-        font-weight: cfg.$panelHeaderFontWeight;
         border-radius: cfg.$borderRadius;
-    }
+        transition: cfg.$listItemTransition;
 
-    &.p-fieldset-toggleable {
-        .p-fieldset-legend {
-            padding: 0;
-            transition: cfg.$actionIconTransition;
-
-            a {
-                padding: cfg.$panelHeaderPadding;
-                color: cfg.$panelHeaderTextColor;
-                border-radius: cfg.$borderRadius;
-                transition: cfg.$listItemTransition;
-
-                .p-fieldset-toggler {
-                    margin-right: cfg.$inlineSpacing;
-                }
-
-                &:focus-visible {
-                    @include util.focused();
-                }
-            }
-
-            &:hover {
-                background: cfg.$panelHeaderHoverBg;
-                border-color: cfg.$panelHeaderHoverBorderColor;
-                color: cfg.$panelHeaderTextHoverColor;
-            }
+        .p-fieldset-toggler {
+          margin-right: cfg.$inlineSpacing;
         }
-    }
 
-    .p-fieldset-content {
-        padding: cfg.$panelContentPadding;
+        &:focus-visible {
+          @include util.focused();
+        }
+      }
+
+      &:hover {
+        background: cfg.$panelHeaderHoverBg;
+        border-color: cfg.$panelHeaderHoverBorderColor;
+        color: cfg.$panelHeaderTextHoverColor;
+      }
     }
+  }
+
 }

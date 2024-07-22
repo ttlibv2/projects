@@ -69,6 +69,11 @@
                 "input": "all-theme/theme/aura/aura-light-lime.scss",
                 "bundleName": "aura-light-lime2",
                 "inject": false
+              },
+              {
+                "input": "all-theme/theme/aura/aura-light-indigo.scss",
+                "bundleName": "aura-light-indigo",
+                "inject": false
               }
 
             ],

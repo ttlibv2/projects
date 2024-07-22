@@ -11,7 +11,7 @@
 
         &:before {
             border-top: cfg.$dividerSize cfg.$dividerColor;
-            border-style: cfg.$dividerStyle;
+            border-top-style: cfg.$dividerStyle;
         }
 
         .p-divider-content {

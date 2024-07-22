@@ -1,6 +1,6 @@
-import { AfterContentInit, AfterRenderRef, booleanAttribute, Component, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterContentInit, AfterViewInit, booleanAttribute, ChangeDetectorRef, Component, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoggerService } from 'ts-logger';
-import { AgTableComponent, TableColumn, TableOption } from 'ts-ui/ag-table';
+import { AgTableComponent, TableOption } from 'ts-ui/ag-table';
 import { Ticket } from '../../models/ticket';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
@@ -8,17 +8,17 @@ import { ToastService } from '../../services/toast.service';
 import { AgTableService } from '../../services/ag-table.service';
 import { TicketService } from '../../services/ticket.service';
 import { AgTagCell, AgStatusRenderer } from './ag-ticket-cell';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DOCUMENT } from '@angular/common';
 import { ListUtil } from './list-utils';
 import { TagRemoveEvent } from 'ts-ui/tag';
 import { AgTable } from '../../models/ag-table';
 import { AgTableTemplate } from './ag-table-template';
-import { concat, concatAll, concatMap, delay, of, switchMap, take, tap } from 'rxjs';
-import { Objects } from 'ts-helper';
-import { channel } from 'diagnostics_channel';
 import { FormsUtil } from './form-util';
 import { Alert } from '../../services/ui/alert/alert.service';
 import { RxjsUtil } from './rxjs-util';
+import { SaveTicketEvent, SetDataInput } from '../ticket-form/ticket-form.component';
+import { tap } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 export interface SearchOption {
   label: string;
@@ -34,9 +34,21 @@ export interface AgTemplate {
   selector: 'ts-ticket-list',
   templateUrl: './ticket-list.component.html',
   styleUrl: './ticket-list.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+ // changeDetection: ChangeDetectionStrategy.OnPush,
+ animations: [
+  trigger('widthGrow', [
+      state('closed', style({
+          height: 0,
+      })),
+      state('open', style({
+          height: '100%'
+      })),
+      transition('* => *', animate(150))
+  ]),
+]
 })
-export class TicketListComponent implements OnInit, AfterContentInit {
+export class TicketListComponent implements OnInit, AfterContentInit, AfterViewInit {
   agRows: Ticket[] = [];
   searchForm: FormGroup;
   agColumns: any[] = [];
@@ -45,10 +57,12 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   dataModel: Ticket[] = [];
   utils: FormsUtil;
   currentTicket: Ticket;
+  tableHeight: string = '370px';
 
   agOption: TableOption<Ticket> = {
     getRowId: fnc => `ROWID_${fnc.data.ticket_id}`
   };
+
 
   searchOptions: SearchOption[] = [
     { label: '1. Tất cả', code: 'all', value: null },
@@ -91,14 +105,30 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   @ViewChild(AgTableComponent, { static: true })
   agTable: AgTableComponent<Partial<Ticket>>;
 
-  @Input({ transform: booleanAttribute })
-  visibleForm: boolean = true;
+  // @Input({ transform: booleanAttribute })
+  // set visibleForm0(bool: boolean) {
+  //   this.tableHeight = this.calcHeight + 'px';
+  //   this._visibleForm = bool;
+  // }
+
+  // get visibleForm0(): boolean {
+  //   return this._visibleForm;
+  // }
 
   get isVisibleChanel(): boolean {
     return this.searchForm.get('visibleChanel').value;
   }
 
+  get visibleForm(): boolean {
+    return this.searchForm.getRawValue()?.visibleForm;
+  }
+
   constructor(
+    @Inject(DOCUMENT)
+    private document: Document,
+
+    private detectorRef: ChangeDetectorRef,
+
     private alert: Alert,
     private toast: ToastService,
     private agService: AgTableService,
@@ -110,7 +140,8 @@ export class TicketListComponent implements OnInit, AfterContentInit {
     this.searchForm = this.fb.group({
       dateOn: [null, Validators.required],
       option: [this.searchOptions[0], Validators.required],
-      visibleChanel: [false]
+      visibleChanel: [false],
+      visibleForm: [true]
     });
 
     this.utils = new FormsUtil(this.searchForm);
@@ -140,6 +171,10 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   ngAfterContentInit(): void {
   }
 
+  ngAfterViewInit(): void {
+   
+  }
+  
   loadAgTable() {
     this.agService.getByCode('ticket_list', true)
       .pipe(tap(tb => this.agTableModel = tb))
@@ -158,6 +193,8 @@ export class TicketListComponent implements OnInit, AfterContentInit {
 
           // update command for menu item view ag-column
           this.agColumns = agTable.grid_columns;
+          this.agTable.setColumns(this.agColumns);
+
           this.agTemplates = agTable.menuItems || [];
           this.agTemplates.forEach(item => item.command = this.onSelectColumnView.bind(this))
 
@@ -287,30 +324,6 @@ export class TicketListComponent implements OnInit, AfterContentInit {
       }
     })
 
-
-
-
-
-
-
-
-    // const waitToast = this.toast.help({ summary: `Đang xóa ticket. Vui lòng đợi....` });
-
-    // const listObs = lsTicket.map(ticket => of(ticket).pipe(
-    //   tap(t => this.agTable.updateRows({send_status: 'loading'}))
-    // ));
-
-
-
-
-
-    // of(...listObs).pipe(concatMap(it => it.pipe(delay(1000)))).subscribe({
-    //   error: msg => this.logger.error(msg),
-    //   next: data =>  this.logger.log(data),
-    //   complete: () => this.toast.close(waitToast)
-    // })
-
-
   }
 
   selectTicket(ticket: Ticket): void {
@@ -318,25 +331,23 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   }
 
   demo(): void {
-    //   const colDef = (colId: string) => this.agColumns.find(c => c.field === colId);
-    //   const list = this.agTable.tableApi.getAllDisplayedColumns().map((c, index) => ({
-    //     ...colDef(c.getColId()),
-    //     position: index,
-    //     width: c.getActualWidth()
-    //   }))
-    //   console.log(JSON.stringify(list))
-
-    this.agTable.tableApi.selectAll();
-    this.deleteTicket();
-
-
-    // const state = this.agTable.tableApi.getColumnState().filter(s => s.hide === false).map(s => Objects.extractValueNotNull(s));
-    // const visibleColumns = this.agTable.tableApi.getAllDisplayedColumns().map(c => c.getColId());
-    // console.log(JSON.stringify({states: state}))
-    // console.log(visibleColumns)
+    this.loadAgTable()
   }
 
   removeUser($event: TagRemoveEvent) {
     console.log('remove user', $event.value);
+  }
+
+  saveTicket(event: SaveTicketEvent): void {
+    if(event.state === 'new') this.agTable.addRows(event.ticket);
+    else if(event.state === 'update') this.agTable.updateRows(event.ticket);
+  }
+
+  get calcHeight() {
+    const formEl = this.document.getElementById('ticketListForm')?.getBoundingClientRect();
+    const toolEl = this.document.getElementById('ticketListTool').getBoundingClientRect();
+    const formHeight = this.visibleForm && formEl ? (formEl.height + formEl.top ) : 0;
+    const toolHeight = toolEl.height + toolEl.top ;
+    return this.document.body.getBoundingClientRect().height - toolHeight - formHeight;
   }
 }

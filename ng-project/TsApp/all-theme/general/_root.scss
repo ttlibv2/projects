@@ -5,8 +5,10 @@
 $primaryColor: clr.$primary;
 
 :root {
-  --font-family: cfg.$fontFamily;
+  --font-family: "Inter var", sans-serif, serif;//cfg.$fontFamily;
   --font-feature-settings: cfg.$fontFeatureSettings;
+  --font-variation-settings: normal;
+  
   --text-color: clr.$shade700;
   --text-color-secondary: clr.$shade500;
   --primary-color-text: cfg.$primaryTextColor;
@@ -40,8 +42,8 @@ $primaryColor: clr.$primary;
   @include util.eachColor(clr.$severityColors, '-color');
 
 
-  font-family: cfg.$fontFamily;
-  font-feature-settings: cfg.$fontFeatureSettings;
-  font-variation-settings: cfg.$fontVariationSettings;
+  font-family: var(--font-family);
+  font-feature-settings: var(--font-feature-settings);
+  font-variation-settings: var(--font-variation-settings);
 
 }

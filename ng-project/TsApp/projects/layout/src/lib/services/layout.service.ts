@@ -80,6 +80,7 @@ export class LayoutService {
     
     if(notNull(theme) && notNull(colorScheme)) {
       const themeUrl = `${themeUrlPrefix}${theme}-${colorScheme}.css`;
+      console.log(themeUrl)
       this.style.setStyle(elThemeId, themeUrl);
 
       //const themeUrl = this._config.themeUrlPrefix + '/' + theme + '/' + colorScheme + '/theme.css';

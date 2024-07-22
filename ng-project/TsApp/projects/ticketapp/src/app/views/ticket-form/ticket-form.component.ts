@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild, ViewEncapsulation, booleanAttribute } from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MenuItem } from "primeng/api";
 import { Ticket, TicketTemplateData } from "../../models/ticket";
 import { ITicketOption, TicketOption } from "../../models/ticket-option";
@@ -8,14 +8,13 @@ import { CatalogService } from "../../services/catalog.service";
 
 import { Catalog } from "../../models/catalog";
 import { ToastService } from "../../services/toast.service";
-import { Objects } from "ts-helper";
+import { Objects, Asserts } from "ts-helper";
 import { Software } from "../../models/software";
 import { ClsTeam } from "../../models/od-cls";
 import { LoggerService } from "ts-logger";
-import { last, Observable, Observer, of } from "rxjs";
+import { Observable, Observer, of, map } from "rxjs";
 import { Chanel } from "../../models/chanel";
 import { Template } from "../../models/template";
-import { TemplateService } from "../../services/template.service";
 import * as cls from "../../models/od-cls";
 import { CatalogComponent } from "../catalog/catalog.component";
 import { User } from "../../models/user";
@@ -27,7 +26,9 @@ import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { Router } from "@angular/router";
 import { TicketService } from "../../services/ticket.service";
 
-const { notNull, notEmpty, isEmpty } = Objects;
+const { notNull, notEmpty, isEmpty, isNull } = Objects;
+
+export type TicketState = 'new' | 'update' | 'delete';
 
 export interface State {
   assign?: boolean;
@@ -42,6 +43,18 @@ export interface OptionLabel {
   command?: (event: any) => void;
 }
 
+export interface SaveTicketEvent {
+  ticket: Ticket;
+  state: TicketState;
+}
+
+export interface SetDataInput {
+  data: Ticket;
+  option?: {
+    useDefault: boolean;
+    templateId?: number;
+  }
+}
 
 @Component({
   selector: "ts-ticket-form",
@@ -50,7 +63,7 @@ export interface OptionLabel {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TicketFormComponent implements OnInit {
+export class TicketFormComponent implements OnInit, OnChanges {
 
   get formRawValue(): Ticket {
     return this.ticketForm.getRawValue();
@@ -69,18 +82,18 @@ export class TicketFormComponent implements OnInit {
   }
 
   get isSubjectReadOnly(): boolean {
-    const {emailTicket,autoFill} = this.options;
+    const { emailTicket, autoFill } = this.options;
     return (emailTicket === false || autoFill === true);
   }
 
   get templateDefault(): Template {
-    if(notNull(this.currentTemplate)) return this.currentTemplate;
+    if (notNull(this.currentTemplate)) return this.currentTemplate;
     else return this.currentTemplate = this.catalog?.ls_template?.get_ticket_def();
   }
 
-  get options(): ITicketOption {
-    return this.formRawValue['options'];
-  }
+  // get options(): ITicketOption {
+  //   return this.formRawValue['options'];
+  // }
 
   readonly toolActions: MenuItem[] = [
     {
@@ -96,8 +109,11 @@ export class TicketFormComponent implements OnInit {
     {
       label: "Cập nhật mẫu",
       icon: "pi pi-home",
-      command: _ => this.router.navigate(['/admin/templates'], {queryParams: {
-        entity: 'form_ticket', lastUrl: '/admin/ticket-form'}}),
+      command: _ => this.router.navigate(['/admin/templates'], {
+        queryParams: {
+          entity: 'form_ticket', lastUrl: '/admin/ticket-form'
+        }
+      }),
     },
     {
       label: "Sao chép mẫu",
@@ -150,11 +166,18 @@ export class TicketFormComponent implements OnInit {
   userLogin: User;
   utils: TicketUtil2;
   viewTemplate: boolean = false;
+  hasBorderEnd: boolean = true;
+  options: TicketOption = TicketOption.createDef();
 
   @Input()
-  set data(ticket: Ticket) {
-    this.logger.debug('set data ', ticket);
+  set data(input: Ticket) {
+    if (notNull(input)) {
+      this.ticketForm.reset();
+      this.ticketForm.patchValue(input);
+    }
   }
+
+  @Output() onSave = new EventEmitter<SaveTicketEvent>();
 
   constructor(
     private fb: FormBuilder,
@@ -166,23 +189,27 @@ export class TicketFormComponent implements OnInit {
     private logger: LoggerService,
     private router: Router,
     private datePipe: DatePipe,
-    private dialogRef: DynamicDialogRef ) {
+    private dialogRef: DynamicDialogRef) {
     this.createFormGroup();
   }
 
   ngOnInit() {
-   
     const dialogInstance = this.toast.getDialogComponentRef(this.dialogRef)?.instance;
-    if(dialogInstance && dialogInstance.data?.template) {
+    if (dialogInstance && dialogInstance.data?.template) {
       this.viewTemplate = true;
       this.currentTemplate = dialogInstance.data.template;
     }
 
     this.userLogin = this.storage.loginUser;
-    this.loadCatalogs(true).subscribe({next: _ => {
-      this.createNew(this.currentTemplate);
-    }});
+    this.loadCatalogs(true, true).subscribe({
+      next: _ => {
+        this.createNew(this.currentTemplate);
+      }
+    });
 
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
   }
 
   createFormGroup(): void {
@@ -212,7 +239,7 @@ export class TicketFormComponent implements OnInit {
       chanels: [null, Validators.required],
       support_help: [null, Validators.required],
       soft_name: [null, Validators.required],
-      od_image: [null],
+      images: [null],
       od_assign: [null, Validators.required],
       od_category_sub: [null, Validators.required],
       od_category: [null, Validators.required],
@@ -233,8 +260,7 @@ export class TicketFormComponent implements OnInit {
         viewAll: [null],
         viewTs24: [null],
         saveCache: [null],
-        emailTicket: [null],
-        viewTemplate: [this.viewTemplate],
+        emailTicket: [null]
       }),
 
       edit_note: [true],
@@ -243,39 +269,46 @@ export class TicketFormComponent implements OnInit {
 
     this.utils = new TicketUtil2(this);
     this.utils.registerListener();
-
-
-
   }
 
-  loadCatalogs(autoLoad: boolean = false): Observable<any> {
+  loadCatalogs(autoLoad: boolean = false, useCache: boolean = false): Observable<any> {
     return new Observable((observer: Observer<any>) => {
-      const cateRef = this.toast.openDialog(CatalogComponent, {
-        header: 'Danh mục cần lấy ?',
-        closeOnEscape: true,
-        focusOnShow: false,
-        data: { templateCode: 'form_ticket', autoLoad }
-      });
-  
-      cateRef.onClose.subscribe({
-        error: (err) => {
-          this.asyncLoadCate = false;
-          observer.error(err);
-        },
-        next: (res: Catalog) => {
-          this.catalog = Objects.isNull(this.catalog) ? res : this.catalog.update(res);
-          //this.currentTemplate = res.ls_template.get_ticket_def();
-          this.cref.detectChanges();
-        
-          observer.next(res);
-          observer.complete();
-        }
-      })
+
+      if (useCache === true && notNull(this.storage.allCatalog)) {
+        this.catalog = this.storage.allCatalog;
+        console.log(this.catalog)
+        observer.next(this.catalog);
+        observer.complete();
+      }
+      else {
+
+        const cateRef = this.toast.openDialog(CatalogComponent, {
+          header: 'Danh mục cần lấy ?',
+          closeOnEscape: true,
+          focusOnShow: false,
+          data: { templateCode: 'form_ticket', autoLoad }
+        });
+
+        cateRef.onClose.subscribe({
+          error: (err) => {
+            this.asyncLoadCate = false;
+            observer.error(err);
+          },
+          next: (res: Catalog) => {
+            this.catalog = Objects.isNull(this.catalog) ? res : this.catalog.update(res);
+            this.cref.detectChanges();
+
+            observer.next(res);
+            observer.complete();
+          }
+        })
+      }
     });
 
   }
 
   clearCache() {
+    this.storage.clearCache();
     this.catalogSrv.clearCache().subscribe();
   }
 
@@ -287,53 +320,15 @@ export class TicketFormComponent implements OnInit {
     }
 
     this.currentTemplate = template;
-
-    //--
     const data: TicketTemplateData = template.data;
-    if(notEmpty(data)) {
-      const clsTeam = this.catalog.ls_helpdesk_team.find(s => data.team_id === s.id);
-
-      this.loadMemberOfTeam(clsTeam, false).subscribe({
+    if (notEmpty(data)) {
+      this.templateToTicket(data).subscribe({
         error: err => console.error(err),
-        next: (members: cls.ClsAssign[]) => {
-          const software = this.catalog.ls_software.find(s => data.software_id === s.id);
-          const chanels = this.catalog.ls_chanel.filter(c => data.chanel_ids?.includes(c.id));
-          const support_help = chanels?.find(c => data.support_help_id === c.id) ?? chanels[0];
-          const assign = members?.find(s => data.assign_id === s.id);
-          const now = new Date().getTime();
-
-          this.lsSoftName = software?.soft_names ?? [];
-          this.catalog.ls_assign = members;
-          this.catalog.ls_team_head = [clsTeam?.team_head];
-
-          const ticket: Partial<Ticket> = {
-            chanels: chanels, software: software,
-            soft_name: data.soft_name ?? software?.soft_names[0],
-            support_help: support_help,
-            group_help: this.catalog.ls_group_help.find(s => data.group_help_id === s.id),
-
-            od_assign: assign,
-            od_ticket_type: this.catalog.ls_ticket_type.find(s => data.ticket_type_id === s.id),
-            od_subject_type: this.catalog.ls_subject_type.find(s => data.subject_type_id === s.id),
-            od_repiled: this.catalog.ls_repiled_status.find(s => data.repiled_id === s.id),
-            od_category: this.catalog.ls_category.find(s => data.category_id === s.id),
-            od_category_sub: this.catalog.ls_category_sub.find(s => data.category_sub_id === s.id),
-            od_team: clsTeam, od_team_head: clsTeam?.team_head,
-            od_priority: this.catalog.ls_priority.find(s => data.priority_id === s.id),
-            od_tags: this.catalog.ls_ticket_tag.filter(s => data.tag_ids?.includes(s.id)),
-            options: TicketOption.from(data.options),
-
-            reception_time: this.datePipe.transform(now, 'yyyyMMdd-HH:mm'),
-            complete_time: this.datePipe.transform(now, 'yyyyMMdd-HH:'),
-
-            ticket_on: this.datePipe.transform(now, 'yyMMdd'),
-            full_name: this.userLogin.full_name
-
-          };
-
-          this.ticketForm.reset(ticket);
+        next: json => {
+          this.options = json.options;
+          this.ticketForm.reset(json, { onlySelf: false, emitEvent: true });
         }
-      })
+      });
     }
   }
 
@@ -358,11 +353,11 @@ export class TicketFormComponent implements OnInit {
       tag_ids: data.od_tags?.map(t => t.id),
       options: { ...formValue.options }
     };
-    this.dialogRef.close({data: json});
+    this.dialogRef.close({ data: json });
   }
 
   resetTemplate(): void {
-    if(this.currentTemplate) {
+    if (this.currentTemplate) {
       this.createNew(this.currentTemplate);
     }
   }
@@ -371,7 +366,7 @@ export class TicketFormComponent implements OnInit {
     template = template ?? this.get_defaultTemplate();
     this.logger.info('create new - use template ', template?.title);
     this.selectTemplate(template);
-    
+
   }
 
   get_defaultTemplate(): Template {
@@ -384,18 +379,18 @@ export class TicketFormComponent implements OnInit {
     data.company_name = data.od_partner?.company_name;
     data.template_id = this.currentTemplate?.template_id;
     data.source = data.source ?? 'tsweb';
-    
-    ['chanels', 'od_partner_id'].forEach(k => delete data[k]);
 
-    console.log(data)
+    const isNew = isNull(data.ticket_id);
+    const prefixLabel = isNew ? 'Tạo' : 'Cập nhật';
 
-    this.ticketSrv.create(data).subscribe({
+    this.ticketSrv.save(data).subscribe({
       error: err => {
         this.state.asyncSaveTicket = false;
-        this.toast.error({summary: `Đã xảy ra lỗi tạo ticket -> ${err}`});
+        this.toast.error({ summary: `Đã xảy ra lỗi <b>[${prefixLabel}]</b> ticket -> ${err}` });
       },
       next: res => {
-        this.toast.success({summary: `[${res.ticket_id}] Tạo ticket thành công`});
+        this.toast.success({ summary: `[${res.ticket_id}] <b>[${prefixLabel}]</b> ticket thành công` });
+        this.onSave.emit({ ticket: res, state: isNew ? 'new' : 'update' });
         this.pathValue(res);
       }
     });
@@ -405,10 +400,11 @@ export class TicketFormComponent implements OnInit {
     const { tax_code, phone, email } = this.formRawValue;
     const ref = this.toast.openDialog(FindPartnerComponent, {
       header: "Tìm kiếm khách hàng",
-      data: {vat: tax_code, mobile: phone,email: email },
+      data: { vat: tax_code, mobile: phone, email: email },
     });
 
-    ref.onClose.subscribe({next: (cls: cls.ClsPartner) => {
+    ref.onClose.subscribe({
+      next: (cls: cls.ClsPartner) => {
         this.utils.pathValueForm({
           tax_code: cls.vat,
           email: cls.email,
@@ -417,7 +413,8 @@ export class TicketFormComponent implements OnInit {
           od_partner_id: cls.customer_id,
           od_partner: cls
         });
-    }});
+      }
+    });
   }
 
   onSelectSoftware(data: Software) {
@@ -448,8 +445,13 @@ export class TicketFormComponent implements OnInit {
       });
   }
 
-  onSelectChanel(data: Chanel[]): void {
-    this.pathValue({ support_help: data ? data[0] : undefined });
+  onClearChanels(event: any) {
+    this.pathValue({ support_help: undefined });
+
+  }
+
+  onSelectChanel(data: Chanel[] = []): void {
+    this.pathValue({ support_help: isEmpty(data) ? undefined : data[0] });
   }
 
   onSelectQuestion(question: Question): void {
@@ -460,23 +462,18 @@ export class TicketFormComponent implements OnInit {
   }
 
   copyTicket(): void {
-    
-
-
-
-
-
-
+    this.utils.resetForm({ ...this.utils.formValue, ticket_id: undefined });
+    this.saveTicket();
   }
 
-  private pathValue(data: Partial<Ticket>, options?: {onlySelf?: boolean, emitEvent?: boolean}) {
+  private pathValue(data: Partial<Ticket>, options?: { onlySelf?: boolean, emitEvent?: boolean }) {
     console.log('pathValue', data, options)
     this.ticketForm.patchValue(data, options);
   }
 
   private pathEditor(data: Partial<Ticket>): void {
-    const values: any[] = Object.keys(data).map(k => [k, {html: data[k]}]);
-    this.ticketForm.patchValue(Object.fromEntries(values), {emitEvent: false});
+    const values: any[] = Object.keys(data).map(k => [k, { html: data[k] }]);
+    this.ticketForm.patchValue(Object.fromEntries(values), { emitEvent: false });
   }
 
   private loadMemberOfTeam(data: ClsTeam, stop: boolean = false): Observable<cls.ClsAssign[]> {
@@ -487,6 +484,47 @@ export class TicketFormComponent implements OnInit {
 
   }
 
+  private templateToTicket(data: TicketTemplateData): Observable<Partial<Ticket>> {
+    data = Asserts.notNull(data, "TicketTemplateData is empty");
+    const clsTeam = this.catalog.ls_helpdesk_team.find(s => data.team_id === s.id);
 
+    return this.loadMemberOfTeam(clsTeam, false).pipe(map((members: cls.ClsAssign[]) => {
+      const software = this.catalog.ls_software.find(s => data.software_id === s.id);
+      const chanels = this.catalog.ls_chanel.filter(c => data.chanel_ids?.includes(c.id));
+      const support_help = chanels?.find(c => data.support_help_id === c.id) ?? chanels[0];
+      const assign = members?.find(s => data.assign_id === s.id);
+      const now = new Date().getTime();
+
+      this.lsSoftName = software?.soft_names ?? [];
+      this.catalog.ls_assign = members;
+      this.catalog.ls_team_head = [clsTeam?.team_head];
+
+      return {
+        chanels: chanels, software: software,
+        soft_name: data.soft_name ?? software?.soft_names[0],
+        support_help: support_help,
+        group_help: this.catalog.ls_group_help.find(s => data.group_help_id === s.id),
+
+        od_assign: assign,
+        od_ticket_type: this.catalog.ls_ticket_type.find(s => data.ticket_type_id === s.id),
+        od_subject_type: this.catalog.ls_subject_type.find(s => data.subject_type_id === s.id),
+        od_repiled: this.catalog.ls_repiled_status.find(s => data.repiled_id === s.id),
+        od_category: this.catalog.ls_category.find(s => data.category_id === s.id),
+        od_category_sub: this.catalog.ls_category_sub.find(s => data.category_sub_id === s.id),
+        od_team: clsTeam, od_team_head: clsTeam?.team_head,
+        od_priority: this.catalog.ls_priority.find(s => data.priority_id === s.id),
+        od_tags: this.catalog.ls_ticket_tag.filter(s => data.tag_ids?.includes(s.id)),
+        options: TicketOption.from(data.options),
+
+        reception_time: this.datePipe.transform(now, 'yyyyMMdd-HH:mm'),
+        complete_time: this.datePipe.transform(now, 'yyyyMMdd-HH:'),
+
+        ticket_on: this.datePipe.transform(now, 'yyMMdd'),
+        full_name: this.userLogin.full_name
+
+      };
+    }))
+
+  }
 
 }

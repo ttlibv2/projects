@@ -1,6 +1,8 @@
 @use "colors" as clr;
 
 $primaryColor: clr.$primary;
+
+
 $primaryDarkColor: #4F46E5 !default;
 $primaryDarkerColor: #4338CA !default;
 $primaryTextColor: #ffffff !default;
@@ -127,8 +129,7 @@ $buttonHoverBorderColor: $primaryDarkColor !default;
 $buttonActiveBg: $primaryDarkerColor !default;
 $buttonTextActiveColor: $primaryTextColor !default;
 $buttonActiveBorderColor: $primaryDarkerColor !default;
-$raisedButtonShadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12) !default;
+$raisedButtonShadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12) !default;
 $roundedButtonBorderRadius: 2rem !default;
 
 $textButtonHoverBgOpacity: 0.04 !default;
@@ -373,6 +374,11 @@ $panelFooterBg: clr.$shade000 !default;
 $panelFooterTextColor: clr.$shade700 !default;
 $panelFooterPadding: 0 1.125rem 1.125rem 1.125rem !default;
 
+//fieldset
+$fieldsetPadding: 0 .5rem .5rem .5rem;
+$fieldsetContentPadding: 0!default;
+$fieldsetHeaderPadding: 0!default;
+
 //accordion
 $accordionSpacing: 0 !default;
 $accordionHeaderBorder: 0 none !default;
@@ -614,15 +620,26 @@ $overlayContainerShadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
 0 8px 10px -6px rgb(0 0 0 / 0.1) !default;
 
 //dialog
+$dialogPadding: .5rem!default;
+$dialogMarginTop: 3rem!important;
+
 $dialogHeaderBg: clr.$shade000 !default;
 $dialogHeaderBorder: 0 none !default;
 $dialogHeaderTextColor: clr.$shade700 !default;
 $dialogHeaderFontWeight: 600 !default;
 $dialogHeaderFontSize: 1.25rem !default;
-$dialogHeaderPadding: 1.5rem !default;
+$dialogHeaderPadding: unset;//1.5rem !default;
+$dialogHeaderPaddingBottom: .5rem;
+$dialogHeaderBottomBorder: var(--primary-color) 3px solid!default;
+
 $dialogContentPadding: 0 1.5rem 1.5rem 1.5rem !default;
 $dialogFooterBorder: 0 none !default;
-$dialogFooterPadding: 0 1.5rem 1.5rem 1.5rem !default;
+$dialogFooterPadding: unset!default; //0 1.5rem 1.5rem 1.5rem !default;
+$dialogFooterBg: transparent !default;
+
+
+
+
 
 //confirmpopup
 $confirmPopupContentPadding: 1rem !default;
@@ -784,7 +801,7 @@ $dividerHorizontalPadding: 0 1rem !default;
 $dividerVerticalMargin: 0 1rem !default;
 $dividerVerticalPadding: 1rem 0 !default;
 $dividerSize: 1px !default;
-$dividerColor: clr.$shade200 !default;
+$dividerColor: $primaryColor !default;
 $dividerStyle: solid!default;
 
 //avatar

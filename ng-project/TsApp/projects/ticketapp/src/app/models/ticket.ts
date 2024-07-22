@@ -77,6 +77,7 @@ export class Ticket extends BaseModel {
   user_id?: number;
   chanel_ids?: number[];
   template_id?: number;
+  images: string;
   options?: TicketOption = TicketOption.createDef();
   details?: TicketDetail;
   od_image?: ImageObject;

@@ -1,16 +1,18 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
+
 $prefix: ".p-alert";
 
 
-.p-dialog-top #{$prefix} {
-  margin-top: 3rem!important;
-}
 
-
-#{$prefix} {
+.p-alert {
   flex: 0 auto !important;
+  border-width: cfg.$messageBorderWidth;
 
+  
+  .p-dialog-top & {
+    margin-top: cfg.$dialogMarginTop;
+  }
 
   .p-dialog-content {
     padding: 0.7rem 1rem;
@@ -35,21 +37,11 @@ $prefix: ".p-alert";
     }
   }
 
-  .p-dialog-header {
-    padding: unset;
-    //padding: 0.7rem 1rem;
-    background: transparent;
-  }
-
-  .p-dialog-footer {
-    padding: 0 1rem 1rem;
-    background: transparent;
-  }
 
   &-warning {
     background: cfg.$warningMessageBg !important;
-    border: cfg.$warningMessageBorder !important;
-    //border-width: cfg.$messageBorderWidth !important;
+    border: cfg.$warningMessageBorder;
+    border-width: cfg.$messageBorderWidth !important;
     color: cfg.$warningMessageTextColor !important;
 
     .p-icon {
@@ -65,7 +57,7 @@ $prefix: ".p-alert";
   &-info {
     background: cfg.$infoMessageBg !important;
     border: cfg.$infoMessageBorder;
-    //border-width: cfg.$messageBorderWidth;
+    border-width: cfg.$messageBorderWidth;
     color: cfg.$infoMessageTextColor;
 
     .p-icon {
@@ -81,7 +73,7 @@ $prefix: ".p-alert";
   &-success {
     background: cfg.$successMessageBg !important;
     border: cfg.$successMessageBorder;
-    //border-width: cfg.$messageBorderWidth;
+    border-width: cfg.$messageBorderWidth;
     color: cfg.$successMessageTextColor;
 
     .p-icon {
@@ -96,7 +88,7 @@ $prefix: ".p-alert";
   &-danger {
     background: cfg.$errorMessageBg !important;
     border: cfg.$errorMessageBorder;
-    //border-width: cfg.$messageBorderWidth;
+    border-width: cfg.$messageBorderWidth;
     color: cfg.$errorMessageTextColor;
 
     .p-icon {
@@ -111,7 +103,7 @@ $prefix: ".p-alert";
   &-secondary {
     background: cfg.$secondaryMessageBg !important;
     border: cfg.$secondaryMessageBorder;
-    //border-width: cfg.$messageBorderWidth;
+    border-width: cfg.$messageBorderWidth;
     color: cfg.$secondaryMessageTextColor;
 
     .p-icon {

@@ -13,4 +13,9 @@ export class Asserts {
     else return object;
   }
 
+  static notEmpty<E>(object: E, message?: string): E {
+    if(Objects.isEmpty(object)) throw new NullPointer(message);
+    else return object;
+  }
+
 }

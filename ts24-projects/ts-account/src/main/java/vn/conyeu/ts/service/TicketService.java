@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class TicketService extends LongUIdService<Ticket, TicketRepo> {
@@ -124,6 +125,7 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
         if(ticketId == null) {
             Ticket ticket = object.asObject(Ticket.class);
             ticket.setUser(new TsUser(userId));
+            ticket.setOdImage(imagesToMap(object.getString("images")));
             return createNew(ticket);
         }
 
@@ -133,12 +135,32 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
             if(optional.isEmpty()) throw noId(ticketId);
 
             Ticket ticket = optional.get();
-            if(Objects.equals(ticket.getUserId(), userId)) {
+            TicketDetail detail = ticket.getDetail();
+
+            if(!Objects.equals(ticket.getUserId(), userId)) {
                 throw new BadRequest("user_invalid").message("Ticket này khong dung userId [%s]", userId);
             }
 
             ticket.assignFromMap(object);
+
+            if(object.containsKey("images")) {
+                String images = object.getString("images");
+                ticket.setOdImage(imagesToMap(images));
+            }
+
             return save(ticket);
         }
+    }
+
+    private ObjectMap imagesToMap(String images) {
+        if(Objects.isBlank(images)) return null;
+
+        ObjectMap map = new ObjectMap();
+        for(String segment:images.split(";")) {
+            String[] paths = segment.split("::");
+            map.set(paths[0], paths.length > 1 ? paths[1] : "null", false);
+        }
+
+        return map;
     }
 }

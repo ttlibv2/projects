@@ -18,6 +18,7 @@ import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.ticket.domain.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 //@formatter:off
 @Entity @Table
@@ -223,7 +224,7 @@ public class Ticket extends LongUIdDate<Ticket> {
     private ObjectMap custom;
 
     @JsonUnwrapped
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket", fetch = FetchType.LAZY)
     private TicketDetail detail;
 
     @JsonProperty("template_id")
@@ -236,7 +237,7 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JsonProperty("software_id") @Transient private Long softwareId;
     @JsonProperty("question_id") @Transient private Long questionId;
     @JsonProperty("chanels") @Transient private List<Chanel> chanels;
-
+    @JsonProperty("images") @Transient private String images;
 
     public void setStage(ClsStage stage) {
         getDetail().setStage(stage);
@@ -269,13 +270,13 @@ public class Ticket extends LongUIdDate<Ticket> {
     /**
      * Returns the custom
      */
-    @JsonAnyGetter
+    //@JsonAnyGetter
     public ObjectMap getCustom() {
         custom = ObjectMap.ifNull(custom);
         return custom;
     }
 
-    @JsonAnySetter
+    //@JsonAnySetter
     public Ticket set(String field, Object data) {
         getCustom().set(field, data);
         return this;
@@ -351,5 +352,26 @@ public class Ticket extends LongUIdDate<Ticket> {
 
     public boolean isEmailTicket() {
         return Objects.notBlank(contentEmail);
+    }
+
+    public String getImages() {
+        if(images == null && odImage != null) {
+                images = odImage.keySet().stream()
+                        .map(key -> {
+                            String val = odImage.getString(key);
+                            return val.equals("null") ? key : key+"::"+val;
+                        })
+                        .collect(Collectors.joining(";"));
+        }
+        return images;
+    }
+
+    @Override
+    public void assignFromMap(ObjectMap map) {
+        TicketDetail detail = getDetail();
+
+        super.assignFromMap(map);
+        detail.assignFromMap(map);
+        setDetail(detail);
     }
 }

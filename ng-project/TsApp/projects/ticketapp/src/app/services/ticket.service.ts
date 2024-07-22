@@ -32,4 +32,9 @@ export class TicketService extends ModelApi<Ticket> {
         return super.search(data, {page: 0, size: 1000, ...page});
     }
 
+    save(data: any): Observable<Ticket> {
+        return this.savePost('save', data);
+      }
+    
+
 }

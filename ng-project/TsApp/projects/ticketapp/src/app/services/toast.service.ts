@@ -37,7 +37,7 @@ const defaultDialogConfig: DynamicDialogConfig = {
     maximizable: false,
     draggable: false,
     resizable: false,
-    showHeader: false
+    showHeader: true
 }
 
 

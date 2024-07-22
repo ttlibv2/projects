@@ -32,17 +32,13 @@ export class ApiInfoComponent implements OnInit {
     return notBlank(this.apiCode);
   }
 
-
-  get formGroup(): FormGroup {
-    return this.form?.fg;
-  }
-
   hasChangeData: boolean = false;
   asyncSave: boolean = false;
   asyncLoad: boolean = false;
   form: FormUtil = undefined;
   user: User = undefined;
   hasDialogRef: boolean = false;
+  formGroup: FormGroup;
 
   lsApiCode: ApiInfo[];
 
@@ -73,6 +69,7 @@ export class ApiInfoComponent implements OnInit {
       }),
 
       form => {
+        this.formGroup = form.fg;
         form.formValueChange(_ => this.hasChangeData = true);
         form.controlValueChange('api_item', val => this.onSelectApi(val));
       }

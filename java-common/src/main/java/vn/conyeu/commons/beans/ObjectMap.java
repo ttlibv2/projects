@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class ObjectMap extends LinkedHashMap<String, Object> implements Cloneable {
+public class ObjectMap extends LinkedHashMap<String, Object> {
     public static ObjectMap EMPTY = ObjectMap.create();
 
     public ObjectMap() {
@@ -110,7 +110,11 @@ public class ObjectMap extends LinkedHashMap<String, Object> implements Cloneabl
      * @param value value to be associated with the specified key
      */
     public ObjectMap set(String key, Object value) {
-        if(value == null) remove(key);
+       return set(key, value, true);
+    }
+
+    public ObjectMap set(String key, Object value, boolean removeIfNull) {
+        if(value == null && removeIfNull) remove(key);
         else super.put(key, value);
         return this;
     }

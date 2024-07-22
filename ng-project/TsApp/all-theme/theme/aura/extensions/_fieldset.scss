@@ -2,14 +2,13 @@
 @use "../../../setting/config" as cfg;
 
 .p-fieldset {
-  padding: 0 1.125rem 1.125rem 1.125rem;
+  padding: cfg.$fieldsetPadding;
   margin: 0;
 
   &.p-fieldset-toggleable {
-
     .p-fieldset-legend {
       a {
-        padding: .5rem .75rem;
+        padding: 0.5rem 0.75rem;
 
         .p-fieldset-legend-text {
           padding: 0;
@@ -32,7 +31,7 @@
     margin-bottom: 0.375rem;
 
     span:not(:empty) {
-      padding: .5rem .75rem;
+      padding: 0.5rem 0.75rem;
     }
   }
 

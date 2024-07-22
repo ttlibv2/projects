@@ -1,18 +1,20 @@
-import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { Column, GridApi, GridReadyEvent, IRowNode } from 'ag-grid-community';
+import { ColDef, Column, GridApi, GridReadyEvent, IRowNode, RowDataTransaction } from 'ag-grid-community';
 import { defaultOption, PrivateField, TableColumn, TableOption, TableReadyEvent, TableRowClick } from './ag-table.common';
 import * as helper from 'ts-helper';
 import { _Util } from 'ag-grid-enterprise';
+import { of } from 'rxjs';
 
    
 @Component({ 
   selector: 'ts-ag-table',
   templateUrl: './ag-table.component.html',
   styles: ` :host { display: block; }  `,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AgTableComponent<E=any>  {
+export class AgTableComponent<E=any> implements OnChanges {
 
   
   @Output()
@@ -61,6 +63,12 @@ export class AgTableComponent<E=any>  {
   view: AgGridAngular;
   field: PrivateField = {};
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if('columns' in changes) {
+      console.log(changes['columns'])
+    }
+  }
+
   /** Ready ag-grid */
   gridReadyAg(evt: GridReadyEvent) {
     this.tableReady.emit({ view: this.view, ...evt });
@@ -73,6 +81,10 @@ export class AgTableComponent<E=any>  {
       consumer(columns[columnIndex]);
       this.tableApi.updateGridOptions({columnDefs: columns});
     }
+  }
+
+  setColumns(columns: ColDef[]) {
+    this.tableApi.setGridOption('columnDefs', columns);
   }
 
   setRows(...data: E[]) {
@@ -89,10 +101,6 @@ export class AgTableComponent<E=any>  {
 
   updateRows(...data: E[]): IRowNode<E>[] {
     return this.tableApi.applyTransaction({update: data}).update;
-  }
-
-  save(...data: E[]): void {
-
   }
 
   hideAllColumn(): void {

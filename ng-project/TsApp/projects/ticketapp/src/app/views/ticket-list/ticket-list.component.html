@@ -1,11 +1,11 @@
 @if(visibleForm){
-    <div class="ticket-form">
-        <ts-ticket-form [data]="currentTicket"></ts-ticket-form>
+    <div class="ticket-form" id="ticketListForm" [style.display]="'none'">
+        <ts-ticket-form [data]="currentTicket" (onSave)="saveTicket($event)"></ts-ticket-form>
     </div>
 }
 
 <div class="ticket-list grid">
-    <div class="toolbar col-12 flex flex-inline gap-2">
+    <div id="ticketListTool" class="toolbar col-12 flex flex-inline gap-2">
         <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="flex align-items-center gap-2">
             <p-calendar placeholder="Lấy dữ liệu từ ngày ?" selectionMode="range" showIcon="true" iconDisplay="input"
                 dateFormat="yy-mm-dd" [numberOfMonths]="2" formControlName="dateOn"></p-calendar>
@@ -13,27 +13,28 @@
             <p-dropdown placeholder="Tùy chọn" formControlName="option" [options]="searchOptions"
                 optionLabel="label" filter="false"></p-dropdown>
     
-            <p-button type="submit" label="Lấy dữ liệu" [styleClass]="'small'"></p-button>
-            <p-button label="Demo" [styleClass]="'small'" (onClick)="demo()"></p-button>
+            <p-button type="submit" label="Lấy dữ liệu" [styleClass]="'small'" ></p-button>
+            <p-button label="Demo" [styleClass]="'small'" (onClick)="demo()" severity="help"></p-button>
 
             <p-divider [layout]="'vertical'"></p-divider>
             <p-checkbox [binary]="true" label="Hiển thị kênh" formControlName="visibleChanel"></p-checkbox>
+            <p-checkbox [binary]="true" label="Hiển thị form" formControlName="visibleForm"></p-checkbox>
 
         </form>
         
         <p-divider [layout]="'vertical'"></p-divider>
        
 
-        <ts-splitButton label="Nạp / Xuất DL" outlined="true" [model]="excelItems"   [visibleMenuButton]="false" [menuTrigger]="'hover'"
-            [styleClass]="'small'" icon="pi pi-file-excel" (onClick)="exportXsl()"></ts-splitButton>
+        <ts-splitButton label="Nạp / Xuất DL" [model]="excelItems"   [visibleMenuButton]="false" [menuTrigger]="'hover'"
+            [styleClass]="'small'" icon="pi pi-file-excel" (onClick)="exportXsl()" severity="help" raised="true"></ts-splitButton>
 
-        <ts-splitButton label="Danh sách mẫu" outlined="true" [model]="agTemplates"  [visibleMenuButton]="false" [menuTrigger]="'hover'"
+        <ts-splitButton label="Danh sách mẫu" [model]="agTemplates"  [visibleMenuButton]="false" [menuTrigger]="'hover'"
             [styleClass]="'small'" icon="pi pi-list"></ts-splitButton>
 
-        <ts-splitButton label="Báo cáo" outlined="true" [model]="reportItems"  [visibleMenuButton]="false" [menuTrigger]="'hover'"
+        <ts-splitButton label="Báo cáo" [model]="reportItems"  [visibleMenuButton]="false" [menuTrigger]="'hover'"
             [styleClass]="'small'" icon="pi pi-list"></ts-splitButton>
 
-        <ts-splitButton label="Khác" outlined="true" [model]="toolOptions" [visibleMenuButton]="false" [menuTrigger]="'hover'"
+        <ts-splitButton label="Khác" [model]="toolOptions" [visibleMenuButton]="false" [menuTrigger]="'hover'"
             [styleClass]="'small'" icon="pi pi-ellipsis-h">
         </ts-splitButton>
 
@@ -43,9 +44,9 @@
     </div>
 
     <div class="col-12">
-        <ts-ag-table [columns]="agColumns" 
+        <ts-ag-table [columns]="agColumns" id="agTable"
         [rows]="agRows" [option]="agOption" 
-        [tableHeight]="'370px'" class="ag-table"
+        [tableHeight]="tableHeight" class="ag-table"
         (rowClicked)="selectTicket($event.data)"
         ></ts-ag-table>
     </div>

@@ -254,17 +254,15 @@ export class SplitButton {
     }
 
     get containerClass() {
-        const cls = {
+        return {
             'p-splitbutton p-component': true,
             'p-button-raised': this.raised,
             'p-button-rounded': this.rounded,
             'p-button-outlined': this.outlined,
-            'p-button-text': this.text,
+            'p-button-text': this.text, 
             'p-not-menu-button': this.visibleMenuButton === false,
-            [`p-button-${this.size === 'small' ? 'sm' : 'lg'}`]: this.size
+            [`p-splitbutton-${this.size === 'small' ? 'sm' : 'lg'}`]: this.size
         };
-
-        return { ...cls };
     }
 
     onContainerMouse(event: MouseEvent, visible: boolean) {

@@ -75,58 +75,47 @@ public class TicketDetail extends LongUId<TicketDetail> {
     @JsonProperty("mail_id")
     private Long mailId;
 
-    ////@JsonFormat(shape = JsonFormat.Shape.STRING)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonProperty("report_at")
     private LocalDateTime reportAt;
 
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @Temporal(TemporalType.TIMESTAMP)
     @JsonProperty("attach_at")
     private LocalDateTime attachAt;
 
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("reply_at")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime replyAt;
 
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("send_at")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime sendAt;
 
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("modify_at")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime modifyAt;
 
     @JsonProperty("note_at")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime noteAt;
 
     @JsonProperty("close_at")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime closedAt;
 
     @JsonProperty("delete_at")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime deleteAt;
 
     @JsonProperty("image_at")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime imageAt;
 
     @JsonProperty("cancel_at")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
-    @Temporal(TemporalType.TIMESTAMP)/**/
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime cancelAt;
 
     @JsonProperty("mail_at")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime mailAt;
 

@@ -24,6 +24,10 @@ export class FormUtil {
         return this;
     }
 
+    private get(controlKey: string) {
+        return this.fg.get(controlKey);
+    }
+
     formValueChange<V = any>(consumer: Consumer<V>) {
         this.fg.valueChanges.subscribe(value => consumer(value));
     }
@@ -31,7 +35,6 @@ export class FormUtil {
     controlValueChange<V = any>(controlKey: string, consumer: Consumer<V>) {
         this.fg.get(controlKey).valueChanges.subscribe(value => consumer(value));
     }
-
 
     pathControl(controlKey: string, value: any, option?: ValueOption) {
         this.fg.get(controlKey).patchValue(value, option);
