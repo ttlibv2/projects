@@ -37,15 +37,12 @@ export interface AgTemplate {
   encapsulation: ViewEncapsulation.None,
  // changeDetection: ChangeDetectionStrategy.OnPush,
  animations: [
-  trigger('widthGrow', [
-      state('closed', style({
-          height: 0,
-      })),
-      state('open', style({
-          height: '100%'
-      })),
-      transition('* => *', animate(150))
-  ]),
+  trigger('toggle', [
+    state('true', style({ opacity: 1 })),
+    state('void', style({ opacity: 0 })),
+    transition(':enter', animate('500ms ease-in-out')),
+    transition(':leave', animate('500ms ease-in-out'))
+  ])
 ]
 })
 export class TicketListComponent implements OnInit, AfterContentInit, AfterViewInit {
@@ -148,6 +145,10 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     this.utils.subscribeControl('visibleChanel', val => {
       this.chanelChecked(val);
     });
+
+    this.utils.subscribeControl('visibleForm', val => {
+      this.tableHeight = this.calcHeight + 'px';
+    })
 
   }
 
