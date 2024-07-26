@@ -109,7 +109,7 @@ export interface GlobalConfig<Payload = any> {
 }
 
 export type ToastSeverity = 'info' | 'success' | 'help' | 'warning' | 'error' | 'loading';
-export type ToastPosition = 'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center' | 'center';
+export type ToastPosition = 'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center' | 'center' | 'top-full-width' | 'bottom-full-width';
 export const TOAST_CONFIG = new InjectionToken<ToastConfig>('TOAST_CONFIG');
 
 export const DEFAULT_CONFIG: ToastConfig = {
@@ -118,6 +118,7 @@ export const DEFAULT_CONFIG: ToastConfig = {
     progressMode: 'determinate',
     progressBar: false,
     closeButton: true,
+    tapToDismiss: false,
     toastClass: 'ts-toast',
     messageClass: 'ts-toast-message',
     titleClass: 'ts-toast-title',
