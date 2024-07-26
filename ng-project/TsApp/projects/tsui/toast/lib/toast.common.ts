@@ -10,6 +10,7 @@ export interface MessageConfig<Payload = any> extends GlobalConfig<Payload> {
     message?: string;
     detail?: string;
     messageIcon?: string;
+
 }
 
 export interface ToastIcon extends ToastrIconClasses{
@@ -106,6 +107,9 @@ export interface GlobalConfig<Payload = any> {
      * Payload to pass to the toast component
      */
     payload?: Payload;
+
+    summaryStyle?: { [kclass: string]: any };
+    detailStyle?: { [kclass: string]: any };
 }
 
 export type ToastSeverity = 'info' | 'success' | 'help' | 'warning' | 'error' | 'loading';
