@@ -16,6 +16,7 @@
         <module name="sm-oauth2-login" />
         <module name="sm-cookie" />
         <module name="od-ticket" />
+        <module name="sm-i18n" />
         <module name="maven-archetype-multiple-javafx" />
         <module name="sm-common" />
         <module name="sm-address" />
@@ -85,6 +86,7 @@
       <module name="sm-cookie" options="-parameters" />
       <module name="sm-dslquery" options="-parameters" />
       <module name="sm-exception" options="-parameters" />
+      <module name="sm-i18n" options="-parameters" />
       <module name="sm-identity" options="-parameters" />
       <module name="sm-oauth2-login" options="-parameters" />
       <module name="sm-web" options="-parameters" />

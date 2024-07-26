@@ -150,6 +150,9 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JsonProperty("od_image")
     private ObjectMap odImage;
 
+    @Column(length = 150)
+    private String images;
+
     @Convert(converter = ClsAssignConvert.class)
     @Column(columnDefinition = "json")
     @JsonProperty("od_assign")
@@ -224,8 +227,11 @@ public class Ticket extends LongUIdDate<Ticket> {
     private ObjectMap custom;
 
     @JsonUnwrapped
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket", fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket")
     private TicketDetail detail;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
+    private List<TicketAttach> attaches;
 
     @JsonProperty("template_id")
     private Long templateId;
@@ -237,7 +243,6 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JsonProperty("software_id") @Transient private Long softwareId;
     @JsonProperty("question_id") @Transient private Long questionId;
     @JsonProperty("chanels") @Transient private List<Chanel> chanels;
-    @JsonProperty("images") @Transient private String images;
 
     public void setStage(ClsStage stage) {
         getDetail().setStage(stage);
@@ -354,17 +359,6 @@ public class Ticket extends LongUIdDate<Ticket> {
         return Objects.notBlank(contentEmail);
     }
 
-    public String getImages() {
-        if(images == null && odImage != null) {
-                images = odImage.keySet().stream()
-                        .map(key -> {
-                            String val = odImage.getString(key);
-                            return val.equals("null") ? key : key+"::"+val;
-                        })
-                        .collect(Collectors.joining(";"));
-        }
-        return images;
-    }
 
     @Override
     public void assignFromMap(ObjectMap map) {

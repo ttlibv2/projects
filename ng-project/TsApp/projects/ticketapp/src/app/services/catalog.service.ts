@@ -5,7 +5,7 @@ import { Catalog } from "../models/catalog";
 import { JsonObject } from '../models/common';
 import { ClsAssign } from '../models/od-cls';
 import { DbTable, LocalDbService } from './local-db.service';
-import { LoggerService } from 'ts-logger';
+import { LoggerService } from 'ts-ui/logger';
 
 export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable } = {
   ls_chanel:db => db.chanel,
@@ -47,7 +47,7 @@ export class CatalogService extends ClientService {
 
 
   getAll(params: JsonObject): Observable<Catalog> {
-    const url = '/ts-api/catalog/get-all';
+    const url = '/ts-ui/api/catalog/get-all';
     return this.get(url, params).pipe(map(res => {
       const newData = jsonToCatalog(this.db, res, this.logger);
       this.config.data.update(s => ({...s, allCatalog: newData}));
@@ -83,7 +83,7 @@ export class CatalogService extends ClientService {
   }
 
   clearCache(): Observable<any> {
-    const url = '/ts-api/catalog/clear-cache';
+    const url = '/ts-ui/api/catalog/clear-cache';
     this.cacheMap.clear();
     return this.get(url);
   }

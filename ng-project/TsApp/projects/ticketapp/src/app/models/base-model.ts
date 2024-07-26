@@ -1,5 +1,5 @@
 import { AssignObject} from "./common";
-import {Objects} from "ts-helper";
+import {Objects} from "ts-ui/helper";
 import { Type } from "@angular/core";
 
 

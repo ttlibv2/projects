@@ -5,7 +5,7 @@ import { TicketListRoutingModule } from './ticket-list-routing.module';
 import { TicketListComponent } from './ticket-list.component';
 import { AgTableModule } from 'ts-ui/ag-table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TsLoggerModule } from 'ts-logger';
+import { TsLoggerModule } from 'ts-ui/logger';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CardModule } from 'primeng/card';
@@ -20,6 +20,7 @@ import { ChipModule } from 'primeng/chip';
 import { TagModule } from 'ts-ui/tag';
 import { AgTableTemplate } from './ag-table-template';
 import { TicketFormModule } from '../ticket-form/ticket-form.module';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { TicketFormModule } from '../ticket-form/ticket-form.module';
     ChipModule,
     TagModule,
     AgTableTemplate,
-    TicketFormModule
+    TicketFormModule,
+    FileUploadModule
 
   ],
   providers: [

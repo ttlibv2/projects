@@ -1,12 +1,13 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 
+
 .p-carousel {
     .p-carousel-content {
         .p-carousel-prev,
         .p-carousel-next {
-            @include util.action-icon();
             margin: cfg.$inlineSpacing;
+            @include util.action-icon();           
         }
     }
 

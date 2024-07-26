@@ -16,13 +16,12 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-
 @NgModule({
     declarations: [
         ApiInfoComponent
     ],
     exports: [
-        ApiInfoComponent
+        ApiInfoComponent 
     ],
     imports: [
         CommonModule,

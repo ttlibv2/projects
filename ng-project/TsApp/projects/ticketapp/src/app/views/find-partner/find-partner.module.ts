@@ -11,10 +11,8 @@ import {RadioButtonModule} from "primeng/radiobutton";
 import {ButtonModule} from "primeng/button";
 import {CardModule} from "primeng/card";
 import {FieldsetModule} from "primeng/fieldset";
-import {TableModule} from "primeng/table";
 import {DialogModule} from "primeng/dialog";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
-import {AgGridAngular} from "ag-grid-angular";
 import { ToolbarModule } from 'primeng/toolbar';
 import { AgTableModule } from 'ts-ui/ag-table';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -38,8 +36,7 @@ import { DividerModule } from 'primeng/divider';
     ButtonModule,
     CardModule,
     FieldsetModule,
-    TableModule,
-    AgGridAngular,
+    AgTableModule,
     ToolbarModule,
     AgTableModule,
     InputNumberModule,

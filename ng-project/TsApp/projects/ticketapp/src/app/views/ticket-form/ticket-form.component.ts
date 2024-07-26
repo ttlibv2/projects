@@ -7,11 +7,11 @@ import { FindPartnerComponent } from "../find-partner/find-partner.component";
 import { CatalogService } from "../../services/catalog.service";
 
 import { Catalog } from "../../models/catalog";
-import { ToastService } from "../../services/toast.service";
-import { Objects, Asserts } from "ts-helper";
+import { ToastService } from "ts-ui/toast";
+import { Objects, Asserts } from "ts-ui/helper";
 import { Software } from "../../models/software";
 import { ClsTeam } from "../../models/od-cls";
-import { LoggerService } from "ts-logger";
+import { LoggerService } from "ts-ui/logger";
 import { Observable, Observer, of, map } from "rxjs";
 import { Chanel } from "../../models/chanel";
 import { Template } from "../../models/template";
@@ -25,6 +25,8 @@ import { Question } from "../../models/question";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { Router } from "@angular/router";
 import { TicketService } from "../../services/ticket.service";
+import { Alert } from "../../services/ui/alert/alert.service";
+import {ModalService} from "../../services/ui/model.service";
 
 const { notNull, notEmpty, isEmpty, isNull } = Objects;
 
@@ -181,6 +183,8 @@ export class TicketFormComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
+    private alert: Alert,
+    private modal: ModalService,
     private toast: ToastService,
     private storage: StorageService,
     private cref: ChangeDetectorRef,
@@ -194,7 +198,7 @@ export class TicketFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    const dialogInstance = this.toast.getDialogComponentRef(this.dialogRef)?.instance;
+    const dialogInstance = this.modal.getInstance(this.dialogRef);
     if (dialogInstance && dialogInstance.data?.template) {
       this.viewTemplate = true;
       this.currentTemplate = dialogInstance.data.template;
@@ -282,7 +286,7 @@ export class TicketFormComponent implements OnInit, OnChanges {
       }
       else {
 
-        const cateRef = this.toast.openDialog(CatalogComponent, {
+        const cateRef = this.modal.open(CatalogComponent, {
           header: 'Danh mục cần lấy ?',
           closeOnEscape: true,
           focusOnShow: false,
@@ -315,7 +319,7 @@ export class TicketFormComponent implements OnInit, OnChanges {
   selectTemplate(template: Template, checkData: boolean = true) {
 
     if (checkData === true && isEmpty(template.data)) {
-      this.toast.warning({ summary: 'Mẫu chưa cấu hình dữ liệu' });
+      this.toast.warning( 'Mẫu chưa cấu hình dữ liệu');
       return;
     }
 
@@ -374,6 +378,15 @@ export class TicketFormComponent implements OnInit, OnChanges {
   }
 
   saveTicket() {
+    if(this.ticketForm.invalid) {
+      this.alert.warning({title: 'Cảnh báo !!', summary: 'Vui lòng nhập đầy đủ thông tin'});
+      return;
+    }
+
+    this.state.asyncSaveTicket = true;
+    const waitRef = this.toast.loading( 'Đang lưu thông tin. Vui lòng đợi....');
+
+
     const data: Ticket = this.ticketForm.getRawValue();
     data.chanel_ids = data.chanels?.map(c => c.id);
     data.company_name = data.od_partner?.company_name;
@@ -386,11 +399,14 @@ export class TicketFormComponent implements OnInit, OnChanges {
     this.ticketSrv.save(data).subscribe({
       error: err => {
         this.state.asyncSaveTicket = false;
-        this.toast.error({ summary: `Đã xảy ra lỗi <b>[${prefixLabel}]</b> ticket -> ${err}` });
+        this.toast.close(waitRef);
+        this.toast.error( `Đã xảy ra lỗi <b>[${prefixLabel}]</b> ticket -> ${err}` );
       },
       next: res => {
-        this.toast.success({ summary: `[${res.ticket_id}] <b>[${prefixLabel}]</b> ticket thành công` });
+        this.toast.close(waitRef);
+        this.toast.success(`[${res.ticket_id}] <b>[${prefixLabel}]</b> ticket thành công` );
         this.onSave.emit({ ticket: res, state: isNew ? 'new' : 'update' });
+        this.state.asyncSaveTicket = false;
         this.pathValue(res);
       }
     });
@@ -398,14 +414,14 @@ export class TicketFormComponent implements OnInit, OnChanges {
 
   searchUser() {
     const { tax_code, phone, email } = this.formRawValue;
-    const ref = this.toast.openDialog(FindPartnerComponent, {
+    const ref = this.modal.open(FindPartnerComponent, {
       header: "Tìm kiếm khách hàng",
       data: { vat: tax_code, mobile: phone, email: email },
     });
 
     ref.onClose.subscribe({
       next: (cls: cls.ClsPartner) => {
-        this.utils.pathValueForm({
+        cls && this.utils.pathValueForm({
           tax_code: cls.vat,
           email: cls.email,
           phone: cls.phone,

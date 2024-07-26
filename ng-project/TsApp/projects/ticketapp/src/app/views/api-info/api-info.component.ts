@@ -1,16 +1,16 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Observable, of, switchMap } from "rxjs";
-import { Objects } from "ts-helper";
+import { Objects } from "ts-ui/helper";
 import { UserService } from "../../services/user.service";
-import { ToastService } from "../../services/toast.service";
+import { ToastService } from "ts-ui/toast";
 import { ApiInfo } from "../../models/api-info";
 import { ApiInfoService } from "../../services/api-info.service";
 import { StorageService } from "../../services/storage.service";
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { LoggerConfig, LoggerService } from 'ts-logger';
+import { LoggerConfig, LoggerService } from 'ts-ui/logger';
 import { FormUtil } from '../../helper/form-util';
 import { User } from '../../models/user';
+import {ModalService} from "../../services/ui/model.service";
 
 const { notBlank, isBlank } = Objects;
 
@@ -53,6 +53,7 @@ export class ApiInfoComponent implements OnInit {
     private config: StorageService,
     private apiSrv: ApiInfoService,
     private toast: ToastService,
+    private modal: ModalService,
     private dialogRef: DynamicDialogRef) {
     this.user = this.storage.loginUser;
     this.form = FormUtil.create(
@@ -80,7 +81,7 @@ export class ApiInfoComponent implements OnInit {
 
   ngOnInit() {
 
-    const instanceRef = this.toast.getDialogComponentRef(this.dialogRef).instance;
+    const instanceRef = this.modal.getInstance(this.dialogRef);
     if(instanceRef && instanceRef.data) {
       this.apiCode = instanceRef.data['apiCode'];
       this.hasDialogRef = true;
@@ -125,7 +126,7 @@ export class ApiInfoComponent implements OnInit {
   onSave() {
 
     if (this.formGroup.invalid) {
-      this.toast.warning({ summary: this.config.i18n.form_invalid })
+      this.toast.warning( this.config.i18n.form_invalid )
       return;
     }
 
@@ -139,7 +140,7 @@ export class ApiInfoComponent implements OnInit {
       next: _ => {
         this.asyncSave = false;
         this.hasChangeData = false;
-        this.toast.success({ summary: this.config.i18n.saveOk });
+        this.toast.success(this.config.i18n.saveOk);
       }
     });
   }
@@ -148,19 +149,19 @@ export class ApiInfoComponent implements OnInit {
     if (this.disabledCheckApi === false) {
       this.asyncSave = false;
 
-      const loadingRef = this.toast.loading({ summary: this.config.i18n.awaitHandle })
+      const loadingRef = this.toast.loading( this.config.i18n.awaitHandle)
 
       this.apiSrv.checkLogin().subscribe({
         error: _ => {
           this.asyncSave = false;
-          this.toast.closeToast(loadingRef.toastId);
+          this.toast.close(loadingRef);
         },
         next: res => {
           this.asyncSave = false;
-          this.toast.closeToast(loadingRef.toastId);
+          this.toast.close(loadingRef);
           this.formGroup.get('cookie').patchValue(res.cookie);
           this.formGroup.get('csrf_token').patchValue(res.csrf_token);
-          this.toast.success({ summary: this.config.i18n.checkApiOk });
+          this.toast.success( this.config.i18n.checkApiOk);
 
           if(close){
             this.closeDialogRef();
@@ -191,7 +192,7 @@ export class ApiInfoComponent implements OnInit {
     this.apiSrv.findAll().subscribe({
       error: err => this.logger.error('loadApiCode', err),
       next: page => {
-        this.toast.success({ summary: this.config.i18n.loadApiOk });
+        this.toast.success(this.config.i18n.loadApiOk );
         this.form.pathControl('api_item', page.data[0]);
 
 
@@ -211,8 +212,8 @@ export class ApiInfoComponent implements OnInit {
     }
   }
 
-  static showDialog(modal: ToastService, apiCode: string) {
-    modal.openDialog(ApiInfoComponent, {
+  static showDialog(modal: ModalService, apiCode: string) {
+    modal.open(ApiInfoComponent, {
      // header: 'Cấu hình thông tin xác thực',
       data: { apiCode }
     })

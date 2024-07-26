@@ -1,7 +1,7 @@
 import {BaseModel} from "./base-model";
 import {JsonObject} from "./common";
 import { ClsUser } from "./od-cls";
-import {Objects} from 'ts-helper';
+import {Objects} from 'ts-ui/helper';
 
 export type ApiCode = 'od.ticket';
 

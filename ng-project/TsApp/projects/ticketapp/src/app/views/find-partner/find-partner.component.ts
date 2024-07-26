@@ -1,12 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { DialogService, DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
-import { Objects } from 'ts-helper';
-import { ColDef } from "ag-grid-community";
-import { ToastService } from '../../services/toast.service';
+import { Objects } from 'ts-ui/helper';
+import { ColDef } from "@ag-grid-community/core";
+import { ToastService } from 'ts-ui/toast';
 import { OdTicketService } from '../../services/od.service';
 import { ClsPartner, ClsSearch } from '../../models/od-cls';
-import { LoggerService } from 'ts-logger';
+import { LoggerService } from 'ts-ui/logger';
 import { Page } from '../../models/common';
 import { AgTableComponent, TableOption } from 'ts-ui/ag-table';
 import {StorageService} from "../../services/storage.service";
@@ -156,7 +156,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
     const formValue = this.formValue, searchData = this.formToObj(newKeys, formValue);
 
     if (Objects.isEmpty(searchData)) {
-      if(showWarning) this.alert.warning({ summary: this.config.i18n.searchInvalid });
+      if(showWarning) this.alert.warning(this.config.i18n.searchInvalid);
       return;
     }
 
@@ -166,7 +166,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
     }
 
 
-    const ref = this.alert.loading({ summary: this.config.i18n.searchAwait });
+    const ref = this.alert.loading(this.config.i18n.searchAwait);
 
     const clsSearch: ClsSearch = ClsSearch.from({
       data: searchData,
@@ -182,15 +182,15 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
       next: (page: Page) => {
         this.rowData = [...page?.data] ;
         this.asyncLoading = false;
-        this.alert.closeToast(ref);
+        this.alert.close(ref);
         this.cdRef.detectChanges();
-        this.alert.success({ summary: `Đã tìm được ${page?.total ?? 0} dòng.` });
+        this.alert.success(`Đã tìm được ${page?.total ?? 0} dòng.`);
         
       },
       error: err => {
         this.logger.error('search partner error: ', err);
         this.asyncLoading = false;
-        this.alert.closeToast(ref);
+        this.alert.close(ref);
         this.rowData = [];
         this.cdRef.detectChanges();
       }
@@ -236,7 +236,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
 
       //-- báo lỗi > chưa chọn công ty
       if (isBlank(value['company_id'])) {
-        this.alert.warning({summary: `<b>Vui lòng chọn công ty.</b>`});
+        this.alert.warning(`<b>Vui lòng chọn công ty.</b>`);
         this.asyncSave = false;
         return;
       }
@@ -265,13 +265,13 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
         this.asyncSave = false;
         this.agTable.setRows(data);
         this.cdRef.detectChanges();
-        this.alert.success({summary: `[${data.id}] Tạo <b>${name}</b> thành công`});
+        this.alert.success(`[${data.id}] Tạo <b>${name}</b> thành công`);
       },
       error: err => {
         this.asyncSave = false;
         this.agTable.setRows(...[]);
         this.cdRef.detectChanges();
-        this.alert.error({summary: `Xảy ra lỗi tạo <b>${name}</b> > ${err.message} !`});
+        this.alert.error(`Xảy ra lỗi tạo <b>${name}</b> > ${err.message} !`);
       }
      });
 

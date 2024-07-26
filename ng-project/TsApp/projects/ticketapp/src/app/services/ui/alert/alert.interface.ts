@@ -13,13 +13,6 @@ export interface AlertOption {
      */
     position?: AlertPosition;
 
-
-
-
-
-
-
-
     severity?: AlertSeverity;
     title?: string;
     summary?: string;
@@ -36,8 +29,6 @@ export interface AlertOption {
     okButton?: AlertButtonOption;
     cancelButton?: AlertButtonOption;
     actions?: AlertButtonOption[];
-
-
 
 }
 

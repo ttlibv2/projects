@@ -7,19 +7,17 @@ import {GroupHelp} from '../models/group-help';
 import {Ticket} from '../models/ticket';
 import {AgTable} from '../models/ag-table';
 import {ApiInfo} from '../models/api-info';
-import {Objects} from 'ts-helper';
+import {Objects} from 'ts-ui/helper';
 import {Question} from '../models/question';
 import {Template} from '../models/template';
 import * as od from "../models/od-cls";
-import {EMPTY, from, map, Observable, switchMap} from "rxjs";
+import {EMPTY, from, Observable, switchMap} from "rxjs";
 import {JsonObject, ResponseToModel} from "../models/common";
 import {AppConfig} from "../models/app-config";
-import { kMaxLength } from 'buffer';
 
 const  {isArray, isNull, isClass, valueToMap} = Objects;
 
 Dexie.debug = true;
-
 
 export const TB_NAMES = {
     template: "template",
@@ -41,7 +39,6 @@ export const TB_NAMES = {
     clsTag: "clsTag",
     clsTopic: "clsTopic",
     agTable: "agTable",
-  //  agColumn: "agColumn",
     apiInfo: "apiInfo",
     user: "user",
     appConfig: "appConfig",
@@ -89,11 +86,17 @@ export class LocalDbService extends Dexie {
     private lsTable: Map<string, any> = new Map();
 
     constructor() {
-        super("ts_web", {autoOpen: true, allowEmptyDB: true});
+        super("ts_web", {autoOpen: false, allowEmptyDB: true});
         this.initializeTable();
-        this.open()
-            .then(s => console.log(`opening database success `, s._dbSchema))
-            .catch(err => console.error(`opening database error -> `, err));
+    }
+
+    async openDb(): Promise<any> {
+        try {
+            const s = await this.open();
+            return console.log(`opening database success `, s._dbSchema);
+        } catch (err) {
+            return console.error(`opening database error -> `, err);
+        }
     }
 
     private initializeTable() {

@@ -1,6 +1,6 @@
 import { AfterContentInit, booleanAttribute, ChangeDetectionStrategy, Component, ContentChildren, ElementRef, EventEmitter, Input, Output, QueryList, Renderer2, TemplateRef, ViewEncapsulation } from '@angular/core';
 import { ImageErrorEvent, TagMode, TagRemoveEvent } from './tag.common';
-import { Objects } from 'ts-helper';
+import { Objects } from 'ts-ui/helper';
 import { PrimeTemplate } from 'primeng/api';
 
 const { notBlank, notNull } = Objects;

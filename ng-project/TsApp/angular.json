@@ -57,17 +57,13 @@
                 "input": "projects/ticketapp/public",
                 "output": "assets"
               }
-            ],
+            ],           
+            "scripts": [],
             "styles": [
               "projects/ticketapp/src/styles.scss",
               {
-                "input": "scss/primeng/themes/aura/aura-light/lime/theme.scss",
-                "bundleName": "aura-light-lime",
-                "inject": false
-              },
-              {
                 "input": "all-theme/theme/aura/aura-light-lime.scss",
-                "bundleName": "aura-light-lime2",
+                "bundleName": "aura-light-lime",
                 "inject": false
               },
               {
@@ -77,7 +73,6 @@
               }
 
             ],
-            "scripts": [],
 
             "allowedCommonJsDependencies": ["crypto-js", "quill-delta"],
             "budgets": [{
@@ -165,106 +160,7 @@
           }
         }
       }
-    },
-    "ts-helper": {
-      "projectType": "library",
-      "root": "projects/helper",
-      "sourceRoot": "projects/helper/src",
-      "prefix": "ts",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/helper/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/helper/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/helper/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/helper/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
-          }
-        }
-      }
-    },
-    "ts-layout": {
-      "projectType": "library",
-      "schematics": {
-        "@schematics/angular:component": {
-          "inlineTemplate": true,
-          "inlineStyle": true,
-          "style": "scss",
-          "skipTests": true,
-          "standalone": false,
-          "displayBlock": true
-        },
-        "@schematics/angular:class": {
-          "skipTests": true
-        },
-        "@schematics/angular:directive": {
-          "skipTests": true,
-          "standalone": false
-        },
-        "@schematics/angular:guard": {
-          "skipTests": true
-        },
-        "@schematics/angular:interceptor": {
-          "skipTests": true
-        },
-        "@schematics/angular:pipe": {
-          "skipTests": true,
-          "standalone": false
-        },
-        "@schematics/angular:resolver": {
-          "skipTests": true
-        },
-        "@schematics/angular:service": {
-          "skipTests": true
-        }
-      },
-      "root": "projects/layout",
-      "sourceRoot": "projects/layout/src",
-      "prefix": "ts",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/layout/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/layout/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/layout/tsconfig.lib.json"
-            }
-          },
-          "defaultConfiguration": "production"
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "tsConfig": "projects/layout/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
-          }
-        }
-      }
-    },
+    },    
     "ts-ui": {
       "projectType": "library",
       "root": "projects/tsui",

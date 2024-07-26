@@ -1,4 +1,4 @@
-import {  Objects } from "ts-helper";
+import {  Objects } from "ts-ui/helper";
 import { AgColumn, AgTable } from "../../models/ag-table";
 
 export class ListUtil {

@@ -1,0 +1,36 @@
+<div class="ts-toast-message-header" *ngIf="title || (options.closeButton && closeIcon)">
+    <div class="ts-toast-message-header-title">
+        @if(title) {
+            @if (options.enableHtml) {
+                <span [innerHTML]="title"></span>
+            } @else {
+                <span>{{ title }}</span>
+            }
+        }
+    </div>
+    <div class="ts-toast-message-header-close" *ngIf="options.closeButton && closeIcon">
+        <span [ngClass]="closeIcon" class="close-icon"></span>
+    </div>
+</div>
+<div class="ts-toast-message-content">
+    <div class="ts-toast-message-content-left" *ngIf="contentIcon">
+        <div class="ts-toast-message-content-icon">
+            <span [ngClass]="contentIcon" class="icon"></span>
+        </div>
+    </div>
+    <div class="ts-toast-message-content-right" *ngIf="summary || detail">
+        <div class="ts-toast-message-content-summary" *ngIf="summary">
+            @if(options.enableHtml) {<span [innerHTML]="summary"></span>}
+            @else {<span>{{summary}}</span>}
+        </div>
+        <div class="ts-toast-message-content-detail" *ngIf="detail">
+            @if(options.enableHtml) {<span [innerHTML]="detail"></span>}
+            @else {<span>{{detail}}</span>}
+        </div>
+    </div>
+</div>
+ <div class="ts-toast-message-footer" *ngIf="options.progressBar">
+     <p-progressBar [value]="width()"
+                    [showValue]="false" [mode]="options.progressMode"
+                    [style]="{ height: '4px' }" ></p-progressBar>
+ </div>

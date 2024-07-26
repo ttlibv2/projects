@@ -5,6 +5,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { AgTableModule } from 'ts-ui/ag-table';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastModule } from 'ts-ui/toast';
 
 @NgModule({
   declarations: [

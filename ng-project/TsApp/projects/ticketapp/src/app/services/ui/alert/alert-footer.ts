@@ -11,7 +11,7 @@ import { AlertButtonOption, AlertOption } from "./alert.interface";
     imports: [CommonModule, DynamicDialogModule, ButtonModule, RippleModule],
     encapsulation: ViewEncapsulation.None,
     template: `
-        <div>
+        <div class="flex flex-row flex-wrap gap-2 div-alert-footer">
            
             @if(actions?.length) {
                 <ng-template ngFor let-action [ngForOf]="actions" >

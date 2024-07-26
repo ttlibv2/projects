@@ -2,7 +2,7 @@ import { TableColumn } from "ts-ui/ag-table";
 import { BaseModel } from "./base-model";
 import { AssignObject } from "./common";
 import { MenuItem } from "primeng/api";
-import { Objects } from "ts-helper";
+import { Objects } from "ts-ui/helper";
 
 export interface AgColumnState {
   colId: string;

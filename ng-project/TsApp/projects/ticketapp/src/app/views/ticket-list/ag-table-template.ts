@@ -13,7 +13,8 @@ import { RippleModule } from "primeng/ripple";
 import { AgTableModule, TableColumn, TableOption } from "ts-ui/ag-table";
 import { AgTable } from "../../models/ag-table";
 import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
-import { ToastService } from "../../services/toast.service";
+import { ToastService } from "ts-ui/toast";
+import {ModalService} from "../../services/ui/model.service";
 
 @Component({
     selector: '[ts-ag-table-template]',
@@ -97,7 +98,7 @@ export class AgTableTemplate implements OnInit {
     instance: DynamicDialogComponent;
 
     constructor(private fb: FormBuilder,
-        private toast: ToastService,
+        private modal: ModalService,
         private dynamicRef: DynamicDialogRef) {
         this.formGroup = fb.group({
             title: [null, Validators.required],
@@ -109,7 +110,7 @@ export class AgTableTemplate implements OnInit {
     }
 
     ngOnInit(): void {
-        this.instance = this.toast.getDialogComponentRef(this.dynamicRef)?.instance;
+        this.instance = this.modal.getInstance(this.dynamicRef);
         if(this.instance && this.instance.data) {
             const {model} = this.instance.data;
             this.rows = (<AgTable> model).children;

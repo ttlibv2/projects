@@ -8,5 +8,6 @@
 
 # Node
 node_modules
+.angular
 
 **/**.class

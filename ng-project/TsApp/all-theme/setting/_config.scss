@@ -7,6 +7,11 @@ $primaryDarkColor: #4F46E5 !default;
 $primaryDarkerColor: #4338CA !default;
 $primaryTextColor: #ffffff !default;
 
+$secondaryColor: #fff !default;
+$secondaryTextColor: #000 !default;
+$secondaryDarkColor: #fff !default;
+$secondaryBorderColor: clr.$shade300 !default;
+
 $highlightBg: #EEF2FF !default;
 $highlightTextColor: $primaryDarkerColor !default;
 $highlightFocusBg: #E0E7FF !default;
@@ -120,15 +125,15 @@ $passwordStrongBg: #22c55e !default;
 $buttonPadding: 0.35rem 0.5rem;//0.5rem 1rem !default;
 $buttonIconOnlyWidth: 2.5rem !default;
 $buttonIconOnlyPadding: 0.5rem 0 !default;
-$buttonBg: $primaryColor !default;
-$buttonTextColor: $primaryTextColor !default;
-$buttonBorder: 1px solid $primaryColor !default;
+$buttonBg: $secondaryColor !default;
+$buttonTextColor: $secondaryTextColor !default;
+$buttonBorder: 1px solid $secondaryBorderColor !default;
 $buttonHoverBg: $primaryDarkColor !default;
-$buttonTextHoverColor: $primaryTextColor !default;
-$buttonHoverBorderColor: $primaryDarkColor !default;
-$buttonActiveBg: $primaryDarkerColor !default;
-$buttonTextActiveColor: $primaryTextColor !default;
-$buttonActiveBorderColor: $primaryDarkerColor !default;
+$buttonTextHoverColor: $secondaryTextColor !default;
+$buttonHoverBorderColor: $secondaryDarkColor !default;
+$buttonActiveBg: $secondaryDarkColor !default;
+$buttonTextActiveColor: $secondaryTextColor !default;
+$buttonActiveBorderColor: $secondaryDarkColor !default;
 $raisedButtonShadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12) !default;
 $roundedButtonBorderRadius: 2rem !default;
 
@@ -139,7 +144,18 @@ $plainButtonTextColor: $textColor !default;
 $plainButtonHoverBgColor: clr.$shade100 !default;
 $plainButtonActiveBgColor: clr.$shade200 !default;
 
-$secondaryButtonBg: clr.$shade100 !default;
+$primaryButtonBg: $primaryColor !default;
+$primaryButtonTextColor: $primaryTextColor !default;
+$primaryButtonBorder: 1px solid $primaryColor !default;
+$primaryButtonHoverBg: $primaryDarkColor !default;
+$primaryButtonTextHoverColor: $primaryTextColor !default;
+$primaryButtonHoverBorderColor: $primaryDarkColor !default;
+$primaryButtonActiveBg: $primaryDarkerColor !default;
+$primaryButtonTextActiveColor: $primaryTextColor !default;
+$primaryButtonActiveBorderColor: $primaryDarkerColor !default;
+$primaryButtonFocusShadow: none !default;
+
+$secondaryButtonBg: $secondaryColor !default;
 $secondaryButtonTextColor: clr.$shade600 !default;
 $secondaryButtonBorder: 1px solid clr.$shade100 !default;
 $secondaryButtonHoverBg: clr.$shade200 !default;
@@ -577,41 +593,64 @@ $inlineMessageTextFontSize: 1rem !default;
 $inlineMessageBorderWidth: 1px !default;
 
 //toast
-$toastIconFontSize: 1.125rem !default;
+$toastCloseIconFontSize: 1.125rem !default;
+$toastMessageIconFontSize: 2rem!default;
 $toastMessageTextMargin: 0 0 0 0.5rem !default;
 $toastMargin: 0 0 1rem 0 !default;
-$toastPadding: 0.75rem !default;
+$toastPadding: 0.5rem 0.75rem !default;
 $toastBorderWidth: 1px !default;
 $toastShadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !default;
 $toastOpacity: 1 !default;
 $toastTitleFontWeight: 500 !default;
+$toastHeaderPadding: 0.5rem 0.75rem 0 0.75rem;
 $toastDetailMargin: $inlineSpacing 0 0 0 !default;
+$toastCloseBorderRadius: 0!default;//$actionIconBorderRadius!default;
+$toastCloseIconPadding: .5rem!default;
+$toastContentPadding: 0.5rem 1rem 1rem .5rem!default;
+$toastFontSize: 1.1rem;
 
 //severities
 $infoMessageBg: rgba(239, 246, 255, 0.95) !default;
-$infoMessageBorder: solid #bfdbfe !default;
+$infoMessageBorder: $messageBorderWidth solid #bfdbfe !default;
 $infoMessageTextColor: #2563eb !default;
 $infoMessageIconColor: #2563eb !default;
+$infoMessageBorderColor: #bfdbfe !default;
+
 $successMessageBg: rgba(240, 253, 244, 0.95) !default;
-$successMessageBorder: solid #bbf7d0 !default;
+$successMessageBorder: $messageBorderWidth solid #bbf7d0 !default;
 $successMessageTextColor: #16a34a !default;
 $successMessageIconColor: #16a34a !default;
+$successMessageBorderColor: #bbf7d0 !default;
+
 $warningMessageBg: rgba(254, 252, 232, 0.95) !default;
-$warningMessageBorder: solid #fde68a !default;
+$warningMessageBorder: $messageBorderWidth solid #fde68a !default;
 $warningMessageTextColor: #ca8a04 !default;
 $warningMessageIconColor: #ca8a04 !default;
+$warningMessageBorderColor: #fde68a !default;
+
 $errorMessageBg: rgba(254, 242, 242, 0.95) !default;
-$errorMessageBorder: solid #fecaca !default;
-$errorMessageTextColor: #dc2626 !default;
+$errorMessageBorder: $messageBorderWidth solid #fecaca !default;
+$errorMessageTextColor: #dc2626 !default; 
 $errorMessageIconColor: #dc2626 !default;
+$errorMessageBorderColor: #fecaca !default;
+
+$helpMessageBg: rgba(254, 242, 242, 0.95) !default;
+$helpMessageBorder: $messageBorderWidth solid #fecaca !default;
+$helpMessageTextColor: clr.$purple !default;
+$helpMessageIconColor: clr.$purple !default;
+$helpMessageBorderColor: #fecaca !default;
+
 $secondaryMessageBg: clr.$shade100 !default;
-$secondaryMessageBorder: solid clr.$shade200 !default;
+$secondaryMessageBorder: $messageBorderWidth solid clr.$shade200 !default;
 $secondaryMessageTextColor: clr.$shade600 !default;
 $secondaryMessageIconColor: clr.$shade600 !default;
+$secondaryMessageBorderColor: clr.$shade200 !default;
+
 $contrastMessageBg: clr.$shade950 !default;
-$contrastMessageBorder: solid clr.$shade500 !default;
+$contrastMessageBorder: $messageBorderWidth solid clr.$shade500 !default;
 $contrastMessageTextColor: clr.$shade50 !default;
 $contrastMessageIconColor: clr.$shade50 !default;
+$contrastMessageBorderColor: clr.$shade500 !default;
 
 //overlays
 $overlayContentBorder: 1px solid clr.$shade200 !default;
@@ -620,22 +659,29 @@ $overlayContainerShadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
 0 8px 10px -6px rgb(0 0 0 / 0.1) !default;
 
 //dialog
-$dialogPadding: .5rem!default;
 $dialogMarginTop: 3rem!important;
+$dialogMarginLeftRight: 1rem!default;
 
 $dialogHeaderBg: clr.$shade000 !default;
 $dialogHeaderBorder: 0 none !default;
 $dialogHeaderTextColor: clr.$shade700 !default;
 $dialogHeaderFontWeight: 600 !default;
 $dialogHeaderFontSize: 1.25rem !default;
-$dialogHeaderPadding: unset;//1.5rem !default;
-$dialogHeaderPaddingBottom: .5rem;
+$dialogHeaderPadding: 1rem 0 .2rem 0!default;//1.5rem !default;
+$dialogHeaderMargin: 0 1rem!default;
+
 $dialogHeaderBottomBorder: var(--primary-color) 3px solid!default;
 
-$dialogContentPadding: 0 1.5rem 1.5rem 1.5rem !default;
-$dialogFooterBorder: 0 none !default;
-$dialogFooterPadding: unset!default; //0 1.5rem 1.5rem 1.5rem !default;
+$dialogContentMargin: 0!default;
+$dialogContentPadding: 0.5rem 1rem!default;
+
+
+$dialogFooterPadding: .5rem 1rem!default; //0 1.5rem 1.5rem 1.5rem !default;
+$dialogFooterMargin: 0!default;
 $dialogFooterBg: transparent !default;
+$dialogFooterBorder: 0 none !default;
+$dialogFooterButtonGap: .5rem!default;
+$dialogFooterButtonPos: end!default;
 
 
 
@@ -798,8 +844,8 @@ $galleriaThumbnailNavigatorHeight: 2rem !default;
 //divider
 $dividerHorizontalMargin: 1rem 0 !default;
 $dividerHorizontalPadding: 0 1rem !default;
-$dividerVerticalMargin: 0 1rem !default;
-$dividerVerticalPadding: 1rem 0 !default;
+$dividerVerticalMargin: 0!default;//0 1rem !default;
+$dividerVerticalPadding: 0!default;//1rem 0 !default;
 $dividerSize: 1px !default;
 $dividerColor: $primaryColor !default;
 $dividerStyle: solid!default;
@@ -869,4 +915,3 @@ $imagePreviewActionIconWidth: 3rem !default;
 $imagePreviewActionIconHeight: 3rem !default;
 $imagePreviewActionIconFontSize: 1.5rem !default;
 $imagePreviewActionIconBorderRadius: 50% !default;
-

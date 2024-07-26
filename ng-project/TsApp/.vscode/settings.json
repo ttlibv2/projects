@@ -2,5 +2,7 @@
     "editor.fontSize": 15,
     "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
     "editor.fontLigatures": true,
-    "editor.smoothScrolling": true
+    "editor.smoothScrolling": true,
+    "files.autoSave": "onFocusChange",
+    "prettier.endOfLine": "auto"
 }

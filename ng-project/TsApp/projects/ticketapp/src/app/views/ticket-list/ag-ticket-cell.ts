@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
-import { ICellRendererAngularComp } from "ag-grid-angular";
-import { ICellRendererParams } from "ag-grid-community";
-import { Objects } from "ts-helper";
+import { ICellRendererAngularComp } from "@ag-grid-community/angular";
+import { Objects } from "ts-ui/helper";
+import { ICellRendererParams } from "@ag-grid-community/core";
 const {notNull, isArray, isObject} = Objects;
 
 export type AgStatus = 'loading' | 'success' | 'error' | undefined ;

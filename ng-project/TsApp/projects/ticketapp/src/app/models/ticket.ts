@@ -1,4 +1,4 @@
-import { Objects } from "ts-helper";
+import { Objects } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
 import { Chanel } from "./chanel";
 import { AssignObject, ImageObject } from "./common";
@@ -104,6 +104,7 @@ export class Ticket extends BaseModel {
   ticket_on?: string;
 
   send_status?: 'loading' | 'success' | 'error' | undefined;
+  view_chanel?: boolean = false;
 
   constructor() {
     super();
@@ -134,7 +135,7 @@ export class Ticket extends BaseModel {
 
   cloneWithChanel(): Ticket[] {
     const object = Objects.assign({}, this);
-    return this.chanels.map(chanel => Ticket.from({...object, support_help: chanel}));
+    return this.chanels.map(chanel => Ticket.from({...object, support_help: chanel, view_chanel: true}));
   }
 
 }

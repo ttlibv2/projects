@@ -5,18 +5,16 @@
   border-radius: cfg.$borderRadius;
   box-shadow: cfg.$overlayContainerShadow;
   border: cfg.$overlayContentBorder;
-  padding: cfg.$dialogPadding;
 
   &-header {
+    margin: cfg.$dialogHeaderMargin;
+    padding: cfg.$dialogHeaderPadding;
     border-bottom: cfg.$dialogHeaderBorder;
     background: transparent; //cfg.$dialogHeaderBg;
     color: cfg.$dialogHeaderTextColor;
-    padding: cfg.$dialogHeaderPadding;
     border-top-right-radius: cfg.$borderRadius;
-    border-top-left-radius: cfg.$borderRadius;
-
+    border-top-left-radius: cfg.$borderRadius; 
     border-bottom: cfg.$dialogHeaderBottomBorder;
-    padding-bottom: cfg.$dialogHeaderPaddingBottom;
 
     .p-dialog-title {
       font-weight: cfg.$dialogHeaderFontWeight;
@@ -24,8 +22,8 @@
     }
 
     .p-dialog-header-icon {
-      @include util.action-icon();
       margin-right: cfg.$inlineSpacing;
+      @include util.action-icon();
 
       &:last-child {
         margin-right: 0;
@@ -36,7 +34,9 @@
   &-content {
     background: cfg.$overlayContentBg;
     color: cfg.$panelContentTextColor;
+
     padding: cfg.$dialogContentPadding;
+    margin: cfg.$dialogContentMargin;
 
     &:last-of-type {
       border-bottom-right-radius: cfg.$borderRadius;
@@ -45,18 +45,28 @@
   }
 
   &-footer {
+    padding: cfg.$dialogFooterPadding;
+    margin: cfg.$dialogFooterMargin;
     border-top: cfg.$dialogFooterBorder;
     background: cfg.$dialogFooterBg;
-    color: cfg.$panelFooterTextColor;
-    padding: cfg.$dialogFooterPadding;
+    color: cfg.$panelFooterTextColor;    
     text-align: right;
     border-bottom-right-radius: cfg.$borderRadius;
     border-bottom-left-radius: cfg.$borderRadius;
 
     button {
-      margin: 0 cfg.$inlineSpacing 0 0;
+      //margin: 0 cfg.$inlineSpacing 0 0;
       width: auto;
     }
+
+    .div-alert-footer {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: cfg.$dialogFooterButtonGap;
+      justify-content: cfg.$dialogFooterButtonPos;
+    }
+
   }
 
   &.p-confirm-dialog {

@@ -5,27 +5,26 @@
 $primaryColor: clr.$primary;
 
 :root {
-  --font-family: "Inter var", sans-serif, serif;//cfg.$fontFamily;
-  --font-feature-settings: cfg.$fontFeatureSettings;
+  --font-family: #{cfg.$fontFamily};
+  --font-feature-settings: #{cfg.$fontFeatureSettings};
   --font-variation-settings: normal;
-  
-  --text-color: clr.$shade700;
-  --text-color-secondary: clr.$shade500;
-  --primary-color-text: cfg.$primaryTextColor;
+  --text-color: #{clr.$shade700};
+  --text-color-secondary: #{clr.$shade500};
+  --primary-color-text: #{cfg.$primaryTextColor};
 
   --content-padding: 1.125rem;
-  --inline-spacing: cfg.$inlineSpacing;
-  --border-radius: cfg.$borderRadius;
+  --inline-spacing: #{cfg.$inlineSpacing};
+  --border-radius: #{cfg.$borderRadius};
   --surface-ground: #f8fafc;
   --surface-section: #ffffff;
   --surface-card: #ffffff;
   --surface-overlay: #ffffff;
   --surface-border: #e2e8f0;
   --surface-hover: #f1f5f9;
-  --focus-ring: cfg.$focusShadow;
-  --maskbg: cfg.$maskBg;
-  --highlight-bg: cfg.$highlightBg;
-  --highlight-text-color: cfg.$highlightTextColor;
+  --focus-ring: #{cfg.$focusShadow};
+  --maskbg: #{cfg.$maskBg};
+  --highlight-bg: #{cfg.$highlightBg};
+  --highlight-text-color: #{cfg.$highlightTextColor};
   --p-anchor-gutter: 2px;
   --p-focus-ring-color: var(--primary-color);
 

@@ -51,25 +51,7 @@ public class TicketRest extends LongUIdRest<Ticket, TicketService> {
 
     @PostMapping("save")
     public Ticket saveTicket(@RequestBody @Valid ObjectMap object, @PrincipalId Long userId) {
-
-
         return service.saveTicket(userId, object);
-
-
-
-
-//        object.setUser(new TsUser(userId));
-//
-//        if(Objects.notEmpty(object.getChanels())) {
-//            object.setChanelIds(object.getChanels().stream().map(LongUId::getId).toList());
-//
-//            if(Objects.isNull(object.getSupportHelp()) && Objects.isNull(object.getSupportHelpId())) {
-//                object.setSupportHelp(object.getChanels().get(0));
-//            }
-//
-//        }
-//
-//        return super.createObject(object);
     }
 
 

@@ -1,7 +1,7 @@
 <div class="search-user-form grid">
   <div class="col-12">
     <form [formGroup]="formGroup" (ngSubmit)="clickSearch()">
-      <p-fieldset legend="Thông tin">
+      <p-fieldset>
         <div class="grid">
           <div class="p-fluid col-12" *ngIf="!allowNew && dataSelected">
             <label for="display_name">Tên hiển thị</label>
@@ -57,7 +57,7 @@
               <div class="inline-flex align-items-center gap-3">
                 <span class="font-weight-bold"> | Số dòng: </span>
                 <p-inputNumber inputId="minmax" mode="decimal" [min]="20" [max]="80" [useGrouping]="false"
-                  formControlName="pageSize" [inputStyle]="{'max-width': '100px'}" showButtons="true" />
+                  formControlName="pageSize" [inputStyle]="{'max-width': '100px'}" showButtons="false" />
               </div>
           </div>
         </div>

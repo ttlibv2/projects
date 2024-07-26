@@ -2,7 +2,7 @@
 @use "../../setting/mixins" as util;
 $prefix: ".ts-tag";
 
-#{$prefix} {
+.ts-tag {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -14,21 +14,22 @@ $prefix: ".ts-tag";
   font-size: cfg.$fontSize;
   transition: cfg.$formElementTransition;
   border-radius: cfg.$borderRadius;
+  border: cfg.$inputBorder;
   outline-color: transparent;
   cursor: default;
 
-  #{$prefix}-text {
+  &-text {
     line-height: 1.5;
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
   }
 
-  #{$prefix}-icon {
+  &-icon {
     line-height: 1.5;
   }
 
-  #{$prefix}-remove-icon {
+  &-remove-icon {
     line-height: 1.5;
     cursor: pointer;
   }
@@ -37,7 +38,6 @@ $prefix: ".ts-tag";
     cursor: pointer;
 
     &-checked {
-      // background-color: cfg.$primaryColor!important;
       color: cfg.$infoButtonTextColor !important;
       background: cfg.$primaryColor !important;
       border: cfg.$primaryColor !important;

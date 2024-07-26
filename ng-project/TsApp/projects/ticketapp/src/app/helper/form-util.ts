@@ -1,5 +1,5 @@
 import { FormGroup } from "@angular/forms";
-import { Asserts, Consumer, Supplier } from "ts-helper";
+import { Asserts, Consumer, Supplier } from "ts-ui/helper";
 
 export interface ValueOption {
     onlySelf?: boolean;

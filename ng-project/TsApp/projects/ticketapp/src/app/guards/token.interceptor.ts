@@ -1,6 +1,6 @@
 import {HttpInterceptorFn, HttpRequest} from '@angular/common/http';
 import {inject} from "@angular/core";
-import {Objects} from 'ts-helper';
+import {Objects} from 'ts-ui/helper';
 import {StorageService} from "../services/storage.service";
 import {AuthToken} from '../models/user';
 

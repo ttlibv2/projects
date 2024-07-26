@@ -1,0 +1,18 @@
+@use "../setting/colors" as clr;
+
+// .text-[blue,red..]
+@each $name, $value in clr.$colors {
+   .text-#{$name} {
+        color: $value;
+   }
+}
+
+// .text-[info,danger...]
+@each $name, $value in clr.$severityColors {
+    .text-#{$name} {
+         color: $value;
+    }
+ }
+
+
+

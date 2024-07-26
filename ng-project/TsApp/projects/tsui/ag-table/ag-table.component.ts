@@ -1,85 +1,95 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, Column, GridApi, GridReadyEvent, IRowNode, RowDataTransaction } from 'ag-grid-community';
-import { defaultOption, PrivateField, TableColumn, TableOption, TableReadyEvent, TableRowClick } from './ag-table.common';
-import * as helper from 'ts-helper';
-import { _Util } from 'ag-grid-enterprise';
-import { of } from 'rxjs';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ExcelCreator, ITableNode, TableApi, TableColumn, TableOption, TableReadyEvent, TableRowClick } from './ag-table.common';
+import { ColDef, Column, GetRowIdFunc, GridOptions, GridReadyEvent } from '@ag-grid-community/core';
+import { AgGridAngular } from '@ag-grid-community/angular';
+import { AG_CONFIG_TOKEN, AgTableConfig } from './ag-table.config';
+import { AgI18N } from './ag-table.i18n';
+import { Asserts, Consumer, Objects } from 'ts-ui/helper';
 
-   
-@Component({ 
+const { notNull, mergeDeep } = Objects;
+
+
+
+@Component({
   selector: 'ts-ag-table',
   templateUrl: './ag-table.component.html',
   styles: ` :host { display: block; }  `,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AgTableComponent<E=any> implements OnChanges {
+export class AgTableComponent<E = any> implements OnInit, OnChanges {
+  @Output()tableReady = new EventEmitter<TableReadyEvent>();
+  @Output() rowClicked = new EventEmitter<TableRowClick<E>>();
 
-  
-  @Output()
-  tableReady = new EventEmitter<TableReadyEvent>();
-
-  @Output()
-  rowClicked = new EventEmitter<TableRowClick<E>>();
-
-  @Input() columns: TableColumn[] = [];
   @Input() rows: any[] = [];
+  @Input() columns: TableColumn[] = [];  
+  
   @Input() tableHeight: string = '250px';
+  @Input() themeClass: string;
 
-  @Input()
-  set option(option: TableOption) {
-    this.field.option = helper.Objects.mergeDeep({...defaultOption}, option);
+  @Input() set option(option: TableOption) {
+    this.gridOption = mergeDeep(this.gridOption, option);
   }
 
-  @Input()
-  set themeClass(theme: string) {
-
-    //if (notBlank(this.field.themeClass)) {
-    //  this.render.removeClass(this.view, this.field.themeClass);
-   // }
-
-    //this.field.themeClass = themes ?? 'ag-themes-quartz';
-   // this.render.addClass(this.view, themes);
-
+  @Input() set getRowId(fnc: GetRowIdFunc) {
+    this.gridOption.getRowId = fnc;
   }
 
-  get themeClass(): string {
-    return this.field.themeClass;
-  }
-
-  get option(): TableOption {
-    return this.field.option;
-  }
-
-  get tableApi(): GridApi<E> {
-    return this.view.api;
-  }
-
-  //==============
-
-
-  @ViewChild(AgGridAngular, { static: true })
+  @ViewChild('agGridComp', { static: true })
   view: AgGridAngular;
-  field: PrivateField = {};
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if('columns' in changes) {
-      console.log(changes['columns'])
-    }
+  /////////////////////////////////
+
+  // private _field: PrivateField = {};
+  gridOption: GridOptions;
+
+  constructor(@Inject(AG_CONFIG_TOKEN) private config: AgTableConfig) {
+    this.gridOption = this.createDefaultGridOption();
   }
+
+  ngOnInit(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void { }
 
   /** Ready ag-grid */
   gridReadyAg(evt: GridReadyEvent) {
     this.tableReady.emit({ view: this.view, ...evt });
   }
 
-  editColumn(colId: string, consumer: helper.Consumer<TableColumn>): void {
+  get i18n(): AgI18N {
+    return this.config?.i18n;
+  }
+
+  get tableApi(): TableApi<E> {
+    return this.view.api as TableApi<E>;
+  }
+
+  get excelCreator(): ExcelCreator {
+    return this.tableApi?.excelCreator;
+  }
+
+  get optionService(): any {
+    return this.tableApi?.gos;
+  }
+
+  get getRowIdFunc(): any {
+    return this.optionService.getCallback('getRowId');
+  }
+
+
+  getRowNode(data: E): ITableNode {
+    const getRowIdFunc = this.getRowIdFunc;
+    Asserts.notNull(getRowIdFunc, "@gridOption.getRowId");
+    return this.tableApi.getRowNode(getRowIdFunc({ data, level: 0 }));
+  }
+
+  editColumn(colId: string, consumer: Consumer<TableColumn>): void {
     const columnIndex = this.tableApi.getColumnDefs().findIndex((col: any) => col.colId === colId);
-    if(columnIndex !== -1 && helper.Objects.notNull(consumer))  {
+    if (columnIndex !== -1 && notNull(consumer)) {
       const columns = [...this.tableApi.getColumnDefs()];
       consumer(columns[columnIndex]);
-      this.tableApi.updateGridOptions({columnDefs: columns});
+      this.tableApi.updateGridOptions({ columnDefs: columns });
     }
   }
 
@@ -91,16 +101,29 @@ export class AgTableComponent<E=any> implements OnChanges {
     this.tableApi.setGridOption('rowData', data);
   }
 
-  addRows(...data: E[]): IRowNode<E>[] {
-    return this.tableApi.applyTransaction({add: data}).add;
+  saveRows(...data: E[]): void {
+    data.reduce((json: any, value) => {
+      json['update'] = json['update'] ?? [];
+      json['add'] = json['add'] ?? [];
+
+      if (notNull(this.getRowNode(value))) json['update'].push(value);
+      else json['add'].push(value);
+
+      return json;
+    }, {});
+
   }
 
-  removeRows(...data: E[]): IRowNode<E>[] {
-    return this.tableApi.applyTransaction({remove: data}).remove;
+  addRows(...data: E[]): ITableNode<E>[] {
+    return this.tableApi.applyTransaction({ add: data }).add;
   }
 
-  updateRows(...data: E[]): IRowNode<E>[] {
-    return this.tableApi.applyTransaction({update: data}).update;
+  removeRows(...data: E[]): ITableNode<E>[] {
+    return this.tableApi.applyTransaction({ remove: data }).remove;
+  }
+
+  updateRows(...data: E[]): ITableNode<E>[] {
+    return this.tableApi.applyTransaction({ update: data }).update;
   }
 
   hideAllColumn(): void {
@@ -108,8 +131,8 @@ export class AgTableComponent<E=any> implements OnChanges {
   }
 
   setColumnsVisible(columns: (string | Column)[], visible: boolean) {
-   // this.tableApi.setColumnsVisible(columns, visible);
-    
+    // this.tableApi.setColumnsVisible(columns, visible);
+
     this.tableApi.applyColumnState({
       applyOrder: true,
       state: columns.map(col => ({
@@ -122,7 +145,7 @@ export class AgTableComponent<E=any> implements OnChanges {
 
 
 
-   /** Sets the state back to match the originally provided column definitions. */
+  /** Sets the state back to match the originally provided column definitions. */
   resetColumnState(): void {
     this.tableApi.resetColumnState();
   }
@@ -136,4 +159,36 @@ export class AgTableComponent<E=any> implements OnChanges {
     return this.tableApi.getSelectedRows();
   }
 
+  private createDefaultGridOption(): GridOptions {
+    return {
+      domLayout: 'normal',
+      animateRows: true,
+      rowSelection: 'multiple',
+      scrollbarWidth: 20,
+      enableRangeSelection: true,
+      overlayLoadingTemplate: '<i class="fal fa-sync fa-spin"></i>',
+      overlayNoRowsTemplate: this.i18n.overlayNoRowsTemplate,
+      maintainColumnOrder: true,
+      rowModelType: 'clientSide',
+      sideBar: { toolPanels: ['columns'] },
+      pivotPanelShow: 'always',
+      defaultColDef: {
+        editable: false,
+        enableValue: true,
+        enableRowGroup: true,
+        enablePivot: true,
+        sortable: false,
+        resizable: true,
+        filter: true,
+        wrapHeaderText: true,
+        suppressHeaderMenuButton: true,
+        suppressHeaderFilterButton: true
+      },
+    
+      getRowClass: (p: any) => {
+        let n = p.node.rowIndex % 2;
+        return `ag-grid-row-style-${n === 0 ? 0 : 1}`;
+      }
+    }
+  }
 }

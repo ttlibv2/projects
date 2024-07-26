@@ -1,135 +1,178 @@
 @use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
 
-$prefix: '.p-toast';
-$closeIconCls: $prefix + '-icon-close';
-$positionCls: $prefix;
-
-.toast-container {
-  opacity: 1;//$toastOpacity;
+@mixin tsToast() {
   position: fixed;
-  min-width: 20rem;
+  width: 25rem;
+}
 
-  //toast position
-  &#{$positionCls} {
+@mixin info() {
+  --toast-bg: #{cfg.$infoMessageBg};
+  --toast-text-color: #{cfg.$infoMessageTextColor};
+  --toast-icon-color:#{cfg.$infoMessageIconColor};
+  --toast-border-color: #{cfg.$infoMessageBorderColor}
+}
 
-    &-top-right {
-      top: 20px;
-      right: 20px;
-    }
+@mixin success() {
+  --toast-bg: #{cfg.$successMessageBg};
+  --toast-text-color: #{cfg.$successMessageTextColor};
+  --toast-icon-color:#{cfg.$successMessageIconColor};
+  --toast-border-color: #{cfg.$successMessageBorderColor}
+}
 
-    &-top-left {
-      top: 20px;
-      left: 20px;
-    }
+@mixin help() {
+  --toast-bg: #{cfg.$helpMessageBg};
+  --toast-text-color: #{cfg.$helpMessageTextColor};
+  --toast-icon-color:#{cfg.$helpMessageIconColor};
+  --toast-border-color: #{cfg.$helpMessageBorderColor}
+}
 
-    &-top-center {
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+@mixin warning() {
+  --toast-bg: #{cfg.$warningMessageBg};
+  --toast-text-color: #{cfg.$warningMessageTextColor};
+  --toast-icon-color:#{cfg.$warningMessageIconColor};
+  --toast-border-color: #{cfg.$warningMessageBorderColor}
+}
 
-    &-bottom-left {
-      bottom: 20px;
-      left: 20px;
-    }
+@mixin error() {
+  --toast-bg: #{cfg.$errorMessageBg};
+  --toast-text-color: #{cfg.$errorMessageTextColor};
+  --toast-icon-color:#{cfg.$errorMessageIconColor};
+  --toast-border-color: #{cfg.$errorMessageBorderColor}
+}
 
-    &-bottom-right {
-      bottom: 20px;
-      right: 20px;
-    }
+.ts-toast {
 
-    &-bottom-center {
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+  &-message {
+    &-info {@include info();}
+    &-success {@include success();}
+    &-help {@include help();}
+    &-warning {@include warning();}
+    &-error {@include error();}
+    &-loading {@include info();}
 
-    &-center {
-      left: 50%;
-      top: 50%;
-      min-width: 20vw;
-      transform: translate(-50%, -50%);
-    }
+    //@include info();
 
-  }
-
-  //toast message
-  #{$prefix}-message {
     margin: cfg.$toastMargin;
+    opacity: cfg.$toastOpacity;
+    font-size: cfg.$toastFontSize;
     box-shadow: cfg.$toastShadow;
     border-radius: cfg.$borderRadius;
-    cursor: pointer;
+    border: cfg.$messageBorderWidth solid;
 
-    &-content {
+
+    background: var(--toast-bg);
+    color: var(--toast-text-color);
+    border-color: var(--toast-border-color);
+
+    &-header {
       display: flex;
       flex-direction: row;
-      gap: .5rem;
-      padding: .5rem;
+      padding: cfg.$toastHeaderPadding;
+      align-items: center;
 
-      .column-left {
+      &-title {
+        flex: 1 1 auto;
+        font-weight: bold;
+      }
+
+      &-close {
+        cursor: pointer;
+        border-radius: cfg.$actionIconBorderRadius;
+        transition: cfg.$actionIconTransition;
+        padding: cfg.$toastCloseIconPadding;
+        background: transparent;
         display: flex;
+        align-items: center;
+
+        &:hover {
+          background: var(--toast-border-color);
+        }
+
+        &:focus-visible {
+          @include util.focused();
+        }
+
+        > .close-icon {
+          color: var(--toast-icon-color);
+          font-size: cfg.$toastCloseIconFontSize;
+        }
+      }
+    }
+
+    &-content {
+      padding: cfg.$toastContentPadding;
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+
+      &-left {
+        display: flex;
+        flex-direction: row;
         align-items: center;
       }
 
-      .column-center {
+      &-right {
         display: flex;
         flex-direction: column;
-        flex: 1 1 0;
-        gap: .5rem;
-        justify-content: center;
+        flex: 1 1 auto;
       }
 
-      .column-right {
-        display: flex;
-        align-items: flex-start;
-
-
+      &-icon > span.icon {
+        color: var(--toast-icon-color);
+        font-size: cfg.$toastMessageIconFontSize;
       }
 
+      &-summary {
 
-    }
-
-    &-info {
-      background: cfg.$infoMessageBg;
-      border: cfg.$infoMessageBorder;
-      //border-width: cfg.$messageBorderWidth;
-      color: cfg.$infoMessageTextColor;
-    }
-
-    &-success {
-      background: cfg.$successMessageBg;
-      border: cfg.$successMessageBorder;
-      //border-width: cfg.$messageBorderWidth;
-      color: cfg.$successMessageTextColor;
-    }
-
-    &-warning {
-      background: cfg.$warningMessageBg;
-      border: cfg.$warningMessageBorder;
-      //border-width: cfg.$messageBorderWidth;
-      color: cfg.$warningMessageTextColor;
-    }
-
-    &-error {
-      background: cfg.$errorMessageBg;
-      border: cfg.$errorMessageBorder;
-      //border-width: cfg.$messageBorderWidth;
-      color: cfg.$errorMessageTextColor;
-    }
-
-    &-help {
-      //background: cfg.$helpMessageBg;
-      //border: cfg.$helpMessageBorder;
-      //border-width: cfg.$messageBorderWidth;
-      //color: cfg.$helpMessageTextColor;
+      }
     }
 
   }
 
+  &-top-right {
+    @include tsToast();
+    top: 20px;
+    right: 20px;
+  }
 
+  &-top-left {
+    @include tsToast();
+    top: 20px;
+    left: 20px;
+  }
 
+  &-top-center {
+    @include tsToast();
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
+  &-bottom-left {
+    @include tsToast();
+    bottom: 20px;
+    left: 20px;
+  }
 
+  &-bottom-right {
+    @include tsToast();
+    bottom: 20px;
+    right: 20px;
+  }
 
+  &-bottom-center {
+    @include tsToast();
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
+  &-center {
+    @include tsToast();
+    left: 50%;
+    top: 50%;
+    min-width: 20vw;
+    transform: translate(-50%, -50%);
+  }
 }

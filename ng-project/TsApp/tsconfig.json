@@ -9,6 +9,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "strictNullChecks": false,
+    "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,12 +22,6 @@
     "module": "ES2022",
     "useDefineForClassFields": false,
     "paths": {
-      "ts-layout": [
-        "./dist/ts-layout"
-      ],
-      "ts-helper": [
-        "./dist/ts-helper"
-      ],
       "ts-logger": [
         "./dist/ts-logger"
       ],

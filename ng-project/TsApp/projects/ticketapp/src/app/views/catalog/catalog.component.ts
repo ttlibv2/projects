@@ -12,12 +12,13 @@ import {
   TableColumn,
   TableOption,
 } from "ts-ui/ag-table";
-import { ToastService } from "../../services/toast.service";
+import { ToastService } from "ts-ui/toast";
 import { CatalogService } from "../../services/catalog.service";
 import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
-import { LoggerService } from "ts-logger";
-import { Objects } from "ts-helper";
+import { LoggerService } from "ts-ui/logger";
+import { Objects } from "ts-ui/helper";
 import { delay } from "rxjs";
+import {ModalService} from "../../services/ui/model.service";
 
 interface CateView {
   title: string;
@@ -80,11 +81,12 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     private def: ChangeDetectorRef,
     private logger: LoggerService,
     private toast: ToastService,
+    private modal: ModalService,
     private catalogSrv: CatalogService,
     private ref: DynamicDialogRef) { }
 
   ngOnInit(): void {
-    this.instance = this.toast.getDialogComponentRef(this.ref)?.instance;
+    this.instance = this.modal.getInstance(this.ref);
     if (Objects.notNull(this.instance) && this.instance.data) {
       const { templateCode, autoLoad } = this.instance.data;
       this.autoLoad = autoLoad;
@@ -106,7 +108,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
   loadCatalog() {
     const ls = this.agTable.getSelectedRows();
     if (ls.length == 0) {
-      this.toast.warning({ summary: "Vui lòng chọn ít nhất 1 dòng." });
+      this.toast.warning( "Vui lòng chọn ít nhất 1 dòng." );
       return;
     }
 
@@ -118,14 +120,14 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     this.catalogSrv.getAll({ catalog, entities }).pipe(delay(1000)).subscribe({
       next: (res) => {
         this.asyncLoading = false;
-        this.toast.success({ summary: "Lấy danh mục thành công." });
+        this.toast.success("Lấy danh mục thành công." );
         this.ref.close(res);
         this.def.detectChanges();
       },
       error: (err) => {
         this.asyncLoading = false;
         if (err.code !== 'disconnect') {
-          this.toast.error({ summary: "Lấy danh mục bị lỗi" });
+          this.toast.error( "Lấy danh mục bị lỗi");
         }
         this.logger.error("Lấy danh mục bị lỗi: ", err);
         this.def.detectChanges();

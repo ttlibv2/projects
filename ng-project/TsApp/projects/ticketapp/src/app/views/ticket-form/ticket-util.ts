@@ -1,7 +1,7 @@
 import { FormGroup } from "@angular/forms";
 import { Ticket } from "../../models/ticket";
 import { User } from "../../models/user";
-import { Consumer, Objects } from "ts-helper";
+import { Consumer, Objects } from "ts-ui/helper";
 import { TicketFormComponent } from "./ticket-form.component";
 import { merge, mergeAll, mergeMap, of, scheduled } from "rxjs";
 import { Mode } from "fs";

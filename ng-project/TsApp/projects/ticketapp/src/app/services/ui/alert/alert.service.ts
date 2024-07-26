@@ -3,19 +3,20 @@ import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { AlertOption } from "./alert.interface";
 import { AlertContent } from "./alert-content";
 import { AlertFooter } from "./alert-footer";
-import { Objects } from "ts-helper";
+import { Objects } from "ts-ui/helper";
+const { notNull } = Objects;
 
 const defaultOption: AlertOption = {
     position: 'top',
     okButton: {
-        label: 'OK',
+        label: 'Đồng ý',
         onClick: evt => {
             console.log('click')
             evt.dynamicRef.close();
         }
     },
     cancelButton: {
-        label: 'Cancel',
+        label: 'Hủy bỏ',
         onClick: evt => evt.dynamicRef.close()
     }
 };
@@ -24,7 +25,6 @@ function anyNotNull(...objects: any[]): boolean {
     return objects.some(o => Objects.notNull(o));
 }
 
-
 @Injectable({ providedIn: 'root' })
 export class Alert {
 
@@ -32,21 +32,24 @@ export class Alert {
 
     create(config: AlertOption): DynamicDialogRef<AlertContent> {
         const clazz = [`p-alert`, `p-alert-${config?.severity}`];
-        const option:AlertOption = Objects.mergeDeep({...defaultOption}, config);
+        const option:AlertOption = Objects.mergeDeep({ position: 'top'}, config);
 
-        if(config.okButton || config.okClick || config.okLabel) {
-            const btn = option.okButton = {...option.okButton};
+        const hasButtonOk = config.okButton || config.okClick || config.okLabel;
+        const hasButtonCancel = config.cancelButton || config.cancelLabel || config.cancelClick;
+        const hasButton: boolean = notNull(hasButtonOk) || notNull(hasButtonCancel) || config.actions?.length > 0;
+
+        if(hasButtonOk || hasButton === false) {
+            const btn = option.okButton = Object.assign({...defaultOption.okButton}, option.okButton);
             btn.label = option.okLabel ?? btn.label ?? 'OK';
             btn.onClick = option.okClick ?? btn.onClick;
         }
-
-        if(config.cancelButton || config.cancelLabel || config.cancelClick) {
-            const btn = option.cancelButton = {...option.cancelButton};
+       
+        if(hasButtonCancel) {
+            const btn = option.cancelButton = Object.assign({...defaultOption.cancelButton}, option.cancelButton);
             btn.label = option.cancelLabel ?? btn.label ?? 'Cancel';
             btn.onClick = option.cancelClick ?? btn.onClick;
         }
 
-        const hasFooter = anyNotNull(option.okButton, option.cancelButton, ...(option.actions ?? []));
         return this.dialog.open(AlertContent, {
             styleClass: clazz.join(' '),
             closable: false,
@@ -55,7 +58,7 @@ export class Alert {
             header: config?.title,
             position: option.position,
             minY: 150,
-            templates: { footer: hasFooter ? AlertFooter: undefined},
+            templates: { footer: AlertFooter},
             data: option
         });
 

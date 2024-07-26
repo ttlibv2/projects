@@ -23,6 +23,7 @@ import {ToolbarModule} from "primeng/toolbar";
 import { CatalogModule } from '../catalog/catalog.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import {TranslateModule} from "@ngx-translate/core";
+import { TagModule } from 'ts-ui/tag';
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import {TranslateModule} from "@ngx-translate/core";
         CatalogModule,
         NgSelectModule,
         TranslateModule,
+        TagModule
       
     ],
   providers: [

@@ -1,6 +1,6 @@
 import {Injectable, signal} from "@angular/core";
 import {Observable, tap} from "rxjs";
-import {Objects} from "ts-helper";
+import {Objects} from "ts-ui/helper";
 import {LocalDbService, TB_NAMES} from "./local-db.service";
 import {AuthToken, ChkUser, RememberUser, User} from "../models/user";
 import {Chanel} from "../models/chanel";
@@ -11,6 +11,9 @@ import * as cls from "../models/od-cls";
 import {Translation} from "../models/translation";
 import {AppConfig} from "../models/app-config";
 import { Catalog } from "../models/catalog";
+import { Template } from "../models/template";
+
+const {isNull} = Objects;
 
 
 export interface StorageData {
@@ -30,6 +33,7 @@ export interface StorageData {
     lsProduct?: cls.ClsProduct[];
     lsReplied?: cls.ClsRepiled[];
     allCatalog?: Catalog;
+    agTicketTemplate?: Template;
 }
 
 const defaultConfig = AppConfig.from({
@@ -80,6 +84,13 @@ export class StorageService {
         return this.updateConfig(`i18n_${lang}`, data);
     }
 
+    set_currentTemplate(entityCode: string, templateCode: string) {
+        const map = this.currentTemplate;
+        if(isNull(templateCode)) delete map[entityCode];
+        else map[entityCode]= templateCode;
+        return this.updateConfig(`currentTemplate`, map);
+    }
+
     get asyncConfig(): Observable<AppConfig> {
         return this.db.appCfg.getSet(this.config()).pipe(tap(cls => this.config.set(cls)));
     }
@@ -101,6 +112,7 @@ export class StorageService {
 	set_lsProduct(data: cls.ClsProduct[]): Observable<cls.ClsProduct[]> { return this.db.get_tb(TB_NAMES.clsProduct).save(data); }
 	set_lsReplied(data: cls.ClsRepiled[]): Observable<cls.ClsRepiled[]> { return this.db.get_tb(TB_NAMES.clsReplied).save(data); }
 
+
 	get loginToken(): AuthToken {return this.config().loginToken;}
 	get baseUrl(): string {return this.config().baseUrl;}
 	get rememberUser(): RememberUser {
@@ -108,6 +120,9 @@ export class StorageService {
     }
 	get loginUser(): User {return this.config().loginUser;}
     get i18n(): Translation { return this.config().currentI18N; }
+    get currentTemplate() { return this.config().currentTemplate ?? {}; }
+
+
 
 	get lsChanel(): Chanel[] {return this.data().lsChanel;}
 	get lsSoftware(): Software[] { return this.data().lsSoftware;}

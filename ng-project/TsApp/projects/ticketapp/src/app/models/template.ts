@@ -1,4 +1,4 @@
-import { Asserts, TsMap } from "ts-helper";
+import { Asserts, TsMap } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
 import { AssignObject, JsonObject, Severity } from "./common";
 
@@ -17,6 +17,7 @@ export class Template extends BaseModel {
   user_id?: number;
   position?: number;
   is_default?: boolean;
+  style?: any;
   data?: any;
 
   set_data(data: string | any): this {

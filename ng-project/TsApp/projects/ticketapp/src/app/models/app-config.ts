@@ -1,5 +1,5 @@
 import {BaseModel} from "./base-model";
-import {AssignObject} from "./common";
+import {AssignObject, JsonObject} from "./common";
 import {AuthToken, RememberUser, User} from "./user";
 import {Translation} from "./translation";
 
@@ -10,6 +10,7 @@ export class AppConfig extends BaseModel {
     loginToken?: AuthToken;
     loginUser?: User;
     currentI18N?: Translation;
+    currentTemplate?: Record<string, string>;
 
     static from(json: AssignObject<AppConfig>): AppConfig {
         return BaseModel.fromJson(AppConfig, json);

@@ -6,7 +6,7 @@ import { BaseModel } from "./base-model";
 import { AssignObject, JsonObject } from "./common";
 import * as cls from "./od-cls";
 import { Templates } from "./template";
-import { LoggerService } from "ts-logger";
+import { LoggerService } from "ts-ui/logger";
 
 
 export class Catalog extends BaseModel {

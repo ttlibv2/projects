@@ -125,7 +125,7 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
         if(ticketId == null) {
             Ticket ticket = object.asObject(Ticket.class);
             ticket.setUser(new TsUser(userId));
-            ticket.setOdImage(imagesToMap(object.getString("images")));
+            //ticket.setOdImage(imagesToMap(object.getString("images")));
             return createNew(ticket);
         }
 
@@ -143,10 +143,10 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
 
             ticket.assignFromMap(object);
 
-            if(object.containsKey("images")) {
-                String images = object.getString("images");
-                ticket.setOdImage(imagesToMap(images));
-            }
+           // if(object.containsKey("images")) {
+          //      String images = object.getString("images");
+          //      ticket.setOdImage(imagesToMap(images));
+          //  }
 
             return save(ticket);
         }

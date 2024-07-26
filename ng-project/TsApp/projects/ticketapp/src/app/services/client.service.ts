@@ -2,14 +2,14 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { Injectable, } from '@angular/core';
 import {ClientParams, ErrorResponse, Page } from '../models/common';
 import {catchError, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {Objects} from "ts-helper";
+import {Objects} from "ts-ui/helper";
 import {InjectService} from "./inject.service";
 import {Router} from "@angular/router";
 import {LocalDbService} from "./local-db.service";
-import {ToastMessage} from "./toast.service";
-import { LoggerService } from 'ts-logger';
+import { LoggerService } from 'ts-ui/logger';
 import { StorageService } from './storage.service';
 import { ApiInfoComponent } from '../views/api-info/api-info.component';
+import {ToastMessage} from "ts-ui/toast";
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -75,36 +75,34 @@ export class ClientService {
   protected handlerError(err: any, url: string, showError: boolean = true): Observable<any> {
     let object: ToastMessage = {};
     let alertType: 'toast' | 'modal' = 'toast';
+    let errorCode: string = 'undefined';
 
     if(err instanceof HttpErrorResponse) {
       const error: ErrorResponse = err.error ?? {};
       const baseUrl = (text: string) => `<a href="${new URL(url).host}" target="_blank" rel="noopener noreferrer">${text}</a>`;
 
-      object = {
-        details: error,
-        summary: error?.summary,
-        code: error?.code
-      };
-
+      errorCode = error?.code;
+      object.message = error?.summary;
+      object.title = 'Thông báo !!';
 
       if(err.status === 0) {
-        object.code = 'disconnect';
-        object.timeOut = 20000;
-        //object.disableTimeOut = true;
-        object.title = 'Lỗi không kết nối được tới máy chủ';
-        object.summary = `Vui lòng kiểm tra kết nối: ${baseUrl('Kiểm tra')}`;
+        errorCode = 'disconnect';
+        object.disableTimeOut = true;
+        object.message = 'Lỗi không kết nối được tới máy chủ';
+        object.detail = `Vui lòng kiểm tra kết nối: ${baseUrl('Kiểm tra')}`;
       }
 
       else if(err.status === 500) {
-        object.code = error.code === 'e_500' ? 'e_server' : error.code;
-        object.summary = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')} <br>-> (${object.summary})`;
-        this.inject.alert.danger({summary: object.summary});
+        errorCode = error.code === 'e_500' ? 'e_server' : error.code;
+        object.message = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')} <br>-> (${object.message})`;
+        object.disableTimeOut = true;
+        this.inject.alert.danger({summary: `${object.message} (errorCode: ${errorCode})` });
         showError = false;
       }
 
-      else if(err.status === 401 && object.code === 'ts_api') {
+      else if(err.status === 401 && errorCode === 'ts_api') {
         const apiCode = error?.details['ts_api'];
-        this.showUpdateApiToken(object.summary, apiCode);
+        this.showUpdateApiToken(object.message, apiCode);
         showError = false;
       }
 
@@ -116,7 +114,7 @@ export class ClientService {
     }
 
     // logout if session expired
-    if(object.code.startsWith('jwt.')) {
+    if(errorCode.startsWith('jwt.')) {
       this.config.set_loginToken(null).pipe(
         tap(_ => this.router.navigate(['/']))
       ).subscribe();
@@ -130,19 +128,19 @@ export class ClientService {
    * */
   protected handlerResponse(response: any, url: string,showError: boolean): Observable<any> {
     if(Objects.notBlank(response?.error)) {
-      const object = {summary: response.error_desc, code: response.error_code};
+      const object: Partial<ToastMessage> = {message: response.error_desc, detail: 'Code: '+response.error_code};
       this.showError(object, showError, 'toast');
       return throwError(() => object)
     }
 
     else if(Objects.notBlank(response['alert_msg'])) {
-     this.inject.toast.info({summary: response['alert_msg']});
+     this.inject.toast.info( response['alert_msg']);
     }
 
     return of(response);
   }
 
-  private showError(object: any,visible: boolean, alertType: 'toast' | 'modal' = 'toast') {
+  private showError(object: Partial<ToastMessage>,visible: boolean, alertType: 'toast' | 'modal' = 'toast') {
     if(visible) this.inject.toast.error(object);
   }
 
@@ -154,11 +152,9 @@ export class ClientService {
       summary: summary,
       okClick: evt => {
         evt.dynamicRef.close();
-        ApiInfoComponent.showDialog(this.inject.toast, apiCode);
+        ApiInfoComponent.showDialog(this.inject.modal, apiCode);
       }
     })
   }
 
 }
-
-

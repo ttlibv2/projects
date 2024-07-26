@@ -16,7 +16,7 @@
         background: cfg.$tableHeaderBg;
         color: cfg.$tableHeaderTextColor;
         border: cfg.$tableHeaderBorder;
-        //border-width: cfg.$tableHeaderBorderWidth;
+        border-width: cfg.$tableHeaderBorderWidth;
         padding: cfg.$tableHeaderPadding;
         font-weight: cfg.$tableHeaderFontWeight;
     }
@@ -25,7 +25,7 @@
         background: cfg.$tableFooterBg;
         color: cfg.$tableFooterTextColor;
         border: cfg.$tableFooterBorder;
-        //border-width: cfg.$tableFooterBorderWidth;
+        border-width: cfg.$tableFooterBorderWidth;
         padding: cfg.$tableFooterPadding;
         font-weight: cfg.$tableFooterFontWeight;
     }
@@ -34,7 +34,7 @@
         text-align: cfg.$tableCellContentAlignment;
         padding: cfg.$tableHeaderCellPadding;
         border: cfg.$tableHeaderCellBorder;
-        //border-width: cfg.$tableHeaderCellBorderWidth;
+        border-width: cfg.$tableHeaderCellBorderWidth;
         font-weight: cfg.$tableHeaderCellFontWeight;
         color: cfg.$tableHeaderCellTextColor;
         background: cfg.$tableHeaderCellBg;
@@ -45,7 +45,7 @@
         text-align: cfg.$tableCellContentAlignment;
         padding: cfg.$tableFooterCellPadding;
         border: cfg.$tableFooterCellBorder;
-        //border-width: cfg.$tableFooterCellBorderWidth;
+        border-width: cfg.$tableFooterCellBorderWidth;
         font-weight: cfg.$tableFooterCellFontWeight;
         color: cfg.$tableFooterCellTextColor;
         background: cfg.$tableFooterCellBg;
@@ -97,12 +97,12 @@
             > td {
                 text-align: cfg.$tableCellContentAlignment;
                 border: cfg.$tableBodyCellBorder;
-                //border-width: cfg.$tableBodyCellBorderWidth;
+                border-width: cfg.$tableBodyCellBorderWidth;
                 padding: cfg.$tableBodyCellPadding;
 
                 .p-treetable-toggler {
-                    @include util.action-icon();
                     margin-right: cfg.$inlineSpacing;
+                    @include util.action-icon();
 
                     &.p-icon {
                         width: cfg.$loadingIconFontSize;

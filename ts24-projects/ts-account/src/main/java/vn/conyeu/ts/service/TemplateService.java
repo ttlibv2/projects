@@ -13,7 +13,7 @@ import vn.conyeu.ts.repository.TemplateRepo;
 import java.util.List;
 
 @Service
-@CacheConfig(cacheNames = "templates")
+//@CacheConfig(cacheNames = "templates")
 public class TemplateService extends LongUIdService<Template, TemplateRepo> {
 
     @Autowired
@@ -26,23 +26,23 @@ public class TemplateService extends LongUIdService<Template, TemplateRepo> {
         return "templates";
     }
 
-    @Cacheable()
+//    @Cacheable()
     public List<Template> findAll(Long userId) {
         return repo().findTemplateByUser(userId);
     }
 
-    @Cacheable()
+//    @Cacheable()
     public List<Template> findAll(Long userId, List<String> entityCodes) {
         if(entityCodes == null || entityCodes.isEmpty()) return findAll(userId);
         else return repo().findTemplateByUser(userId, entityCodes);
     }
 
-    @Cacheable()
+//    @Cacheable()
     public Page<Template> findAll(Long userId, Pageable pageable) {
         return repo().findTemplateByUser(userId, pageable);
     }
 
-    @Cacheable()
+//    @Cacheable()
     public Page<Template> findTemplate(String entityCode, Long userId, Pageable pageable) {
         return repo().findTemplateByUserAndCode(entityCode, userId, pageable);
     }

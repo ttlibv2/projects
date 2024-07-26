@@ -215,6 +215,66 @@ $prefix: ".p-button";
 //     }
 // }
 
+.p-button.p-button-primary,
+.p-button-group.p-button-primary > .p-button,
+.p-splitbutton.p-button-primary > .p-button{
+  color: cfg.$primaryButtonTextColor;
+  background: cfg.$primaryButtonBg;
+  border: cfg.$primaryButtonBorder;
+
+  &:not(:disabled):hover {
+    background: cfg.$primaryButtonHoverBg;
+    color: cfg.$primaryButtonTextHoverColor;
+    border-color: cfg.$primaryButtonHoverBorderColor;
+  }
+
+  &:not(:disabled):focus {
+    box-shadow: cfg.$primaryButtonFocusShadow;
+  }
+
+  &:not(:disabled):active {
+    background: cfg.$primaryButtonActiveBg;
+    color: cfg.$primaryButtonTextActiveColor;
+    border-color: cfg.$primaryButtonActiveBorderColor;
+  }
+
+  &-outlined {
+    background-color: transparent;
+    color: cfg.$primaryButtonBg;
+    border: cfg.$outlinedButtonBorder;
+
+    &:not(:disabled):hover {
+      background: rgba(cfg.$primaryButtonBg, cfg.$textButtonHoverBgOpacity);
+      color: cfg.$primaryButtonBg;
+      border: cfg.$outlinedButtonBorder;
+    }
+
+    &:not(:disabled):active {
+      background: rgba(cfg.$primaryButtonBg, cfg.$textButtonActiveBgOpacity);
+      color: cfg.$primaryButtonBg;
+      border: cfg.$outlinedButtonBorder;
+    }
+  }
+
+  &.p-button-text {
+    background-color: transparent;
+    color: cfg.$primaryButtonBg;
+    border-color: transparent;
+
+    &:not(:disabled):hover {
+      background: rgba(cfg.$primaryButtonBg, cfg.$textButtonHoverBgOpacity);
+      border-color: transparent;
+      color: cfg.$primaryButtonBg;
+    }
+
+    &:not(:disabled):active {
+      background: rgba(cfg.$primaryButtonBg, cfg.$textButtonActiveBgOpacity);
+      border-color: transparent;
+      color: cfg.$primaryButtonBg;
+    }
+  }
+}
+
 .p-button.p-button-secondary,
 .p-button-group.p-button-secondary > .p-button,
 .p-splitbutton.p-button-secondary > .p-button {

@@ -1,9 +1,10 @@
 import {Injectable, InjectOptions, Injector, ProviderToken} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {DialogService} from "primeng/dynamicdialog";
-import {ToastService} from "./toast.service";
 import { StorageService } from "./storage.service";
 import { Alert } from "./ui/alert/alert.service";
+import  { ToastService } from 'ts-ui/toast';
+import {ModalService} from "./ui/model.service";
 
 @Injectable({providedIn: 'root'})
 export class InjectService {
@@ -17,6 +18,10 @@ export class InjectService {
 
   get toast(): ToastService {
     return this.inject.get(ToastService);
+  }
+
+  get modal(): ModalService {
+    return this.inject.get(ModalService);
   }
 
   get alert(): Alert {

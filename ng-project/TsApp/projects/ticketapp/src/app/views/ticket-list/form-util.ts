@@ -1,5 +1,5 @@
 import { FormGroup } from "@angular/forms";
-import { Consumer } from "ts-helper";
+import { Consumer } from "ts-ui/helper";
 
 export class FormsUtil {
 
