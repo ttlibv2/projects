@@ -14,7 +14,6 @@ import * as od from "../models/od-cls";
 import {EMPTY, from, Observable, switchMap} from "rxjs";
 import {JsonObject, ResponseToModel} from "../models/common";
 import {AppConfig} from "../models/app-config";
-import {DexieDb} from "ts-ui/local-db";
 
 const  {isArray, isNull, isClass, valueToMap} = Objects;
 
@@ -76,18 +75,20 @@ const tables: TableName[] = [
     {tbName: TB_NAMES.clsTag, keyOrIndex: 'id', entityType: od.ClsTag, tableType: () => DbTable},
     {tbName: TB_NAMES.clsTopic, keyOrIndex: 'id', entityType: od.ClsTopic, tableType: () => DbTable},
     {tbName: TB_NAMES.agTable, keyOrIndex: 'code', entityType: AgTable, tableType: () => DbAgTable},
+   // {tbName: TB_NAMES.agColumn, keyOrIndex: '[field_name+ag_code]', entityType: AgColumn, tableType: () => DbTable},
     {tbName: TB_NAMES.apiInfo, keyOrIndex: 'api_id', entityType: ApiInfo, tableType: () => DbTable},
     {tbName: TB_NAMES.user, keyOrIndex: 'user_id', entityType: User, tableType: () => DbUserTable},
     {tbName: TB_NAMES.appConfig, keyOrIndex: '', entityType: AppConfig, tableType: () => ConfigTable},
 ];
 
 @Injectable({providedIn: 'root'})
-export class LocalDbService {
-   private readonly localDb: DexieDb;
+export class LocalDbService extends Dexie {
+    private lsTable: Map<string, any> = new Map();
 
-   constructor() {
-       this.localDb = new DexieDb('ts_web', 2.0);
-   }
+    constructor() {
+        super("ts_web", {autoOpen: false, allowEmptyDB: true});
+        this.initializeTable();
+    }
 
     openDb(): Observable<any> {
 

@@ -1,8 +1,7 @@
 @import "../public/fontawesome/css/all.css";
 
-@import "scss/ng-select/default.theme.scss";
-@import "scss/ng-select/ng-select.component.scss";
-
+//@import "scss/ng-select/default.theme.scss";
+//@import "scss/ng-select/ng-select.component.scss";
 
 // ag-grid themes
 @import "@ag-grid-community/styles/ag-grid.min.css";
@@ -15,9 +14,7 @@
 @import "primeicons/primeicons.css";
 @import "primeng/resources/primeng.css";
  
-@import "scss/primeflex/primeflex.scss";
-
-@import "scss/layout/scss/layout.scss";
+@import "primeflex/primeflex.min.css";
 
 .overlay-container {
     position: absolute;

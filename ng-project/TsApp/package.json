@@ -6,8 +6,6 @@
     "start": "ng serve --hmr true",
     "build": "ng build ticketapp --base-href /tsweb/ --ssr false --prerender false --source-map true",
     "watch": "ng build --watch --configuration development",
-    "build:logger": "ng build ts-logger --watch",
-    "build:helper": "ng build ts-helper --watch",
     "build:ui": "ng build ts-ui --watch",
     "build:scss": "gulp theme"
   },

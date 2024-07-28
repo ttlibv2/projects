@@ -15,7 +15,6 @@ import { Template } from "../models/template";
 
 const {isNull} = Objects;
 
-
 export interface StorageData {
     lsChanel?: Chanel[];
     lsSoftware?: Software[];

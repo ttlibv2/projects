@@ -44,15 +44,6 @@
 .ts-toast {
 
   &-message {
-    &-info {@include info();}
-    &-success {@include success();}
-    &-help {@include help();}
-    &-warning {@include warning();}
-    &-error {@include error();}
-    &-loading {@include info();}
-
-    //@include info();
-
     margin: cfg.$toastMargin;
     opacity: cfg.$toastOpacity;
     font-size: cfg.$toastFontSize;
@@ -133,6 +124,13 @@
 
       }
     }
+
+    &-info {@include info();}
+    &-success {@include success();}
+    &-help {@include help();}
+    &-warning {@include warning();}
+    &-error {@include error();}
+    &-loading {@include info();}
 
   }
 

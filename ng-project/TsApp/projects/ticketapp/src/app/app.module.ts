@@ -16,25 +16,27 @@ import vi from '@angular/common/locales/vi';
 import { MessageService } from "primeng/api";
 import { tokenInterceptor } from "./guards/token.interceptor";
 import { InputIconModule } from 'primeng/inputicon';
-// import { ToastContainerDirective, ToastrModule } from "ngx-toastr";
 import { TsLoggerModule, LoggerService } from "ts-ui/logger";
 import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { StorageService } from "./services/storage.service";
 import { AppLayoutModule } from 'ts-ui/app-layout';
-import {LocalDbService} from "./services/local-db.service";
-import {layoutConfig, toastConfig, translateConfig} from "./constant";
+import {databaseConfig, layoutConfig, toastConfig, translateConfig} from "./constant";
 import { AgTableModule } from 'ts-ui/ag-table';
 import { ToastModule } from 'ts-ui/toast';
-import {ModalService} from "./services/ui/model.service";
+import { LocaldbModule, LocalDbService } from "ts-ui/local-db";
 
 registerLocaleData(vi);
 
-function LOAD_CFG(localDb: LocalDbService, storage: StorageService, logger: LoggerService) {
-    return () => localDb.openDb().then(_ => storage.asyncConfig.subscribe({
+function LOAD_CFG(storage: StorageService, logger: LoggerService) {
+    return () => storage.asyncConfig.subscribe({
         error: err => logger.error('initialize app error --> ', err),
         next: res => logger.info('initialize app success --> ', res)
-    }));
+    });
+}
+
+function LOAD_DB(service: LocalDbService) {
+    return () => service.initializeDb(true);
 }
 
 @NgModule({
@@ -54,13 +56,15 @@ function LOAD_CFG(localDb: LocalDbService, storage: StorageService, logger: Logg
         ToastModule.forRoot(toastConfig),
         TranslateModule.forRoot(translateConfig),
         AgTableModule.forRoot(),
-        TsLoggerModule.forRoot()
+        TsLoggerModule.forRoot(),
+        LocaldbModule.forRoot(databaseConfig)
 
     ],
     providers: [
         provideAnimationsAsync(),
         provideHttpClient(withFetch(), withInterceptors([tokenInterceptor])),
-        { provide: APP_INITIALIZER, useFactory: LOAD_CFG, deps: [LocalDbService, StorageService, LoggerService], multi: true },
+        { provide: APP_INITIALIZER, useFactory: LOAD_DB, deps: [LocalDbService] },
+        { provide: APP_INITIALIZER, useFactory: LOAD_CFG, deps: [StorageService, LoggerService], multi: true },
         DatePipe, MessageService, DialogService,
 
     ],
