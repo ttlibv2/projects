@@ -6,9 +6,14 @@ import {userGuard} from "./guards/auth.guard";
 const appRoutes: Route[] = [
     {
         path: '',
+        pathMatch: 'full',
+        redirectTo: '/ql'
+    },
+    {
+        path: 'ql',
         component: AppLayoutComponent,
         canActivate: [userGuard],
-        children: [ 
+        children: [
             {
                 path: 'ticket-list',
                 loadChildren: () => import('./views/ticket-list/ticket-list.module').then(m => m.TicketListModule)
@@ -30,7 +35,7 @@ const appRoutes: Route[] = [
                 loadChildren: () => import('./views/software/software.module').then(m => m.SoftwareModule)
             },
             {
-                path: 'group-helps',
+                path: 'group-helps', 
                 loadChildren: () => import('./views/group-help/group-help.module').then(m => m.GroupHelpModule)
             },
             {
@@ -66,10 +71,9 @@ const appRoutes: Route[] = [
                 path: 'user-config',
                 loadChildren: () => import('./views/user-config/user-config.module').then(m => m.UserConfigModule)
             },
-            {
-                path: '**', pathMatch: 'full',
-                redirectTo: '/ticket-list'
-            }
+           { path: '**',
+            pathMatch: 'prefix',
+            redirectTo: 'ticket-list'}
         ]
     },
     {
@@ -78,7 +82,6 @@ const appRoutes: Route[] = [
     },
     {
         path: 'signup',
-        canActivate: [userGuard],
         loadChildren: () => import('./views/signup/signup.module').then(m => m.SignupModule)
     },
     {
@@ -88,7 +91,7 @@ const appRoutes: Route[] = [
     {
         path: '**',
         pathMatch: 'full',
-        redirectTo: '/ql'
+        redirectTo: '/not-found'
     }
 ];
 
@@ -104,5 +107,5 @@ const appRoutes: Route[] = [
     ],
     exports: [RouterModule]
 })
-export class AppRoutingModule {
+export class AppRouting {
 }

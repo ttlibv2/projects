@@ -34,6 +34,12 @@ public class OdFile extends OdTicketClient<ClsFile> {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    protected String getApiUrl() {
+        //return super.getApiUrl();
+        return getApiUrlNoWeb();
+    }
+
     /**
      * Delete attachment
      *
@@ -92,7 +98,7 @@ public class OdFile extends OdTicketClient<ClsFile> {
 
         List<ClsFile> allFile = new LinkedList<>();
         for(String fileName: dataObj.keySet()) {
-            byte[] data = fixDataFile(dataObj.get(fileName));
+            byte[] data = fixDataFile(dataObj.getString(fileName));
             Assert.notNull(data, "data of file "+fileName+" is null.");
             allFile.add(add_file(thread_model, thread_id, fileName, data));
         }

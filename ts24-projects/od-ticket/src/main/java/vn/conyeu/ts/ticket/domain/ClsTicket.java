@@ -2,6 +2,7 @@ package vn.conyeu.ts.ticket.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.odcore.domain.ClsHelper;
@@ -10,9 +11,13 @@ import vn.conyeu.ts.odcore.helper.OdHelper;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@Getter
 @EqualsAndHashCode(callSuper = false)
 public class ClsTicket extends ClsModel<ClsTicket> {
 
@@ -61,12 +66,17 @@ public class ClsTicket extends ClsModel<ClsTicket> {
     private Integer sh_days_to_late;
 
 
+    //follow
+    private Object message_partner_ids; // [partnerId 1,2,3....]
+    private List<Long> followPartnerIds;
+
     private String sh_ticket_report_url;//	"http://web.ts24.com.vn/download/ht/1855?access_token=ce05e45e-2665-407d-a62c-77a911d206e5"
     private String portal_ticket_url_wp;//	"http://web.ts24.com.vn/my/tickets/1855?access_token=f5eb73e9-4091-4025-b41a-4369c4e8242a"
     private String email_subject;//	"[HT-PI]-VTCUC-0302861679-20220914"
     private Object sh_sla_status_ids;//	[]
     private Object sh_display_multi_user;//	false
     private Object sh_display_product;//	true
+
     //   private Object  company_id;//	[ 1, "CÔNG TY CỔ PHẦN TS24" ]
     String state;//"staff_replied"
     private Object ticket_type;//	false
@@ -173,6 +183,16 @@ public class ClsTicket extends ClsModel<ClsTicket> {
         return this;
     }
 
+    /**
+     * Set the message_partner_ids
+     *
+     * @param message_partner_ids the value
+     */
+    public ClsTicket message_partner_ids(Object message_partner_ids) {
+        this.message_partner_ids = message_partner_ids;
+        return this;
+    }
+
     public static ClsTicket from(ObjectMap map) {
         ClsTicket clsTicket = map.asObject(ClsTicket.class);
         clsTicket.set("ticket_web", map);
@@ -202,7 +222,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
 //        cls.setSh_sla_status_ids(new Object[0]);
 //        cls.setTicket_allocated(false);
 //
-//        ClsRepiledStatus repiledStatus = ticket.getOdRepiledStatus();
+//        ClsRepliedStatus repiledStatus = ticket.getOdRepiledStatus();
 //        if(repiledStatus != null) cls.setState(repiledStatus.getCode());
 //
 //        ClsTicketType ticketType = ticket.getOdTicketType();
@@ -304,10 +324,10 @@ public class ClsTicket extends ClsModel<ClsTicket> {
         return super.fieldCloneIgnore();
     }
 
-    @Override
-    public ObjectMap cloneMap() {
-        return super.cloneMap();//.keyVal("priority", priority);
-    }
+//    @Override
+//    public ObjectMap cloneMap() {
+//        return super.cloneMap();//.keyVal("priority", priority);
+//    }
 
     public Object[] toArgRequest() {
         return new Object[]{cloneMap()};
@@ -801,11 +821,11 @@ public class ClsTicket extends ClsModel<ClsTicket> {
         return customer_comment;
     }
 
-    /**
-     * Returns the close_date
-     */
-    public LocalDateTime getClose_date() {
-        return OdHelper.toDateTime(close_date);
+
+    @JsonIgnore
+    public LocalDateTime getCloseDateTime() {
+        if(OdHelper.isNull(close_date)) return null;
+        else return OdHelper.toDateTime(close_date);
     }
 
     /**
@@ -829,11 +849,10 @@ public class ClsTicket extends ClsModel<ClsTicket> {
         return comment;
     }
 
-    /**
-     * Returns the cancel_date
-     */
-    public LocalDateTime getCancel_date() {
-        return OdHelper.toDateTime(cancel_date);
+    @JsonIgnore
+    public LocalDateTime getCancelDateTime() {
+        if(OdHelper.isNull(cancel_date)) return null;
+        else return OdHelper.toDateTime(cancel_date);
     }
 
     /**
@@ -1838,6 +1857,18 @@ public class ClsTicket extends ClsModel<ClsTicket> {
         return this;
     }
 
+    public List<Long> getFollowPartnerIds() {
+        if(followPartnerIds == null && message_partner_ids != null) {
+            Object[] objects = Objects.toObjectArray(message_partner_ids);
+            followPartnerIds = Stream.of(objects).filter(o -> !OdHelper.isNull(o))
+                    .mapToLong(n -> Long.parseLong(n.toString()))
+                    .boxed().collect(Collectors.toList());
+        }
+        return followPartnerIds;
+
+
+    }
+
     //    public Ticket copyTo(Ticket ticket) {
 //        ClsTicket cls = this;
 //        ticket.setOdStage(cls.getStage());
@@ -1871,7 +1902,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
 //        ticket.setCustomerName(cls.getPerson_name());
 //        //ticket.setFullName(clsUser.getDisplay_name());
 //        ticket.setPhone(cls.getMobile_no());
-//        ticket.setOdRepiledStatus(ClsRepiledStatus.from(cls.getState()));
+//        ticket.setOdRepiledStatus(ClsRepliedStatus.from(cls.getState()));
 //
 //        ticket.setTicketNumber(cls.getId());
 //        ticket.setTicketText(cls.getName());
@@ -1908,7 +1939,7 @@ public class ClsTicket extends ClsModel<ClsTicket> {
 
     public Map<String, Object> validateCreate() {
         Map<String, Object> errorList = new LinkedHashMap<>();
-        if (Objects.isEmpty(state)) errorList.put("od_repiled_status", "");
+        if (Objects.isEmpty(state)) errorList.put("od_replied_status", "");
         if (Objects.isNull(team_id)) errorList.put("od_team", "");
         if (Objects.isNull(user_id)) errorList.put("od_assign", "");
         if (Objects.isNull(team_head)) errorList.put("od_team_head", "");

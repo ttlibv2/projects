@@ -25,7 +25,7 @@ export class AuthService extends ClientService {
       password: dto.password,
       username: dto.email,
       remember: true,
-      url_dev: this.config.baseUrl,
+      url_dev: this.storage.baseUrl,
     });
   }
 
@@ -40,8 +40,8 @@ export class AuthService extends ClientService {
   }
 
   signout(): Observable<any> {
-    this.config.set_loginToken(undefined);
-    this.config.set_loginUser(undefined);
+    this.storage.set_loginToken(undefined);
+    this.storage.set_loginUser(undefined);
     return this.post('/auth/signout', {});
   }
 
@@ -50,10 +50,10 @@ export class AuthService extends ClientService {
     user: ChkUser
   ): Observable<any> {
     return responseToken.pipe(
-      concatMap((token) => this.config.set_loginToken(token)),
-      concatMap((_) => this.config.set_rememberUser(user)),
+      concatMap((token) => this.storage.set_loginToken(token)),
+      concatMap((_) => this.storage.set_rememberUser(user)),
       concatMap(() =>
-        this.user.getConfig().pipe(tap((_) => this.config.set_loginUser(_)))
+        this.user.getConfig().pipe(tap((_) => this.storage.set_loginUser(_)))
       )
     );
   }

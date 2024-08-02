@@ -22,7 +22,7 @@ export class AgTable extends BaseModel {
   columns: AgColumn[];
   states: AgColumnState[];
 
-  grid_columns: TableColumn[] = [];
+  //grid_columns: TableColumn[] = [];
 
   private _menu_items: MenuItem[];
 
@@ -38,7 +38,7 @@ export class AgTable extends BaseModel {
 
   set_columns(data: AssignObject<AgColumn>[]): this {
     this.columns = (data || []).sort((c1, c2) => c1.position - c2.position).map(c => AgColumn.from(c));
-    this.grid_columns = this.columns.map(c =>  c.asColumn());
+    //this.grid_columns = this.columns.map(c =>  c.asColumn());
     return this;
   }
 
@@ -94,6 +94,11 @@ export class AgColumn extends BaseModel {
   cellRenderer: any;
   position: number;
 
+  override update(object: AssignObject<this>): this {
+    super.update(object);
+    return this;
+  }
+  
   asColumn(): TableColumn {
     return Objects.assign({}, this, ['position']);
   }

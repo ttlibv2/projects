@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import {ModelApi} from "./model-api.service";
-import {Ticket} from "../models/ticket";
+import { ModelApi } from "./model-api.service";
+import { Ticket } from "../models/ticket";
 import { JsonObject, Page, Pageable, ResponseToModel } from '../models/common';
 import { Observable } from 'rxjs';
+import { JsonAny } from 'ts-ui/helper';
 
 export interface SearchOption {
     created_min?: string;
@@ -17,7 +18,7 @@ export interface SearchOption {
     is_report?: boolean;
 }
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class TicketService extends ModelApi<Ticket> {
 
     override basePath(): string {
@@ -29,12 +30,16 @@ export class TicketService extends ModelApi<Ticket> {
     }
 
     override search(data: SearchOption, page?: Pageable): Observable<Page<Ticket>> {
-        return super.search(data, {page: 0, size: 1000, ...page});
+        return super.search(data, { page: 0, size: 1000, ...page });
     }
 
     save(data: any): Observable<Ticket> {
         return this.savePost('save', data);
-      }
-    
+    }
+
+    sendOd(action: string, ticket_id: number, options: JsonAny): Observable<Ticket> {
+        const url = '/od-api/ticket/send';
+        return this.post(url, {...options, action, ticket_id});
+    }
 
 }

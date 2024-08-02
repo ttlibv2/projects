@@ -1,8 +1,8 @@
 import { Asserts, TsMap } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
-import { AssignObject, JsonObject, Severity } from "./common";
+import { AssignObject, Severity } from "./common";
 
-export type TemplateCode = 'form_ticket';
+export type TemplateCode = 'form_ticket' | 'email_ticket';
 
 export class Template extends BaseModel {
   template_id?: number | null;
@@ -66,6 +66,10 @@ export class Templates extends TsMap<string, Template[]> {
   get_ticket_def(): Template {
     const templates = this.get_templates('form_ticket') ?? [];
     return templates.find(t => t.is_default) ?? templates[0];
+  }
+
+  get_email(): Template[] {
+    return this.get_templates('email_ticket');
   }
 
 

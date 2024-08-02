@@ -26,9 +26,8 @@ import { FileUploadModule } from 'primeng/fileupload';
   declarations: [
     TicketListComponent,
     AgTicketCell,
-    AgStatusRenderer,
+    // AgStatusRenderer,
     AgTagCell,
-    AgStatusRenderer,
   ],
   imports: [
     CommonModule,

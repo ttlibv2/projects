@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import vn.conyeu.common.converter.MapString;
 import vn.conyeu.common.domain.LongUId;
+import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.ticket.domain.ClsStage;
 
 import java.time.LocalDateTime;
@@ -22,6 +24,11 @@ import java.time.LocalDateTime;
 //@formatter:on
 public class TicketDetail extends LongUId<TicketDetail> {
 
+    @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticketId")
+    private Ticket ticket;
+
     @Column(length = 300)
     @JsonProperty("download_url")
     private String downloadUrl;
@@ -33,11 +40,6 @@ public class TicketDetail extends LongUId<TicketDetail> {
     @Column(length = 300)
     @JsonProperty("form_url")
     private String formUrl;
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ticketId")
-    private Ticket ticket;
 
     @Column(length = 20)
     @JsonProperty("ticket_number")
@@ -75,13 +77,13 @@ public class TicketDetail extends LongUId<TicketDetail> {
     @JsonProperty("mail_id")
     private Long mailId;
 
+    @Convert(converter = MapString.class)
+    @Column(columnDefinition = "json")
+    private ObjectMap attach;
+
     @Temporal(TemporalType.TIMESTAMP)
     @JsonProperty("report_at")
     private LocalDateTime reportAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonProperty("attach_at")
-    private LocalDateTime attachAt;
 
     @JsonProperty("reply_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -99,7 +101,7 @@ public class TicketDetail extends LongUId<TicketDetail> {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime noteAt;
 
-    @JsonProperty("close_at")
+    @JsonProperty("closed_at")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime closedAt;
 
@@ -122,5 +124,33 @@ public class TicketDetail extends LongUId<TicketDetail> {
     public void setStage(ClsStage stage) {
         setStageId(stage == null ? null : stage.getId());
         setStageText(stage == null ? null : stage.getName());
+    }
+
+    /**
+     * Returns the attach
+     */
+    public ObjectMap getAttach() {
+        if(attach == null) attach = new ObjectMap();
+        return attach;
+    }
+
+    @JsonProperty("is_upfile")
+    public boolean isUpFile() {
+        return this.imageAt != null;
+    }
+
+    @JsonProperty("is_sendmail")
+    public boolean isSendMail() {
+        return this.mailId != null;
+    }
+
+    @JsonProperty("is_closed")
+    public boolean isClosed() {
+        return this.closedAt != null;
+    }
+
+    public void resetNote() {
+        setNoteId(null);
+        setNoteAt(null);
     }
 }

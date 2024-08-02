@@ -10,6 +10,7 @@ export interface MessageConfig<Payload = any> extends GlobalConfig<Payload> {
     message?: string;
     detail?: string;
     messageIcon?: string;
+    width?: string;
 
 }
 
@@ -108,6 +109,8 @@ export interface GlobalConfig<Payload = any> {
      */
     payload?: Payload;
 
+    minWidth?: string;
+
     summaryStyle?: { [kclass: string]: any };
     detailStyle?: { [kclass: string]: any };
 }
@@ -127,6 +130,7 @@ export const DEFAULT_CONFIG: ToastConfig = {
     messageClass: 'ts-toast-message',
     titleClass: 'ts-toast-title',
     position: 'top-right',
+    minWidth: '25rem',
     iconClasses: {
         error: 'pi pi-bolt',
         info: 'pi pi-info-circle',

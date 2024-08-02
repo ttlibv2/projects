@@ -90,17 +90,23 @@ public class ClsModel<T> implements Serializable {
         if (object instanceof Map map) return ObjectMap.fromMap(map);
 
         Object[] array = Objects.toObjectArray(object);
-        return array == null || array.length <= 1 ? valueDefault : objectToMap(array);
+        //return array == null || array.length <= 1 ? valueDefault : objectToMap(array);
+        return Objects.isEmpty(array) ? valueDefault : objectToMap(array, NAME_FIELD);
     }
 
     public static ObjectMap objectToMap(Object[] arr) {
         return objectToMap(arr, NAME_FIELD);
     }
 
-    public static ObjectMap objectToMap(Object[] arr, ObjectMap field) {
+    public static ObjectMap objectToMap(Object[] arr, ObjectMap fieldMap) {
         ObjectMap obj = ObjectMap.create();
-        if (arr != null && arr.length > 0) {
-            field.keySet().forEach(key -> obj.set(key, arr[field.getInteger(key)]));
+        if (Objects.notEmpty(arr)) {
+            for(String field:fieldMap.keySet()) {
+                int index = fieldMap.getInteger(field);
+                if(index >= 0 && index < arr.length) {
+                    obj.set(field, arr[index]);
+                }
+            }
         }
 
         return obj;

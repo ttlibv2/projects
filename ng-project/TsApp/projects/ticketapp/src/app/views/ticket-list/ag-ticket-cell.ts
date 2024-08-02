@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { ICellRendererAngularComp } from "@ag-grid-community/angular";
 import { Objects } from "ts-ui/helper";
-import { ICellRendererParams } from "@ag-grid-community/core";
-const {notNull, isArray, isObject} = Objects;
+import {GridApi, ICellRendererComp, ICellRendererParams} from "@ag-grid-community/core";
+import { CommonModule, NgIf } from "@angular/common";
+const {notNull, isArray, isObject, notBlank} = Objects;
 
 export type AgStatus = 'loading' | 'success' | 'error' | undefined ;
 
@@ -88,46 +89,78 @@ export class AgTagCell implements ICellRendererAngularComp {
 
 }
 
-
-
-
 @Component({
+    standalone: true,
     selector: '[ts-ag-cell-status]',
-    template: `
-    <span [ngClass]="iconClass">
-        <label [innerHTML]="label" *ngIf="label"></label>
-    </span>`
+    imports: [CommonModule, NgIf],
+    template: `<span [ngClass]="iconClass"></span>`
 })
 export class AgStatusRenderer implements ICellRendererAngularComp {
-    state: AgStatus = undefined;
-    label: string = undefined;
+    state: AgStatus = 'success';
+    gridApi: GridApi;
+
+    get isLoading(): boolean {
+        return this.state == 'loading';
+    }
+
+    get isOk(): boolean {
+        return this.state == 'success';
+    }
+
+    get isError(): boolean {
+        return this.state == 'error';
+    }
+    
+    constructor(){}
 
     agInit(params: ICellRendererParams<any, any, any>): void {
-       this.extractData(params);
+        this.state = params.value;
     }
 
     refresh(params: ICellRendererParams<any, any, any>): boolean {
-        this.extractData(params);
-        return true;
+        this.state = params.value;
+        return notBlank( this.state);
     }
 
-    private extractData(params: ICellRendererParams<any, any, any>): void {
-        this.state = this.hasState(params.value) ? params.value['ag_state'] : undefined;
-       this.label = !this.hasState(params.value) ? params.value: undefined;
-    }
-
-    private hasState(value: any): boolean {
-        return isObject(value) && 'ag_state' in value;
-    }
 
     get iconClass(): any {
         return {
-            'pi-icon pi': true,
+            ['pi pi-icon']: notBlank(this.state),
+            ['pi-icon-state-'+this.state]:  notBlank(this.state),
             'pi-spin pi-cog': this.state === 'loading',
             'pi-verified': this.state === 'success',
             'pi-exclamation-triangle': this.state === 'error',
-            ['pi-icon-state-'+this.state]: this.state !== undefined,
+            
         };
     }
+
+}
+
+@Component({
+    standalone: true,
+    selector: '[ts-ag-check-cell]',
+    imports: [CommonModule, NgIf],
+    template: `
+        @if(is) {
+            <span class="pi-icon pi pi-verified"></span>
+        }
+    `
+})
+export class AgCheckRenderer implements ICellRendererAngularComp {
+    private params: ICellRendererParams;
+
+    get is(): boolean {
+        const {value} = this.params;
+        return notNull(value) && value === true;
+    }
+
+    agInit(params: ICellRendererParams): void {
+        this.params = params;
+    }
+
+    refresh(params: ICellRendererParams<any>): boolean {
+        return true;
+    }
+
 
 }

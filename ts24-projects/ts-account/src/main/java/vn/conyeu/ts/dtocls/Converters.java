@@ -8,7 +8,6 @@ import vn.conyeu.ts.ticket.domain.*;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 
 public final class Converters {
 
@@ -60,10 +59,10 @@ public final class Converters {
         }
     }
 
-    public static class ClsRepiledStatusConvert extends ClsConvert<ClsRepiledStatus> {
+    public static class ClsRepiledStatusConvert extends ClsConvert<ClsRepliedStatus> {
         static final Set<String> fieldOnly = Set.of("id", "name", "code");
         public ClsRepiledStatusConvert() {
-            super(ClsRepiledStatus.class, fieldOnly);
+            super(ClsRepliedStatus.class, fieldOnly);
         }
     }
 

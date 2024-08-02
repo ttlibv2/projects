@@ -47,6 +47,11 @@ export class ToastItem<Payload=any> implements OnDestroy {
     /** a combination of toast type and options.toastClass */
     @HostBinding('class') toastClasses = '';
 
+    @HostBinding('style.width')
+    get itemWidth(): string {
+        return this.options.width;
+    }
+
     state: WritableSignal<{
         value: 'inactive' | 'active' | 'removed';
         params: { easeTime: number | string; easing: string };

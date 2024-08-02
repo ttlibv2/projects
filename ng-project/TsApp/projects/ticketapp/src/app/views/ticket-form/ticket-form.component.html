@@ -25,7 +25,7 @@
                                 </div>
                                 <div class="p-fluid col-6 lg:col-6">
                                     <label for="group-help">Nhóm hỗ trợ <span class="p-text-danger">(*)</span></label>
-                                    <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help"
+                                    <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help"[showClear]="true"
                                         optionLabel="value" dataKey="id" formControlName="group_help"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-6" *ngIf="options.viewAll || viewTemplate">
@@ -48,61 +48,61 @@
                             <div class="grid">
                                 <div class="p-fluid col-3 md:col-6 lg:col-6 xl:col-6 xxl:col-3">
                                     <label for="od_team">Support Team <span class="p-text-danger">(*)</span></label>
-                                    <p-dropdown formControlName="od_team" id="od_team"
+                                    <p-dropdown formControlName="od_team" id="od_team"[showClear]="true"
                                         [options]="catalog.ls_helpdesk_team" optionLabel="display_name" [filter]="true"
-                                        dataKey="id" (onChange)="onSelectHelpdeskTeam($event.value)"></p-dropdown>
+                                        dataKey="id" (onChange)="changeOdTeam($event.value)"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
                                     <label for="od_assign">Phân công cho <span class="p-text-danger">(*)</span></label>
                                     <p-dropdown id="od_assign" formControlName="od_assign" [options]="catalog.ls_assign"
                                         optionLabel="display_name" [filter]="true" [loading]="state.assign"
-                                        (onFilter)="searchAssign($event.filter)" dataKey="id"
+                                        (onFilter)="searchAssign($event.filter)" dataKey="id"[showClear]="true"
                                         formControlName="od_assign"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-6  xl:col-6 xxl:col-3">
                                     <label for="od_subject_type">Ticket Subject Type <span
                                             class="p-text-danger">(*)</span></label>
                                     <p-dropdown formControlName="od_subject_type" id="od_subject_type"
-                                        [options]="catalog.ls_subject_type" dataKey="id"
+                                        [options]="catalog.ls_subject_type" dataKey="id"[showClear]="true"
                                         optionLabel="display_name"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6  xl:col-6 md:col-6 xxl:col-3">
-                                    <label for="od_repiled">Replied Status <span
+                                    <label for="od_replied">Replied Status <span
                                             class="p-text-danger">(*)</span></label>
-                                    <p-dropdown formControlName="od_repiled" id="od_repiled"
-                                        [options]="catalog.ls_repiled_status" dataKey="id"
-                                        optionLabel="name"></p-dropdown>
+                                    <p-dropdown formControlName="od_replied" id="od_replied"
+                                                [options]="catalog.ls_replied_status" dataKey="id"[showClear]="true"
+                                                optionLabel="name"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
                                     <label for="od_category">Danh mục <span class="p-text-danger">(*)</span></label>
                                     <p-dropdown formControlName="od_category" id="od_category"
-                                        [options]="catalog.ls_category" dataKey="id"
+                                        [options]="catalog.ls_category" dataKey="id"[showClear]="true"
                                         optionLabel="display_name"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
                                     <label for="od_category_sub">Danh mục phụ <span
                                             class="p-text-danger">(*)</span></label>
                                     <p-dropdown formControlName="od_category_sub" id="od_category_sub"
-                                        [options]="catalog.ls_category_sub" dataKey="id"
+                                        [options]="catalog.ls_category_sub" dataKey="id"[showClear]="true"
                                         optionLabel="display_name"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
                                     <label for="od_team_head">Team Head</label>
-                                    <p-dropdown id="od_team_head" [options]="catalog.ls_team_head"
+                                    <p-dropdown id="od_team_head" [options]="catalog.ls_team_head"[showClear]="true"
                                         formControlName="od_team_head" dataKey="id" optionLabel="name"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
                                     *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_ticket_type">Loại yêu cầu hỗ trợ</label>
                                     <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type"
-                                        optionLabel="display_name" dataKey="id"
+                                        optionLabel="display_name" dataKey="id"[showClear]="true"
                                         formControlName="od_ticket_type"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
                                     *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_priority">Độ ưu tiên</label>
                                     <p-dropdown formControlName="od_priority" id="od_priority"
-                                        [options]="catalog.ls_priority" dataKey="id"
+                                        [options]="catalog.ls_priority" dataKey="id"[showClear]="true"
                                         optionLabel="display_name"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
@@ -180,93 +180,77 @@
                 <div class="col-5 col-right">
                     <div class="grid">
                         <p-fieldset class="col-12" legend0="Thông tin BC" *ngIf="!viewTemplate">
-                            <div class="p-fluid col-12">
-                                <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
-                                <input pInputText id="subject" formControlName="subject"
-                                    placeholder="[ROOM-SP]-USER_CODE-MST-TIME" [readOnly]="isSubjectReadOnly" />
+                            <div class="grid">
+                                <div class="p-fluid" [ngClass]="{'col-12': !options.emailTicket, 'col-6': options.emailTicket}">
+                                    <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
+                                    <input pInputText id="subject" formControlName="subject"
+                                        placeholder="[ROOM-SP]-USER_CODE-MST-TIME" [readOnly]="isSubjectReadOnly" />
+                                </div>
+                                <div class="p-fluid col-6" *ngIf="options.emailTicket">
+                                    <label for="emailTemplate">Danh sách E-mail mẫu</label>
+                                    <div class="flex gap-1" id="emailTemplate">
+                                        <p-dropdown class="flex-1" [options]="catalog.get_email()" optionLabel="title"
+                                         [filter]="true" dataKey="id" [showClear]="true" formControlName="email_template"
+                                        ></p-dropdown>
+                                        <p-button icon="pi pi-user-edit" [severity]="'help'" [style]="{padding: '.12rem'}" (onClick)="openEmailTemplate()"></p-button>
+                                    </div>
+                                </div>
+                                <!-- <div class="p-fluid col-12" *ngIf="options.emailTicket">
+                                    <label for="content_email">Nội dung email</label>
+                                    <p-editor id="content_email" [style]="{height: '150px'}"
+                                        formControlName="content_email">
+                                        <ng-template pTemplate="header">
+                                            <span class="ql-formats">
+                                                <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                                <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                                <button type="button" class="ql-underline" aria-label="Underline"></button>
+                                            </span>
+                                        </ng-template>
+                                    </p-editor>
+                                </div> -->
+                                <div class="p-fluid col-12" *ngIf="options.viewAll">
+                                    <label for="body">Hỗ trợ => Body</label>
+                                    <textarea pInputTextarea [autoResize]="true" id="body"
+                                        formControlName="body"></textarea>
+                                </div>
+                                <div class="p-fluid col-12" *ngIf="options.viewAll">
+                                    <label for="note">Hỗ trợ => Note</label>
+                                    <textarea pInputTextarea [autoResize]="true" id="note"
+                                        formControlName="note"></textarea>
+                                </div>
+                                <div class="p-fluid col-12" *ngIf="!options.viewAll">
+                                    <label for="content_copy">Hỗ trợ => Copy</label>
+                                    <textarea pInputTextarea [autoResize]="true" id="content_copy"
+                                        formControlName="content_copy" [rows]="7" [style.max-height]="'135px'"></textarea>
+                                </div>
                             </div>
-                            <div class="p-fluid col-12" *ngIf="options.emailTicket">
-                                <label for="content_email">Nội dung email</label>
-                                <p-editor id="content_email" [style]="{height: '150px'}"
-                                    formControlName="content_email">
-                                    <ng-template pTemplate="header">
-                                        <span class="ql-formats">
-                                            <button type="button" class="ql-bold" aria-label="Bold"></button>
-                                            <button type="button" class="ql-italic" aria-label="Italic"></button>
-                                            <button type="button" class="ql-underline" aria-label="Underline"></button>
-                                        </span>
+                            
+                        </p-fieldset>
+
+                        @if (!viewTemplate) {
+                            <p-fieldset class="col-12 col-option" legend="Tùy chọn">
+                                <div class="flex flex-wrap gap-3" formGroupName="options">
+                                    <ng-template ngFor let-item [ngForOf]="labelOptions">
+                                        <p-checkbox [label]="item.label" [binary]="true"
+                                            [formControlName]="item.formControl"
+                                            (onChange)="item.command($event.checked)"></p-checkbox>
                                     </ng-template>
-                                </p-editor>
-                            </div>
-                            <div class="p-fluid col-12" *ngIf="options.viewAll || options.emailTicket">
-                                <label for="body">Hỗ trợ => Body</label>
-                                <textarea pInputTextarea [autoResize]="true" id="body"
-                                    formControlName="body"></textarea>
-                                <!-- <p-editor id="body"  formControlName="body">
-                                  <ng-template pTemplate="header">
-                                    <span class="ql-formats">
-                                      <button type="button" class="ql-bold" aria-label="Bold"></button>
-                                      <button type="button" class="ql-italic" aria-label="Italic"></button>
-                                      <button type="button" class="ql-underline" aria-label="Underline"></button>
-                                    </span>
-                                  </ng-template>
-                                </p-editor> -->
-                            </div>
-                            <div class="p-fluid col-12" *ngIf="options.viewAll || options.emailTicket">
-                                <label for="note">Hỗ trợ => Note</label>
-                                <textarea pInputTextarea [autoResize]="true" id="note"
-                                    formControlName="note"></textarea>
-                                <!-- <p-editor id="note" formControlName="note">
-                                  <ng-template pTemplate="header">
-                                    <span class="ql-formats">
-                                      <button type="button" class="ql-bold" aria-label="Bold"></button>
-                                      <button type="button" class="ql-italic" aria-label="Italic"></button>
-                                      <button type="button" class="ql-underline" aria-label="Underline"></button>
-                                    </span>
-                                  </ng-template>
-                                </p-editor> -->
-                            </div>
-                            <div class="p-fluid col-12" *ngIf="!options.emailTicket && !options.viewAll">
-                                <label for="content_copy">Hỗ trợ => Copy</label>
-                                <textarea pInputTextarea [autoResize]="true" id="content_copy"
-                                    formControlName="content_copy" [rows]="7" [style.max-height]="'135px'"></textarea>
-                                <!-- <p-editor id="content_copy" formControlName="content_copy">
-                                  <ng-template pTemplate="header">
-                                    <span class="ql-formats">
-                                      <button type="button" class="ql-bold" aria-label="Bold"></button>
-                                      <button type="button" class="ql-italic" aria-label="Italic"></button>
-                                      <button type="button" class="ql-underline" aria-label="Underline"></button>
-                                    </span>
-                                  </ng-template>
-                                </p-editor> -->
-                            </div>
-                        </p-fieldset>
-
-                        <p-fieldset class="col-12 col-option" legend="Tùy chọn">
-                            <div class="flex flex-wrap gap-3" formGroupName="options">
-                                <ng-template ngFor let-item [ngForOf]="labelOptions">
-                                    <p-checkbox [label]="item.label" [binary]="true"
-                                        [formControlName]="item.formControl"
-                                        (onChange)="item.command($event.checked)"></p-checkbox>
-                                </ng-template>
-                            </div>
-                        </p-fieldset>
-                        <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list">
-                            <div class="flex flex-wrap gap-2">
-                                <ng-template ngFor let-item [ngForOf]="templates">
-                                    <ts-tag [value]="item" 
-                                        [label]="item.title" [icon]="item.icon" 
-                                        [severity]="item.severity" 
-                                        [style.color]="item.text_color" 
-                                        [style.backgroud-color]="item.bg_color"></ts-tag>
-
-                                    <!-- <p-button [severity]="item === currentTemplate ? 'danger': undefined"
-                                        [label]="item.title" [rounded]="true" [outlined]="true" [icon]="item.icon"
-                                        [style.backgroud-color]="item.bg_color" [style.color]="item.text_color"
-                                        (onClick)="selectTemplate(item)"></p-button> -->
-                                </ng-template>
-                            </div>
-                        </p-fieldset>
+                                </div>
+                            </p-fieldset>
+                       
+                            <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list">
+                                <div class="flex flex-wrap gap-2">
+                                    <ng-template ngFor let-item [ngForOf]="templates">
+                                        <ts-tag [value]="item" 
+                                            [label]="item.bg_color" [icon]="item.icon" 
+                                            (click)="selectTemplate(item)"></ts-tag>
+                                    </ng-template>
+                                    @if(templates?.length == 0){
+                                        <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b class="text-danger">[Khác > Cập nhật mẫu mặc định]</b>)</span>
+                                    }
+                                </div> 
+                            </p-fieldset>
+                        }
                     </div>
                 </div>
             </div>
@@ -277,6 +261,12 @@
                         loadingIcon="pi pi-cog" [label]="isEditTicket ? 'Cập nhật' : 'Lưu lại'"></p-button>
                     <p-button icon="pi pi-folder-plus" (onClick)="createNew()" label="Tạo mới"></p-button>
                     <p-button icon="pi pi-search"(click)="searchUser()" label="Tìm khách hàng"></p-button>
+                    <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="Tải danh mục"></p-button>
+
+                    @if(ticketIsSend){
+                        <p-button icon="pi pi-result" (click)="viewResultTicket()" label="Xem kết quả"></p-button>
+                    }
+
                     <p-button icon="pi pi-clone" (click)="copyTicket()" label="Sao chép"></p-button>
                     <ts-splitButton icon="pi pi-wrench" label="Khác" severity="help" [model]="toolActions" [size]="'small'"
                         [visibleMenuButton]="false"></ts-splitButton>
@@ -288,7 +278,7 @@
                     <p-button [disabled]="ticketForm.invalid" (onClick)="saveTemplate()"
                         label="{{'actions.save' | translate}}"></p-button>
                     <p-button (onClick)="resetTemplate()" label="{{'actions.reset' | translate}}"></p-button>
-
+                    <p-button (onClick)="closeDialog()" label="{{'actions.close' | translate}}"></p-button>
                 </div>
             </div>
             }

@@ -2,28 +2,258 @@
 @use "../../setting/mixins" as util;
 $prefix: ".ts-tag";
 
+@mixin basic() {
+  --tag-color: #{cfg.$infoButtonTextColor};
+  --tag-background: #{cfg.$infoButtonBg};
+  --tag-border: #{cfg.$infoButtonBorder};
+
+  --tag-hover-background: #{cfg.$infoButtonHoverBg};
+  --tag-hover-color: #{cfg.$infoButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$infoButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$infoButtonActiveBg};
+  --tag-active-color: #{cfg.$infoButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$infoButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$infoButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$infoButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin info() {
+  --tag-color: #{cfg.$infoButtonTextColor};
+  --tag-background: #{cfg.$infoButtonBg};
+  --tag-border: #{cfg.$infoButtonBorder};
+
+  --tag-hover-background: #{cfg.$infoButtonHoverBg};
+  --tag-hover-color: #{cfg.$infoButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$infoButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$infoButtonActiveBg};
+  --tag-active-color: #{cfg.$infoButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$infoButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$infoButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$infoButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin help() {
+  --tag-color: #{cfg.$helpButtonTextColor};
+  --tag-background: #{cfg.$helpButtonBg};
+  --tag-border: #{cfg.$helpButtonBorder};
+
+  --tag-hover-background: #{cfg.$helpButtonHoverBg};
+  --tag-hover-color: #{cfg.$helpButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$helpButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$helpButtonActiveBg};
+  --tag-active-color: #{cfg.$helpButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$helpButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$helpButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$helpButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin success() {
+  --tag-color: #{cfg.$successButtonTextColor};
+  --tag-background: #{cfg.$successButtonBg};
+  --tag-border: #{cfg.$successButtonBorder};
+
+  --tag-hover-background: #{cfg.$successButtonHoverBg};
+  --tag-hover-color: #{cfg.$successButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$successButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$successButtonActiveBg};
+  --tag-active-color: #{cfg.$successButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$successButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$successButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$successButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin warning() {
+  --tag-color: #{cfg.$warningButtonTextColor};
+  --tag-background: #{cfg.$warningButtonBg};
+  --tag-border: #{cfg.$warningButtonBorder};
+
+  --tag-hover-background: #{cfg.$warningButtonHoverBg};
+  --tag-hover-color: #{cfg.$warningButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$warningButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$warningButtonActiveBg};
+  --tag-active-color: #{cfg.$warningButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$warningButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$warningButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$warningButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin danger() {
+  --tag-color: #{cfg.$dangerButtonTextColor};
+  --tag-background: #{cfg.$dangerButtonBg};
+  --tag-border: #{cfg.$dangerButtonBorder};
+
+  --tag-hover-background: #{cfg.$dangerButtonHoverBg};
+  --tag-hover-color: #{cfg.$dangerButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$dangerButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$dangerButtonActiveBg};
+  --tag-active-color: #{cfg.$dangerButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$dangerButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$dangerButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$dangerButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin primary() {
+  --tag-color: #{cfg.$primaryButtonTextColor};
+  --tag-background: #{cfg.$primaryButtonBg};
+  --tag-border: #{cfg.$primaryButtonBorder};
+
+  --tag-hover-background: #{cfg.$primaryButtonHoverBg};
+  --tag-hover-color: #{cfg.$primaryButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$primaryButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$primaryButtonActiveBg};
+  --tag-active-color: #{cfg.$primaryButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$primaryButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$primaryButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$primaryButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin secondary() {
+  --tag-color: #{cfg.$secondaryButtonTextColor};
+  --tag-background: #{cfg.$secondaryButtonBg};
+  --tag-border: #{cfg.$secondaryButtonBorder};
+
+  --tag-hover-background: #{cfg.$secondaryButtonHoverBg};
+  --tag-hover-color: #{cfg.$secondaryButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$secondaryButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$secondaryButtonActiveBg};
+  --tag-active-color: #{cfg.$secondaryButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$secondaryButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$secondaryButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$secondaryButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+@mixin contrast() {
+  --tag-color: #{cfg.$contrastButtonTextColor};
+  --tag-background: #{cfg.$contrastButtonBg};
+  --tag-border: #{cfg.$contrastButtonBorder};
+
+  --tag-hover-background: #{cfg.$contrastButtonHoverBg};
+  --tag-hover-color: #{cfg.$contrastButtonTextHoverColor};
+  --tag-hover-border-color: #{cfg.$contrastButtonHoverBorderColor};
+
+  --tag-active-background: #{cfg.$contrastButtonActiveBg};
+  --tag-active-color: #{cfg.$contrastButtonTextActiveColor};
+  --tag-active-border-color: #{cfg.$contrastButtonActiveBorderColor};
+
+  --tag-focus-shadow: #{cfg.$contrastButtonFocusShadow};
+
+  --tag-outlined-color: #{cfg.$contrastButtonBg};
+  --tag-outlined-border: #{cfg.$outlinedButtonBorder};
+}
+
+
 .ts-tag {
+  @include basic();
+
   display: inline-flex;
   align-items: center;
   gap: 5px;
 
- // color: cfg.$buttonTextColor;
- // background: cfg.$buttonBg;
- // border: cfg.$buttonBorder;
   padding: 0.15rem 0.5rem;
   font-size: cfg.$fontSize;
   transition: cfg.$formElementTransition;
   border-radius: cfg.$borderRadius;
   border: cfg.$inputBorder;
   outline-color: transparent;
-  cursor: default;
+  cursor: pointer;
+
+  color: var(--tag-color);
+  background: var(--tag-background);
+  border: var(--tag-border);
+
+  &:not(:disabled) {
+    &:hover {
+      background: var(--tag-hover-background);
+      color: var(--tag-hover-color);
+      border-color: var(--tag-hover-border-color);
+    }
+
+    &:focus {
+      box-shadow: var(--tag-focus-shadow);
+    }
+
+    &:active {
+      background: var(--tag-active-background);
+      color: var(--tag-active-color);
+      border-color: var(--tag-active-border-color);
+    }
+  }
+
+  &-outlined {
+    background-color: transparent;
+    color: var(--tag-outlined-color);
+    border: var(--tag-outlined-border);
+
+    &:not(:disabled) {
+      &:hover {
+        background: rgba(var(--tag-background), cfg.$textButtonHoverBgOpacity);
+        color: var(--tag-background);
+        border: cfg.$outlinedButtonBorder;
+      }
+      &:active {
+        background: rgba(var(--tag-background), cfg.$textButtonActiveBgOpacity);
+        color: var(--tag-background);
+        border: cfg.$outlinedButtonBorder;
+      }
+    }
+  }
 
   &-text {
+
     line-height: 1.5;
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
+
+    background-color: transparent;
+    color: var(--tag-color);
+    border-color: transparent;
+
+    &:not(:disabled):hover {
+      background: rgba(var(--tag-background), cfg.$textButtonHoverBgOpacity);
+      border-color: transparent;
+      color: var(--tag-background);
+    }
+
+    &:not(:disabled):active {
+      background: rgba(var(--tag-background), cfg.$textButtonActiveBgOpacity);
+      border-color: transparent;
+      color: var(--tag-background);
+    }
   }
+
 
   &-icon {
     line-height: 1.5;
@@ -59,410 +289,11 @@ $prefix: ".ts-tag";
     }
   }
 
-  &-secondary {
-    color: cfg.$secondaryButtonTextColor;
-    background: cfg.$secondaryButtonBg;
-    border: cfg.$secondaryButtonBorder;
-
-    &:not(:disabled):hover {
-      background: cfg.$secondaryButtonHoverBg;
-      color: cfg.$secondaryButtonTextHoverColor;
-      border-color: cfg.$secondaryButtonHoverBorderColor;
-    }
-
-    &:not(:disabled):focus {
-      box-shadow: cfg.$secondaryButtonFocusShadow;
-    }
-
-    &:not(:disabled):active {
-      background: cfg.$secondaryButtonActiveBg;
-      color: cfg.$secondaryButtonTextActiveColor;
-      border-color: cfg.$secondaryButtonActiveBorderColor;
-    }
-
-    &-outlined {
-      background-color: transparent;
-      color: cfg.$secondaryButtonBg;
-      border: cfg.$outlinedButtonBorder;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$secondaryButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$secondaryButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-    }
-
-    &-text {
-      background-color: transparent;
-      color: cfg.$secondaryButtonBg;
-      border-color: transparent;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonHoverBgOpacity);
-        border-color: transparent;
-        color: cfg.$secondaryButtonBg;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonActiveBgOpacity);
-        border-color: transparent;
-        color: cfg.$secondaryButtonBg;
-      }
-    }
-  }
-
-  &-info {
-    color: cfg.$infoButtonTextColor;
-    background: cfg.$infoButtonBg;
-    border: cfg.$infoButtonBorder;
-
-    &:not(:disabled):hover {
-      background: cfg.$infoButtonHoverBg;
-      color: cfg.$infoButtonTextHoverColor;
-      border-color: cfg.$infoButtonHoverBorderColor;
-    }
-
-    &:not(:disabled):focus {
-      box-shadow: cfg.$infoButtonFocusShadow;
-    }
-
-    &:not(:disabled):active {
-      background: cfg.$infoButtonActiveBg;
-      color: cfg.$infoButtonTextActiveColor;
-      border-color: cfg.$infoButtonActiveBorderColor;
-    }
-
-    &-outlined {
-      background-color: transparent;
-      color: cfg.$infoButtonBg;
-      border: cfg.$outlinedButtonBorder;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$infoButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$infoButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$infoButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$infoButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-    }
-
-    &-text {
-      background-color: transparent;
-      color: cfg.$infoButtonBg;
-      border-color: transparent;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$infoButtonBg, cfg.$textButtonHoverBgOpacity);
-        border-color: transparent;
-        color: cfg.$infoButtonBg;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$infoButtonBg, cfg.$textButtonActiveBgOpacity);
-        border-color: transparent;
-        color: cfg.$infoButtonBg;
-      }
-    }
-  }
-
-  &-success {
-    color: cfg.$successButtonTextColor;
-    background: cfg.$successButtonBg;
-    border: cfg.$successButtonBorder;
-
-    &:not(:disabled):hover {
-      background: cfg.$successButtonHoverBg;
-      color: cfg.$successButtonTextHoverColor;
-      border-color: cfg.$successButtonHoverBorderColor;
-    }
-
-    &:not(:disabled):focus {
-      box-shadow: cfg.$successButtonFocusShadow;
-    }
-
-    &:not(:disabled):active {
-      background: cfg.$successButtonActiveBg;
-      color: cfg.$successButtonTextActiveColor;
-      border-color: cfg.$successButtonActiveBorderColor;
-    }
-
-    &-outlined {
-      background-color: transparent;
-      color: cfg.$successButtonBg;
-      border: cfg.$outlinedButtonBorder;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$successButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$successButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$successButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$successButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-    }
-
-    &-text {
-      background-color: transparent;
-      color: cfg.$successButtonBg;
-      border-color: transparent;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$successButtonBg, cfg.$textButtonHoverBgOpacity);
-        border-color: transparent;
-        color: cfg.$successButtonBg;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$successButtonBg, cfg.$textButtonActiveBgOpacity);
-        border-color: transparent;
-        color: cfg.$successButtonBg;
-      }
-    }
-  }
-
-  &-warning {
-    color: cfg.$warningButtonTextColor;
-    background: cfg.$warningButtonBg;
-    border: cfg.$warningButtonBorder;
-
-    &:not(:disabled):hover {
-      background: cfg.$warningButtonHoverBg;
-      color: cfg.$warningButtonTextHoverColor;
-      border-color: cfg.$warningButtonHoverBorderColor;
-    }
-
-    &:not(:disabled):focus {
-      box-shadow: cfg.$warningButtonFocusShadow;
-    }
-
-    &:not(:disabled):active {
-      background: cfg.$warningButtonActiveBg;
-      color: cfg.$warningButtonTextActiveColor;
-      border-color: cfg.$warningButtonActiveBorderColor;
-    }
-
-    &-outlined {
-      background-color: transparent;
-      color: cfg.$warningButtonBg;
-      border: cfg.$outlinedButtonBorder;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$warningButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$warningButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$warningButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$warningButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-    }
-
-    &-text {
-      background-color: transparent;
-      color: cfg.$warningButtonBg;
-      border-color: transparent;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$warningButtonBg, cfg.$textButtonHoverBgOpacity);
-        border-color: transparent;
-        color: cfg.$warningButtonBg;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$warningButtonBg, cfg.$textButtonActiveBgOpacity);
-        border-color: transparent;
-        color: cfg.$warningButtonBg;
-      }
-    }
-  }
-
-  &-help {
-    color: cfg.$helpButtonTextColor;
-    background: cfg.$helpButtonBg;
-    border: cfg.$helpButtonBorder;
-
-    &:not(:disabled):hover {
-      background: cfg.$helpButtonHoverBg;
-      color: cfg.$helpButtonTextHoverColor;
-      border-color: cfg.$helpButtonHoverBorderColor;
-    }
-
-    &:not(:disabled):focus {
-      box-shadow: cfg.$helpButtonFocusShadow;
-    }
-
-    &:not(:disabled):active {
-      background: cfg.$helpButtonActiveBg;
-      color: cfg.$helpButtonTextActiveColor;
-      border-color: cfg.$helpButtonActiveBorderColor;
-    }
-
-    &-outlined {
-      background-color: transparent;
-      color: cfg.$helpButtonBg;
-      border: cfg.$outlinedButtonBorder;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$helpButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$helpButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$helpButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$helpButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-    }
-
-    &-text {
-      background-color: transparent;
-      color: cfg.$helpButtonBg;
-      border-color: transparent;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$helpButtonBg, cfg.$textButtonHoverBgOpacity);
-        border-color: transparent;
-        color: cfg.$helpButtonBg;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$helpButtonBg, cfg.$textButtonActiveBgOpacity);
-        border-color: transparent;
-        color: cfg.$helpButtonBg;
-      }
-    }
-  }
-
-  &-danger {
-    color: cfg.$dangerButtonTextColor;
-    background: cfg.$dangerButtonBg;
-    border: cfg.$dangerButtonBorder;
-
-    &:not(:disabled):hover {
-      background: cfg.$dangerButtonHoverBg;
-      color: cfg.$dangerButtonTextHoverColor;
-      border-color: cfg.$dangerButtonHoverBorderColor;
-    }
-
-    &:not(:disabled):focus {
-      box-shadow: cfg.$dangerButtonFocusShadow;
-    }
-
-    &:not(:disabled):active {
-      background: cfg.$dangerButtonActiveBg;
-      color: cfg.$dangerButtonTextActiveColor;
-      border-color: cfg.$dangerButtonActiveBorderColor;
-    }
-
-    &-outlined {
-      background-color: transparent;
-      color: cfg.$dangerButtonBg;
-      border: cfg.$outlinedButtonBorder;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$dangerButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$dangerButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$dangerButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$dangerButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-    }
-
-    &-text {
-      background-color: transparent;
-      color: cfg.$dangerButtonBg;
-      border-color: transparent;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$dangerButtonBg, cfg.$textButtonHoverBgOpacity);
-        border-color: transparent;
-        color: cfg.$dangerButtonBg;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$dangerButtonBg, cfg.$textButtonActiveBgOpacity);
-        border-color: transparent;
-        color: cfg.$dangerButtonBg;
-      }
-    }
-  }
-
-  &-contrast {
-    color: cfg.$contrastButtonTextColor;
-    background: cfg.$contrastButtonBg;
-    border: cfg.$contrastButtonBorder;
-
-    &:not(:disabled):hover {
-      background: cfg.$contrastButtonHoverBg;
-      color: cfg.$contrastButtonTextHoverColor;
-      border-color: cfg.$contrastButtonHoverBorderColor;
-    }
-
-    &:not(:disabled):focus {
-      box-shadow: cfg.$contrastButtonFocusShadow;
-    }
-
-    &:not(:disabled):active {
-      background: cfg.$contrastButtonActiveBg;
-      color: cfg.$contrastButtonTextActiveColor;
-      border-color: cfg.$contrastButtonActiveBorderColor;
-    }
-
-    &-outlined {
-      background-color: transparent;
-      color: cfg.$contrastButtonBg;
-      border: cfg.$outlinedButtonBorder;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$contrastButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$contrastButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$contrastButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$contrastButtonBg;
-        border: cfg.$outlinedButtonBorder;
-      }
-    }
-
-    &-text {
-      background-color: transparent;
-      color: cfg.$contrastButtonBg;
-      border-color: transparent;
-
-      &:not(:disabled):hover {
-        background: rgba(cfg.$contrastButtonBg, cfg.$textButtonHoverBgOpacity);
-        border-color: transparent;
-        color: cfg.$contrastButtonBg;
-      }
-
-      &:not(:disabled):active {
-        background: rgba(cfg.$contrastButtonBg, cfg.$textButtonActiveBgOpacity);
-        border-color: transparent;
-        color: cfg.$contrastButtonBg;
-      }
-    }
-  }
-
+  &-secondary {@include secondary();}
+  &-info {@include info();}
+  &-success {@include success();}
+  &-warning {@include warning();}
+  &-help {@include help();}
+  &-danger {@include danger();}
+  &-contrast {@include contrast();}
 }

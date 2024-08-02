@@ -18,8 +18,7 @@
       "skipLibCheck": true,
       "types": [],
       "paths": {
-          "ts-ui/*": ["./*/public_api"],
-          "ts-logger": ["../../dist/ts-logger"],
+          "ts-ui/*": ["./*/public_api"]
       }
   },
   "angularCompilerOptions": {

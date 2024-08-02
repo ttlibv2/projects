@@ -24,6 +24,9 @@ import { CatalogModule } from '../catalog/catalog.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import {TranslateModule} from "@ngx-translate/core";
 import { TagModule } from 'ts-ui/tag';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { RippleModule } from 'primeng/ripple';
 
 
 @NgModule({
@@ -54,6 +57,9 @@ import { TagModule } from 'ts-ui/tag';
         CatalogModule,
         NgSelectModule,
         TranslateModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        RippleModule,
         TagModule
       
     ],

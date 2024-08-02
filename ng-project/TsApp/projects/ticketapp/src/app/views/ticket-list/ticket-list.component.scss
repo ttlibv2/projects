@@ -22,8 +22,10 @@
     gap: .5rem;
     align-items: center;
 
-    .lb-count {
-      color: var(--danger-color);
+    >div {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
     }
 
     .result {
@@ -47,6 +49,16 @@
       }
     }
 
+    .choose-attach {
+      .p-fileupload .p-button {
+        background-color: transparent;
+        color: #0ea5e9;
+        border-color: transparent;
+  
+      }
+    }
+
+ 
   }
 
  
@@ -62,6 +74,15 @@
       > div[ts-ag-cell-status] {
         display: flex;
       }
+    }
+
+    .ag-cell.icon-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      >div:first-child { display: flex;}
+
     }
 
     .pi-icon {

@@ -35,18 +35,18 @@ ModuleRegistry.registerModules([
   SideBarModule,
   ColumnsToolPanelModule,
   ClipboardModule,
-GridChartsModule,
-SparklinesModule,
-FiltersToolPanelModule,
-MasterDetailModule,
-RichSelectModule,
-ServerSideRowModelModule,
-SetFilterModule,
-MultiFilterModule,
-AdvancedFilterModule,
-StatusBarModule,
-ViewportRowModelModule,
-InfiniteRowModelModule
+  //GridChartsModule,
+  //SparklinesModule,
+  FiltersToolPanelModule,
+  //MasterDetailModule,
+  //RichSelectModule,
+  //ServerSideRowModelModule,
+  SetFilterModule,
+  MultiFilterModule,
+  AdvancedFilterModule,
+  //StatusBarModule,
+  //ViewportRowModelModule,
+  //InfiniteRowModelModule
 
 
 ]);

@@ -5,8 +5,8 @@ import { Question } from "./question";
 import { BaseModel } from "./base-model";
 import { AssignObject, JsonObject } from "./common";
 import * as cls from "./od-cls";
-import { Templates } from "./template";
-import { LoggerService } from "ts-ui/logger";
+import { Template, Templates } from "./template";
+import {Objects} from "ts-ui/helper";
 
 
 export class Catalog extends BaseModel {
@@ -14,13 +14,11 @@ export class Catalog extends BaseModel {
    ls_software: Software[];// = [];
    ls_group_help: GroupHelp[];// = [];
    ls_question: Question[];// = [];
-
-
    ls_helpdesk_team: cls.ClsTeam[];// = [];
    ls_assign: cls.ClsAssign[];// = [];
    ls_product: cls.ClsProduct[];// = [];
    ls_subject_type: cls.ClsSubjectType[];// = [];
-   ls_repiled_status: cls.ClsRepiled[];// = [];
+   ls_replied_status: cls.ClsReplied[];// = [];
    ls_stage: cls.ClsStage[];// = [];
    ls_category: cls.ClsCategory[];// = [];
    ls_category_sub: cls.ClsCategorySub[];// = [];
@@ -30,6 +28,10 @@ export class Catalog extends BaseModel {
    ls_topic: cls.ClsTopic[];// = [];
    ls_team_head: cls.ClsTeamHead[];// = [];
    ls_template: Templates = new Templates();
+
+   get_email(): Template[] {
+      return this.ls_template.get_email();
+   }
 
    set_ls_chanel(data: AssignObject<Chanel>[]) {
       this.ls_chanel = (data || []).map(item => Chanel.from(item));
@@ -63,8 +65,8 @@ export class Catalog extends BaseModel {
       this.ls_subject_type = (data || []).map(item => cls.ClsSubjectType.from(item));
    }
 
-   set_ls_repiled_status(data: AssignObject<cls.ClsRepiled>[]) {
-      this.ls_repiled_status = (data || []).map(item => cls.ClsRepiled.from(item));
+   set_ls_replied_status(data: AssignObject<cls.ClsReplied>[]) {
+      this.ls_replied_status = (data || []).map(item => cls.ClsReplied.from(item));
    }
 
    set_ls_stage(data: AssignObject<cls.ClsStage>[]) {
@@ -103,10 +105,8 @@ export class Catalog extends BaseModel {
       this.ls_template = Templates.fromAny(data);
    }
 
-
-
-   static from(json: JsonObject, logger?: LoggerService): Catalog {
-      return new Catalog().update(json);
+   static from(json: AssignObject<Catalog>): Catalog {
+      return Objects.assign(Catalog, json);
    }
 
 }

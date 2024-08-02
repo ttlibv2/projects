@@ -32,6 +32,13 @@ public abstract class OdClient {
     }
 
     /**
+     * Returns the cfg
+     */
+    public ClsApiCfg cfg() {
+        return cfg;
+    }
+
+    /**
      * Returns the model api
      */
     public abstract String getModel();
@@ -106,15 +113,23 @@ public abstract class OdClient {
 
     protected ClsUserContext createUserContext() {
         Long userId = cfg.getUserId();
+        Object compId = cfg.getClsUser().getCompany_Uid();
         ClsUserContext ctx = cfg.getUserContext();
+        ctx.set("allowed_company_ids", new Object[]{compId});
         return ClsUserContext.fix(userId, ctx);
     }
 
     /**
      * Returns the api url
      */
-    protected final String getApiUrl() {
+    protected String getApiUrl() {
         return cfg.getBaseUrl();
+    }
+
+    protected String getApiUrlNoWeb() {
+        String str = cfg.getBaseUrl();
+        if(str.endsWith("/web")) return str.substring(0, str.length()-4);
+        else return str;
     }
 
     protected RestClient createClient() {

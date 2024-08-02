@@ -3,19 +3,15 @@ import {TranslateLoader, TranslateModuleConfig} from "@ngx-translate/core";
 import {HttpClient} from "@angular/common/http";
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {ToastConfig} from "ts-ui/toast";
-import {LocalDbConfig} from "ts-ui/local-db";
-import {Template} from "./models/template";
-import {Chanel} from "./models/chanel";
-import {Software} from "./models/software";
-import {GroupHelp} from "./models/group-help";
-import {Question} from "./models/question";
-import {Ticket} from "./models/ticket";
-import * as od from "./models/od-cls";
-import {AgTable} from "./models/ag-table";
-import {ApiInfo} from "./models/api-info";
-import {User} from "./models/user";
-import {AppConfig} from "./models/app-config";
-import {ConfigTable, DbAgTable, DbTable, DbUserTable, TB_NAMES, TemplateTable} from "./services/local-db.service";
+
+export const routerUrl = {
+    signinUrl: '/signin',
+    signupUrl: '/signup',
+    template: '/templates',
+    form_ticket: '/ticket-form',
+};
+
+export const HOME_PAGE = routerUrl.form_ticket;
 
 export type Severity =
     'success'
@@ -29,7 +25,6 @@ export type Severity =
     | string
     | null
     | undefined;
-export const authUri = '/signin';
 
 export const AgTemplateCode = {
     agTicket: 'ticket_list'
@@ -117,32 +112,3 @@ export const translateConfig: TranslateModuleConfig = {
         useFactory: (http: HttpClient) => new TranslateHttpLoader(http, './assets/i18n/', '.json'),
     }
 }
-
-export const databaseConfig: Partial<LocalDbConfig> = {
-    dbName: 'ts_web',
-    dbVersion: 2.0,
-    schema: [
-        {name: TB_NAMES.template, keyPath: "id", entityClass: Template, tableClass: TemplateTable},
-        {name: TB_NAMES.chanel, keyPath: "id", entityClass: Chanel},
-        {name: TB_NAMES.software, keyPath: 'id', entityClass: Software},
-        {name: TB_NAMES.groupHelp, keyPath: 'id', entityClass: GroupHelp},
-        {name: TB_NAMES.question, keyPath: 'id', entityClass: Question},
-        {name: TB_NAMES.ticket, keyPath: 'id', entityClass: Ticket},
-        {name: TB_NAMES.clsTeam, keyPath: 'id', entityClass: od.ClsTeam},
-        {name: TB_NAMES.clsAssign, keyPath: 'id', entityClass: od.ClsAssign},
-        {name: TB_NAMES.clsSubjectType, keyPath: 'id', entityClass: od.ClsSubjectType},
-        {name: TB_NAMES.clsReplied, keyPath: 'id', entityClass: od.ClsRepiled},
-        {name: TB_NAMES.clsCate, keyPath: 'id', entityClass: od.ClsCategory},
-        {name: TB_NAMES.clsCateSub, keyPath: 'id', entityClass: od.ClsCategorySub},
-        {name: TB_NAMES.clsTicketType, keyPath: 'id', entityClass: od.ClsTicketType},
-        {name: TB_NAMES.clsPriority, keyPath: 'id', entityClass: od.ClsPriority},
-        {name: TB_NAMES.clsProduct, keyPath: 'id', entityClass: od.ClsProduct},
-        {name: TB_NAMES.clsStage, keyPath: 'id', entityClass: od.ClsStage},
-        {name: TB_NAMES.clsTag, keyPath: 'id', entityClass: od.ClsTag},
-        {name: TB_NAMES.clsTopic, keyPath: 'id', entityClass: od.ClsTopic},
-        {name: TB_NAMES.agTable, keyPath: 'code', entityClass: AgTable, tableClass: DbAgTable},
-        {name: TB_NAMES.apiInfo, keyPath: 'api_id', entityClass: ApiInfo},
-        {name: TB_NAMES.user, keyPath: 'user_id', entityClass: User, tableClass: DbUserTable},
-        {name: TB_NAMES.appConfig, keyPath: '', entityClass: AppConfig, tableClass: ConfigTable},
-    ]
-};

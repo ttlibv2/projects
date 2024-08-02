@@ -45,11 +45,12 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
         return ClsTicket::from;
     }
 
-    @Override
-    protected ClsUserContext createUserContext() {
-        return super.createUserContext()
-                .set("allowed_company_ids", 1);
-    }
+//    @Override
+//    protected ClsUserContext createUserContext() {
+//
+//        return super.createUserContext()
+//                .set("allowed_company_ids", 1);
+//    }
 
     /**
      * Find ticket from web by id
@@ -166,10 +167,10 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
         return deleteFollow(ticketId, odUserId);
     }
 
-    public List<Long> deleteFollow(Long ticketId, Long odUserId) {
+    public List<Long> deleteFollow(Long ticketId, Long excludeUserId) {
         List<ClsFollow> follows = odMail.read_followers(ticketId, getModel());
         List<Long> partnerId = follows.stream()
-                .filter(cls -> !Objects.equals(odUserId, cls.getUserId()))
+                .filter(cls -> !Objects.equals(excludeUserId, cls.getUserId()))
                 .map(ClsFollow::getPartner_id).toList();
 
         if(!partnerId.isEmpty()) {
@@ -180,9 +181,7 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
     }
 
     public  void deleteFollow(Long ticketId, List<Long> partnerId) {
-        String url = call_kwUri("%s/message_unsubscribe");// String.format("%s/message_unsubscribe", getBasePath());
         ObjectMap context = ObjectMap.setNew("context", createUserContext());
-
         ObjectMap object = ObjectMap.create()
                 .set("model", getModel())
                 .set("method", "message_unsubscribe")
@@ -192,10 +191,10 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
                         partnerId
                 });
 
-        sendPost(object, datasetUri(url));
+        sendPost(object, call_kwUri("message_unsubscribe"));
     }
 
-    public Long actionReply(Long ticketNumber, Long[] partnerIds, String subject, String body) {
+    public ClsMailComposeMsg actionReply(Long ticketNumber, Long[] partnerIds, String subject, String body) {
 
         // callButton
         Object[] uids = new Object[] { ticketNumber};
@@ -213,7 +212,16 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
         cls.setSubject(subject);
         cls.setBody(body);
 
-        return odComposeMsg.create(reply, cls);
+        Long mailId = odComposeMsg.create(reply, cls);
+        cls.setId(mailId);
+        return cls;
     }
 
+    public void deleteTicket(Long ticketNumber) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void deleteNote(Long noteId) {
+        throw new UnsupportedOperationException();
+    }
 }

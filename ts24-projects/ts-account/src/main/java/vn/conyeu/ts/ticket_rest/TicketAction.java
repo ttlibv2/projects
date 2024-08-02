@@ -8,5 +8,6 @@ public enum TicketAction {
     UPDATE_STAGE,
     ADD_NOTE,
     UPDATE_NOTE,
-    ATTACH_FILE
+    ATTACH_FILE,
+    SEND_MAIL
 }

@@ -82,8 +82,8 @@ public class OdCatalogRest extends OdBaseRest {
             map.set("ls_stage", getAllStage());
         }
 
-        if (isAll || segments.contains("ls_repiled_status")) {
-            map.set("ls_repiled_status", getRepiledStatus());
+        if (isAll || segments.contains("ls_replied_status")) {
+            map.set("ls_replied_status", getRepiledStatus());
         }
 
         if (isAll || segments.contains("ls_topic")) {
@@ -146,8 +146,8 @@ public class OdCatalogRest extends OdBaseRest {
     }
 
     @GetMapping("get-repiled-status")
-    public Collection<ClsRepiledStatus> getRepiledStatus() {
-        return ClsRepiledStatus.ALL.values();
+    public Collection<ClsRepliedStatus> getRepiledStatus() {
+        return ClsRepliedStatus.ALL.values();
     }
 
     @GetMapping("get-ticket-tags")

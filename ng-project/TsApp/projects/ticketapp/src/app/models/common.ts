@@ -57,7 +57,11 @@ export interface SocialLink {
 }
 
 export interface ImageObject {
-  [name: string]: number;
+  [name: string]: {
+    md5hash?: string;
+    ts_id?: number;
+    base64?: string;
+  };
 }
 
 export interface Pageable {

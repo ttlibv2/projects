@@ -27,6 +27,10 @@ public class OdMessage extends OdTicketClient<ClsMessage> {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    protected String getApiUrl() {
+       return getApiUrlNoWeb();
+    }
 
     /**
      * Create new note && add file

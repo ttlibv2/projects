@@ -10,23 +10,28 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.identity.annotation.PrincipalId;
 import vn.conyeu.identity.helper.IdentityHelper;
+import vn.conyeu.ts.domain.AttachFile;
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.dtocls.TsVar;
+import vn.conyeu.ts.service.AttachFileService;
 import vn.conyeu.ts.service.ChanelService;
 import vn.conyeu.ts.service.TicketService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(TsVar.Rest.tsTicket)
 public class TicketRest extends LongUIdRest<Ticket, TicketService> {
     final ChanelService chanelService;
+    final AttachFileService fileService;
 
-    public TicketRest(TicketService service, ChanelService chanelService) {
+    public TicketRest(TicketService service, ChanelService chanelService, AttachFileService fileService) {
         super(service);
         this.chanelService = chanelService;
+        this.fileService = fileService;
     }
 
     @Override
@@ -34,11 +39,8 @@ public class TicketRest extends LongUIdRest<Ticket, TicketService> {
         params.put("user_id", IdentityHelper.extractUserId());
         Page<Ticket> ticketPage = super.getAll(params, pageable);
         for(Ticket ticket:ticketPage) {
-
-            // chanel
             List<Long> chanelIds = ticket.getChanelIds();
             if(Objects.notEmpty(chanelIds)) ticket.setChanels(chanelService.findAllById(chanelIds));
-
         }
 
         return ticketPage;

@@ -4,34 +4,28 @@ import { Observable, forkJoin, map, of, switchMap, tap } from "rxjs";
 import { Catalog } from "../models/catalog";
 import { JsonObject } from '../models/common';
 import { ClsAssign } from '../models/od-cls';
-import { DbTable, LocalDbService } from './local-db.service';
-import { LoggerService } from 'ts-ui/logger';
+import {LocalTable} from "ts-ui/local-db";
+import {StorageService} from "./storage.service";
 
-export const CATALOG_MAP: { [key: string]: (db: LocalDbService) => DbTable } = {
-  ls_chanel:db => db.chanel,
-  ls_software: db => db.software,
-  ls_group_help: db => db.groupHelp,
-  ls_question: db => db.question,
-  ls_helpdesk_team: db => db.clsTeam,
-  ls_assign: db => db.clsAssign,
-  ls_subject_type: db => db.clsSubjectType,
-  ls_repiled_status: db => db.clsReplied,
-  ls_category: db => db.clsCate,
-  ls_category_sub: db => db.clsCateSub,
-  ls_ticket_tag: db => db.clsTag,
-  ls_priority: db => db.clsPriority,
-  ls_ticket_type: db => db.clsTicketType,
-  ls_topic: db => db.clsTopic,
-  ls_stage: db => db.clsStage,
-  ls_product: db => db.clsProduct,
-  ls_teamplate: db => db.template
+export const CATALOG_MAP: { [key: string]: (db: StorageService) => LocalTable } = {
+  ls_chanel:db => db.chanelTb,
+  ls_software: db => db.softwareTb,
+  ls_group_help: db => db.groupHelpTb,
+  ls_question: db => db.questionTb,
+  ls_helpdesk_team: db => db.clsTeamTb,
+  ls_assign: db => db.clsAssignTb,
+  ls_subject_type: db => db.clsSubjectTypeTb,
+  ls_replied_status: db => db.clsRepliedTb,
+  ls_category: db => db.clsCateTb,
+  ls_category_sub: db => db.clsCateSubTb,
+  ls_ticket_tag: db => db.clsTagTb,
+  ls_priority: db => db.clsPriorityTb,
+  ls_ticket_type: db => db.clsTicketTypeTb,
+  ls_topic: db => db.clsTopicTb,
+  ls_stage: db => db.clsStageTb,
+  ls_product: db => db.clsProductTb,
+  ls_template: db => db.templateTb
 };
-
-function jsonToCatalog(db: LocalDbService, data: JsonObject, logger?: LoggerService): Catalog {
-  logger.warn('catalog response => ', data);
-  return Catalog.from(data, logger);
-}
-
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService extends ClientService {
@@ -39,18 +33,17 @@ export class CatalogService extends ClientService {
 
   read_db(lsName: string = 'all'): Observable<Catalog> {
     const allKey = lsName === 'all' ? Object.keys(CATALOG_MAP) : lsName.split(',');
-    const fncs = allKey.map(name => [name, CATALOG_MAP[name](this.db).getAll()]);
+    const fncs = allKey.map(name => [name, CATALOG_MAP[name](this.storage).getAll()]);
     return forkJoin(Object.fromEntries(fncs)).pipe(switchMap(res => {
-      return of(Catalog.from(jsonToCatalog(this.db, res, this.logger)));
+      return of(Catalog.from(res));
     }));
   }
 
 
   getAll(params: JsonObject): Observable<Catalog> {
-    const url = '/ts-ui/api/catalog/get-all';
+    const url = '/ts-api/catalog/get-all';
     return this.get(url, params).pipe(map(res => {
-      const newData = jsonToCatalog(this.db, res, this.logger);
-      this.config.data.update(s => ({...s, allCatalog: newData}));
+      const newData = Catalog.from(res);
       this.saveCatalogToDb(newData);
       return newData;
     }));
@@ -69,12 +62,12 @@ export class CatalogService extends ClientService {
 
 
 
-  private saveCatalogToDb(data: Catalog, hasSave: boolean = false): void {
+  private saveCatalogToDb(catalog: Catalog, hasSave: boolean = false): void {
     if (hasSave === true) {
-      for (const key of Object.keys(data)) {
+      for (const key of Object.keys(catalog)) {
         if (!(key in CATALOG_MAP)) continue;
         else {
-          CATALOG_MAP[key](this.db).save(data[key]).subscribe({
+          CATALOG_MAP[key](this.storage).bulkPut(catalog[key]).subscribe({
             next: res => this.logger.info(`save ${key}....`)
           });
         }
@@ -83,7 +76,7 @@ export class CatalogService extends ClientService {
   }
 
   clearCache(): Observable<any> {
-    const url = '/ts-ui/api/catalog/clear-cache';
+    const url = '/ts-api/catalog/clear-cache';
     this.cacheMap.clear();
     return this.get(url);
   }

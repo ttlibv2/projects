@@ -52,7 +52,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     { action: "ls_helpdesk_team", title: "Support Team" },
     { action: "ls_assign", title: "Người dùng" },
     { action: "ls_subject_type", title: "Ticket Subject Type" },
-    { action: "ls_repiled_status", title: "Replied Status" },
+    { action: "ls_replied_status", title: "Replied Status" },
     { action: "ls_category", title: "Danh mục" },
     { action: "ls_category_sub", title: "Danh mục phụ" },
     { action: "ls_team_head", title: "Team Head" },
@@ -75,7 +75,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
 
   asyncLoading: boolean = false;
   autoLoad: boolean = false;
-  templateCode: string;
+  templateCode: string[] = [];
 
   constructor(
     private def: ChangeDetectorRef,
@@ -115,12 +115,13 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     this.asyncLoading = true;
 
     const catalog = ls.map((i) => i.action).join(",");
-    const entities = this.templateCode;
+    const entities = this.templateCode.join(',');
 
     this.catalogSrv.getAll({ catalog, entities }).pipe(delay(1000)).subscribe({
       next: (res) => {
         this.asyncLoading = false;
         this.toast.success("Lấy danh mục thành công." );
+        console.log('catalogSrv.getAll', res);
         this.ref.close(res);
         this.def.detectChanges();
       },

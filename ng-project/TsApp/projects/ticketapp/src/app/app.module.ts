@@ -1,6 +1,6 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule, } from '@angular/platform-browser';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRouting } from './app.routing';
 import { AppComponent } from './app.component';
 import { RouterOutlet } from "@angular/router";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -19,24 +19,25 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TsLoggerModule, LoggerService } from "ts-ui/logger";
 import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
-import { StorageService } from "./services/storage.service";
 import { AppLayoutModule } from 'ts-ui/app-layout';
-import {databaseConfig, layoutConfig, toastConfig, translateConfig} from "./constant";
+import { layoutConfig, toastConfig, translateConfig} from "./constant";
+import {databaseConfig, StorageService} from "./services/storage.service";
 import { AgTableModule } from 'ts-ui/ag-table';
 import { ToastModule } from 'ts-ui/toast';
-import { LocaldbModule, LocalDbService } from "ts-ui/local-db";
+import {DBService, LocalDbModule} from "ts-ui/local-db";
 
 registerLocaleData(vi);
 
 function LOAD_CFG(storage: StorageService, logger: LoggerService) {
-    return () => storage.asyncConfig.subscribe({
-        error: err => logger.error('initialize app error --> ', err),
-        next: res => logger.info('initialize app success --> ', res)
-    });
+    return () => storage.asyncConfig;
+        //.subscribe({
+       // error: err => logger.error('initialize app error --> ', err),
+      //  next: res => logger.info('initialize app success --> ', res)
+    //});
 }
 
-function LOAD_DB(service: LocalDbService) {
-    return () => service.initializeDb(true);
+function LOAD_DB(service: DBService) {
+    return () => service.initDatabase();
 }
 
 @NgModule({
@@ -48,22 +49,22 @@ function LOAD_DB(service: LocalDbService) {
         BrowserAnimationsModule,
         CommonModule,
         RouterOutlet,
-        AppRoutingModule,
+        AppRouting,
         DatePipe,
         InputIconModule,
         DialogModule,
+        AgTableModule.forRoot(),
+        TsLoggerModule.forRoot(),
         AppLayoutModule.forRoot(layoutConfig),
         ToastModule.forRoot(toastConfig),
         TranslateModule.forRoot(translateConfig),
-        AgTableModule.forRoot(),
-        TsLoggerModule.forRoot(),
-        LocaldbModule.forRoot(databaseConfig)
+        LocalDbModule.forRoot(databaseConfig)
 
     ],
     providers: [
         provideAnimationsAsync(),
         provideHttpClient(withFetch(), withInterceptors([tokenInterceptor])),
-        { provide: APP_INITIALIZER, useFactory: LOAD_DB, deps: [LocalDbService] },
+        { provide: APP_INITIALIZER, useFactory: LOAD_DB, deps: [DBService], multi: true },
         { provide: APP_INITIALIZER, useFactory: LOAD_CFG, deps: [StorageService, LoggerService], multi: true },
         DatePipe, MessageService, DialogService,
 

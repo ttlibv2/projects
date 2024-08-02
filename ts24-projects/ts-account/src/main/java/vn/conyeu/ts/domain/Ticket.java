@@ -18,7 +18,6 @@ import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.ticket.domain.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 //@formatter:off
 @Entity @Table
@@ -145,10 +144,10 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JoinColumn(nullable = false, name = "userId")
     private TsUser user;
 
-    @Convert(converter = MapString.class)
-    @Column(columnDefinition = "json")
-    @JsonProperty("od_image")
-    private ObjectMap odImage;
+//    @Convert(converter = MapString.class)
+//    @Column(columnDefinition = "json")
+//    @JsonProperty("od_image")
+//    private ObjectMap odImage;
 
     @Column(length = 150)
     private String images;
@@ -180,8 +179,8 @@ public class Ticket extends LongUIdDate<Ticket> {
 
     @Convert(converter = ClsRepiledStatusConvert.class)
     @Column(columnDefinition = "json")
-    @JsonProperty("od_repiled")
-    private ClsRepiledStatus odRepiled;
+    @JsonProperty("od_replied")
+    private ClsRepliedStatus odReplied;
 
     @Convert(converter = ClsSubjectTypeConvert.class)
     @Column(columnDefinition = "json")
@@ -230,9 +229,6 @@ public class Ticket extends LongUIdDate<Ticket> {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket")
     private TicketDetail detail;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ticket")
-    private List<TicketAttach> attaches;
-
     @JsonProperty("template_id")
     private Long templateId;
 
@@ -243,6 +239,7 @@ public class Ticket extends LongUIdDate<Ticket> {
     @JsonProperty("software_id") @Transient private Long softwareId;
     @JsonProperty("question_id") @Transient private Long questionId;
     @JsonProperty("chanels") @Transient private List<Chanel> chanels;
+    @JsonProperty("imageBase64") @Transient private ObjectMap imageBase64;
 
     public void setStage(ClsStage stage) {
         getDetail().setStage(stage);
@@ -350,10 +347,10 @@ public class Ticket extends LongUIdDate<Ticket> {
         return note != null ? note.replace("\n", "<br/>") : null;
     }
 
-    public boolean isUpFile() {
-        if(Objects.isEmpty(odImage)) return false;
-        else return !Objects.anyNull(odImage.values());
-    }
+//    public boolean isUpFile() {
+//        if(Objects.isEmpty(odImage)) return false;
+//        else return !Objects.anyNull(odImage.values());
+//    }
 
     public boolean isEmailTicket() {
         return Objects.notBlank(contentEmail);
@@ -368,4 +365,14 @@ public class Ticket extends LongUIdDate<Ticket> {
         detail.assignFromMap(map);
         setDetail(detail);
     }
+
+
+    public TicketDetail setNewDetail() {
+        TicketDetail detailOld = getDetail();
+        TicketDetail detail = new TicketDetail();
+        detail.setTicket(this);
+        setDetail(detail);
+        return  detailOld;
+    }
+
 }

@@ -73,9 +73,9 @@ export class ClsPriority extends ClsModel {
   }
 }
 
-export class ClsRepiled extends ClsModel {
-  static from(json: AssignObject<ClsRepiled>): ClsRepiled {
-    return BaseModel.fromJson(ClsRepiled, json);
+export class ClsReplied extends ClsModel {
+  static from(json: AssignObject<ClsReplied>): ClsReplied {
+    return BaseModel.fromJson(ClsReplied, json);
   }
 }
 

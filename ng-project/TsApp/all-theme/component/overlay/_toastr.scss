@@ -3,42 +3,42 @@
 
 @mixin tsToast() {
   position: fixed;
-  width: 25rem;
+  min-width: 25rem;
 }
 
 @mixin info() {
   --toast-bg: #{cfg.$infoMessageBg};
   --toast-text-color: #{cfg.$infoMessageTextColor};
   --toast-icon-color:#{cfg.$infoMessageIconColor};
-  --toast-border-color: #{cfg.$infoMessageBorderColor}
+  --toast-border-color: #{cfg.$infoMessageBorderColor};
 }
 
 @mixin success() {
   --toast-bg: #{cfg.$successMessageBg};
   --toast-text-color: #{cfg.$successMessageTextColor};
   --toast-icon-color:#{cfg.$successMessageIconColor};
-  --toast-border-color: #{cfg.$successMessageBorderColor}
+  --toast-border-color: #{cfg.$successMessageBorderColor};
 }
 
 @mixin help() {
   --toast-bg: #{cfg.$helpMessageBg};
   --toast-text-color: #{cfg.$helpMessageTextColor};
   --toast-icon-color:#{cfg.$helpMessageIconColor};
-  --toast-border-color: #{cfg.$helpMessageBorderColor}
+  --toast-border-color: #{cfg.$helpMessageBorderColor};
 }
 
 @mixin warning() {
   --toast-bg: #{cfg.$warningMessageBg};
   --toast-text-color: #{cfg.$warningMessageTextColor};
   --toast-icon-color:#{cfg.$warningMessageIconColor};
-  --toast-border-color: #{cfg.$warningMessageBorderColor}
+  --toast-border-color: #{cfg.$warningMessageBorderColor};
 }
 
 @mixin error() {
   --toast-bg: #{cfg.$errorMessageBg};
   --toast-text-color: #{cfg.$errorMessageTextColor};
   --toast-icon-color:#{cfg.$errorMessageIconColor};
-  --toast-border-color: #{cfg.$errorMessageBorderColor}
+  --toast-border-color: #{cfg.$errorMessageBorderColor};
 }
 
 .ts-toast {
@@ -73,27 +73,28 @@
         font-weight: bold;
       }
 
-      &-close {
-        cursor: pointer;
-        border-radius: cfg.$actionIconBorderRadius;
-        transition: cfg.$actionIconTransition;
-        padding: cfg.$toastCloseIconPadding;
-        background: transparent;
-        display: flex;
-        align-items: center;
+    }
 
-        &:hover {
-          background: var(--toast-border-color);
-        }
+    &-close {
+      cursor: pointer;
+      border-radius: cfg.$actionIconBorderRadius;
+      transition: cfg.$actionIconTransition;
+      padding: cfg.$toastCloseIconPadding;
+      background: transparent;
+      display: flex;
+      align-items: center;
 
-        &:focus-visible {
-          @include util.focused();
-        }
+      &:hover {
+        background: var(--toast-border-color);
+      }
 
-        > .close-icon {
-          color: var(--toast-icon-color);
-          font-size: cfg.$toastCloseIconFontSize;
-        }
+      &:focus-visible {
+        @include util.focused();
+      }
+
+      > .icon {
+        color: var(--toast-icon-color);
+        font-size: cfg.$toastCloseIconFontSize;
       }
     }
 
@@ -109,11 +110,19 @@
         align-items: center;
       }
 
-      &-right {
+      &-center {
         display: flex;
         flex-direction: column;
         flex: 1 1 auto;
+        justify-content: center;
       }
+
+      &-right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
 
       &-icon > span.icon {
         color: var(--toast-icon-color);

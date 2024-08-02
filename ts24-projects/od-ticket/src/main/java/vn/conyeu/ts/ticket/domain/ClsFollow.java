@@ -38,4 +38,12 @@ public class ClsFollow extends ClsModel<ClsFollow> {
         if(partner == null) return null;
         else return partner.getLong("user_id", null);
     }
+
+    /**
+     * Returns the partner_id
+     */
+    public Long getPartner_id() {
+        if(partner_id == null && partner != null) return partner.getLong("id");
+        return partner_id;
+    }
 }

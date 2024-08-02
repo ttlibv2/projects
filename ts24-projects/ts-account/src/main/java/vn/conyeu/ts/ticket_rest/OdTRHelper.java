@@ -2,7 +2,6 @@ package vn.conyeu.ts.ticket_rest;
 
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.domain.TicketDetail;
-import vn.conyeu.ts.domain.TicketStatus;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.ticket.domain.*;
 
@@ -49,12 +48,12 @@ public final class OdTRHelper {
         detail.setViewUrl(cls.getPortal_ticket_url_wp());
         detail.setFormUrl(cls.getForm_url());
         detail.setCancelReason(cls.getCancel_reason());
-        detail.setCancelAt(cls.getCancel_date());
-        detail.setClosedAt(cls.getClose_date());
+        detail.setCancelAt(cls.getCancelDateTime());
+        detail.setClosedAt(cls.getCloseDateTime());
         detail.setCloseBy(cls.getClose_byId());
 
         //ticket.setFullName(clsUser.getDisplay_name());
-        //ticket.setOdRepiledStatus(ClsRepiledStatus.from(cls.getState()));
+        //ticket.setOdRepiledStatus(ClsRepliedStatus.from(cls.getState()));
         return ticket;
     }
 
@@ -69,16 +68,16 @@ public final class OdTRHelper {
         detail.setDownloadUrl(cls.getSh_ticket_report_url());
         detail.setViewUrl(cls.getPortal_ticket_url_wp());
         detail.setFormUrl(cls.getForm_url());
-        detail.setClosedAt(cls.getClose_date());
+        detail.setClosedAt(cls.getCloseDateTime());
         detail.setCloseBy(cls.getClose_byId());
-        detail.setCancelAt(cls.getCancel_date());
+        detail.setCancelAt(cls.getCancelDateTime());
         detail.setCancelReason(cls.getCancel_reason());
 
         return ticket;
     }
 
     public static ClsTicket fromTicket(Ticket ticket) {
-        TicketDetail detail = ticket.getDetail();
+       // TicketDetail detail = ticket.getDetail();
         ClsTicket cls = new ClsTicket();
 
         cls.setStage_id(4);
@@ -89,8 +88,8 @@ public final class OdTRHelper {
         cls.setSh_sla_status_ids(new Object[0]);
         cls.setTicket_allocated(false);
 
-        ClsRepiledStatus repiledStatus = ticket.getOdRepiled();
-        if(repiledStatus != null) cls.setState(repiledStatus.getCode());
+        ClsRepliedStatus repliedStatus = ticket.getOdReplied();
+        if(repliedStatus != null) cls.setState(repliedStatus.getCode());
 
         ClsTicketType ticketType = ticket.getOdTicketType();
         if(ticketType != null) cls.setTicket_type(ticketType.getId());

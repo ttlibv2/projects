@@ -5,11 +5,11 @@ import vn.conyeu.ts.odcore.domain.ClsModel;
 
 @EqualsAndHashCode(callSuper = false)
 public class ClsFile extends ClsModel<ClsFile> {
- private    Long id;
-    private   String name;
-    private   String filename;
-    private  String mimetype;
-    private  Long size;
+    private Long id;
+    private String name;
+    private String filename;
+    private String mimetype;
+    private Long size;
 
     /**
      * Returns the id

@@ -1,4 +1,4 @@
-<div class="ts-toast-message-header" *ngIf="title || (options.closeButton && closeIcon)">
+<div class="ts-toast-message-header" *ngIf="title">
     <div class="ts-toast-message-header-title">
         @if(title) {
             @if (options.enableHtml) {
@@ -8,8 +8,8 @@
             }
         }
     </div>
-    <div class="ts-toast-message-header-close"  (click)="remove()"  *ngIf="options.closeButton && closeIcon">
-        <span [ngClass]="closeIcon" class="close-icon"></span>
+    <div class="ts-toast-message-close"  (click)="remove()"  *ngIf="options.closeButton && closeIcon">
+        <span [ngClass]="closeIcon" class="icon"></span>
     </div>
 </div>
 <div class="ts-toast-message-content">
@@ -18,7 +18,7 @@
             <span [ngClass]="contentIcon" class="icon"></span>
         </div>
     </div>
-    <div class="ts-toast-message-content-right" *ngIf="summary || detail">
+    <div class="ts-toast-message-content-center" *ngIf="summary || detail">
         <div class="ts-toast-message-content-summary" *ngIf="summary" [ngStyle]="options.summaryStyle">
             @if(options.enableHtml) {<span [innerHTML]="summary"></span>}
             @else {<span>{{summary}}</span>}
@@ -26,6 +26,11 @@
         <div class="ts-toast-message-content-detail" [ngStyle]="options.detailStyle" *ngIf="detail">
             @if(options.enableHtml) {<span [innerHTML]="detail"></span>}
             @else {<span>{{detail}}</span>}
+        </div>
+    </div>
+    <div class="ts-toast-message-content-right" *ngIf="!title && options.closeButton && closeIcon">
+        <div class="ts-toast-message-close"  (click)="remove()">
+            <span [ngClass]="closeIcon" class="icon"></span>
         </div>
     </div>
 </div>

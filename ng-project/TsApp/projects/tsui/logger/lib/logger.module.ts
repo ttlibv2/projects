@@ -1,6 +1,6 @@
 import { ModuleWithProviders, NgModule,} from "@angular/core";
 import { defaultConfig, defaultProvider, LoggerConfig, LoggerProvider} from "./ilogger";
-import {CommonModule} from "@angular/common";
+import {CommonModule, DatePipe} from "@angular/common";
 
 import {LoggerService} from "./logger.service";
 import {LoggerModule} from "ngx-logger";
@@ -24,7 +24,8 @@ export class TsLoggerModule {
           ngModule: TsLoggerModule,
           providers: [
               ...ngxModule.providers,
-              LoggerService
+              LoggerService,
+              DatePipe
 
           ]
         };

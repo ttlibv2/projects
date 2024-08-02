@@ -6,7 +6,6 @@ const { notNull, equals, isNull } = Objects;
 
 export class TsMap<K, V> extends Map<K, V> {
 
-
     /**
     * Returns the value to which the specified key is mapped,
     * or {@code null} if this map contains no mapping for the key.
@@ -53,6 +52,12 @@ export class TsMap<K, V> extends Map<K, V> {
     */
     override set(key: K, value: V): this {
         super.set(key, value);
+        return this;
+    }
+
+    setAll(data:V[], consumer: Callback<V, K>): this {
+        const self = this.clear();
+        data.forEach(item => self.set(consumer(item), item))
         return this;
     }
 
@@ -135,8 +140,9 @@ export class TsMap<K, V> extends Map<K, V> {
      * Removes all of the mappings from this map (optional operation).
      * The map will be empty after this call returns.
      */
-    override clear(): void {
+    override clear(): this {
         super.clear();
+        return this;
     }
 
     get_size(): number {

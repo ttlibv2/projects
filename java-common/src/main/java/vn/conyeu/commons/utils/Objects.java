@@ -82,6 +82,11 @@ public final class Objects {
         return isNull(objects) || objects.length == 0;
     }
 
+    public static boolean notEmpty(Object[] objects) {
+        return !isEmpty(objects);
+    }
+
+
     public static boolean notEmpty(Object obj) {
         return !isEmpty(obj);
     }
@@ -191,6 +196,9 @@ public final class Objects {
         return object == null ? funcCreateNew.get() : object;
     }
 
+    public static boolean notEqual(Object first, Object last) {
+        return !equals(first, last);
+    }
     /**
      * Returns {@code true} if the arguments are equal to each other
      * and {@code false} otherwise.
@@ -348,7 +356,7 @@ public final class Objects {
     @SafeVarargs
     public static <E> boolean anyEquals(E object, E... items) {
         Asserts.notNull(object, "@object");
-        return Stream.of(items).anyMatch(p -> object == p);
+        return Stream.of(items).anyMatch(p -> equals(p, object));
     }
 
     @SafeVarargs
@@ -1657,5 +1665,11 @@ public final class Objects {
         byte[] data = Base64.getDecoder().decode(password);
         return new String(data);
     }
+
+    public static <E> Map<String, E> splitStringToMap(String text, String delimeterFirst, String delimeterLast, Function<String, E> convertFunc) {
+        return Stream.of(text.split(delimeterFirst)).filter(Objects::notBlank).map(str -> str.split(delimeterLast))
+                .collect(Collectors.toMap(arr -> arr[0], arr -> arr.length==2?convertFunc.apply(arr[1]): convertFunc.apply(null)));
+    }
+
 
 }

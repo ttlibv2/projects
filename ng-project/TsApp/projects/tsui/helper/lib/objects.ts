@@ -1,13 +1,19 @@
 import crypto from 'crypto-js';
 import { Type } from "@angular/core";
-import { Callback } from './function';
+import {Callback} from './function';
+import {JsonAny, JsonKeyType} from "./common";
 
 export class Objects {
 
-  static assign(target: any, source: any, excludeFields: string[] = []): any {
+  static assign<E>(objectClass: Type<E>, source: any, excludeFields?: string[]): E;
+  static assign<E>(target: E, source: any, excludeFields?: string[]): E
+  static assign<E>(object: E | Type<E>, source: any, excludeFields: string[] = []): E {
+    //console.log(`\n\n--------------------------\n\n`)
+    const target: any = object instanceof  Type ? new object() : object;
     if (Objects.isObject(target) && Objects.isObject(source)) {
       for (const key of Object.keys(source)) {
         if (!excludeFields.includes(key)) {
+         // console.log(key);
           const get = `get_${key}`, set = `set_${key}`;
           const srcVal = typeof source[get] === 'function' ? source[get]() : source[key];
           if (typeof target[set] === 'function') target[set](srcVal);
@@ -293,7 +299,36 @@ export class Objects {
     return target;
   }
 
-  
+  static arrayToJson<E, K extends JsonKeyType, V>(array: E[], mapFunction: Callback<E, [K, V]>): JsonAny {
+    return Object.fromEntries(array.map(item => mapFunction(item)));
+  }
+
+  static getter(object: any, field: string): any {
+    if(!Objects.isObject(object)) {
+      throw new Error(`The data [${object}] not object`);
+    }
+    else if(typeof object[`get_${field}`] === 'function') {
+      return object[`get_${field}`]();
+    }
+    else {
+      return object[field];
+    }
+  }
+
+  static setter(object: any, field: string, value: any): any {
+    if(!Objects.isObject(object)) {
+      throw new Error(`The data [${object}] not object`);
+    }
+    else if(typeof object[`set_${field}`] === 'function') {
+      object[`set_${field}`](value);
+      return object;
+    }
+    else {
+      object[field] = value;
+      return object;
+    }
+  }
+
 }
 
 

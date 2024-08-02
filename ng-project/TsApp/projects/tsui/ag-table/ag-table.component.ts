@@ -4,7 +4,7 @@ import { ColDef, Column, GetRowIdFunc, GridOptions, GridReadyEvent } from '@ag-g
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { AG_CONFIG_TOKEN, AgTableConfig } from './ag-table.config';
 import { AgI18N } from './ag-table.i18n';
-import { Asserts, Consumer, Objects } from 'ts-ui/helper';
+import { Asserts, Consumer, JsonAny, Objects } from 'ts-ui/helper';
 
 const { notNull, mergeDeep } = Objects;
 
@@ -15,7 +15,7 @@ const { notNull, mergeDeep } = Objects;
   templateUrl: './ag-table.component.html',
   styles: ` :host { display: block; }  `,
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AgTableComponent<E = any> implements OnInit, OnChanges {
   @Output()tableReady = new EventEmitter<TableReadyEvent>();
@@ -23,9 +23,9 @@ export class AgTableComponent<E = any> implements OnInit, OnChanges {
 
   @Input() rows: any[] = [];
   @Input() columns: TableColumn[] = [];  
-  
   @Input() tableHeight: string = '250px';
   @Input() themeClass: string;
+  @Input() components: JsonAny;
 
   @Input() set option(option: TableOption) {
     this.gridOption = mergeDeep(this.gridOption, option);

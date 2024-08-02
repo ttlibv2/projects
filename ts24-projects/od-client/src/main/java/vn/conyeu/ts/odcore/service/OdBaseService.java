@@ -1,5 +1,6 @@
 package vn.conyeu.ts.odcore.service;
 
+import lombok.extern.slf4j.Slf4j;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+@Slf4j
 public abstract class OdBaseService<T extends OdClient> {
     protected final Map<Class, T> clsMap = new HashMap<>();
     protected final String serviceName = determineServiceName(getClass());
@@ -54,12 +56,17 @@ public abstract class OdBaseService<T extends OdClient> {
     }
 
     protected <E extends T> E service(Class<E> serviceClass, Supplier<E> supplierCreate) {
-        Object object = clsMap.computeIfAbsent(serviceClass, cls -> {
+        if(!clsMap.containsKey(serviceClass)) {
             E service = supplierCreate.get();
             service.setTryLoginFnc(this::login);
+            log.warn("{}-->{}", serviceClass, service);
+            clsMap.put(serviceClass, service);
             return service;
-        });
-        return serviceClass.cast(object);
+        }
+        else {
+            Object object = clsMap.get(serviceClass);
+            return serviceClass.cast(object);
+        }
     }
 
     public boolean isLogin() {

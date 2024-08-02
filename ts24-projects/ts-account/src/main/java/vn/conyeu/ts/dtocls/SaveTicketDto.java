@@ -15,7 +15,7 @@ public class SaveTicketDto implements Serializable {
     private ClsHelpdeskTeam supportTeam;
     private ClsUser assign;
     private ClsSubjectType subjectType;
-    private ClsRepiledStatus repliedStatus;
+    private ClsRepliedStatus repliedStatus;
     private ClsCategory category;
     private ClsCategorySub categorySub;
     private ClsTeamHead teamHead;

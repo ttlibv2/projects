@@ -19,7 +19,7 @@ export class UserService extends ModelApi<User> {
   getConfig(): Observable<User> {
     const url = this.callBasePath('get-config');
     return this.get(url).pipe(map(res => User.from(res)))
-      .pipe(tap(_ => this.config.set_loginUser(_)));
+      .pipe(tap(_ => this.storage.set_loginUser(_)));
   }
 
   override updateById(modelId: number, data: User): Observable<number> {

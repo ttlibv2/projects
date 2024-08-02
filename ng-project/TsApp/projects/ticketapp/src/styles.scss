@@ -6,38 +6,42 @@
 // ag-grid themes
 @import "@ag-grid-community/styles/ag-grid.min.css";
 @import "@ag-grid-community/styles/ag-theme-quartz.css";
- 
+
 //Editor is rich text editor component based on Quill
 @import "quill/dist/quill.core.css";
 @import "quill/dist/quill.snow.css";
- 
+
 @import "primeicons/primeicons.css";
 @import "primeng/resources/primeng.css";
- 
-@import "primeflex/primeflex.min.css";
+
+@import 'ckeditor5/ckeditor5.css';
+
+
+// @import "primeflex/primeflex.min.css";
+@import "../../../all-theme/primeflex";
 
 .overlay-container {
-    position: absolute;
-    z-index: 9999999;
+  position: absolute;
+  z-index: 9999999;
 }
 
 .p-inputgroup .p-inputwrapper {
-    width: unset;
-}
-
-.p-inputgroup .p-autocomplete-input {
-    //padding: 0.5rem;
+  width: unset;
 }
 
 .p-dynamic-dialog {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
+
+  &:not(.p-dialog-maximized) {
     max-width: 60%;
+  }
 }
 
 .p-button.small {
-    padding: 0.3rem 0.5rem!important;
+  padding: 0.3rem 0.5rem !important;
 }
 
-.ag-header-cell-text, .ag-header-group-text {
-    text-align: center;
+.ag-header-cell-text,
+.ag-header-group-text {
+  text-align: center;
 }

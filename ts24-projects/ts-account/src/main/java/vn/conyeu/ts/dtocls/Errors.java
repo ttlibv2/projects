@@ -5,6 +5,7 @@ import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.NotFound;
 import vn.conyeu.ts.ticket_rest.TicketAction;
 
+import java.util.Collection;
 import java.util.List;
 
 public final class Errors {
@@ -62,7 +63,7 @@ public final class Errors {
                 .detail("ticket_number", ticketNum).detail("note_id", noteId);
     }
 
-    public static BaseException invalidImageAttach(Long ticketId, List<String> allFile) {
+    public static BaseException invalidImageAttach(Long ticketId, Collection<String> allFile) {
         return BaseException.e400("no_file").detail("images", allFile)
                 .message("Ticket `%s` chưa đính kèm đầy đủ tệp -> [%s]",
                         ticketId, String.join(",", allFile));

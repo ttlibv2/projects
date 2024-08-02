@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.domain.LongUIdDate;
@@ -15,31 +14,38 @@ import vn.conyeu.common.domain.LongUIdDate;
 @Entity @Table
 @Getter @Setter @NoArgsConstructor
 @DynamicInsert @DynamicUpdate
-@JsonIgnoreProperties({"ticket"})
 @AttributeOverride(name = "id", column = @Column(name = "attachId"))
 //@formatter:on
-public class TicketAttach extends LongUIdDate<TicketAttach> {
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ticketId", nullable = false)
-    private Ticket ticket;
+public class AttachFile extends LongUIdDate<AttachFile> {
 
     @JsonProperty("file_name")
     @Column(length = 150, nullable = false)
     private String fileName;
 
-    @JsonProperty("file_path")
-    @Column(length = 350, nullable = false)
-    private String filePath;
+    @JsonProperty("local_path")
+    @Column(length = 500)
+    private String localPath;
+
+    @JsonProperty("google_path")
+    @Column(length = 150)
+    private String googlePath;
 
     @JsonProperty("md5")
     @Column(length = 50, nullable = false)
     private String md5Hash;
 
-    @ColumnDefault("0")
-    private Boolean attach;
-
     @JsonProperty("ts_fid")
-    private Long externalId;
+    private Long tsId;
 
+    @Column(nullable = false, length = 50)
+    private String model;
+
+    private Long modelId;
+
+    private String mimetype;
+
+    private Long size;
+
+    @Transient
+    private String base64;
 }

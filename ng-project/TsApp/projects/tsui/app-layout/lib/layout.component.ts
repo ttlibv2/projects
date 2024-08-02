@@ -202,7 +202,7 @@ export class AppLayoutComponent implements OnDestroy {
       this.overlayMenuOpenSubscription.unsubscribe();
     }
 
-    if(notNull(this.menuOutsideClickListener())) {
+    if(notNull(this.menuOutsideClickListener)) {
       this.menuOutsideClickListener();
     }
   

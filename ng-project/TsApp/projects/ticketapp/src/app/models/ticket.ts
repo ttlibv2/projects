@@ -8,8 +8,9 @@ import { Software } from "./software";
 import { TicketDetail } from "./ticket-detail";
 import { TicketOption } from "./ticket-option";
 import * as cls from "./od-cls";
+import { Template } from "./template";
 
-
+const {isNull, notNull} = Objects;
 
 export enum TicketStatus {
   NEW,
@@ -34,7 +35,7 @@ export interface TicketTemplateData {
   team_head_id?: number;
   priority_id?: number;
   tag_ids?: number[];
-  repiled_id?: number;
+  replied_id?: number;
   ticket_type_id?: number;
   options?: {
     [key: keyof TicketOption]: any
@@ -43,6 +44,10 @@ export interface TicketTemplateData {
 }
 
 
+export class OdTicketSend extends BaseModel {
+  ticket_id: number;
+  action: string;
+}
 
 
 
@@ -77,22 +82,26 @@ export class Ticket extends BaseModel {
   user_id?: number;
   chanel_ids?: number[];
   template_id?: number;
+  email_template?: Template;
+  email_templateid?: number;
   images: string;
   options?: TicketOption = TicketOption.createDef();
-  details?: TicketDetail;
+  //details?: TicketDetail;
   od_image?: ImageObject;
   od_assign?: cls.ClsAssign;
   od_category_sub?: cls.ClsCategorySub;
   od_category?: cls.ClsCategory;
   od_partner?: cls.ClsPartner;
   od_priority?: cls.ClsPriority;
-  od_repiled?: cls.ClsRepiled;
+  od_replied?: cls.ClsReplied;
   od_subject_type?: cls.ClsSubjectType;
   od_tags?: cls.ClsTag[];
   od_team?: cls.ClsTeam;
   od_team_head?: cls.ClsTeamHead;
   od_ticket_type?: cls.ClsTicketType;
   od_topic?: cls.ClsTopic;
+
+  od_partner_id?: number;
 
   edit_ticket?: boolean;
   edit_note?: boolean;
@@ -103,19 +112,44 @@ export class Ticket extends BaseModel {
 
   ticket_on?: string;
 
+  //----
+  download_url?: string;
+  view_url?: string;
+  form_url?: string;
+  ticket_text?: string;
+  ticket_number?: number;
+  note_id?: number;
+  reply_id?: number;
+  cancel_reason?: string;
+  stage_text?: string;
+  stageId?: number;
+  closeBy?: number;
+  mail_id?: number;
+
+  reply_at?: string;
+  ticket_at?: string;
+  note_at?: string;
+  close_at?: string;
+  delete_at?: string;
+  image_at?: string;
+  cancel_at?: string;
+  mail_at?: string;
+
+
   send_status?: 'loading' | 'success' | 'error' | undefined;
   view_chanel?: boolean = false;
+
 
   constructor() {
     super();
   }
+
 
   static from(data: AssignObject<Ticket>): Ticket {
     return BaseModel.fromJson(Ticket, data);
   }
 
   override update(object: AssignObject<Ticket>): this {
-
     const ticket = super.update(object);
     Objects.ifNotNull(object['options'], val => ticket.options = TicketOption.from(val));
     Objects.ifNotNull(object['group_help'], val => ticket.group_help = GroupHelp.from(val));
@@ -123,8 +157,15 @@ export class Ticket extends BaseModel {
     Objects.ifNotNull(object['software'], val => ticket.software = Software.from(val));
     Objects.ifNotNull(object['support_help'], val => ticket.support_help = Chanel.from(val));
     Objects.ifListNotEmpty(object['chanels'], val => ticket.chanels = Chanel.fromList(val));
+
+
+    if('od_partner' in object) {
+      this.od_partner_id = object.od_partner.id;
+    }
+
     return this;
   }
+
 
   get_options(): TicketOption {
     if(Objects.isEmpty(this.options)) {
@@ -136,6 +177,10 @@ export class Ticket extends BaseModel {
   cloneWithChanel(): Ticket[] {
     const object = Objects.assign({}, this);
     return this.chanels.map(chanel => Ticket.from({...object, support_help: chanel, view_chanel: true}));
+  }
+
+  hasSend(): boolean {
+    return notNull(this.ticket_number);
   }
 
 }

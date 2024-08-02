@@ -165,7 +165,6 @@ export class TagComponent implements AfterContentInit {
   }
 
   updateCheckedStatus(): void {
-    console.log(`updateCheckedStatus`);
     if (this.mode === 'checkable') {
       this.checked = !this.checked;
       this.onChecked.emit({checked: this.checked, value: this.value});

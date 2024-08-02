@@ -99,7 +99,7 @@ export class TemplateFormComponent implements OnInit {
     @ViewChild(AgTableComponent)
     agTable: AgTableComponent;
 
-    @Input()
+    @Input({alias: 'entity'})
     entityCode: string;
 
     @Input()
@@ -141,6 +141,7 @@ export class TemplateFormComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.pathValue({entity_code: this.entityCode});
         this.loadTemplate();
     }
 

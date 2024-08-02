@@ -6,16 +6,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.domain.TicketDetail;
 import vn.conyeu.ts.dtocls.Errors;
 import vn.conyeu.ts.dtocls.SendTicketDto;
+import vn.conyeu.ts.dtocls.SendTicketDto.ExistState;
 import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.odcore.domain.ClsPage;
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.TicketService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.*;
+import vn.conyeu.ts.ticket.service.OdTicket;
 import vn.conyeu.ts.ticket.service.OdTicketService;
 
 import java.time.LocalDateTime;
@@ -23,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -44,11 +47,10 @@ public class OdTicketRest extends OdBaseRest {
         return service().ticket().searchTicket(ObjectMap.clone(mapQuery), clsPage);
     }
 
-
     @GetMapping("get-by-sysid/{ticketId}")
     public ClsTicket findTicketById(@PathVariable Long ticketId) {
         Optional<Long> optional = ticketService.getTicketNumberById(ticketId);
-        if(optional.isEmpty()) throw Errors.odTicketNotCreate(ticketId);
+        if (optional.isEmpty()) throw Errors.odTicketNotCreate(ticketId);
         else {
             Long ticketNumber = optional.get();
             return service().ticket().getByID(ticketNumber)
@@ -63,7 +65,7 @@ public class OdTicketRest extends OdBaseRest {
         Ticket ticket = OdTRHelper.fromClsTicket(cls).set("get-by-api", cls);
 
         Long partnerId = ticket.getOdPartnerId();
-        if(partnerId != null ) {
+        if (partnerId != null) {
             Optional<ClsPartner> clsPartnerOptional = service.partner().findById(partnerId);
             clsPartnerOptional.ifPresent(p -> {
                 ticket.setPhone(p.getPhone());
@@ -76,7 +78,7 @@ public class OdTicketRest extends OdBaseRest {
     }
 
     @GetMapping("delete-follow/{ticketNumber}")
-    public List<Long> deleteFollowExludeUser( @PathVariable Long ticketNumber) {
+    public List<Long> deleteFollowExludeUser(@PathVariable Long ticketNumber) {
         return service().ticket().deleteFollow(ticketNumber);
     }
 
@@ -87,55 +89,94 @@ public class OdTicketRest extends OdBaseRest {
         final List<String> segments = Stream.of(action.split(",")).map(String::trim).toList();
         final boolean isAll = "all".equals(action);
 
-        if(isAll || segments.contains("create_ticket") || !ticket.isSendTicket()) {
-            createTicket(service(), ticket, dto.isUpdateTicket());
+        TicketDetail detail = ticket.getDetail();
+
+        final boolean
+                isSend = ticket.isSendTicket(),
+                isAddNote = detail.getNoteId() != null,
+                isAttach = detail.getImageAt() != null,
+                isSendMail = detail.isSendMail(),
+                isTicketEmail = ticket.isEmailTicket(),
+                isClose = detail.isClosed();
+
+        if ((isAll && !isSend) || segments.contains("create_ticket")) {
+            createTicket(service(), ticket, dto.getTicketState());
         }
 
-        if(isAll || segments.contains("add_note") || dto.isUpdateNote()) {
-            createNote(service(), ticket, dto.getImageBase64(), dto.isUpdateNote());
+        if ((isAll && !isAddNote) || segments.contains("add_note")) {
+            createNote(service(), ticket, dto.getNoteState());
         }
 
-        if(isAll || segments.contains("attach_image") || dto.isUpdateNote()) {
-            attachFileForTicket(service(), ticket, dto.getImageBase64());
+        if ((isAll && !isAttach) || segments.contains("attach_image")) {
+            attachFile(service(), ticket, dto.getImageBase64());
         }
 
-        if (isAll || segments.contains("send_email")) {
-            sendEmailTicket(service(), ticket);
+        if ((isAll && isTicketEmail && !isSendMail) || segments.contains("send_email")) {
+            sendEmail(service(), ticket);
         }
 
-        if(isAll || segments.contains("close_ticket")) {
+        if ((isAll && !isClose) || segments.contains("close_ticket")) {
             closeTicket(service(), ticket);
         }
 
         return ticket;
     }
 
-    private void createTicket(OdTicketService service, Ticket ticket, boolean isUpdateTicket) {
-        if(!ticket.isSendTicket()) {
+    private Ticket createTicket(OdTicketService service, Ticket ticket, ExistState state) {
+        if (!ticket.isSendTicket()) {
+            OdTicket odTicket = service.ticket();
+
+            // create ticket
             ClsTicket clsTicket = OdTRHelper.fromTicket(ticket);
-            ClsTicket clsNew = service.ticket().createNew(clsTicket);
-            service.ticket().deleteFollow(clsNew.getId());
-            saveTicket(ticket, clsNew, TicketAction.CREATE_TICKET);
+            ClsTicket clsNew = odTicket.createNew(clsTicket);
+
+            // delete follow partner id
+            if (!ticket.isEmailTicket()) {
+                Long excludeUserId = odTicket.cfg().getClsUser().getPartner_id();
+                List<Long> followIds = clsNew.getFollowPartnerIds().stream().filter(id -> Objects.notEqual(id, excludeUserId)).toList();
+                odTicket.deleteFollow(clsNew.getId(), followIds);
+            }
+
+            return saveTicket(ticket, clsNew, TicketAction.CREATE_TICKET);
         }//
-        else if(isUpdateTicket && ticket.isEditTicket()) {
-            updateTicket(service, ticket);
+        else {
+            switch (state) {
+                case CREATE -> {
+                    TicketDetail oldDetail = ticket.setNewDetail();
+                    createTicket(service, ticket, ExistState.NONE);
+                }
+                case DELETE -> {
+                    TicketDetail oldDetail = ticket.setNewDetail();
+                    deleteTicket(service, oldDetail.getTicketNumber(), oldDetail);
+                    createTicket(service, ticket, ExistState.NONE);
+                }
+                case UPDATE -> {
+                    updateTicket(service, ticket);
+                }
+            }
+            return ticket;
         }
     }
 
-    private void updateTicket(OdTicketService service, Ticket ticket) {
+    private Ticket updateTicket(OdTicketService service, Ticket ticket) {
         validateTicketNoSend(ticket, "Không thể cập nhật");
 
         // nếu ticket lấy từ web thì ko cập nhật
-        if(ticket.isWeb()) {
+        if (ticket.isWeb()) {
             log.warn("Ticket `{}` này lấy từ web nên không cho cập nhật.",
                     ticket.getDetail().getTicketNumber());
-            return;
+            return ticket;
         }
 
         Long ticketNum = ticket.getDetail().getTicketNumber();
         ClsTicket clsTicket = OdTRHelper.fromTicket(ticket);
         ClsTicket clsNew = service.ticket().updateTicket(ticketNum, clsTicket);
-        saveTicket(ticket, clsNew, TicketAction.UPDATE_TICKET);
+        return saveTicket(ticket, clsNew, TicketAction.UPDATE_TICKET);
+    }
+
+    private TicketDetail deleteTicket(OdTicketService service, Long ticketNumber, TicketDetail oldDetail) {
+        service.ticket().deleteTicket(ticketNumber);
+        return oldDetail;
     }
 
     private Ticket closeTicket(OdTicketService service, Ticket ticket) {
@@ -145,78 +186,93 @@ public class OdTicketRest extends OdBaseRest {
         return saveTicket(ticket, clsTicket, TicketAction.CLOSE_TICKET);
     }
 
-    private void createNote(OdTicketService service, Ticket ticket, ObjectMap imageBase64, boolean isUpdateNote) {
+    private Ticket createNote(OdTicketService service, Ticket ticket, ExistState state) {
         validateTicketNoSend(ticket, "Không thể thêm ghi chú");
 
-        Long ticketNum = ticket.getDetail().getTicketNumber();
+        Supplier<ClsMessage> messageSupplier = () -> {
+            Long ticketNum = ticket.getDetail().getTicketNumber();
+            ClsMessage clsMsg = ClsMessage.forTicket(ticketNum);
+
+            String noteHtml = ticket.getNoteHtml();
+            String bodyHtml = ticket.getBodyHtml();
+            clsMsg.setBody(bodyHtml + "<br/>" + "-".repeat(20) + "<br/>" + noteHtml);
+            return clsMsg;
+        };
+
         Long noteId = ticket.getDetail().getNoteId();
-        if(noteId != null && !isUpdateNote) {
-            throw Errors.odNoteHasCreate(ticketNum, noteId) ;
+        Long ticketNum = ticket.getDetail().getTicketNumber();
+
+        if(noteId != null && state == ExistState.NONE) {
+            throw Errors.odNoteHasCreate(ticketNum, noteId);
         }
 
-        //-- create | update
-        ClsMessage clsMsg = ClsMessage.forTicket(ticketNum);
-
-        //------ edit ngày 10/03/2023 -> thêm body vào note
-        String noteHtml = ticket.getNoteHtml();
-        String bodyHtml = ticket.getBodyHtml();
-        clsMsg.setBody(bodyHtml+"<br/>"+"-".repeat(20)+"<br/>"+noteHtml);
-
-        //--> create
         if(noteId == null) {
+            ClsMessage clsMsg = messageSupplier.get();
             ClsMessage clsNew = service.ticket().createNote(ticketNum, clsMsg);
-            saveTicket(ticket, clsNew, TicketAction.ADD_NOTE);
+            return saveTicket(ticket, clsNew, TicketAction.ADD_NOTE);
         }
+        else {
+            switch (state) {
+                case UPDATE -> {
+                    ClsMessage clsMessage = messageSupplier.get();
+                    ClsMessage clsNew = service.ticket().updateNote(noteId, clsMessage);
+                    saveTicket(ticket, clsNew, TicketAction.UPDATE_NOTE);
+                }
+                case DELETE -> {
+                    service.ticket().deleteNote(noteId);
+                    createNote(service, ticket, ExistState.NONE);
+                }
+                case CREATE -> {
+                    ticket.getDetail().resetNote();
+                    createNote(service, ticket, ExistState.NONE);
+                }
+            }
 
-        //--> update
-        else if(ticket.isEditNote()) {
-            ClsMessage clsNew = service.ticket().updateNote(noteId, clsMsg);
-            saveTicket(ticket, clsNew, TicketAction.UPDATE_NOTE);
+            return ticket;
         }
-
     }
 
-    private Ticket attachFileForTicket(OdTicketService service, Ticket ticket, ObjectMap imageBase64) {
+    private Ticket attachFile(OdTicketService service, Ticket ticket, ObjectMap base64Images) {
         validateTicketNoSend(ticket, "Không thể đính kèm");
 
-        ObjectMap odImg = ticket.getOdImage();
-        if (odImg.isEmpty() || ticket.isUpFile()) return ticket;
-
-        // only send file not create
-        Set<String> allFile = odImg.keySet().stream().filter(k -> odImg.get(k) == null).collect(Collectors.toSet());
-        if (allFile.isEmpty()) return ticket;
-
-        // filter file_name
-        ObjectMap imageObj = imageBase64.get(allFile, false);
-        if (allFile.size() != imageObj.size()) {
-            List<String> names = imageObj.keySet().stream().filter(k -> !allFile.contains(k)).toList();
-             throw Errors.invalidImageAttach(ticket.getId(), names) ;
+        String images = ticket.getImages();
+        if (Objects.isBlank(images)) {
+            log.info("Ticket [%s] not images attach".formatted(ticket.getId()));
+            return ticket;
         }
 
+        // extract image text to map
+        Set<String> names = Set.of(images.split(";"));
+        ObjectMap imageMap = new ObjectMap();
+        for (String imageName : names) {
+            imageName = SendTicketDto.prepareImageName(imageName, ".png");
+            String base64 = base64Images.getString(imageName);
+            if (Objects.isBlank(base64)) throw Errors.invalidImageAttach(ticket.getId(), names);
+            else imageMap.set(imageName, base64);
+        }
+
+        ticket.setImageBase64(imageMap);
+
         Long ticketNum = ticket.getDetail().getTicketNumber();
-        ClsMessage clsNote = service.ticket().createNote(ticketNum, imageObj);
+        ClsMessage clsNote = service.ticket().createNote(ticketNum, imageMap);
         return saveTicket(ticket, clsNote, TicketAction.ATTACH_FILE);
     }
 
-    private void sendEmailTicket(OdTicketService service, Ticket ticket) {
+    private Ticket sendEmail(OdTicketService service, Ticket ticket) {
         validateTicketNoSend(ticket, "Không thể gửi email.");
 
-        if(!ticket.isEmailTicket()) {
+        if (!ticket.isEmailTicket()) {
             throw Errors.noEmailTicket(ticket.getId());
         }
 
         Long ticketNum = ticket.getDetail().getTicketNumber();
-        Long[] partnerId = new Long[] { ticket.getOdPartnerId()};
+        Long[] partnerId = new Long[]{ticket.getOdPartnerId()};
 
-        Long emailId = service.ticket().actionReply(ticketNum, partnerId,
+        ClsMailComposeMsg msg = service.ticket().actionReply(ticketNum, partnerId,
                 ticket.getSubject(), ticket.getContentEmail());
 
-        ticket.getDetail().setMailAt(LocalDateTime.now());
-        ticket.getDetail().setMailId(emailId);
+        return saveTicket(ticket, msg, TicketAction.SEND_MAIL);
     }
-
-
-
 
     private void validateTicketNoSend(Ticket ticket, String message) {
         if (!ticket.isSendTicket()) throw Errors
@@ -253,23 +309,33 @@ public class OdTicketRest extends OdBaseRest {
                 detail.setNoteId(cls.getId());
                 detail.setNoteAt(cls.getDate());
             }
-            case UPDATE_NOTE ->  {}
+            case UPDATE_NOTE -> {
+            }
             case ATTACH_FILE -> {
                 ClsMessage cls = (ClsMessage) clsNew;
-                detail = ticket.getDetail();
-                detail.setImageAt(LocalDateTime.now());
-
                 ClsFileMap fileMap = cls.getFileMap();
 
                 if (fileMap.isEmpty()) {
                     throw new IllegalArgumentException("attach_file -> file is empty");
                 }
 
-                ObjectMap odImg = ticket.getOdImage();
+                ObjectMap attachMap = new ObjectMap();
                 for (String fileName : fileMap.keySet()) {
-                    odImg.set(fileName, fileMap.get(fileName).getId());
+                    ClsFile clsFile = fileMap.get(fileName);
+                    attachMap.set(fileName, clsFile);
                 }
+
+                detail = ticket.getDetail();
+                detail.setImageAt(LocalDateTime.now());
+                detail.getAttach().set(attachMap);
             }
+            case SEND_MAIL -> {
+                ClsMailComposeMsg clsMsg = (ClsMailComposeMsg) clsNew;
+                detail = ticket.getDetail();
+                detail.setMailAt(LocalDateTime.now());
+                detail.setMailId(clsMsg.getId());
+            }
+
             case UPDATE_STAGE, CLOSE_TICKET -> {
                 ClsTicket cls = (ClsTicket) clsNew;
                 OdTRHelper.updateTicket(ticket, cls);
@@ -282,6 +348,5 @@ public class OdTicketRest extends OdBaseRest {
 
 
     }
-
 
 }

@@ -1,5 +1,7 @@
 package vn.conyeu.ts.odcore.helper;
 
+import vn.conyeu.commons.utils.Objects;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -7,7 +9,7 @@ public final class OdHelper {
     public static final DateTimeFormatter ISO_DATETIME = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static boolean isNull(Object object) {
-        return object == null || "false".equals(object);
+        return object == null || Objects.anyEquals(object, "false", false);
     }
 
     public static String toString(Object object) {

@@ -8,6 +8,10 @@ ts-ticket-form {
     cursor: pointer;
   }
 
+  &.grid {
+    margin-top: 0px;
+  }
+
   &.template {
     display: block;
 

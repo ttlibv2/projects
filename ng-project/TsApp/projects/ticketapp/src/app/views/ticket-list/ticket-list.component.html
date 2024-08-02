@@ -1,5 +1,5 @@
 <div class="ticket-form" id="ticketListForm" *ngIf="visibleForm" [@toggle]="visibleForm == true">
-    <ts-ticket-form [data]="currentTicket" (onSave)="saveTicket($event)"></ts-ticket-form>
+    <ts-ticket-form [data]="currentTicket" (onSave)="saveTicket($event)" [hasBorderEnd]="true"></ts-ticket-form>
 </div>
 
 
@@ -7,10 +7,12 @@
     <div id="ticketListTool" class="tool-r1 col-12 flex flex-inline gap-2">
         <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="flex align-items-center gap-2">
             <p-calendar placeholder="Lấy dữ liệu từ ngày ?" selectionMode="range" showIcon="true" iconDisplay="input"
-                dateFormat="yy-mm-dd" [numberOfMonths]="2" formControlName="dateOn"></p-calendar>
+                dateFormat="yy-mm-dd" [numberOfMonths]="2" formControlName="dateOn"
+                [style]="{width: '210px'}"></p-calendar>
 
             <p-dropdown placeholder="Tùy chọn" formControlName="option" [options]="searchOptions" optionLabel="label"
-                filter="false"></p-dropdown>
+                filter="false">
+            </p-dropdown>
 
             <p-button icon="pi pi-sync" type="submit" label="Lấy dữ liệu" [styleClass]="'small'"></p-button>
 
@@ -38,42 +40,41 @@
 
         <p-button label="Demo" [styleClass]="'small'" (onClick)="demo()"></p-button>
 
-
-
-
-
     </div>
     <div class="col-12 tool-r2" *ngIf="visibleReportMenu">
-        <p-fileUpload #fileUpload accept="image/*" multiple="true" fileLimit="100" mode="basic"
-            chooseIcon="pi pi-upload" chooseLabel="Chọn tệp đính kèm" uploadLabel="Chọn tệp đính kèm"
-            (onSelect)="selectFileUpload($event)"></p-fileUpload>
+        <div class="result ml-2">
 
-        <div class="flex gap-1" *ngIf="totalFile">
-            <span>Bạn đang chọn tổng số:</span>
-            <b class="lb-count">{{totalFile}}</b>
-            <span>tệp</span>
-        </div>
-        
-        <div class="flex gap-2 result" *ngIf="countSelectRow">
-            
-            <p-divider [layout]="'vertical'"></p-divider>
-
-            <div class="send">KQ Gửi:</div>
+            <div class="send">>> KQ Gửi:</div>
             <div class="ok">
                 <span class="text">Ok </span>
-                <span class="value">[0]</span>
+                <span class="value">[{{sendState.success}}]</span>
             </div>
             <span class="plus">+</span>
             <div class="error">
                 <span class="text">Error </span>
-                <span class="value">[0]</span>
+                <span class="value">[{{sendState.error}}]</span>
             </div>
             <div class="eq">=</div>
             <div class="total">
                 <span class="text">Total </span>
-                <span class="value">[{{countSelectRow}}]</span>
+                <span class="value">[{{sendState.total}}]</span>
             </div>
+
+            <div class="flex gap-2 align-items-center" *ngIf="runSendTicket">
+                <p-divider [layout]="'vertical'"></p-divider>
+                <p-button [text]="true" severity="help" label="Dừng lại" (onClick)="clickStopSend()"></p-button>
+            </div>
+
         </div>
+        <div class="choose-attach">
+            <p-divider [layout]="'vertical'"></p-divider>
+            <p-fileUpload #fileAttach accept="image/*" multiple="true" fileLimit="5" mode="basic"
+                chooseIcon="pi pi-upload" [chooseLabel]="uploadLabel" (onSelect)="selectFileUpload($event)">
+            </p-fileUpload>
+        </div>
+
+
+      
     </div>
 
     <div class="col-12">

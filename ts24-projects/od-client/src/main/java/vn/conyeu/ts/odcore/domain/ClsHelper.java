@@ -114,6 +114,7 @@ public final class ClsHelper {
 
     public static void checkResponse(ClsApiCfg cfg, Object response) {
         ObjectMap detail = ObjectMap.setNew("client_response", response);
+        String msgPrefix = "Đã xảy ra lỗi từ hệ thống [%s]. ".formatted(cfg.getApiTitle());
 
         BaseException exp = BaseException.e500("ts_api")
                 .detail("ts_api", cfg.getApiCode())
@@ -122,8 +123,8 @@ public final class ClsHelper {
         if (response instanceof String html) {
 
             if (html.contains("invalid CSRF token")) {
-                throw exp.status(401).detail("ts_code", "invalid_csrf_token")
-                        .message("csrf_token bị sai -> vui lòng cập nhật.");
+                throw exp.status(401).detail("ts_code", "csrf_token")
+                        .message(msgPrefix+"csrf_token bị sai -> vui lòng cập nhật.");
             }
 
         }
@@ -135,27 +136,27 @@ public final class ClsHelper {
             if (obj.containsKey("error")) {
                 obj = obj.getMap("error");
                 String msg = obj.getString("message");
-                String keyw = obj.getMap("data").getString("name");
+                String keyw = obj.getString("data.name");
 
                 if (Objects.equals(keyw, "odoo.http.SessionExpiredException")) {
-                    throw SessionExpired(exp);
+                    throw SessionExpired(msgPrefix, exp);
                 }
 
                 if (Objects.equals(keyw, "odoo.exceptions.AccessError")) {
-                    throw exp.status(401).detail("ts_code", "AccessError")
-                            .message("Rất tiếc, bạn không được phép truy cập tài liệu này");
+                    msg = obj.getString("data.message", "Rất tiếc, bạn không được phép truy cập tài liệu này");
+                    throw exp.status(403).detail("ts_code", "AccessError").message(msgPrefix+msg);
                 }
 
-                throw exp.code("client_error").message(msg);
+                throw exp.code("client_error").message(msgPrefix+msg);
             }
 
         }
 
     }
 
-    public static BaseException SessionExpired(BaseException exp) {
-        return exp.status(401).detail("ts_code", "SessionExpired")
-                .message("Mã xác thực không đúng hoặc đã hết hạn. Vui lòng kiểm tra lại");
+    public static BaseException SessionExpired(String msgPrefix, BaseException exp) {
+        return exp.status(401).detail("ts_code", "token_expired")
+                .message(msgPrefix+"Mã xác thực không đúng hoặc đã hết hạn. Vui lòng kiểm tra lại");
     }
 
     public static void updateConfig(ClsApiCfg userApi, ClsUser clsUser) {

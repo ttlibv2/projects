@@ -46,7 +46,7 @@ export class User extends BaseModel {
   }
 
   set_user_api(users: any): this {
-    this.user_api = Objects.valueToMap(users, item => ClsUser.from(item));
+    this.user_api = Objects.valueToMap(users, (item:any) => ClsUser.from(item));
     return this;
   }
 
@@ -81,7 +81,7 @@ export class RememberUser extends BaseModel {
   }
 
   static from(data: RememberUser | JsonObject): RememberUser {
-    return this.fromJson(RememberUser, data);
+    return Objects.assign(RememberUser, data);
   }
 }
 

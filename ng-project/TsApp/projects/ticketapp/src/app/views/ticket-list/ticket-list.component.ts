@@ -7,9 +7,8 @@ import { MenuItem } from 'primeng/api';
 import { ToastService } from 'ts-ui/toast';
 import { AgTableService } from '../../services/ag-table.service';
 import { TicketService } from '../../services/ticket.service';
-import { AgTagCell, AgStatusRenderer } from './ag-ticket-cell';
+import { AgTagCell, AgStatusRenderer, AgTicketCell, AgCheckRenderer } from './ag-ticket-cell';
 import { DatePipe, DOCUMENT } from '@angular/common';
-import { ListUtil } from './list-utils';
 import { TagRemoveEvent } from 'ts-ui/tag';
 import { AgTable } from '../../models/ag-table';
 import { AgTableTemplate } from './ag-table-template';
@@ -17,15 +16,17 @@ import { FormsUtil } from './form-util';
 import { Alert } from '../../services/ui/alert/alert.service';
 import { RxjsUtil } from './rxjs-util';
 import { SaveTicketEvent, SetDataInput } from '../ticket-form/ticket-form.component';
-import { tap } from 'rxjs';
+import { catchError, concatMap, delay, EMPTY, forkJoin, from, Observable, Observer, of, Subscription, switchMap, tap, throwError } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Objects } from 'ts-ui/helper';
+import { Objects, Base64, TsMap } from 'ts-ui/helper';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { StorageService } from '../../services/storage.service';
 import { AgTemplateCode } from '../../constant';
-import {ModalService} from "../../services/ui/model.service";
+import { ModalService } from "../../services/ui/model.service";
+import { error } from 'console';
+import { ICellRendererParams, IRowNode, RowNode } from '@ag-grid-community/core';
 
-const {isNull, notNull, notBlank, isBlank} = Objects;
+const { isNull, notNull, notBlank, isBlank } = Objects;
 
 export interface SearchOption {
   label: string;
@@ -37,20 +38,27 @@ export interface AgTemplate {
   label: string;
 }
 
+export interface SendState {
+  total: number;
+  success: number;
+  error: number;
+  stop: boolean;
+}
+
 @Component({
   selector: 'ts-ticket-list',
   templateUrl: './ticket-list.component.html',
   styleUrl: './ticket-list.component.scss',
   encapsulation: ViewEncapsulation.None,
- // changeDetection: ChangeDetectionStrategy.OnPush,
- animations: [
-  trigger('toggle', [
-    state('true', style({ opacity: 1 })),
-    state('void', style({ opacity: 0 })),
-    transition(':enter', animate('500ms ease-in-out')),
-    transition(':leave', animate('500ms ease-in-out'))
-  ])
-]
+  // changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('toggle', [
+      state('true', style({ opacity: 1 })),
+      state('void', style({ opacity: 0 })),
+      transition(':enter', animate('500ms ease-in-out')),
+      transition(':leave', animate('500ms ease-in-out'))
+    ])
+  ]
 })
 export class TicketListComponent implements OnInit, AfterContentInit, AfterViewInit {
   agRows: Ticket[] = [];
@@ -63,11 +71,19 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   currentTicket: Ticket;
   currentTemplateCode: string; // templateCode
   tableHeight: string = '370px';
-  files: File[] = [];
+  sendState: SendState = { total: 0, success: 0, error: 0, stop: false };
+  files: TsMap<string, File> = new TsMap();
+  runSendTicket: Subscription;
 
   agOption: TableOption<Ticket> = {
     rowModelType: 'clientSide',
-    getRowId: fnc => `ROWID_${fnc.data.ticket_id}${fnc.data.view_chanel === true ? '_V'+fnc.data.support_help.id : ''}`
+    components: {
+      'sendStatus': AgStatusRenderer,
+      'ticketCell': AgTicketCell,
+      'checkCell': AgCheckRenderer
+    },
+    getRowId: fnc => `ROW_ID_${fnc.data.ticket_id}${fnc.data.view_chanel === true ? '_V' + fnc.data.support_help.id : ''}`,
+    onRowSelected: event => this.sendState.total = this.agTable.getSelectedRows().length,
   };
 
 
@@ -97,14 +113,14 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     { label: 'Tự động sửa', icon: 'pi pi-user-edit' },
     { label: 'Tạo / Cập nhật mẫu', icon: 'pi pi-sync', command: this.editAgTemple.bind(this) },
     { label: 'Gửi báo cáo', icon: 'pi pi-flag' },
-    {label: 'Lấy DS Cột', icon: 'pi pi-cog', command: this.loadAgTable.bind(this)}
+    { label: 'Lấy DS Cột', icon: 'pi pi-cog', command: this.loadAgTable.bind(this) }
   ];
 
   reportItems: MenuItem[] = [
     { label: '1. Làm tất cả bước', code: 'all', icon: 'fa-regular fa-list-ol', command: this.onSendHelpdesk.bind(this) },
     { label: '2. Gửi ticket', code: 'create_ticket', icon: 'fa-regular fa-ticket', command: this.onSendHelpdesk.bind(this) },
     { label: '3. Thêm ghi chú', code: 'add_note', icon: 'fa-regular fa-note', command: this.onSendHelpdesk.bind(this) },
-    { label: '4. Đính kèm hình', code: 'add_note_with_img', icon: 'fa-regular fa-image', command: this.onSendHelpdesk.bind(this) },
+    { label: '4. Đính kèm hình', code: 'attach_image', icon: 'fa-regular fa-image', command: this.onSendHelpdesk.bind(this) },
     { label: '5. Gửi email', code: 'send_email', icon: 'fa-regular fa-envelope', command: this.onSendHelpdesk.bind(this) },
     { label: '6. Theo dõi và đóng ticket', code: 'close_ticket', icon: 'fa-regular fa-lock', command: this.onSendHelpdesk.bind(this) }
   ];
@@ -113,37 +129,47 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   @ViewChild(AgTableComponent, { static: true })
   agTable: AgTableComponent<Partial<Ticket>>;
 
-  @ViewChild('fileUpload', {static: true})
+  @ViewChild(FileUpload)
   fileUpload: FileUpload;
 
-  @Input({ transform: booleanAttribute })
-  set visible(bool: boolean) {
-    this.searchForm.get('visibleForm').setValue(bool);
-  }
+  @Input({ alias: 'visible' })
+  visibleForm: boolean = true;
+
+  // set visible(bool: boolean) {
+  //   this.searchForm.get('visibleForm').setValue(bool);
+  // }
 
   @Input()
   set agTemplate(templateCode: string) {
     this.currentTemplateCode = templateCode;
   }
 
+  @Input({ transform: booleanAttribute })
+  dev: boolean = false;
+
   get isVisibleChanel(): boolean {
     return this.searchForm.get('visibleChanel').value;
   }
 
-  get visibleForm(): boolean {
-    return this.searchForm.getRawValue()?.visibleForm;
-  }
+  // get visibleForm(): boolean {
+  //   return this.searchForm.getRawValue()?.visibleForm;
+  // }
 
   get visibleReportMenu(): boolean {
     return this.currentTemplateCode === 'send_ticket';
   }
 
   get totalFile(): number {
-    return this.files?.length;
+    return this.files?.size ?? 0;
   }
-  
+
   get countSelectRow(): number {
     return this.agTable.tableApi?.getSelectedRows()?.length ?? 0;
+  }
+
+  get uploadLabel(): string {
+    const size = this.files.size;
+    return size == 0 ? 'Chọn tệp đính kèm' : `Bạn đang chọn ${size} tệp`;
   }
 
   constructor(
@@ -175,35 +201,40 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     });
 
     this.utils.subscribeControl('visibleForm', val => {
-      this.tableHeight = this.calcHeight + 'px';
+      //this.tableHeight = this.calcHeight + 'px';
+      this.visibleForm = val;
     })
 
   }
 
   @HostListener('window:resize', ['$event'])
   private changeWindowResize($event: any): void {
-    this.tableHeight = this.calcHeight + 'px';
+    //this.tableHeight = this.calcHeight + 'px';
   }
 
   ngOnInit(): void {
 
-    if(isBlank(this.currentTemplateCode)) {
-      this.currentTemplateCode = this.storage.currentTemplate[AgTemplateCode.agTicket];
+    if (isBlank(this.currentTemplateCode)) {
+      this.currentTemplateCode = this.storage.currentTemplate.get(AgTemplateCode.agTicket);
     }
-    
+
     let now = new Date().getTime();
     let from = new Date(now - (10 * 24 * 3600_000));
     let end = new Date(now + 24 * 3600_000);
 
     this.searchForm.patchValue({
       dateOn: [from, end],
-      option: this.searchOptions[0]
+      option: this.searchOptions[0],
+      visibleForm: this.visibleForm ?? true
     });
 
     //
-    this.searchTicket();
     this.loadAgTable();
-    
+    this.searchTicket();
+
+
+
+
 
   }
 
@@ -211,9 +242,9 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   ngAfterViewInit(): void {
-   
+
   }
-  
+
   loadAgTable(event?: any) {
     const loadingRef = this.toast.loading({
       title: 'Thông báo',
@@ -227,36 +258,24 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
       .subscribe({
         error: err => {
           this.logger.error('loadAgTable', err);
-          //this.toast.close(loadingRef);
+          this.toast.close(loadingRef);
         },
         next: (agTable: AgTable) => {
-          console.log(this.storage.config())
-
-         // this.toast.close(loadingRef);
-
-          ListUtil.updateColumn(agTable, {
-            'send_status': { cellRenderer: AgStatusRenderer },
-            'stage_text': { cellRenderer: AgTagCell },
-            'is_note': { cellRenderer: AgStatusRenderer },
-            'is_closed': { cellRenderer: AgStatusRenderer },
-            'is_upfile': { cellRenderer: AgStatusRenderer }
-          });
+          this.toast.close(loadingRef);
 
           // update command for menu item view ag-column
-          this.agColumns = agTable.grid_columns;
+          this.agColumns = agTable.columns.map(c => c.asColumn());
           this.agTable.setColumns(this.agColumns);
 
           this.agTemplates = agTable.menuItems || [];
           this.agTemplates.forEach(item => item.command = this.onSelectColumnView.bind(this))
 
-    
-           // view for current template
-           if(notNull(this.currentTemplateCode))  {
-           const template = this.agTemplates.find(t => t.code === this.currentTemplateCode);
-            if(isNull(template)) this.currentTemplateCode = null;
-             else this.onSelectColumnView({item: template});
-           }
-
+          // view for current template
+          if (notNull(this.currentTemplateCode)) {
+            const template = this.agTemplates.find(t => t.code === this.currentTemplateCode);
+            if (isNull(template)) this.currentTemplateCode = null;
+            else this.onSelectColumnView({ item: template });
+          }
 
         }
       })
@@ -264,19 +283,26 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
   exportXsl(): void {
     console.log(this.agTable.tableApi.getSheetDataForExcel())
-    
-  }
 
+  }
+ 
   searchTicket(): void {
     const { dateOn, option } = this.searchForm.getRawValue();
 
     const created_min = this.datePipe.transform(dateOn[0], 'yyyy-MM-dd') + 'T00:00:00';
     const created_max = this.datePipe.transform(dateOn[1], 'yyyy-MM-dd') + 'T23:59:59';
 
+    const label = option.label.substring(option.label.indexOf('.')+2);
+
     const loading = this.toast.loading({
+      width: '400px',
       disableTimeOut: true,
       messageClass: 'p-ticket-msg',
-      message: `Đang lấy dữ liệu - Vui lòng chờ <br/>- Từ ngày: <b>${created_min}</b> <br/> - Đến ngày: <b>${created_max}</b>`
+      message: `Đang lấy dữ liệu - Vui lòng chờ <br/>
+        - Tình trạng: <b>${label}</b><br/>
+        - Từ ngày: <b>${created_min}</b> <br/> 
+        - Đến ngày: <b>${created_max}</b>
+      `
     });
 
     const searchObject = {
@@ -307,8 +333,10 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     this.currentTemplateCode = code;
     this.storage.set_currentTemplate(AgTemplateCode.agTicket, code);
 
-    
-    if ('view_default' === code) this.agTable.resetColumnState();
+
+    if ('view_default' === code) {
+      this.agTable.resetColumnState();
+    }
     else if ('save_update_ag' === code) {
       this.modal.open(AgTableTemplate, {
         header: 'Tạo và cập nhật thông tin hiển thị',
@@ -333,6 +361,9 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
         this.utils.setControlValue('visibleChanel', true);
         //this.chanelChecked();
       }
+      else if('send_ticket' === code) {
+        this.utils.setControlValue('visibleForm', false);
+      }
 
     }
   }
@@ -345,34 +376,144 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
   onSendHelpdesk(event: any): void {
 
-    const allRow = this.agTable.tableApi.getSelectedRows();
-    if(allRow.length === 0) {
+    const action = event.item.code;
+    const allRow = this.agTable.tableApi.getSelectedNodes();
+    if (allRow.length === 0) {
       this.toast.warning('Vui lòng chọn dòng dữ liệu để thực hiện gừi báo cáo.');
-      return;
+      //return;
     }
 
-    if(this.isVisibleChanel === true)  {
+    if (this.isVisibleChanel === true) {
       this.toast.warning({
         title: 'Cảnh báo !!',
         message: 'Bạn đang chọn <b class="text-danger">[Hiển thị kênh]</b> nên không được phép thực hiện gửi. ',
         disableTimeOut: true
       });
-      return;
-    }    
+      //return;
+    }
 
     // validate attach images
-    if(allRow.some(ticket => notBlank(ticket.images))) {
+    const isCheckImage: boolean = ['all', 'add_note_with_img'].includes(action);
+    if (isCheckImage && this.totalFile === 0 && allRow.some(node => notBlank(node.data.images))) {
       this.toast.warning('Dòng dữ liệu đang chọn có yêu cầu hình. Vui lòng <b>[chọn tệp đính kèm]</b>');
+      //return;
+    }
+
+
+    // chuẩn bị
+    let allOf = allRow.map(node => of(node).pipe(
+      tap(_ => this.refreshRow(node, { send_status: 'loading' })),
+      switchMap(_ => this.sendTicketById(node, action))
+    ));
+
+    // concatMap
+    let exec = of(...allOf).pipe(concatMap(it => it.pipe(delay(60000))));
+
+    this.runSendTicket = exec.subscribe({
+      error: obj => {
+        console.log('error', obj)
+        this.sendState.error++;
+        this.refreshRow(obj.node, {send_status: 'error'});
+       // this.clickStopSend(false);
+      },
+
+      next: data => {
+        this.sendState.success++;
+        console.log('next', data);
+        this.refreshRow(data.node, {send_status: 'success'});
+        if(this.sendState.stop === true) this.clickStopSend(false);
+      },
+
+      complete:() => console.log('complete')
+
+    });
+
+  }
+
+  clickStopSend(fromHtml: boolean = true): void {
+    if(fromHtml) this.sendState.stop = true;
+    else {
+      this.sendState.stop = false;
+      this.runSendTicket?.unsubscribe();
+      this.runSendTicket = undefined;
+    }
+  
+  }
+
+
+
+
+
+
+
+  i: number = 0;
+
+  sendTicketById(node: IRowNode, action: string): Observable<any> {
+    const { images, ticket_id } = <Ticket>node.data;
+
+
+    action = action ?? 'all';
+
+    const imageList = images.split(';');
+    const files = imageList.map(n => n + '.png').filter(n => this.files.has(n)).map(n => this.files.get(n));
+
+    // check image list size
+    if(imageList.length !== files.length) {
+      this.toast.error({title: 'Thông báo !!', message: `Ticket ${ticket_id} chưa chọn đầy đủ tệp đính kèm -> ${imageList.join(';')}`})
+      return throwError(() => ({node, status: 'error'}));
+    }
+
+
+    const base64 = Objects.arrayToJson(files, file => [file.name, from(Base64.encode(file))]);
+
+   return forkJoin(base64)
+      .pipe(switchMap(images => this.ticketService.sendOd(action, ticket_id, {images})))
+      .pipe(
+        catchError(error => throwError(() => ({node, error, status: 'error'}))),
+        switchMap(data => of({status: 'success', node, data}))
+      );
+
+  }
+
+
+
+
+
+
+  refreshRow(node: IRowNode, data: any): void {
+    node.data = Objects.assign(node.data, data);
+    this.agTable.tableApi.refreshCells({ rowNodes: [node], force: true });
+    //this.agTable.updateRows({...node.data, ...data});
+  }
+
+  private showErrorAndStop(run: Subscription, id: any, error: any) {
+    console.log('showErrorAndStop', error);
+    run.unsubscribe();
+
+    // if (error['code'] === 'SessionExpired') {
+    // 	run.unsubscribe();
+    //   this.toast.error({message: error['message'], title: 'Thông báo !!'});
+    // }
+    // else {
+    // 	this.alert.danger(`[${id}] > ${error['message']}`);
+    // 	if (this.isStopTicketIfError) {
+    // 		run.unsubscribe();
+    // 	}
+    // }
+  }
+
+
+  deleteTicket(): void {
+
+
+    const lsTicket = this.agTable.tableApi.getSelectedRows().map(t => t.ticket_id);
+    if (lsTicket.length === 0) {
+      this.toast.warning('Vui lòng chọn ticket để xóa !!');
       return;
     }
 
-    console.log(`Click `, event.item.code);
-  }
-
-  deleteTicket(): void {
-    const lsTicket = this.agTable.tableApi.getSelectedRows().map(t => t.ticket_id);
-    if (lsTicket.length === 0) {
-      this.toast.warning('Vui lòng chọn ticket để xóa !!' );
+    if (this.isVisibleChanel === true) {
+      this.toast.warning('Vui lòng bỏ chọn <b class="text-danger">[Hiển thị kênh]</b> trước khi xóa');
       return;
     }
 
@@ -388,9 +529,9 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     dynamicRef.onClose.subscribe({
       next: result => {
         if (result === "ok") {
-          const waitToast = this.toast.help(`Đang xóa ticket. Vui lòng đợi....` );
+          const waitToast = this.toast.help(`Đang xóa ticket. Vui lòng đợi....`);
           const lsObs = lsTicket.map(id => this.ticketService.deleteById(id));
-          
+
           RxjsUtil.runConcatMap(lsObs, 1000, true, {
             error: msg => {
               this.toast.close(waitToast);
@@ -417,13 +558,15 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   selectTicket(ticket: Ticket): void {
-    if(this.isVisibleChanel === false){
+    if (this.isVisibleChanel === false) {
       this.currentTicket = ticket;
     }
   }
 
   demo(): void {
-    this.loadAgTable()
+   // this.agTable.tableApi.selectAll();
+    //this.onSendHelpdesk({ item: { code: 'all' } });
+    this.loadAgTable();
   }
 
   removeUser($event: TagRemoveEvent) {
@@ -431,25 +574,25 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   saveTicket(event: SaveTicketEvent): void {
-    if(event.state === 'new') this.agTable.addRows(event.ticket);
-    else if(event.state === 'update') this.agTable.updateRows(event.ticket);
+    if (event.state === 'new') this.agTable.addRows(event.ticket);
+    else if (event.state === 'update') this.agTable.updateRows(event.ticket);
   }
 
   editAgTemple(event: any): void {
-    const columnState= this.agTable.tableApi.getColumnState().filter(o => o.hide === false).map(o => Objects.extractValueNotNull(o));
-    console.log(this.currentTemplateCode, JSON.stringify({states: columnState}));
+    const columnState = this.agTable.tableApi.getColumnState().filter(o => o.hide === false).map(o => Objects.extractValueNotNull(o));
+    console.log(this.currentTemplateCode, JSON.stringify({ states: columnState }));
   }
 
   selectFileUpload(event: FileSelectEvent): void {
-    this.files = event.currentFiles;
-    this.fileUpload.clear();
+    this.fileUpload?.clear();
+    this.files.setAll(event.currentFiles, f => f.name);
   }
 
   get calcHeight() {
     const formEl = this.document.getElementById('ticketListForm')?.getBoundingClientRect();
     const toolEl = this.document.getElementById('ticketListTool').getBoundingClientRect();
-    const formHeight = this.visibleForm && formEl ? (formEl.height + formEl.top ) : 0;
-    const toolHeight = toolEl.height + toolEl.top ;
+    const formHeight = this.visibleForm && formEl ? (formEl.height + formEl.top) : 0;
+    const toolHeight = toolEl.height + toolEl.top;
     return this.document.body.getBoundingClientRect().height - toolHeight - formHeight;
   }
 }

@@ -28,7 +28,7 @@ export class InjectService {
     return this.inject.get(Alert);
   }
 
-  get config(): StorageService {
+  get storage(): StorageService {
     return this.inject.get(StorageService);
   }
 

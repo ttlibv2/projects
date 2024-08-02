@@ -5,11 +5,11 @@ import {catchError, map, Observable, of, switchMap, tap, throwError} from 'rxjs'
 import {Objects} from "ts-ui/helper";
 import {InjectService} from "./inject.service";
 import {Router} from "@angular/router";
-import {LocalDbService} from "./local-db.service";
-import { LoggerService } from 'ts-ui/logger';
 import { StorageService } from './storage.service';
 import { ApiInfoComponent } from '../views/api-info/api-info.component';
 import {ToastMessage} from "ts-ui/toast";
+import {DBService} from "ts-ui/local-db";
+import {LoggerService} from "ts-ui/logger";
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -20,16 +20,12 @@ export class ClientService {
     return this.inject.http;
   }
 
-  protected get config(): StorageService {
-    return this.inject.config;
+  protected get storage(): StorageService {
+    return this.inject.storage;
   }
 
   protected get router(): Router {
     return this.inject.get(Router);
-  }
-
-  protected get db(): LocalDbService {
-    return this.inject.get(LocalDbService);
   }
 
   protected get logger(): LoggerService {
@@ -57,7 +53,7 @@ export class ClientService {
   }
 
   protected send(method: string, url: string, options?: any): Observable<any> {
-    url = Objects.isUrl(url) ? url : this.config.baseUrl + (url.startsWith('/') ? '' : '/') + url;
+    url = Objects.isUrl(url) ? url : this.storage.baseUrl + (url.startsWith('/') ? '' : '/') + url;
 
     // get
     const showError: boolean = options['showError'] ?? true;
@@ -96,14 +92,18 @@ export class ClientService {
         errorCode = error.code === 'e_500' ? 'e_server' : error.code;
         object.message = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')} <br>-> (${object.message})`;
         object.disableTimeOut = true;
-        this.inject.alert.danger({summary: `${object.message} (errorCode: ${errorCode})` });
+        this.inject.alert.danger({summary: object.message, title: object.title});
         showError = false;
       }
 
       else if(err.status === 401 && errorCode === 'ts_api') {
-        const apiCode = error?.details['ts_api'];
-        this.showUpdateApiToken(object.message, apiCode);
+        const {ts_api, ts_code} = error.details ?? {};
+        this.showUpdateApiToken(object.message, ts_api);
         showError = false;
+      }
+
+      else if(err.status === 403 && error?.summary === 'Access Denied') {
+        object.message = `Bạn không có quyền vào chức năng này ${errorCode} `;
       }
 
     }
@@ -115,7 +115,7 @@ export class ClientService {
 
     // logout if session expired
     if(errorCode.startsWith('jwt.')) {
-      this.config.set_loginToken(null).pipe(
+      this.storage.set_loginToken(null).pipe(
         tap(_ => this.router.navigate(['/']))
       ).subscribe();
     }

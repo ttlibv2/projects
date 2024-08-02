@@ -2,6 +2,7 @@
     [style.height]="tableHeight" 
     [domLayout]="gridOption?.domLayout"
     [columnDefs]="columns" [rowData]="rows"
+    [components]="components"
     [gridOptions]="gridOption"
     (rowClicked)="onRowClicked($event)"
     (gridReady)="gridReadyAg($event)"></ag-grid-angular>

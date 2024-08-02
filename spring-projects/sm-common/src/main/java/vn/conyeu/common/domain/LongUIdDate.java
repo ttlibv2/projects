@@ -17,13 +17,11 @@ public abstract class LongUIdDate<E extends LongUIdDate<E>> extends LongUId<E> {
     @Temporal(TemporalType.TIMESTAMP)
     @JsonProperty("created_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    //@Convert(converter = DateTimeToString.class)
     @Column(updatable = false)
     protected LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    //@Convert(converter = DateTimeToString.class)
     @JsonProperty("updated_at")
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     protected LocalDateTime updatedAt;

@@ -8,6 +8,7 @@ import {Router} from "@angular/router";
 import {ToastService} from "ts-ui/toast";
 import {TranslateService} from "@ngx-translate/core";
 import {StorageService} from "../../services/storage.service";
+import {HOME_PAGE, routerUrl} from "../../constant";
 
 
 @Component({
@@ -30,6 +31,10 @@ export class SigninComponent implements OnInit {
   asyncView: boolean = false;
 
   cacheUsers: string[] = [];
+
+  get signupUrl(): string {
+    return routerUrl.signupUrl;
+  }
 
   constructor(private fb: FormBuilder,
               private translate: TranslateService,
@@ -88,15 +93,22 @@ export class SigninComponent implements OnInit {
       error: err => {this.asyncLogin = false; console.log(err)},
       next: (user: User) => {
         this.asyncLogin = false;
-        console.log(user);
         this.toast.success( 'Đăng nhập thành công.');
 
         if(user.required_update === true) this.router.navigate(['/user-info']);
-        else  this.router.navigate([this.lastUrl ?? '/']);
+        else  this.router.navigate([this.lastUrl ?? HOME_PAGE]);
 
       }
     })
 
 
+  }
+
+  clickDemo(): void {
+    this.signinForm.patchValue({
+      username: 'tuannq.ts24@gmail.com',
+      password: '123qweA@',
+      remember: true
+    })
   }
 }
