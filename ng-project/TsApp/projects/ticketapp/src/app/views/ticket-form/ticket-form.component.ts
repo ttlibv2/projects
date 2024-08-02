@@ -576,7 +576,11 @@ export class TicketFormComponent implements OnInit, OnChanges {
     this.modal.open(EmailTicketView, {
         header: 'Thông tin E-mail mẫu',
         maximizable: true,
-        closable: true
+        closable: true,
+        data: {
+          list: this.catalog.get_email,
+          select: this.get()['email_ticket']
+        }
     });
 
   }
