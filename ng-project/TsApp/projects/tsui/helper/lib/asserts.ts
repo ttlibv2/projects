@@ -18,4 +18,9 @@ export class Asserts {
     else return object;
   }
 
+  static isTrue(bool: boolean, message: string): boolean {
+    if(bool === false) throw new Error(message);
+    else return bool;
+  }
+
 }
