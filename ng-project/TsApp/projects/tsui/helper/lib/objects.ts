@@ -295,6 +295,7 @@ export class Objects {
   }
 
   static mergeDeep(target: any, ...sources: any[]): any {
+    target = target || {};
     sources.forEach(src => mergeObject(target, src));
     return target;
   }
