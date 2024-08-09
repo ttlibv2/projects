@@ -27,6 +27,8 @@ import { TagModule } from 'ts-ui/tag';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { RippleModule } from 'primeng/ripple';
+import { TsIconModule } from 'ts-ui/icon';
+import { TsLoggerModule } from 'ts-ui/logger';
 
 
 @NgModule({
@@ -35,34 +37,35 @@ import { RippleModule } from 'primeng/ripple';
   ],
   exports: [TicketFormComponent],
     imports: [
-        CommonModule,
-        TicketFormRoutingModule,
-        CardModule,
-        ReactiveFormsModule,
-        MultiSelectModule,
-        DropdownModule,
-        InputTextModule,
-        InputTextareaModule,
-        EditorModule,
-        DividerModule,
-        CheckboxModule,
-        ButtonModule,
-        SplitButtonModule,
-        ChipModule,
-        ChipsModule,
-        FieldsetModule,
-        FormsModule,
-        DialogModule,
-        ToolbarModule,
-        CatalogModule,
-        NgSelectModule,
-        TranslateModule,
-        InputGroupModule,
-        InputGroupAddonModule,
-        RippleModule,
-        TagModule
-      
-    ],
+    CommonModule,
+    TicketFormRoutingModule,
+    CardModule,
+    ReactiveFormsModule,
+    MultiSelectModule,
+    DropdownModule,
+    InputTextModule,
+    InputTextareaModule,
+    EditorModule,
+    DividerModule,
+    CheckboxModule,
+    ButtonModule,
+    SplitButtonModule,
+    ChipModule,
+    ChipsModule,
+    FieldsetModule,
+    FormsModule,
+    DialogModule,
+    ToolbarModule,
+    CatalogModule,
+    NgSelectModule,
+    TranslateModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    TsLoggerModule.forChild(),
+    RippleModule,
+    TagModule,
+    TsIconModule
+], 
   providers: [
     DialogService,
     DynamicDialogRef

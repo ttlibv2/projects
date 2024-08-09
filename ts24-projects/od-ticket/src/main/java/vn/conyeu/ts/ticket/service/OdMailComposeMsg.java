@@ -6,12 +6,14 @@ import vn.conyeu.ts.odcore.domain.ClsUserContext;
 import vn.conyeu.ts.ticket.domain.ClsMailComposeMsg;
 import vn.conyeu.ts.ticket.domain.ClsTicketActionReply;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
  * model: mail.compose.message
  * */
 public class OdMailComposeMsg extends OdTicketClient<ClsMailComposeMsg>{
+
 
     public OdMailComposeMsg(ClsApiCfg apiConfig) {
         super(apiConfig);
@@ -32,16 +34,29 @@ public class OdMailComposeMsg extends OdTicketClient<ClsMailComposeMsg>{
         return ClsMailComposeMsg::from;
     }
 
-    public Long create(ClsTicketActionReply reply, ClsMailComposeMsg clsMail) {
-        ClsUserContext ctx = createUserContext();
+    public ClsMailComposeMsg create(ClsTicketActionReply reply, ClsMailComposeMsg clsMail) {
         ClsTicketActionReply.ActionReplyContext clsContext = reply.getContext();
+        ClsUserContext ctx = createUserContext();
         ctx.getCustom().set(clsContext.cloneMap());
         ctx.set("active_model", clsContext.getDefault_model());
         ctx.set("active_id", clsContext.getDefault_res_id());
         ctx.set("active_ids", new Object[] { clsContext.getDefault_res_id()});
-        return ObjectMap.setNew("args", new Object[] { clsMail.cloneMap()})
+
+        ObjectMap body = ObjectMap.setNew("args", new Object[] { clsMail.cloneMap()})
                 .set("model", getModel()).set("method", "create")
-                .set("kwargs", ObjectMap.setNew("context", ctx))
-                .getLong("result");
+                .set("kwargs", ObjectMap.setNew("context", ctx));
+
+        // create message
+        Long messageId = sendPost(body, call_kwUri("create")).getLong("result");
+
+        // callbutton send
+        callButton("action_send_mail", List.of(messageId), context -> context.set(ctx.cloneMap()));
+
+        // return
+        clsMail.setId(messageId);
+        clsMail.setSendContext(ctx);
+        return clsMail;
     }
+
+
 }

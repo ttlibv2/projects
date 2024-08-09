@@ -1,7 +1,7 @@
 import { ColDef, ColGroupDef, ExcelExportParams, GridApi, GridOptions, GridOptionsService, GridReadyEvent, IRowNode, RowClickedEvent } from "@ag-grid-community/core";
 import { AgGridAngular } from "@ag-grid-community/angular";
 import {BaseCreator} from "@ag-grid-community/csv-export";
-import { AgTableComponent } from "./ag-table.component";
+import { AgTable } from "./ag-table.component";
 
 
 export type TableColumn<TData = any, TValue = any> = ColDef<TData, TValue> | ColGroupDef<TData>;
@@ -13,7 +13,7 @@ export interface TableReadyEvent<TData = any> extends GridReadyEvent<TData, any>
 }
 
 export interface TableRowClick<E = any> extends RowClickedEvent<E, any> {
-  table?: AgTableComponent;
+  table?: AgTable;
 }
 
 export interface TableApi<TData=any> extends GridApi<TData> {
@@ -60,4 +60,10 @@ export interface ExcelCreator extends BaseCreator<any, any, any> {
   setExportMode: any;
   getExportMode: any;
   packageFile(data: string): Blob;
+}
+
+export interface ExportXslOption {
+  fileName: string;
+  sheetName: string;
+  includeColId: boolean;
 }

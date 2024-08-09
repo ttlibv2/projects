@@ -1,77 +1,129 @@
-import { FormGroup } from "@angular/forms";
-import { Ticket } from "../../models/ticket";
-import { User } from "../../models/user";
-import { Consumer, Objects } from "ts-ui/helper";
-import { TicketFormComponent } from "./ticket-form.component";
-import { merge, mergeAll, mergeMap, of, scheduled } from "rxjs";
-import { Mode } from "fs";
-import { ITicketOption, TicketOption } from "../../models/ticket-option";
+import {TicketFormComponent} from "./ticket-form.component";
+import {Asserts, ControlKey, Forms, Objects, ValueOption} from "ts-ui/helper";
+import {Ticket} from "../../models/ticket";
+import {FormBuilder, Validators} from "@angular/forms";
+const {isBlank,  isNull, notBlank} = Objects;
 
-const { isBlank, isEmpty, isNull, notBlank, notNull } = Objects;
+export class TicketFormGroup {
+  private forms: Forms<Ticket>;
+  private get options() { return this.comp.options;}
+  private get isAutoCreate() { return this.options.autoCreate === true;}
+  private get user() { return this.comp.userLogin;}
 
-export const controlEditors: string[] = [];
+  get formValue(){return this.forms?.formRawValue;}
+  get formGroup() { return this.forms.formGroup; }
+  get invalid() { return this.formGroup.invalid; }
 
+  constructor(private readonly comp:TicketFormComponent,
+              private readonly fb: FormBuilder) {
+  }
 
-export interface ValueOption {
-  onlySelf?: boolean;
-  emitEvent?: boolean
-}
+  initialize(): Forms<Ticket> {
+    Asserts.isNull(this.forms, "The ticket form has initialize");
 
-export class TicketUtil2 {
- 
+    return this.forms = Forms.builder<Ticket>(this.fb, {
+      ticket_id: [null],
+      ticket_on: [null],
+      full_name: [null],
+      tax_code: [null],
+      company_name: [null],
+      phone: [null],
+      teamviewer: [null],
+      customer_name: [null],
+      content_required: [null],
+      content_help: [null],
+      reception_time: [null],
+      complete_time: [null],
+      content_copy: [null],
+      email: [null],
+      subject: [null],
+      body: [null],
+      note: [null],
+      reply: [null],
+      content_email: [null],
+      email_template: [null],
+      group_help: [null, Validators.required],
+      question: [null],
+      software: [null, Validators.required],
+      chanels: [null, Validators.required],
+      support_help: [null, Validators.required],
+      soft_name: [null, Validators.required],
+      images: [null],
+      od_assign: [null, Validators.required],
+      od_category_sub: [null, Validators.required],
+      od_category: [null, Validators.required],
+      od_partner: [null],
+      od_partner_id: [{value: null, disabled: true}],
+      od_priority: [null],
+      od_replied: [null, Validators.required],
+      save_question: [false],
+      od_subject_type: [null, Validators.required],
+      od_tags: [null],
+      od_team: [null, Validators.required],
+      od_team_head: [{ value: null, disabled: true }],
+      od_ticket_type: [null],
+      od_topic: [null],
+      options: this.fb.group({
+        autoCreate: [null],
+        autoFill: [null],
+        viewAll: [null],
+        viewTs24: [null],
+        saveCache: [null],
+        emailTicket: [null]
+      }),
 
-  get user(): User { return this.comp.userLogin; }
-  get form(): FormGroup { return this.comp.ticketForm; }
-  get formValue(): Ticket { return this.form.getRawValue(); }
-  get options(): TicketOption { return this.comp.options; }
-  get autoCreate(): boolean { return this.options.autoCreate; }
+      edit_note: [true],
+      edit_ticket: [true]
+    });
+  }
 
-  constructor(public comp: TicketFormComponent) {}
+  registerListener(): void {
+    const forms: Forms<Ticket> = this.forms;
 
-  registerListener() {
+    forms.controlsValueChange(['options'], (forms, json) => this.options.update(json));
 
-    this.valueChangeFor(['tax_code', 'support_help'], json => {
-      if(this.autoCreate === true)
-        this.pathValueForm({subject: this.createSubject()});
+    forms.controlsValueChange(['tax_code', 'support_help', 'ticket_on'], (forms, json) => {
+      if(this.isAutoCreate) forms.pathValueControl('subject', this.createSubject());
     });
 
-    this.valueChangeFor(['support_help', 'complete_time', 'group_help', 'content_help'], json => {
-      if(this.autoCreate === true){
-        this.pathValueForm({note: this.createNote()});
-     }
-    });
-    
-    this.valueChangeFor(['phone', 'content_required', 'soft_name', 'support_help', 'reception_time'], json => {
-      if(this.autoCreate === true)
-         this.pathValueForm({body: this.createBody()})
+    forms.controlsValueChange(['support_help', 'complete_time', 'group_help', 'content_help'], (forms, json) => {
+      if(this.isAutoCreate)forms.pathValueControl('note', this.createNote());
     });
 
-    this.valueChangeFor(['subject', 'body', 'note', 'email', 'tax_code', 'customer_name'], json => {
-      if(this.autoCreate === true) 
-        this.pathValueForm({content_copy: this.createContentCopy()})
+    forms.controlsValueChange(['phone', 'content_required', 'soft_name', 'support_help', 'reception_time'], (forms, json) => {
+      if(this.isAutoCreate) forms.pathValueControl('body', this.createBody());
     });
 
-    this.valueChangeFor(['options'], json => this.options.update(json));
-    
-    this.valueChangeFor(['od_partner_id'], json => {
-      if(isBlank(json['od_partner_id'])) this.pathValueForm({od_partner: undefined});
+    forms.controlsValueChange(['subject', 'body', 'note', 'email', 'tax_code', 'customer_name'], (forms, json) => {
+      if(this.isAutoCreate) forms.pathValueControl('content_copy', this.createContentCopy());
     });
 
+    forms.controlsValueChange(['od_partner_id'], (forms, json) => {
+      if(isBlank(json['od_partner_id'])) forms.pathValueControl('od_partner', undefined);
+    });
+  }
+
+  resetForm(value?: Partial<Ticket>, options?: ValueOption) {
+    this.forms.resetForm(value, options);
+  }
+
+  pathValue(value?: Partial<Ticket>, options?: ValueOption) {
+    this.forms.pathValue(value, options);
   }
 
   createSubject(): string {
-    const {tax_code, chanels, support_help, ticket_on} = this.formValue;
+    const {tax_code, support_help, ticket_on} = this.formValue;
     const {room_code, user_code} = this.user;
-    if (isBlank(tax_code) || isEmpty(chanels)) return undefined;
+    if (isBlank(tax_code)) return undefined;
     else return `[${room_code}-${support_help.code}]-${user_code}-${tax_code}-${ticket_on}`;
   }
 
   createNote(): string {
     const {complete_time, group_help, support_help, content_help, full_name} = this.formValue;
 
-    const lines: string[] = [], fg = this.form;
+    const lines: string[] = [];
 
-  
+
     lines.push(`- Họ tên: ${full_name}`);
 
     if (!isNull(support_help)) {
@@ -91,14 +143,14 @@ export class TicketUtil2 {
     }
 
     if (lines.length > 1) {
-      this.pathValueForm({edit_ticket: true, edit_note: true});
+      this.forms.pathValue({edit_ticket: true, edit_note: true});
     }
 
     return lines.join('\n');
   }
 
   createBody(): string {
-    const lines: string[] = [], fg = this.form;
+    const lines: string[] = [];
     const {phone, content_required, soft_name, support_help, reception_time, full_name} = this.formValue;
 
     if (notBlank(phone)) {
@@ -112,14 +164,14 @@ export class TicketUtil2 {
     }
 
     lines.push(`- Nhân viên gửi thông tin: ${full_name}`);
-    
+
 
     if ( notBlank(reception_time)) {
       lines.push(`- Thời gian tiếp nhận: ${reception_time}`);
     }
 
     if (lines.length > 1) {
-      this.pathValueForm({edit_ticket: true})
+      this.forms.pathValue({edit_ticket: true});
     }
 
     return lines.join('\n');
@@ -142,8 +194,8 @@ export class TicketUtil2 {
 
     //-- subject email
     const subject = options.subject ?? this.createSubject();
-    if (notNull(subject)) notes.push(subject);
-    
+    if (notBlank(subject)) notes.push(subject);
+
     if (notBlank(tax_code)) {
       notes.push(`- Mã số thuế / Mã đơn vị: ${tax_code}`);
     }
@@ -166,38 +218,11 @@ export class TicketUtil2 {
     return notes.join(`\n`);
   }
 
-  pathValueForm(data: Partial<Ticket>, options?: ValueOption) {
-    this.form.patchValue(data, {onlySelf: false, emitEvent: true, ...options});
+  copyValue() {
+    this.resetForm({ ...this.formValue, ticket_id: undefined });
   }
 
-  valueChangeFor(controls: (keyof Ticket)[], nextCb: Consumer<any>) {
-   controls.forEach((c: any) => this.form.get(c).valueChanges.subscribe({
-    next: res => nextCb({[c]: res})
-   }))
+  pathControlValue<C extends ControlKey<Ticket>>(name: C, value: Ticket[C]) {
+    return this.forms.pathValueControl(name, value);
   }
-
-  resetForm(data?: any) {
-    this.form.reset(data);
-  }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -7,6 +7,7 @@ export type TemplateCode = 'form_ticket' | 'email_ticket';
 export class Template extends BaseModel {
   template_id?: number | null;
   entity_code?: string;
+  code?: string;
   title?: string;
   icon?: string;
   clear?: boolean;

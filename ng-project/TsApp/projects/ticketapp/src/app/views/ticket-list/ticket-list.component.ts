@@ -1,30 +1,48 @@
 import { AfterContentInit, AfterViewInit, booleanAttribute, ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoggerService } from 'ts-ui/logger';
-import { AgTableComponent, TableOption } from 'ts-ui/ag-table';
+import { AgTable as Table, TableOption } from 'ts-ui/ag-table';
 import { Ticket } from '../../models/ticket';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ToastService } from 'ts-ui/toast';
 import { AgTableService } from '../../services/ag-table.service';
 import { TicketService } from '../../services/ticket.service';
-import { AgTagCell, AgStatusRenderer, AgTicketCell, AgCheckRenderer } from './ag-ticket-cell';
+import { AgStatusRenderer, AgTicketCell, AgCheckRenderer } from './ag-ticket-cell';
 import { DatePipe, DOCUMENT } from '@angular/common';
 import { TagRemoveEvent } from 'ts-ui/tag';
-import { AgTable } from '../../models/ag-table';
+import { AgColumn, AgTable } from '../../models/ag-table';
 import { AgTableTemplate } from './ag-table-template';
 import { FormsUtil } from './form-util';
 import { Alert } from '../../services/ui/alert/alert.service';
 import { RxjsUtil } from './rxjs-util';
-import { SaveTicketEvent, SetDataInput } from '../ticket-form/ticket-form.component';
-import { catchError, concatMap, delay, EMPTY, forkJoin, from, Observable, Observer, of, Subscription, switchMap, tap, throwError } from 'rxjs';
+import { SaveTicketEvent } from '../ticket-form/ticket-form.component';
+import {
+  buffer,
+  catchError,
+  concatMap,
+  delay,
+  forkJoin,
+  from,
+  Observable,
+  Observer,
+  of,
+  Subscription,
+  switchMap,
+  tap,
+  throwError
+} from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Objects, Base64, TsMap } from 'ts-ui/helper';
+import {Objects, Base64, TsMap, Consumer} from 'ts-ui/helper';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { StorageService } from '../../services/storage.service';
 import { AgTemplateCode } from '../../constant';
 import { ModalService } from "../../services/ui/model.service";
-import { error } from 'console';
-import { ICellRendererParams, IRowNode, RowNode } from '@ag-grid-community/core';
+import { IRowNode } from '@ag-grid-community/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ExcelService } from '../shared/exceljs';
+import * as ExcelJs from 'exceljs';
+import { Template } from '../../models/template';
+import { TemplateFile } from '../shared/template-file';
 
 const { isNull, notNull, notBlank, isBlank } = Objects;
 
@@ -105,7 +123,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   excelItems: MenuItem[] = [
     { label: 'Nạp dữ liệu', icon: 'pi pi-download' },
     { label: 'Xuất dữ liệu', icon: 'pi pi-download', command: this.exportXsl.bind(this) },
-    { label: 'Tệp đính kèm', icon: 'pi-file-excel' }
+    { label: 'Tệp đính kèm', icon: 'pi-file-excel', command: this.templateFile.bind(this) }
   ];
 
   toolOptions: MenuItem[] = [
@@ -126,34 +144,30 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   ];
 
 
-  @ViewChild(AgTableComponent, { static: true })
-  agTable: AgTableComponent<Partial<Ticket>>;
+  @ViewChild(Table, { static: true })
+  agTable: Table<Partial<Ticket>>;
 
   @ViewChild(FileUpload)
   fileUpload: FileUpload;
 
-  @Input({ alias: 'visible' })
-  visibleForm: boolean = true;
+  @Input({ alias: 'visible', transform: booleanAttribute })
+  set visibleForm(bool: boolean) {
+    this.utils.setPathControlValue('visibleForm', bool);
+  }
 
-  // set visible(bool: boolean) {
-  //   this.searchForm.get('visibleForm').setValue(bool);
-  // }
-
-  @Input()
+  @Input({ alias: 'template' })
   set agTemplate(templateCode: string) {
     this.currentTemplateCode = templateCode;
   }
 
-  @Input({ transform: booleanAttribute })
-  dev: boolean = false;
 
   get isVisibleChanel(): boolean {
     return this.searchForm.get('visibleChanel').value;
   }
 
-  // get visibleForm(): boolean {
-  //   return this.searchForm.getRawValue()?.visibleForm;
-  // }
+  get visibleForm(): boolean {
+    return this.utils.getControlValue('visibleForm');
+  }
 
   get visibleReportMenu(): boolean {
     return this.currentTemplateCode === 'send_ticket';
@@ -176,12 +190,16 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     @Inject(DOCUMENT)
     private document: Document,
 
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+
     private changeDetectorRef: ChangeDetectorRef,
 
     private alert: Alert,
     private toast: ToastService,
     private modal: ModalService,
     private agService: AgTableService,
+    private excel: ExcelService,
     private logger: LoggerService,
     private datePipe: DatePipe,
     private storage: StorageService,
@@ -202,8 +220,9 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
     this.utils.subscribeControl('visibleForm', val => {
       //this.tableHeight = this.calcHeight + 'px';
-      this.visibleForm = val;
-    })
+      this.router.navigate([], { relativeTo: this.activatedRoute, queryParamsHandling: 'merge', queryParams: { visible: val } })
+
+    });
 
   }
 
@@ -213,6 +232,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   ngOnInit(): void {
+    console.log(this.visibleForm)
 
     if (isBlank(this.currentTemplateCode)) {
       this.currentTemplateCode = this.storage.currentTemplate.get(AgTemplateCode.agTicket);
@@ -229,13 +249,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     });
 
     //
-    this.loadAgTable();
-    this.searchTicket();
-
-
-
-
-
+    this.loadAgTable(null, () => this.searchTicket());
   }
 
   ngAfterContentInit(): void {
@@ -245,54 +259,88 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
   }
 
-  loadAgTable(event?: any) {
-    const loadingRef = this.toast.loading({
-      title: 'Thông báo',
-      message: 'Đang xử lý dữ liệu....',
-      detail: 'Vui lòng chờ đến khi hoàn thành',
-      closeButton: true,
-    });
+  loadAgTable(event?: any, consumerAfter?: Consumer<any>): void {
 
-    this.agService.getByCode('ticket_list', true)
-      .pipe(tap(tb => this.agTableModel = tb))
-      .subscribe({
-        error: err => {
-          this.logger.error('loadAgTable', err);
-          this.toast.close(loadingRef);
-        },
-        next: (agTable: AgTable) => {
-          this.toast.close(loadingRef);
+      const loadingRef = this.toast.loading({
+        title: 'Thông báo',
+        message: 'Đang xử lý dữ liệu....',
+        detail: 'Vui lòng chờ đến khi hoàn thành',
+        closeButton: true,
+      });
 
-          // update command for menu item view ag-column
-          this.agColumns = agTable.columns.map(c => c.asColumn());
-          this.agTable.setColumns(this.agColumns);
+      this.agService.getByCode('ticket_list', true)
+          .pipe(tap(tb => this.agTableModel = tb))
+          .subscribe({
+            error: err => {
+              this.logger.error('loadAgTable', err);
+              this.toast.close(loadingRef);
+            },
+            next: (agTable: AgTable) => {
+              this.toast.close(loadingRef);
 
-          this.agTemplates = agTable.menuItems || [];
-          this.agTemplates.forEach(item => item.command = this.onSelectColumnView.bind(this))
+              // update command for menu item view ag-column
+              this.agColumns = agTable.columns.map(c => c.asColumn());
+              this.agTable.setColumns(this.agColumns);
 
-          // view for current template
-          if (notNull(this.currentTemplateCode)) {
-            const template = this.agTemplates.find(t => t.code === this.currentTemplateCode);
-            if (isNull(template)) this.currentTemplateCode = null;
-            else this.onSelectColumnView({ item: template });
-          }
+              this.agTemplates = agTable.menuItems || [];
+              this.agTemplates.forEach(item => item.command = this.onSelectColumnView.bind(this))
 
-        }
-      })
+              // view for current template
+              if (notNull(this.currentTemplateCode)) {
+                const template = this.agTemplates.find(t => t.code === this.currentTemplateCode);
+                if (isNull(template)) this.currentTemplateCode = null;
+                else this.onSelectColumnView({ item: template });
+              }
+
+              // apply consumer
+              if(notNull(consumerAfter)) {
+                consumerAfter({});
+              }
+
+
+            }
+          })
+
+  }
+
+  templateFile(): void {
+    this.modal.open(TemplateFile, {
+      header: 'Danh sách mẫu excel',
+      dismissableMask: false,
+      closable: true,
+      data: {
+        files: [
+          {icon: 'pi pi-user', name: 'ticket.xlsx', label: 'Nạp dữ liệu ticket', path: '/assets/files/ticket.xlsx'},
+          {icon: 'pi pi-home', name: 'ticket_loi.xlsx', label: 'Nạp mẫu báo cáo lỗi', path: '/assets/files/ticket_loi.xlsx'}
+        ]
+      }
+      
+    })
   }
 
   exportXsl(): void {
-    console.log(this.agTable.tableApi.getSheetDataForExcel())
+    const hasSelect = this.agTable.getSelectedNodes().length;
+    if (!hasSelect) {
+      this.toast.warning('Vui lòng chọn dữ liệu muốn xuất excel');
+      return;
+    }
+
+    const fileName = (this.currentTemplateCode || 'file')+'.xlsx';
+    this.agTable.exportXsl({ fileName }).subscribe({
+      error: reason => console.log(reason),
+      next: json => Objects.download(json.fileName, json.blob)
+    });
+
 
   }
- 
+
   searchTicket(): void {
     const { dateOn, option } = this.searchForm.getRawValue();
 
     const created_min = this.datePipe.transform(dateOn[0], 'yyyy-MM-dd') + 'T00:00:00';
     const created_max = this.datePipe.transform(dateOn[1], 'yyyy-MM-dd') + 'T23:59:59';
 
-    const label = option.label.substring(option.label.indexOf('.')+2);
+    const label = option.label.substring(option.label.indexOf('.') + 2);
 
     const loading = this.toast.loading({
       width: '400px',
@@ -361,7 +409,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
         this.utils.setControlValue('visibleChanel', true);
         //this.chanelChecked();
       }
-      else if('send_ticket' === code) {
+      else if ('send_ticket' === code) {
         this.utils.setControlValue('visibleForm', false);
       }
 
@@ -407,37 +455,37 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     ));
 
     // concatMap
-    let exec = of(...allOf).pipe(concatMap(it => it.pipe(delay(60000))));
+    let exec = of(...allOf).pipe(concatMap(it => it.pipe(delay(1000))));
 
     this.runSendTicket = exec.subscribe({
       error: obj => {
         console.log('error', obj)
         this.sendState.error++;
-        this.refreshRow(obj.node, {send_status: 'error'});
-       // this.clickStopSend(false);
+        this.refreshRow(obj.node, { send_status: 'error' });
+        // this.clickStopSend(false);
       },
 
       next: data => {
         this.sendState.success++;
         console.log('next', data);
-        this.refreshRow(data.node, {send_status: 'success'});
-        if(this.sendState.stop === true) this.clickStopSend(false);
+        this.refreshRow(data.node, { send_status: 'success' });
+        if (this.sendState.stop === true) this.clickStopSend(false);
       },
 
-      complete:() => console.log('complete')
+      complete: () => console.log('complete')
 
     });
 
   }
 
   clickStopSend(fromHtml: boolean = true): void {
-    if(fromHtml) this.sendState.stop = true;
+    if (fromHtml) this.sendState.stop = true;
     else {
       this.sendState.stop = false;
       this.runSendTicket?.unsubscribe();
       this.runSendTicket = undefined;
     }
-  
+
   }
 
 
@@ -458,19 +506,19 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     const files = imageList.map(n => n + '.png').filter(n => this.files.has(n)).map(n => this.files.get(n));
 
     // check image list size
-    if(imageList.length !== files.length) {
-      this.toast.error({title: 'Thông báo !!', message: `Ticket ${ticket_id} chưa chọn đầy đủ tệp đính kèm -> ${imageList.join(';')}`})
-      return throwError(() => ({node, status: 'error'}));
+    if (imageList.length !== files.length) {
+      this.toast.error({ title: 'Thông báo !!', message: `Ticket ${ticket_id} chưa chọn đầy đủ tệp đính kèm -> ${imageList.join(';')}` })
+      return throwError(() => ({ node, status: 'error' }));
     }
 
 
     const base64 = Objects.arrayToJson(files, file => [file.name, from(Base64.encode(file))]);
 
-   return forkJoin(base64)
-      .pipe(switchMap(images => this.ticketService.sendOd(action, ticket_id, {images})))
-      .pipe(
-        catchError(error => throwError(() => ({node, error, status: 'error'}))),
-        switchMap(data => of({status: 'success', node, data}))
+    return forkJoin(base64)
+      .pipe(switchMap(images => this.ticketService.sendOd(action, ticket_id, { images }))//)
+      //.pipe(
+        ,catchError(error => throwError(() => ({ node, error, status: 'error' }))),
+        switchMap(data => of({ status: 'success', node, data }))
       );
 
   }
@@ -564,7 +612,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   demo(): void {
-   // this.agTable.tableApi.selectAll();
+    // this.agTable.tableApi.selectAll();
     //this.onSendHelpdesk({ item: { code: 'all' } });
     this.loadAgTable();
   }

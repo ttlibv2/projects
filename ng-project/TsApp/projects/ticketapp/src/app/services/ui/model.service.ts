@@ -3,13 +3,14 @@ import {DialogService, DynamicDialogComponent, DynamicDialogConfig, DynamicDialo
 
 const defaultConfig: DynamicDialogConfig = {
     position: 'top',
-    closable: false,
+    closable: true,
     closeOnEscape: false,
     focusOnShow: false,
     maximizable: false,
     draggable: false,
     resizable: false,
-    showHeader: true
+    showHeader: true,
+    dismissableMask: false,
 }
 
 @Injectable({providedIn: 'root' })
@@ -18,9 +19,8 @@ export class ModalService {
     constructor(private dialog: DialogService) {
     }
 
-    open<E>(componentType: Type<E>, config: DynamicDialogConfig): DynamicDialogRef<E> {
+    open<E, D=any>(componentType: Type<E>, config: DynamicDialogConfig<D>): DynamicDialogRef<E> {
         return this.dialog.open(componentType, { ...defaultConfig, ...config });
-        // return null;
     }
 
     /**
@@ -30,7 +30,10 @@ export class ModalService {
      */
     getInstance(ref: DynamicDialogRef): DynamicDialogComponent {
        return this.dialog.dialogComponentRefMap.get(ref)?.instance;
-        // return null;
+    }
+
+    getData<E>(ref: DynamicDialogRef):E {
+        return this.getInstance(ref)?.data;
     }
 
 

@@ -5,7 +5,7 @@ import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { EditorModule } from "primeng/editor";
 import { Template } from "../../models/template";
 import { ModalService } from "../../services/ui/model.service";
-import { FormUtil } from "ts-ui/helper";
+import { Forms } from "ts-ui/helper";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
 @Component({
@@ -13,7 +13,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
     selector: '[ts-email-ticket]',
     imports: [ReactiveFormsModule, EditorModule, ButtonModule, DropdownModule],
     template: `
-    <form [formGroup]="forms.fg" (ngSubmit)="save()">
+    <form [formGroup]="forms.formGroup" (ngSubmit)="save()">
         <div class="grid">
             <div class="p-fluid col-12">
                 <label>Danh sách E-mail mẫu</label>
@@ -21,7 +21,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
             </div>
             <div class="p-fluid col-12">
                 <label>Nội dung E-mail</label>
-                <p-editor id="content_email" [style]="{height: '350px'}" debug="error"> 
+                <p-editor id="content_email" [style]="{height: '350px'}" formControlName="html"> 
                 </p-editor>
             </div>
             <div class="p-fluid col-12 flex gap-2"> 
@@ -44,14 +44,15 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 export class EmailTicketView implements OnInit {
     @Input() list: Template[] = [];
     @Input() select: Template;
+    @Input() html: string;
 
-    readonly forms: FormUtil;
+    readonly forms: Forms<any>;
 
     constructor(
         private fb: FormBuilder,
         private dialogRef: DynamicDialogRef,
         private modal: ModalService) {
-        this.forms = FormUtil.create(fb, {
+        this.forms = Forms.builder(fb, {
             select: [null, Validators.required],
             html: [null, Validators.required]
         });
@@ -61,14 +62,18 @@ export class EmailTicketView implements OnInit {
 
         const instanceRef = this.modal.getInstance(this.dialogRef);
         if (instanceRef && instanceRef.data) {
-            const { list, select } = instanceRef.data;
+            const { list, select, html } = instanceRef.data;
             this.list = list ?? [];
             this.select = select ?? this.list[0];
-            this.forms.pathValue({select, html: select?.data?.html})
+            this.html = html || this.select?.data.html;
+            this.forms.pathValue({select, html: {html: this.html}});
         }
     }
 
-    save(): void { }
+    save(): void { 
+        const {select, html} = this.forms.formRawValue;
+        this.dialogRef.close({select, html: html.html});
+    }
 
     preview(): void { }
 

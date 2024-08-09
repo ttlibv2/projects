@@ -126,6 +126,7 @@ export const DEFAULT_CONFIG: ToastConfig = {
     progressBar: false,
     closeButton: true,
     tapToDismiss: false,
+    newestOnTop: false,
     toastClass: 'ts-toast',
     messageClass: 'ts-toast-message',
     titleClass: 'ts-toast-title',

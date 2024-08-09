@@ -37,7 +37,7 @@
                 <p-button type="button" label="{{'actions.check_api' | translate}}" [disabled]="disabledCheckApi"
                     [loading]="asyncSave" (click)="checkApi()"></p-button>
                     @if(!hasSetApiCode){
-                        <p-button type="button" label="Lấy DS API" (click)="findApiCode()" ></p-button>
+                        <p-button type="button" label="Lấy DS API" (click)="loadApi()" ></p-button>
                     }
 
                     @if(hasDialogRef){

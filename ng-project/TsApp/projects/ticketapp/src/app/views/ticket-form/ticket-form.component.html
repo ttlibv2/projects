@@ -1,6 +1,6 @@
 <div class="grid ticket-form" [ngClass]="{template: viewTemplate}">
     <div class="col-12 col-ticket-form">
-        <form class="formgrid vertical" [formGroup]="ticketForm" (ngSubmit)="saveTicket()">
+        <form class="formgrid vertical" [formGroup]="forms?.formGroup" (ngSubmit)="saveTicket()">
             <div class="grid">
                 <div class="col-7 col-left">
                     <div class="grid">
@@ -10,7 +10,7 @@
                                     <label for="chanels">Kênh - Tình trạng <span
                                             class="p-text-danger">(*)</span></label>
                                     <!-- <ng-select [items]="catalog.ls_chanel"></ng-select> -->
-                                    <p-multiSelect id="chanels" class="required" [filter]="false" [showClear]="true"
+                                    <p-multiSelect id="chanels" class="required" [showClear]="true"
                                         [showToggleAll]="false" [showHeader]="false" [filter]="true"
                                         [options]="catalog.ls_chanel" [maxSelectedLabels]="99" formControlName="chanels"
                                         optionLabel="value" display="chip" dataKey="id" (onClear)="onSelectChanel()"
@@ -184,14 +184,14 @@
                                 <div class="p-fluid" [ngClass]="{'col-12': !options.emailTicket, 'col-6': options.emailTicket}">
                                     <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
                                     <input pInputText id="subject" formControlName="subject"
-                                        placeholder="[ROOM-SP]-USER_CODE-MST-TIME" [readOnly]="isSubjectReadOnly" />
+                                        placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
                                 </div>
                                 <div class="p-fluid col-6" *ngIf="options.emailTicket">
                                     <label for="emailTemplate">Danh sách E-mail mẫu</label>
                                     <div class="flex gap-1" id="emailTemplate">
                                         <p-dropdown class="flex-1" [options]="catalog.get_email()" optionLabel="title"
                                          [filter]="true" dataKey="id" [showClear]="true" formControlName="email_template"
-                                        ></p-dropdown>
+                                        (onChange)="changeEmailTemplate($event.value)"></p-dropdown>
                                         <p-button icon="pi pi-user-edit" [severity]="'help'" [style]="{padding: '.12rem'}" (onClick)="openEmailTemplate()"></p-button>
                                     </div>
                                 </div>
@@ -242,7 +242,7 @@
                                 <div class="flex flex-wrap gap-2">
                                     <ng-template ngFor let-item [ngForOf]="templates">
                                         <ts-tag [value]="item" 
-                                            [label]="item.bg_color" [icon]="item.icon" 
+                                            [label]="item.title" [icon]="item.icon" 
                                             (click)="selectTemplate(item)"></ts-tag>
                                     </ng-template>
                                     @if(templates?.length == 0){
@@ -252,11 +252,12 @@
                             </p-fieldset>
                         }
                     </div>
-                </div>
+                </div> 
             </div>
             @if (!viewTemplate) {
             <div class="grid toolbar border-end" [ngClass]="{'border-end': hasBorderEnd}">
                 <div class="flex col-12 gap-2 align-items-center">
+                    <!-- <ts-icon icon="pi pi-file-excel" color="red" size="3rem" severity="danger" [spin]="true"></ts-icon> -->
                     <p-button type="submit" severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
                         loadingIcon="pi pi-cog" [label]="isEditTicket ? 'Cập nhật' : 'Lưu lại'"></p-button>
                     <p-button icon="pi pi-folder-plus" (onClick)="createNew()" label="Tạo mới"></p-button>
@@ -270,12 +271,26 @@
                     <p-button icon="pi pi-clone" (click)="copyTicket()" label="Sao chép"></p-button>
                     <ts-splitButton icon="pi pi-wrench" label="Khác" severity="help" [model]="toolActions" [size]="'small'"
                         [visibleMenuButton]="false"></ts-splitButton>
+
+                    <!-- tool -->
+                     <div class="flex gap-2">
+                        <p-divider [layout]="'vertical'"></p-divider>
+                     </div>
+                    
+
+
+
+
+
+
+
+
                 </div>
             </div>
             } @else {
             <div class="grid toolbar border-end" [ngClass]="{'border-end': hasBorderEnd}">
                 <div class="flex col-12 gap-2">
-                    <p-button [disabled]="ticketForm.invalid" (onClick)="saveTemplate()"
+                    <p-button [disabled]="forms.invalid" (onClick)="saveTemplate()"
                         label="{{'actions.save' | translate}}"></p-button>
                     <p-button (onClick)="resetTemplate()" label="{{'actions.reset' | translate}}"></p-button>
                     <p-button (onClick)="closeDialog()" label="{{'actions.close' | translate}}"></p-button>

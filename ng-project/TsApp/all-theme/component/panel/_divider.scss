@@ -10,8 +10,8 @@
         padding: cfg.$dividerHorizontalPadding;
 
         &:before {
-            border-top-style: cfg.$dividerStyle;
             border-top: cfg.$dividerSize cfg.$dividerColor;
+            border-top-style: cfg.$dividerStyle;            
             
         }
 

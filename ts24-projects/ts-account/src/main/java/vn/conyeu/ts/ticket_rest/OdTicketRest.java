@@ -268,7 +268,7 @@ public class OdTicketRest extends OdBaseRest {
         Long ticketNum = ticket.getDetail().getTicketNumber();
         Long[] partnerId = new Long[]{ticket.getOdPartnerId()};
 
-        ClsMailComposeMsg msg = service.ticket().actionReply(ticketNum, partnerId,
+        ClsMailComposeMsg msg = service.ticket().sendMail(ticketNum, partnerId,
                 ticket.getSubject(), ticket.getContentEmail());
 
         return saveTicket(ticket, msg, TicketAction.SEND_MAIL);

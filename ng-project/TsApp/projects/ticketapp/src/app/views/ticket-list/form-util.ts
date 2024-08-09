@@ -16,4 +16,8 @@ export class FormsUtil {
     setPathControlValue(control: string, value: any) {
         this.form.get(control).patchValue(value);
     }
+
+    getControlValue<E>(control: string): E {
+        return this.form.get(control).value;
+    }
 }

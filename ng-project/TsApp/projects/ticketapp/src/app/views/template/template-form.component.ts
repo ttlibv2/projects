@@ -7,7 +7,7 @@ import { LoggerService } from "ts-ui/logger";
 import { Objects } from "ts-ui/helper";
 import { StorageService } from "../../services/storage.service";
 import { JsonObject, Severity } from "../../models/common";
-import { AgTableComponent, TableColumn, TableOption } from "ts-ui/ag-table";
+import { AgTable, TableColumn, TableOption } from "ts-ui/ag-table";
 import { AgCellColor } from "./renderer";
 import { GetRowIdParams } from "@ag-grid-community/core";
 import { TicketFormComponent } from "../ticket-form/ticket-form.component";
@@ -96,8 +96,8 @@ export class TemplateFormComponent implements OnInit {
         //onRowDragEnd: this.onChangeRowPosition.bind(this)
     };
 
-    @ViewChild(AgTableComponent)
-    agTable: AgTableComponent;
+    @ViewChild(AgTable)
+    agTable: AgTable;
 
     @Input({alias: 'entity'})
     entityCode: string;

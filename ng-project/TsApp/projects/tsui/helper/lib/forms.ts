@@ -1,35 +1,75 @@
-import { AbstractControlOptions, FormBuilder, FormGroup } from "@angular/forms";
-import { JsonAny } from "./common";
-import { Objects } from "./objects";
-const {notEmpty} = Objects;
+import {AbstractControlOptions, FormBuilder, FormControl, FormGroup, ValidationErrors} from "@angular/forms";
+import {BiConsumer, Consumer} from "./function";
+import {Objects} from "./objects";
 
 export interface ValueOption {
     onlySelf?: boolean;
     emitEvent?: boolean;
 }
 
-export class FormUtil<E=any> {
+export type TControl<E> = {[K in keyof E]?: any};
+export type ControlKey<E> = string & keyof TControl<E>;
 
-    static create<E=any>(builder: FormBuilder, controls?: JsonAny, options?: AbstractControlOptions): FormUtil<E> {
-        const forms = new FormUtil(builder).group(controls, options);
-        if(notEmpty(controls)) forms.group(controls, options);
-        return forms;
+export class Forms<E> {
+
+    static builder<E>(fb: FormBuilder, controls: TControl<E>, options?:AbstractControlOptions): Forms<E> {
+        return new Forms<E>(fb, <FormGroup>fb.group(controls, options));
     }
 
-    fg: FormGroup = undefined;
-
-    constructor(private builder: FormBuilder) {}
-
-    group(controls: JsonAny, options?: AbstractControlOptions): this {
-        this.fg = this.builder.group(controls, options);
-        return this;
+    private constructor(private readonly fb: FormBuilder,
+                private readonly delegate: FormGroup<TControl<E>>) {
     }
 
-    pathValue(value: Partial<E>, options?: ValueOption): this {
-        this.fg.patchValue(value, options);
-        return this;
+    get formGroup(): FormGroup {
+        return this.delegate;
     }
 
+    get formRawValue(): Partial<E> {
+        return <any>this.delegate.getRawValue();
+    }
 
+    get invalid(): boolean {
+        return this.formGroup.invalid;
+    }
+    
+    formValueChange(consumer: Consumer<Partial<E>>):void {
+        this.delegate.valueChanges.subscribe(value => consumer(<any>value));
+    }
 
+    controlValueChange<C extends ControlKey<E>>(control: C, consumer: Consumer<E[C]>):void {
+        this.getControl(control).valueChanges.subscribe(value => consumer(value));
+    }
+
+    controlsValueChange<C extends ControlKey<E>>(controls: C[], consumer: BiConsumer<Forms<E>, any>):void {
+        const json = () => Objects.arrayToJson(controls, c => [c, this.getControl(c).getRawValue()]);
+        controls.map(c => this.getControl(c)).forEach(c => c.valueChanges.subscribe(_ => consumer(this, json())))
+    }
+
+    getControl<C extends ControlKey<E>>(name: C | C[]) {
+        return this.delegate.get(name);
+    }
+
+    pathValue(values: Partial<E>, options?: ValueOption) {
+        this.delegate.patchValue(<any>values, options);
+    }
+
+    pathValueControl<C extends ControlKey<E>>(name: C, value: E[C], options?: ValueOption) {
+        return this.delegate.get(name).patchValue(<any>value, options);
+    }
+
+    setValueControl<C extends ControlKey<E>>(name: C, value: E[C], options?: ValueOption) {
+        return this.delegate.get(name).setValue(<any>value, options);
+    }
+
+    resetForm(value?: Partial<E>, options?: ValueOption) {
+        this.delegate.reset(<any>value, options)
+    }
+
+    setControlError<C extends ControlKey<E>>(control: C, errors: ValidationErrors) {
+        this.getControl(control).setErrors(errors, {emitEvent: true});
+    }
+
+    setDisableControl<C extends ControlKey<E>>(disabled: boolean, controls: C[]) {
+        controls.map(c => this.getControl(c)).forEach(c => disabled ? c.disable() : c.enable());
+    }
 }

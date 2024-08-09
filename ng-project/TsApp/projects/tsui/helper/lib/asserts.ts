@@ -23,4 +23,9 @@ export class Asserts {
     else return bool;
   }
 
+  static isNull<E>(object: E, message: string): E {
+    if(Objects.notNull(object)) throw new Error(message);
+    else return object;
+  }
+
 }

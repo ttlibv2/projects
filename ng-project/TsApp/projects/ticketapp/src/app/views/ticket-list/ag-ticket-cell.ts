@@ -119,6 +119,7 @@ export class AgStatusRenderer implements ICellRendererAngularComp {
 
     refresh(params: ICellRendererParams<any, any, any>): boolean {
         this.state = params.value;
+        console.log('AgStatusRenderer_refresh', params);
         return notBlank( this.state);
     }
 

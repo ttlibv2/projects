@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsModel;
+import vn.conyeu.ts.odcore.domain.ClsUserContext;
 import vn.conyeu.ts.odcore.helper.OdHelper;
 
 @Getter @Setter
@@ -32,6 +33,7 @@ public class ClsMailComposeMsg extends ClsModel<ClsMailComposeMsg> {
     Object attachment_ids = OdHelper.createList(6, false , new Object[0]);
     Object template_id = 59;
 
+    ClsUserContext sendContext;
 
     public void createPartnerId(Long[] partnerIds) {
         this.partner_ids = OdHelper.createList(6, false, partnerIds );

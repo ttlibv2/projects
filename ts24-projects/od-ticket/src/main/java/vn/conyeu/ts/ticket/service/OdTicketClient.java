@@ -183,9 +183,16 @@ public abstract class OdTicketClient<E> extends OdClient {
     }
 
     protected ObjectMap callButton( String method, Object args) {
+        return callButton(method, args, null);
+    }
+
+    protected ObjectMap callButton( String method, Object args, Consumer<ObjectMap> customContext) {
+        ObjectMap context = createUserContext().cloneMap();
+        if(customContext != null) customContext.accept(context);
+
         ObjectMap body = ObjectMap.setNew("model",getModel())
             .set("method", method).set("args", new Object[]{args})
-            .set("kwargs", ObjectMap.setNew("context", createUserContext()));
+            .set("kwargs", ObjectMap.setNew("context", context));
 
         return sendPost(body, datasetUri("call_button"));
     }

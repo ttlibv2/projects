@@ -8,7 +8,7 @@ import {
   ViewEncapsulation,
 } from "@angular/core";
 import {
-  AgTableComponent,
+  AgTable,
   TableColumn,
   TableOption,
 } from "ts-ui/ag-table";
@@ -68,8 +68,8 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     domLayout: "normal",
   };
 
-  @ViewChild(AgTableComponent, { static: true })
-  agTable: AgTableComponent<CateView>;
+  @ViewChild(AgTable, { static: true })
+  agTable: AgTable<CateView>;
 
   instance: DynamicDialogComponent;
 

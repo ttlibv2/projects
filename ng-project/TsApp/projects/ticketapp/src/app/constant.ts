@@ -5,8 +5,8 @@ import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {ToastConfig} from "ts-ui/toast";
 
 export const routerUrl = {
-    signinUrl: '/signin',
-    signupUrl: '/signup',
+    signinUrl: '/auth/signin',
+    signupUrl: '/auth/signup',
     template: '/templates',
     form_ticket: '/ticket-form',
 };

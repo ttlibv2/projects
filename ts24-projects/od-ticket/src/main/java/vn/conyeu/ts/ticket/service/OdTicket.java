@@ -194,7 +194,7 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
         sendPost(object, call_kwUri("message_unsubscribe"));
     }
 
-    public ClsMailComposeMsg actionReply(Long ticketNumber, Long[] partnerIds, String subject, String body) {
+    public ClsMailComposeMsg sendMail(Long ticketNumber, Long[] partnerIds, String subject, String body) {
 
         // callButton
         Object[] uids = new Object[] { ticketNumber};
@@ -213,6 +213,10 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
         cls.setBody(body);
 
         Long mailId = odComposeMsg.create(reply, cls);
+
+
+
+
         cls.setId(mailId);
         return cls;
     }

@@ -9,6 +9,7 @@ import {InputTextModule} from "primeng/inputtext";
 import {TranslateModule} from "@ngx-translate/core";
 import {ButtonModule} from "primeng/button";
 import {ApiInfoModule} from "../api-info/api-info.module";
+import { DividerModule } from 'primeng/divider';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import {ApiInfoModule} from "../api-info/api-info.module";
     CommonModule,
     UserInfoRoutingModule,
     ReactiveFormsModule,
+    DividerModule,
     CardModule,
     InputTextModule,
     TranslateModule,

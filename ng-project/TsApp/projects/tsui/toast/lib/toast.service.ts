@@ -352,6 +352,8 @@ export class ToastService {
         config.severity = notBlank(severity) ? severity : config.severity;
         config.toastComponent = config.toastComponent ?? ToastItem;
 
+        //console.log('config', config)
+
         // toastr config
         const tConfig: Partial<IndividualConfig> = {...config};
         tConfig.positionClass =  `${config.toastClass}-${config.position ?? 'top-right'}`;

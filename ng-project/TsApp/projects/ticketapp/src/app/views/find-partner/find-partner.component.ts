@@ -8,7 +8,7 @@ import { OdTicketService } from '../../services/od.service';
 import { ClsPartner, ClsSearch } from '../../models/od-cls';
 import { LoggerService } from 'ts-ui/logger';
 import { Page } from '../../models/common';
-import { AgTableComponent, TableOption } from 'ts-ui/ag-table';
+import { AgTable, TableOption } from 'ts-ui/ag-table';
 import {StorageService} from "../../services/storage.service";
 
 const { isBlank, notBlank, notNull } = Objects;
@@ -81,8 +81,8 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
   allowNew: boolean = false;
   showToolbar: boolean = false;
 
-  @ViewChild(AgTableComponent, { static: true }) 
-  agTable: AgTableComponent<ClsPartner>;
+  @ViewChild(AgTable, { static: true }) 
+  agTable: AgTable<ClsPartner>;
 
  // gridApi: GridApi = undefined;
 

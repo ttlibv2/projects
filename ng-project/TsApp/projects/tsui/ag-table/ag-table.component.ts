@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { ExcelCreator, ITableNode, TableApi, TableColumn, TableOption, TableReadyEvent, TableRowClick } from './ag-table.common';
-import { ColDef, Column, GetRowIdFunc, GridOptions, GridReadyEvent } from '@ag-grid-community/core';
+import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ExcelCreator, ExportXslOption, ITableNode, TableApi, TableColumn, TableOption, TableReadyEvent, TableRowClick } from './ag-table.common';
+import { ColDef, Column, GetCellValueParams, GetRowIdFunc, GridOptions, GridReadyEvent, IRowNode } from '@ag-grid-community/core';
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { AG_CONFIG_TOKEN, AgTableConfig } from './ag-table.config';
 import { AgI18N } from './ag-table.i18n';
 import { Asserts, Consumer, JsonAny, Objects } from 'ts-ui/helper';
+import { Workbook } from 'exceljs';
+import { Observable, Observer } from 'rxjs';
 
 const { notNull, mergeDeep } = Objects;
 
@@ -15,14 +17,13 @@ const { notNull, mergeDeep } = Objects;
   templateUrl: './ag-table.component.html',
   styles: ` :host { display: block; }  `,
   encapsulation: ViewEncapsulation.None,
-  //changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AgTableComponent<E = any> implements OnInit, OnChanges {
-  @Output()tableReady = new EventEmitter<TableReadyEvent>();
+export class AgTable<E = any> implements OnInit, OnChanges {
+  @Output() tableReady = new EventEmitter<TableReadyEvent>();
   @Output() rowClicked = new EventEmitter<TableRowClick<E>>();
 
   @Input() rows: any[] = [];
-  @Input() columns: TableColumn[] = [];  
+  @Input() columns: TableColumn[] = [];
   @Input() tableHeight: string = '250px';
   @Input() themeClass: string;
   @Input() components: JsonAny;
@@ -142,9 +143,6 @@ export class AgTableComponent<E = any> implements OnInit, OnChanges {
     })
   }
 
-
-
-
   /** Sets the state back to match the originally provided column definitions. */
   resetColumnState(): void {
     this.tableApi.resetColumnState();
@@ -155,8 +153,73 @@ export class AgTableComponent<E = any> implements OnInit, OnChanges {
     this.rowClicked.emit(event);
   }
 
+  getAllDisplayedColumns(): Column[] {
+    return this.tableApi.getAllDisplayedColumns();
+  }
+
   getSelectedRows(): E[] {
     return this.tableApi.getSelectedRows();
+  }
+
+  getSelectedNodes(): IRowNode<E>[] {
+    return this.tableApi.getSelectedNodes();
+  }
+
+  getCellValue<C>(params: GetCellValueParams<C>) {
+    return this.tableApi.getCellValue(params);
+  }
+
+  getRowValue(rowNode: IRowNode<E>, columns?: Column[]): JsonAny {
+    columns = columns || this.getAllDisplayedColumns();
+    return Objects.arrayToJson(columns, col => {
+      const value = this.getCellValue({ rowNode, colKey: col.getColId() });
+      return [col.getColId(), value];
+    });
+  }
+
+  exportXsl(options: Partial<ExportXslOption>): Observable<{fileName: string, blob: Blob}> {
+    options = Objects.mergeDeep({includeColId: true, sheetName: 'data'}, options);
+
+    return new Observable((observer: Observer<any>) => {
+      const allColumn = this.tableApi.getAllDisplayedColumns();
+      const columns = allColumn.map(col => ({
+        header: col.getColDef().headerName ?? col.getColId(),
+        key: col.getColId(),
+        with: col.getActualWidth()
+      }));
+
+
+      const excel = new Workbook();
+      const ws = excel.addWorksheet(options.sheetName || 'data');
+
+      // column header
+      ws.columns = columns.map(col => ({ header: col.header, key: col.key }));
+      
+      // row data
+      this.getSelectedNodes().forEach(node => {
+        ws.addRow(this.getRowValue(node, allColumn));
+      });
+
+      // include column id
+      if (options?.includeColId) {
+        ws.insertRow(2, Objects.arrayToJson(columns, col => [col.key, col.key]));
+        ws.getRow(2).hidden = true;
+      }
+
+      // export
+      const fileName = options?.fileName || 'excel_xsl.xlsx';
+
+      excel.xlsx.writeBuffer({  useStyles: true, filename: fileName })
+      .then(buffer => {
+        const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        const blob = new Blob([buffer], { type });
+        observer.next({fileName, blob});
+        observer.complete();
+      })
+      .catch(reason => observer.error(reason));
+
+    });
+
   }
 
   private createDefaultGridOption(): GridOptions {
@@ -184,7 +247,7 @@ export class AgTableComponent<E = any> implements OnInit, OnChanges {
         suppressHeaderMenuButton: true,
         suppressHeaderFilterButton: true
       },
-    
+
       getRowClass: (p: any) => {
         let n = p.node.rowIndex % 2;
         return `ag-grid-row-style-${n === 0 ? 0 : 1}`;

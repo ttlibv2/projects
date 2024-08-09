@@ -1,6 +1,8 @@
-<div class="ticket-form" id="ticketListForm" *ngIf="visibleForm" [@toggle]="visibleForm == true">
+@if(visibleForm){
+<div class="ticket-form" id="ticketListForm" [@toggle]="visibleForm == true">
     <ts-ticket-form [data]="currentTicket" (onSave)="saveTicket($event)" [hasBorderEnd]="true"></ts-ticket-form>
 </div>
+}
 
 
 <div class="ticket-list grid">
@@ -74,7 +76,7 @@
         </div>
 
 
-      
+
     </div>
 
     <div class="col-12">

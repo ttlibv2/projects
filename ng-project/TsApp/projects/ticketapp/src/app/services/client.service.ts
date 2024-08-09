@@ -83,17 +83,17 @@ export class ClientService {
 
       if(err.status === 0) {
         errorCode = 'disconnect';
-        object.disableTimeOut = true;
         object.message = 'Lỗi không kết nối được tới máy chủ';
         object.detail = `Vui lòng kiểm tra kết nối: ${baseUrl('Kiểm tra')}`;
+        object.timeOut = 10 * 1000;
       }
 
       else if(err.status === 500) {
         errorCode = error.code === 'e_500' ? 'e_server' : error.code;
         object.message = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')} <br>-> (${object.message})`;
-        object.disableTimeOut = true;
-        this.inject.alert.danger({summary: object.message, title: object.title});
-        showError = false;
+        object.timeOut = 10 * 1000;
+       // this.inject.toast.error(object);
+       // showError = false;
       }
 
       else if(err.status === 401 && errorCode === 'ts_api') {
@@ -141,6 +141,7 @@ export class ClientService {
   }
 
   private showError(object: Partial<ToastMessage>,visible: boolean, alertType: 'toast' | 'modal' = 'toast') {
+    //console.log('showError', object);
     if(visible) this.inject.toast.error(object);
   }
 

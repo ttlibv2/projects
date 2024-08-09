@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Objects } from "ts-ui/helper";
+import { Asserts, Objects } from "ts-ui/helper";
 import { UserService } from "../../services/user.service";
 import { ToastService } from "ts-ui/toast";
 import { ApiInfo } from "../../models/api-info";
@@ -42,7 +42,7 @@ export class ApiInfoComponent implements OnInit {
 
   lsApiCode: ApiInfo[];
 
-  @Input()
+  @Input({alias: 'api'})
   apiCode: string = undefined;
 
   constructor(
@@ -88,8 +88,7 @@ export class ApiInfoComponent implements OnInit {
     }
 
 
-    if (isBlank(this.apiCode)) this.loadApiCode();
-    else this.findApiCode(this.apiCode);
+   
   }
 
   allowEdit(checked: boolean): void {
@@ -103,7 +102,8 @@ export class ApiInfoComponent implements OnInit {
 
   onSelectApi(value: ApiInfo): void {
     if (Objects.isNull(value)) {
-      this.formGroup.reset();
+      console.log('vao')
+      this.formGroup.reset({}, {emitEvent: false, onlySelf: true});
     }
     else if (Objects.notNull(value.user_api)) {
       this.formGroup.patchValue(value.user_api);
@@ -171,7 +171,14 @@ export class ApiInfoComponent implements OnInit {
     }
   }
 
-  findApiCode(code: string = this.apiCode): void {
+  loadApi(): void {
+    if (isBlank(this.apiCode)) this.loadAllApi();
+    else this.findApiByCode(this.apiCode);
+  }
+
+  private findApiByCode(code?: string): void {
+    code = Asserts.notEmpty(code || this.apiCode);
+
     this.apiSrv.getByCode(code, this.user.user_id).subscribe({
       error: err => this.logger.error('findApiCode', err),
       next: data => {
@@ -187,20 +194,13 @@ export class ApiInfoComponent implements OnInit {
     });
   }
 
-  loadApiCode() {
-    this.formGroup.disable();
+  private loadAllApi() {
+    //this.formGroup.disable();
     this.apiSrv.findAll().subscribe({
       error: err => this.logger.error('loadApiCode', err),
       next: page => {
         this.toast.success(this.config.i18n.loadApiOk );
-        this.form.pathControl('api_item', page.data[0]);
-
-
-
-        //this.formGroup.get('api_item').patchValue(res?.data[0]);
-        //this.onSelectApi(res?.data[0]);
-        //this.allowEdit(false);
-        //return of((res.data));
+        this.lsApiCode = page.data || [];
       }
 
     })

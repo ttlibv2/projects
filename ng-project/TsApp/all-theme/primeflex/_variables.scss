@@ -1,7 +1,7 @@
 $prefix: '' !default;
 $separator: '\\:' !default;
 
-$sm: 576px !default;
+$sm: 576px !default; 
 $md: 768px !default;
 $lg: 992px !default;
 $xl: 1200px !default;
@@ -10,8 +10,8 @@ $gutter: .5rem !default;
 $col_gutter:  .25rem $gutter!default;
 $media_gutter: .25rem $gutter!default;
 
-$fieldMargin: 1rem !default;
-$fieldLabelMargin: $gutter !default;
+$fieldMargin: .5srem !default;
+$fieldLabelMargin: .25rem !default;
 $helperTextMargin: .25rem !default;
 
 $spacer: 1rem !default;

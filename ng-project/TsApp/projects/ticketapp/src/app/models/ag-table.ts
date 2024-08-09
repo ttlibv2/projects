@@ -3,6 +3,7 @@ import { BaseModel } from "./base-model";
 import { AssignObject } from "./common";
 import { MenuItem } from "primeng/api";
 import { Objects } from "ts-ui/helper";
+import { ValueGetterFunc } from "@ag-grid-community/core";
 
 export interface AgColumnState {
   colId: string;
@@ -90,7 +91,7 @@ export class AgColumn extends BaseModel {
   width: number;
   hide: boolean;
   headerName: string;
-  valueGetter: string;
+  valueGetter:  string | ValueGetterFunc;
   cellRenderer: any;
   position: number;
 

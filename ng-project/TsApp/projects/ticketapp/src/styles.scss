@@ -14,7 +14,6 @@
 @import "primeicons/primeicons.css";
 @import "primeng/resources/primeng.css";
 
-@import 'ckeditor5/ckeditor5.css';
 
 
 // @import "primeflex/primeflex.min.css";
@@ -30,7 +29,7 @@
 }
 
 .p-dynamic-dialog {
-  flex: 1 1 auto;
+ // flex: 1 1 auto;
 
   &:not(.p-dialog-maximized) {
     max-width: 60%;

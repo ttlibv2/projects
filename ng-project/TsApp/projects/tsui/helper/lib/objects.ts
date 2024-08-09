@@ -1,6 +1,6 @@
 import crypto from 'crypto-js';
 import { Type } from "@angular/core";
-import {Callback} from './function';
+import {BiFunction, Callback} from './function';
 import {JsonAny, JsonKeyType} from "./common";
 
 export class Objects {
@@ -300,8 +300,8 @@ export class Objects {
     return target;
   }
 
-  static arrayToJson<E, K extends JsonKeyType, V>(array: E[], mapFunction: Callback<E, [K, V]>): JsonAny {
-    return Object.fromEntries(array.map(item => mapFunction(item)));
+  static arrayToJson<E, K extends JsonKeyType, V>(array: E[], mapFunction: BiFunction<E,number, [K, V]>): JsonAny {
+    return Object.fromEntries(array.map((item, index) => mapFunction(item, index)));
   }
 
   static getter(object: any, field: string): any {
@@ -329,6 +329,12 @@ export class Objects {
       return object;
     }
   }
+
+  static fillArray(length: number): Array<number> {
+    return Array.from({length}, (v, i) => i);
+  }
+
+ 
 
 }
 
