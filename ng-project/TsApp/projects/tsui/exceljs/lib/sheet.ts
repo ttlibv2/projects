@@ -28,7 +28,7 @@ export class Sheet {
         const columnKeys =(<any>this.ws)['_key'];
         Object.keys(columnKeys).forEach(colKey => this.setColumn(colKey));
 
-        
+
     }
 
     get workbook(): Workbook {
@@ -120,8 +120,12 @@ export class Sheet {
     /** Set the autoFilter? */
     set autoFilter(value: AutoFilter) { this.ws.autoFilter=value;}
 
-    getColumnKey(key: string): Column {
-        return this.newColumn(this.ws.getColumnKey(key));
+    getColumn(key: string): Column {
+        if(!this.columns.containsKey(key)) {
+            const ecol = this.ws.getColumnKey(key);
+            return this.setColumn(ecol);
+        }
+        return this.columns.get(key);
     }
 
     setColumnKey(key: string, value: Column): void {}
@@ -135,12 +139,9 @@ export class Sheet {
 
 
 
-    private newColumn(col: EColumn) {
-        return Column['from'](this, col);
-    }
-
-    private setColumn(col: EColumn | string) {
-        const ecol = typeof col === 'string' ? this.ws.getColumnKey(col) : col;
-        this.columns.set(ecol.key, this.newColumn(ecol));
+    private setColumn(ecol: EColumn): Column {
+        const col = Column['from'](this, ecol);
+        this.columns.set(ecol.key, col);
+        return col;
     }
 }
