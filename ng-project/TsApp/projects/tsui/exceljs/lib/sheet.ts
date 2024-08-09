@@ -3,6 +3,7 @@ import {AutoFilter, HeaderFooter, PageSetup, WorksheetProperties, WorksheetState
 import {WorksheetViewCommon, WorksheetViewNormal, WorksheetViewFrozen} from "exceljs";
 import {Workbook} from "./workbook";
 import {Column} from "./column";
+import {TsMap} from "ts-ui/helper";
 
 export type SheetViewFrozen = WorksheetViewCommon & WorksheetViewFrozen
 export type SheetViewNormal = WorksheetViewCommon & WorksheetViewNormal;
@@ -14,7 +15,20 @@ export class Sheet {
         return new Sheet(wb, ws);
     }
 
-    private constructor(private wb: Workbook, private ws: EWS) {
+    private columns = new TsMap<string, Column>();
+
+    private constructor(private wb: Workbook,
+                        private ws: EWS) {
+        this.initialize();
+    }
+
+    private initialize() {
+
+        // initialize columnKeys
+        const columnKeys =(<any>this.ws)['_key'];
+        Object.keys(columnKeys).forEach(colKey => this.setColumn(colKey));
+
+        
     }
 
     get workbook(): Workbook {
@@ -107,20 +121,26 @@ export class Sheet {
     set autoFilter(value: AutoFilter) { this.ws.autoFilter=value;}
 
     getColumnKey(key: string): Column {
-        return this
+        return this.newColumn(this.ws.getColumnKey(key));
     }
 
-    setColumnKey(key: string, value: Column): void;
+    setColumnKey(key: string, value: Column): void {}
 
-    deleteColumnKey(key: string): void;
+    deleteColumnKey(key: string): void {}
 
-    eachColumnKey(callback: (col: Column, index: number) => void): void;
-
-
+    eachColumnKey(callback: (col: Column, index: number) => void): void {}
 
 
 
 
 
 
+    private newColumn(col: EColumn) {
+        return Column['from'](this, col);
+    }
+
+    private setColumn(col: EColumn | string) {
+        const ecol = typeof col === 'string' ? this.ws.getColumnKey(col) : col;
+        this.columns.set(ecol.key, this.newColumn(ecol));
+    }
 }
