@@ -4,43 +4,55 @@
         <div class="grid">
             <div class="p-fluid field col-12">
                 <label>Chọn loại dữ liệu muốn nạp</label>
-                <p-dropdown [options]="files" optionLabel="label" class="flex-1" showClear="true"
-                    placeholder="Chọn loại dữ liệu muốn nạp" formControlName="fileXsl" 
-                    (onChange)="changeFileXsl($event.value)"></p-dropdown>
+                <p-dropdown [options]="files" optionLabel="label" class="flex-1"
+                    placeholder="Chọn loại dữ liệu muốn nạp" formControlName="urlFile"
+                    (onChange)="changeUrlFile($event.value)"></p-dropdown>
             </div>
             <div class="col-12 flex flex-column gap-2">
                 <label>- Hướng dẫn nhập liệu trong file mẫu.</label>
-                <label>- Tải file mẫu <a [attr.href]="currentFile?.url" target="_blank" (click)="downloadFileMau()">tại
+                <label>- Tải file mẫu <a [attr.href]="urlFile?.link" target="_blank" (click)="downloadFileMau()">tại
                         đây</a> nếu chưa có.</label>
             </div>
 
             <p-divider class="col-12"></p-divider>
             <div class="p-fluid field col-6">
                 <label>Chọn tệp excel</label>
-                <p-fileUpload mode="basic" [multiple]="false" [chooseLabel]="chooseLabel" [accept]="currentFile?.accept"
-                    (onSelect)="chooseFile($event.currentFiles)" [disabled]="chooseDisable"></p-fileUpload>
+                <p-fileUpload mode="basic" [multiple]="false" [chooseLabel]="'chooseLabel'" [accept]="urlFile?.accept"
+                    (onSelect)="chooseFile($event.currentFiles)" [disabled]="false"></p-fileUpload>
             </div>
             <div class="p-fluid field col-6">
                 <label>Dữ liệu mặc định</label>
-                <p-dropdown [options]="templates" optionLabel="title" showClear="true" filter="false"
-                    placeholder="Chọn dữ liệu mặc định" virtualScroll="true" formControlName="template"
-                    (onChange)="changeTemplate($event.value)" [overlayOptions]="overlayOptions"></p-dropdown>
-            </div>
-            <div class="p-fluid field col-6">
-                <label>Sheet</label>
-                <p-dropdown [options]="sheets" placeholder="Chọn [Sheet]" formControlName="sheetName"
-                    (onChange)="changeSheet($event.value)" [overlayOptions]="overlayOptions"></p-dropdown>
-            </div>
-            <div class="p-fluid field col-3">
-                <label>Dòng bắt đầu</label>
-                <p-inputNumber step="1" min="3" placeholder="Nhập số dòng" formControlName="beginRow"></p-inputNumber>
-            </div>
-            <div class="p-fluid field col-3">
-                <label>Dòng kết thúc <i class="text-danger">[{{maxRow}}]</i></label>
-                <p-inputNumber [min]="3" [max]="maxRow" placeholder="Nhập số dòng"
-                    formControlName="endRow"></p-inputNumber>
+                <p-dropdown [options]="defaults" optionLabel="title" showClear="true" filter="false"
+                            placeholder="Chọn dữ liệu mặc định" virtualScroll="true" formControlName="defaultData"
+                            (onChange)="changeDefaultData($event.value)" [overlayOptions]="overlayOptions"></p-dropdown>
             </div>
         </div>
+
+        <ng-container formArrayName="sheets">
+            <ng-container *ngFor="let f of sheets.controls; let i = index">
+                <div class="grid mt-2" [formGroupName]="i">
+                    <div class="p-fluid field col-3">
+                        <label>Sheet</label>
+                        <p-dropdown [options]="sheetNames" editable="true" placeholder="Chọn [Sheet]" formControlName="sheetName"
+                                    (onChange)="changeSheet(i, $event.value)" [overlayOptions]="overlayOptions"></p-dropdown>
+                    </div>
+                    <div class="p-fluid field col-3">
+                        <label>Dòng ID</label>
+                        <p-inputNumber step="1" min="3" placeholder="Nhập số dòng" formControlName="fieldIndex"></p-inputNumber>
+                    </div>
+                    <div class="p-fluid field col-3">
+                        <label>Dòng bắt đầu</label>
+                        <p-inputNumber step="1" min="3" placeholder="Nhập số dòng" formControlName="beginRow"></p-inputNumber>
+                    </div>
+                    <div class="p-fluid field col-3">
+                        <label>Dòng kết thúc</label>
+                        <p-inputNumber [min]="3"  placeholder="Nhập số dòng" formControlName="endRow"></p-inputNumber>
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+
+
     </p-fieldset>
 
     <div class="grid mt-2">

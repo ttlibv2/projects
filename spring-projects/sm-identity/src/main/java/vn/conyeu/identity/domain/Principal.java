@@ -1,23 +1,41 @@
 package vn.conyeu.identity.domain;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.DateHelper;
 import vn.conyeu.commons.utils.Objects;
 
 import java.util.Collection;
 
+@Getter
 public class Principal implements UserDetails {
     private final ObjectMap custom = new ObjectMap();
+    /**
+     * -- GETTER --
+     *  Returns the account
+     */
+    @Getter
     private final Account account;
-    private final String sessionId;
+    private String sessionId;
+
+
+    public Principal(Account account) {
+        this.account = account;
+    }
 
     public Principal(Account account, String sessionId) {
         this.account = account;
         this.sessionId = sessionId;
-        //this.account.setInfo(null);
     }
+
+    public void setSessionId(String sessionId) {
+        Asserts.isNull(this.sessionId, "The sessionId has set");
+        this.sessionId = sessionId;
+    }
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return account.getAuthorities();
     }
@@ -50,17 +68,6 @@ public class Principal implements UserDetails {
         return account.getId();
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    /**
-     * Returns the account
-     */
-    public Account getAccount() {
-        return account;
-    }
-
     public void set(String field, Object value) {
         if(value == null) custom.remove(field);
         else custom.set(field, value);
@@ -83,4 +90,5 @@ public class Principal implements UserDetails {
     public ObjectMap custom() {
         return custom;
     }
+
 }

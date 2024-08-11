@@ -13,5 +13,5 @@
     <entry key="account.disabled">User is not active</entry>
     <entry key="account.expired">User account has expired</entry>
     <entry key="account.credentialsExpired">User credentials have expired</entry>
-    <entry key="AbstractUserDetailsAuthenticationProvider.badCredentials">Thông tin đăng nhập không đúng</entry>
+    <entry key="AbstractUserDetailsAuthenticationProvider.badCredentials">Bạn chưa nhập đúng mật khẩu</entry>
 </properties>

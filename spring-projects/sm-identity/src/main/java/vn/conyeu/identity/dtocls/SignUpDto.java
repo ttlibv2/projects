@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import vn.conyeu.common.converter.ListStringToString;
+import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.identity.domain.SignupType;
 
 import java.io.Serializable;
@@ -57,6 +58,10 @@ public class SignUpDto implements Serializable {
 
     @JsonProperty("signup_type")
     private SignupType signupType = SignupType.email;
+
+    public String getDecodePwd() {
+        return Objects.decodeBase64ToString(password);
+    }
 
 
 }

@@ -10,7 +10,7 @@ export interface ValueOption {
 export type TControl<E> = {[K in keyof E]?: any};
 export type ControlKey<E> = string & keyof TControl<E>;
 
-export class Forms<E> {
+export class Forms<E=any> {
 
     static builder<E>(fb: FormBuilder, controls: TControl<E>, options?:AbstractControlOptions): Forms<E> {
         return new Forms<E>(fb, <FormGroup>fb.group(controls, options));

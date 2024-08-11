@@ -17,6 +17,7 @@ $prefix: ".p-alert";
   .p-dialog-content {
     padding: 0.7rem 1rem;
     background: transparent;
+    max-width: 500px;
 
     > div {
       display: flex;

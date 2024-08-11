@@ -5,6 +5,8 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.service.LongUIdService;
 import vn.conyeu.commons.utils.Asserts;
@@ -31,9 +33,6 @@ public class TokenService extends LongUIdService<AccountToken, AccountTokenRepo>
         this.config = config;
     }
 
-    /**
-     * Returns the jwtConfig
-     */
     public JwtConfig getConfig() {
         return config;
     }
@@ -108,9 +107,8 @@ public class TokenService extends LongUIdService<AccountToken, AccountTokenRepo>
                 .claim("authorities", principal.getAuthorities());
     }
 
-    public JwtBuilder buildJwt(Account account) {
-        Principal principal = buildPrincipal(account);
-        return buildJwt(principal);
+    public JwtBuilder buildJwt(Account account, String sessionId) {
+        return buildJwt(new Principal(account, sessionId));
     }
 
     public AuthToken buildToken(Principal principal) {
@@ -118,7 +116,8 @@ public class TokenService extends LongUIdService<AccountToken, AccountTokenRepo>
     }
 
     public AuthToken buildToken(Account account) {
-        return buildToken(buildJwt(account));
+        String sessionId = createAndSaveSessionId(account.getId());
+        return buildToken(buildJwt(account, sessionId));
     }
 
     private AuthToken buildToken(JwtBuilder tokenBuilder) {
@@ -128,17 +127,13 @@ public class TokenService extends LongUIdService<AccountToken, AccountTokenRepo>
                 .setAccessToken(tokenBuilder.compact());
     }
 
-    public Principal buildPrincipal(Account account) {
-        String token = buildTokenId(account.getId());
+    public String createAndSaveSessionId(Long accountId) {
+        String token = buildTokenId(accountId);
         AccountToken accountToken = new AccountToken();
-        accountToken.setAccount(account);
+        accountToken.setAccount(new Account(accountId));
         accountToken.setToken(token);
-
-        save(accountToken);
-
-        return new Principal(account, token);
+        return save(accountToken).getToken();
     }
-
 
     public boolean isTokenValid(String token, Principal principal) {
         String udUser = principal.getSessionId();

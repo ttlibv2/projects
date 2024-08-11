@@ -1,18 +1,22 @@
 package vn.conyeu.ts.odcore.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
 import vn.conyeu.common.exception.BaseException;
+import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
+import vn.conyeu.ts.odcore.service.OdClient;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+@Getter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ClsApiCfg implements Serializable, Cloneable {
     private String apiCode;
@@ -44,12 +48,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return cookieValue != null && clsUser != null;
     }
 
-    /**
-     * Returns the baseUrl
-     */
-    public String getBaseUrl() {
-        return baseUrl;
-    }
 
     /**
      * Set the baseUrl
@@ -61,12 +59,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
-    /**
-     * Returns the loginPath
-     */
-    public String getLoginPath() {
-        return loginPath;
-    }
 
     /**
      * Set the loginPath
@@ -79,13 +71,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the cookieValue
-     */
-    public String getCookieValue() {
-        return cookieValue;
-    }
-
-    /**
      * Set the cookieValue
      *
      * @param cookieValue the value
@@ -95,12 +80,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
-    /**
-     * Returns the csrfToken
-     */
-    public String getCsrfToken() {
-        return csrfToken;
-    }
 
     /**
      * Set the csrfToken
@@ -148,12 +127,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
-    /**
-     * Returns the userName
-     */
-    public String getUserName() {
-        return userName;
-    }
 
     /**
      * Set the userName
@@ -165,12 +138,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
-    /**
-     * Returns the secret
-     */
-    public String getPassword() {
-        return password;
-    }
 
     /**
      * Set the secret
@@ -194,15 +161,8 @@ public class ClsApiCfg implements Serializable, Cloneable {
      * Returns the userId
      */
     public Long getUserId() {
-        Asserts.notNull(clsUser, "User not login");
-        return clsUser.getId();
-    }
-
-    /**
-     * Returns the clsUser
-     */
-    public ClsUser getClsUser() {
-        return clsUser;
+        //Asserts.notNull(clsUser, "User not login");
+        return clsUser == null ? null : clsUser.getId();
     }
 
     /**
@@ -218,13 +178,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the autoLogin
-     */
-    public boolean isAutoLogin() {
-        return autoLogin;
-    }
-
-    /**
      * Set the autoLogin
      *
      * @param autoLogin the value
@@ -232,13 +185,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
     public ClsApiCfg setAutoLogin(boolean autoLogin) {
         this.autoLogin = autoLogin;
         return this;
-    }
-
-    /**
-     * Returns the apiCode
-     */
-    public String getApiCode() {
-        return apiCode;
     }
 
     /**
@@ -252,13 +198,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the apiTitle
-     */
-    public String getApiTitle() {
-        return apiTitle;
-    }
-
-    /**
      * Set the apiTitle
      *
      * @param apiTitle the value
@@ -268,12 +207,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
-    /**
-     * Returns the customBuilderConsumer
-     */
-    public Consumer<ClientBuilder> getCustomBuilderConsumer() {
-        return customBuilderConsumer;
-    }
 
     /**
      * Set the customBuilderConsumer
@@ -323,4 +256,9 @@ public class ClsApiCfg implements Serializable, Cloneable {
         }
     }
 
+    public void checkUserLogin() {
+        if(clsUser == null) {
+           throw  OdClient.notLogin(apiCode);
+        }
+    }
 }

@@ -16,7 +16,7 @@ import vn.conyeu.ts.odcore.domain.ClsUser;
 
 //@formatter:off
 @Getter @Setter @NoArgsConstructor @DynamicInsert @DynamicUpdate
-@Entity @Table(uniqueConstraints = @UniqueConstraint(name = "USER_API_UID", columnNames = "apiId,userId"))
+@Entity @Table(indexes = @Index(name = "USER_API_UID", columnList = "apiId,userId", unique = true))
 @AttributeOverride(name = "id", column = @Column(name = "uniqueId"))
 @JsonIgnoreProperties({"api", "id", "user", "password", "userInfo"})
 //@formatter:on

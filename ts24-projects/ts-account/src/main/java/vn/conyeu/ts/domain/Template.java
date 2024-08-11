@@ -18,38 +18,33 @@ import vn.conyeu.common.converter.MapString;
 @Entity @Table(uniqueConstraints = @UniqueConstraint(name = "UID_USER", columnNames = {"entityCode","title","userId"}))
 @AttributeOverride(name = "id", column = @Column(name = "templateId"))
 @JsonIgnoreProperties({"user"})
+@DiscriminatorColumn(name = "thread", length = 30)
 //@formatter:on
 public class Template extends LongUIdDate<Template> {
 
-	@JsonProperty("entity_code")
-	@Column(length = 50, nullable = false)
-	private String entityCode;
-
 	@Column(length = 150, nullable = false)
 	private String title;
+
+	@JsonProperty("entity_code")
+	@Column(length = 30, nullable = false, updatable = false)
+	private String entityCode;
 
 	@Column(length = 20)
 	private String icon;
 
 	@Column(length = 300)
 	private String summary;
-	
-	@JsonProperty("bg_color")
-	private String bgColor;
-	
-	@JsonProperty("text_color")
-	private String textColor;
 
 	@ColumnDefault("0")
 	private Boolean shared;
 
 	@Convert(converter = MapString.class)
 	@Column(columnDefinition = "json")
-	private ObjectMap data;
+	private ObjectMap style;
 
 	@Convert(converter = MapString.class)
-    @Column(columnDefinition = "json")
-    private ObjectMap custom;
+	@Column(columnDefinition = "json")
+	private ObjectMap data;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userId", nullable = false)
@@ -84,18 +79,4 @@ public class Template extends LongUIdDate<Template> {
 		return data;
 	}
 
-	/**
-     * Returns the custom
-     */
-    @JsonAnyGetter
-    public ObjectMap getCustom() {
-        custom = ObjectMap.ifNull(custom);
-        return custom;
-    }
-
-	@JsonAnySetter
-    public void set(String field, Object data) {
-        getCustom().set(field, data);
-    }
-	
 }

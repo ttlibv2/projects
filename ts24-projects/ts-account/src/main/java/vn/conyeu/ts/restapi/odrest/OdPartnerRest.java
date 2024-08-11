@@ -1,20 +1,14 @@
-package vn.conyeu.ts.ticket_rest;
+package vn.conyeu.ts.restapi.odrest;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.dtocls.Errors;
 import vn.conyeu.ts.dtocls.TsVar;
-import vn.conyeu.ts.odcore.domain.ClsPage;
 import vn.conyeu.ts.odcore.domain.ClsSearch;
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.ClsPartner;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @PreAuthorize("isAuthenticated()")

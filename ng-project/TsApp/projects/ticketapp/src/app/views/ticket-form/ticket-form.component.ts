@@ -29,7 +29,7 @@ import { Alert } from "../../services/ui/alert/alert.service";
 import { ModalService } from "../../services/ui/model.service";
 import { routerUrl } from "../../constant";
 import { EmailTicketView } from "./email-ticket";
-import {DialogResult, InputData, XslTemplate} from "../shared/xsl-template";
+import {DefaultData, InputData, XslTemplate} from "../shared/xsl-template";
 
 const { notNull, notEmpty, isEmpty, isNull, notBlank } = Objects;
 
@@ -212,20 +212,21 @@ export class TicketFormComponent implements OnInit, OnChanges {
       this.currentTemplate = dialogInstance.data.template;
     }
 
-    this.importXsl();
-
     this.userLogin = this.storage.loginUser;
     console.log('userLogin', this.userLogin);
 
-    // this.loadCatalogs(true, true).subscribe({
-    //   next: _ => {
-    //     if (isEmpty(this.templates)) {
-    //       this.viewTemplateSetting();
-    //     }
+    this.loadCatalogs(true, true).subscribe({
+      next: _ => {
+        if (isEmpty(this.templates)) {
+          this.viewTemplateSetting();
+        }
 
-    //     else this.createNew(this.currentTemplate);
-    //   }
-    // });
+        else this.createNew(this.currentTemplate);
+
+        this.importXsl();
+
+      }
+    });
 
     
 
@@ -254,8 +255,7 @@ export class TicketFormComponent implements OnInit, OnChanges {
 
         const cateRef = this.modal.open(CatalogComponent, {
           header: 'Danh mục cần lấy ?',
-          closeOnEscape: true,
-          focusOnShow: false,
+          width: '700px',
           data: { templateCode: ['form_ticket', 'email_ticket'], autoLoad }
         });
 
@@ -573,22 +573,21 @@ export class TicketFormComponent implements OnInit, OnChanges {
   importXsl(): void {
     const ref = this.modal.open(XslTemplate, {
       header: 'Nạp dữ liệu ticket',
-      width: '600px',
+      width: '630px',
       data: {
-        templates: this.templates,
-        currentTemplate: this.currentTemplate,
-        files: [
-          {name: 'ticket_full.xslx', label: 'Ticket mặc định', link: '/assets/xsl/ticket_full.xslx', select: true},
-          {name: 'ticket_err.xslx', label: 'Mẫu báo cáo lỗi', link: '/assets/xsl/ticket_err.xslx'}
-        ]
+        url_files: [
+          {label: 'Mẫu mặc định', name: 'ticket_default.xslx', selected: true},
+          {label: 'Mẫu DS Lỗi', name: 'ticket_ds_loi.xslx', selected: false},
+        ],
+        defaults: this.templates.map(t=> ({label: t.title, item: t}) as DefaultData)
       } as InputData
     });
-
-    ref.onClose.subscribe({
-      next: (data: DialogResult<Ticket>) => {
-
-      } 
-    })
+    //
+    // ref.onClose.subscribe({
+    //   next: (data: DialogResult<Ticket>) => {
+    //
+    //   }
+    // })
 
 
   }

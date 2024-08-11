@@ -10,3 +10,4 @@ export * from './lib/list';
 export * from './lib/page';
 export * from './lib/base64';
 export * from './lib/forms';
+export * from './lib/files';

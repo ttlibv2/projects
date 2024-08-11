@@ -10,21 +10,19 @@ import { TicketService } from '../../services/ticket.service';
 import { AgStatusRenderer, AgTicketCell, AgCheckRenderer } from './ag-ticket-cell';
 import { DatePipe, DOCUMENT } from '@angular/common';
 import { TagRemoveEvent } from 'ts-ui/tag';
-import { AgColumn, AgTable } from '../../models/ag-table';
+import {AgTable } from '../../models/ag-table';
 import { AgTableTemplate } from './ag-table-template';
 import { FormsUtil } from './form-util';
 import { Alert } from '../../services/ui/alert/alert.service';
 import { RxjsUtil } from './rxjs-util';
 import { SaveTicketEvent } from '../ticket-form/ticket-form.component';
 import {
-  buffer,
   catchError,
   concatMap,
   delay,
   forkJoin,
   from,
   Observable,
-  Observer,
   of,
   Subscription,
   switchMap,
@@ -39,9 +37,6 @@ import { AgTemplateCode } from '../../constant';
 import { ModalService } from "../../services/ui/model.service";
 import { IRowNode } from '@ag-grid-community/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ExcelService } from '../shared/exceljs';
-import * as ExcelJs from 'exceljs';
-import { Template } from '../../models/template';
 import { TemplateFile } from '../shared/template-file';
 
 const { isNull, notNull, notBlank, isBlank } = Objects;
@@ -199,7 +194,6 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     private toast: ToastService,
     private modal: ModalService,
     private agService: AgTableService,
-    private excel: ExcelService,
     private logger: LoggerService,
     private datePipe: DatePipe,
     private storage: StorageService,

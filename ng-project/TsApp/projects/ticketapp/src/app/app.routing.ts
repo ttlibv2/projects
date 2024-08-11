@@ -3,10 +3,6 @@ import { Route, RouterModule } from '@angular/router';
 
 const appRoutes: Route[] = [
     {
-        path: '', 
-        loadChildren: () => import('./admin.routing').then(m => m.AdminRouting)
-    },
-    {
         path: 'auth/signin',
         loadChildren: () => import('./views/signin/signin.module').then(m => m.SigninModule)
     },
@@ -17,6 +13,10 @@ const appRoutes: Route[] = [
     {
         path: 'not-found',
         loadChildren: () => import('./views/error/error.module').then(m => m.ErrorModule)
+    },
+    {
+        path: '',
+        loadChildren: () => import('./admin.routing').then(m => m.AdminRouting)
     },
     {
         path: '**',

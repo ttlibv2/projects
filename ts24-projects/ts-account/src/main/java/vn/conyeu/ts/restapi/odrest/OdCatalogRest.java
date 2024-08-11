@@ -1,4 +1,4 @@
-package vn.conyeu.ts.ticket_rest;
+package vn.conyeu.ts.restapi.odrest;
 
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;

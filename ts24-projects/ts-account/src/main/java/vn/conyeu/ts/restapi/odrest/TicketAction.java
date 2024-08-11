@@ -1,4 +1,4 @@
-package vn.conyeu.ts.ticket_rest;
+package vn.conyeu.ts.restapi.odrest;
 
 public enum TicketAction {
     CREATE_TICKET,

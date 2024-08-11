@@ -13,5 +13,5 @@
     <entry key="account.disabled">Tài khoản của bạn chưa được kích hoạt</entry>
     <entry key="account.expired">Tài khoản của bạn đã hết hạn</entry>
     <entry key="account.credentialsExpired">Mật khẩu của bạn đã hết hạn</entry>
-    <entry key="AbstractUserDetailsAuthenticationProvider.badCredentials">Thông tin đăng nhập không đúng</entry>
+    <entry key="AbstractUserDetailsAuthenticationProvider.badCredentials">Bạn chưa nhập đúng mật khẩu</entry>
 </properties>

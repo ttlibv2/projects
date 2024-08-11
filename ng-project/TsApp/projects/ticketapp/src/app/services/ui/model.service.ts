@@ -11,6 +11,7 @@ const defaultConfig: DynamicDialogConfig = {
     resizable: false,
     showHeader: true,
     dismissableMask: false,
+    modal: true,
 }
 
 @Injectable({providedIn: 'root' })

@@ -77,6 +77,8 @@ public class TicketDetail extends LongUId<TicketDetail> {
     @JsonProperty("mail_id")
     private Long mailId;
 
+    private String contentEmail;
+
     @Convert(converter = MapString.class)
     @Column(columnDefinition = "json")
     private ObjectMap attach;

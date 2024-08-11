@@ -1,0 +1,42 @@
+<p>K&iacute;nh gửi:&nbsp;Qu&yacute; Kh&aacute;ch h&agrave;ng,&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>Sau khi kiểm tra tr&ecirc;n hệ thống th&igrave; thấy hồ sơ của m&atilde; đơn vị {{MADONVI}}, số hồ sơ {{SOHOSO}} nộp đến BHXH bị b&aacute;o lỗi v&agrave; nộp kh&ocirc;ng th&agrave;nh c&ocirc;ng. Anh Chị c&oacute; thể tra cứu lỗi trong Lịch sử giao dịch của phần mềm iBH ở cột số 7 - M&ocirc; tả lỗi sẽ thấy lỗi l&agrave; : Th&ocirc;ng Tin chữ k&yacute; số của đơn vị kh&ocirc;ng đ&uacute;ng với th&ocirc;ng tin đ&atilde; đăng k&yacute;&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>Anh/Chị khắc phục theo hướng dẫn sau v&agrave; v&agrave;o lại hồ sơ &gt; bấm Ghi (F5) &gt; Kết xuất v&agrave; k&yacute; nộp lại.</p>
+
+<p>&nbsp;</p>
+
+<p>Bước 1: Gắn thiết bị chữ k&yacute; số (USB Token) v&agrave;o m&aacute;y t&iacute;nh.</p>
+
+<p>Bước 2: Tr&ecirc;n thanh ti&ecirc;u đề chọn v&agrave;o mục &ldquo;Hồ sơ điện tử&rdquo; &gt; &ldquo;Thay đổi, bổ sung th&ocirc;ng tin đăng k&yacute; sử dụng dịch vụ I-Van&rdquo;.</p>
+
+<p><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXckpZNOxrcCxq8M3nPvTx_lAUTbs1Jl-3FZpwNOTp3qakhZhVDj7BcCvsmkqMy9_uEmctlJAUYVYoI9Ux3E7GSn-7LwyKezeQKDx-EZD1F2Ih9FveaBlrsWLB3RxldrGu-X4VlX9uLVD0s4QSBu0d9ifN8?key=P8OVVKlymbkDaW4XwfnmGA" style="height:106px; width:758px" /></p>
+
+<p>Phần Th&ocirc;ng tin chữ k&yacute; số đ&atilde; đăng k&yacute; l&agrave; phần th&ocirc;ng tin m&agrave; đơn vị đ&atilde; đăng k&yacute; với CQ BHXH trước đ&oacute;.</p>
+
+<p>Phần Th&ocirc;ng tin chữ k&yacute; số d&ugrave;ng để giao dịch, nếu c&oacute; thay đổi th&ocirc;ng tin email th&igrave; nhập email mới v&agrave;o, chọn t&ecirc;n chủ thể chứng thư số l&agrave; t&ecirc;n c&ocirc;ng ty &gt; nhấn Nộp để ho&agrave;n tất việc cập nhật.</p>
+
+<p><br />
+&nbsp;</p>
+
+<p><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdIQsJvu4_lqHQkd9r12nTbP1cgqYUDB4gG4G6whbDMCw3L-c9I7EN2lAeAkmQuzkavUF_9c-53sZU2pyDJbwdiXyIYBy4yfITGSAAphXP5ytmBJ0Xy99K_F2Dvof6uDc0jwSbFrAMPZd16-G3aS8Y-ZNYf?key=P8OVVKlymbkDaW4XwfnmGA" style="height:412px; width:758px" /></p>
+
+<p>&nbsp;</p>
+
+<p>Bước 3:: Thực hiện cập nhật xong, v&agrave;o mục Kết xuất b&aacute;o c&aacute;o &gt; Lịch sử giao dịch, kiểm tra t&igrave;nh trạng &quot;Đăng k&yacute; thay đổi th&ocirc;ng tin đơn vị sử dụng dịch vụ I-Van&quot;, nếu c&oacute; th&ocirc;ng b&aacute;o &ldquo;Hồ sơ đ&atilde; được chấp nhận&rdquo; l&agrave; th&ocirc;ng tin thay đổi đ&atilde; được cập nhật th&agrave;nh c&ocirc;ng tr&ecirc;n hệ thống.</p>
+
+<p><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXcO4JgalfSFu4aT4gwf0TCKWO3dxzLFpdqDfc21PxXVnrl1j80T07DBGP9_nCwZVjpyF1uA9QxhDqUB9wgqiy7A-vW49Ed0OROuDQVS6ReNoyVOZzv02KM215bsxsAH-blOUJUU5HqnUFN4B9AVNGvGT_Q?key=P8OVVKlymbkDaW4XwfnmGA" style="height:108px; width:758px" /></p>
+
+<p>Cột Kết quả giao dịch b&aacute;o Th&agrave;nh c&ocirc;ng l&agrave; th&ocirc;ng tin đăng k&yacute; thay đổi th&ocirc;ng tin đăng k&yacute; dịch vụ I-VAN đ&atilde; được hệ thống bảo hiểm x&atilde; hội x&aacute;c thực th&agrave;nh c&ocirc;ng (*).</p>
+
+<p>(*): sẽ mất một khoảng thời gian nhất định để c&oacute; thể nhận được kết quả phản hồi n&agrave;y từ hệ thống bảo hiểm x&atilde; hội</p>
+
+<p><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXf-QU8g0i1M5xRAsOmlGvM7VYL-GjahlANZdwRR6E7jNW4CNZUrVWw3n8aQjEaqzixA3MTvkulnjegcfJrfjK-kWrRTiGMXyVtPgacLpXLrXVgr60AZrSKgD_fsRsFOHAZ4cBIGIcq5rqjQIGwD6ugZuUA?key=P8OVVKlymbkDaW4XwfnmGA" style="height:329px; width:758px" /></p>
+
+<p>LƯU &Yacute;: Nếu Anh/Chị đ&atilde; kiểm tra v&agrave; gửi lai hồ sơ th&agrave;nh c&ocirc;ng th&igrave; vui l&ograve;ng bỏ qua email th&ocirc;ng b&aacute;o n&agrave;y. Nếu trong qu&aacute; tr&igrave;nh k&ecirc; khai hồ sơ ph&aacute;t sinh lỗi kh&aacute;c th&igrave; anh/chị vui l&ograve;ng soạn email mới rồi gửi v&agrave;o email: support@ts24.com.vn để TS24 hỗ trợ.</p>
+
+<p>Tr&acirc;n trọng cảm ơn!</p>

@@ -9,6 +9,7 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -78,7 +79,7 @@ public class PrincipalService implements UserDetailsService, UserDetailsChecker,
     }
 
     protected Principal createPrincipal(Account account) {
-        return tokenRepo.buildPrincipal(account);
+        return new Principal(account);
     }
 
     protected Unauthorized noUser(String field, Object data) {

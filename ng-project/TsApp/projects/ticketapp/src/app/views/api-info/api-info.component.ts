@@ -12,7 +12,7 @@ import { FormUtil } from '../../helper/form-util';
 import { User } from '../../models/user';
 import {ModalService} from "../../services/ui/model.service";
 
-const { notBlank, isBlank } = Objects;
+const { notBlank, isBlank, notNull } = Objects;
 
 
 
@@ -49,13 +49,12 @@ export class ApiInfoComponent implements OnInit {
     private fb: FormBuilder,
     private logger: LoggerService,
     private storage: StorageService,
-    private userSrv: UserService,
     private config: StorageService,
     private apiSrv: ApiInfoService,
     private toast: ToastService,
     private modal: ModalService,
     private dialogRef: DynamicDialogRef) {
-    this.user = this.storage.loginUser;
+
     this.form = FormUtil.create(
 
       () => this.fb.group({
@@ -80,15 +79,16 @@ export class ApiInfoComponent implements OnInit {
 
 
   ngOnInit() {
+    this.user = this.storage.loginUser;
 
     const instanceRef = this.modal.getInstance(this.dialogRef);
+    this.hasDialogRef = notNull(instanceRef);
+
     if(instanceRef && instanceRef.data) {
       this.apiCode = instanceRef.data['apiCode'];
-      this.hasDialogRef = true;
+      this.findApiByCode(this.apiCode);
     }
 
-
-   
   }
 
   allowEdit(checked: boolean): void {
@@ -102,7 +102,6 @@ export class ApiInfoComponent implements OnInit {
 
   onSelectApi(value: ApiInfo): void {
     if (Objects.isNull(value)) {
-      console.log('vao')
       this.formGroup.reset({}, {emitEvent: false, onlySelf: true});
     }
     else if (Objects.notNull(value.user_api)) {
@@ -214,7 +213,8 @@ export class ApiInfoComponent implements OnInit {
 
   static showDialog(modal: ModalService, apiCode: string) {
     modal.open(ApiInfoComponent, {
-     // header: 'Cấu hình thông tin xác thực',
+     header: 'Cấu hình thông tin xác thực',
+      width: '500px',
       data: { apiCode }
     })
 

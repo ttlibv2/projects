@@ -1,10 +1,11 @@
-package vn.conyeu.ts.ticket_rest;
+package vn.conyeu.ts.restapi.odrest;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.domain.Ticket;
@@ -22,11 +23,10 @@ import vn.conyeu.ts.ticket.service.OdTicket;
 import vn.conyeu.ts.ticket.service.OdTicketService;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -45,17 +45,6 @@ public class OdTicketRest extends OdBaseRest {
     public List<ClsTicket> findTicket(@RequestParam Map<String, Object> mapQuery, Pageable pg) {
         ClsPage clsPage = new ClsPage().limit(pg.getPageSize());
         return service().ticket().searchTicket(ObjectMap.clone(mapQuery), clsPage);
-    }
-
-    @GetMapping("get-by-sysid/{ticketId}")
-    public ClsTicket findTicketById(@PathVariable Long ticketId) {
-        Optional<Long> optional = ticketService.getTicketNumberById(ticketId);
-        if (optional.isEmpty()) throw Errors.odTicketNotCreate(ticketId);
-        else {
-            Long ticketNumber = optional.get();
-            return service().ticket().getByID(ticketNumber)
-                    .orElseThrow(() -> Errors.noOdTicketId(ticketNumber));
-        }
     }
 
     @GetMapping("get-by-uid/{ticketNumber}")
@@ -78,7 +67,7 @@ public class OdTicketRest extends OdBaseRest {
     }
 
     @GetMapping("delete-follow/{ticketNumber}")
-    public List<Long> deleteFollowExludeUser(@PathVariable Long ticketNumber) {
+    public List<Long> deleteFollowExcludeUser(@PathVariable Long ticketNumber) {
         return service().ticket().deleteFollow(ticketNumber);
     }
 
@@ -265,13 +254,50 @@ public class OdTicketRest extends OdBaseRest {
             throw Errors.noEmailTicket(ticket.getId());
         }
 
+        String emailHtml = ticket.getEmailHtml();
+        if(Objects.isBlank(emailHtml)) {
+            throw new BadRequest("email_html_404")
+                    .message("[%s] Ticket chưa đính kèm nội dung email", ticket.getId());
+        }
+
+        // extract and replace {{param...}} in html email
+        emailHtml = extractEmailHtml(emailHtml, ticket.getEmailObject());
+
         Long ticketNum = ticket.getDetail().getTicketNumber();
         Long[] partnerId = new Long[]{ticket.getOdPartnerId()};
 
         ClsMailComposeMsg msg = service.ticket().sendMail(ticketNum, partnerId,
-                ticket.getSubject(), ticket.getContentEmail());
+                ticket.getSubject(), emailHtml);
 
         return saveTicket(ticket, msg, TicketAction.SEND_MAIL);
+    }
+
+    private String extractEmailHtml(String html, ObjectMap object) {
+        final String regex = "\\{\\{(\\w+)}}";
+        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+        final Matcher matcher = pattern.matcher(html);
+
+        final Set<String> params = new HashSet<>();
+        final Set<String> allParams = new HashSet<>();
+
+        String newHtml = matcher.replaceAll(matchResult -> {
+            String name = matchResult.group(1).toLowerCase();
+            allParams.add(name);
+
+            if(object.containsKey(name)) return object.getString(name);
+            else {
+                params.add(name);
+                return "{{%s}}".formatted(name);
+            }
+        });
+
+        if(!params.isEmpty()) {
+            throw new BadRequest("html_invalid")
+                    .detail("name_invalid", params).detail("all_name", allParams)
+                    .message("Nội dung email chưa truyền đầy đủ thông tin -> %s", String.join(",", params));
+        }
+
+        return newHtml;
     }
 
     private void validateTicketNoSend(Ticket ticket, String message) {
@@ -334,6 +360,7 @@ public class OdTicketRest extends OdBaseRest {
                 detail = ticket.getDetail();
                 detail.setMailAt(LocalDateTime.now());
                 detail.setMailId(clsMsg.getId());
+                detail.setContentEmail(clsMsg.getBody());
             }
 
             case UPDATE_STAGE, CLOSE_TICKET -> {

@@ -25,7 +25,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
         super(apiRepo);
     }
 
-    @Cacheable(value = "UserApi", key = "{#userId, #apiCode}")
+    //@Cacheable(value = "UserApi", key = "{#userId, #apiCode}")
     public Optional<UserApi> findByApiCode(Long userId, String apiCode) {
         return repo().loadByApiCode(userId, apiCode);
     }

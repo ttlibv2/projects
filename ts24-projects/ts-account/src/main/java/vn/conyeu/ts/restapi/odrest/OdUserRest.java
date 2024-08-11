@@ -1,4 +1,4 @@
-package vn.conyeu.ts.ticket_rest;
+package vn.conyeu.ts.restapi.odrest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -6,7 +6,6 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.identity.annotation.PrincipalId;
 import vn.conyeu.ts.dtocls.Errors;
 import vn.conyeu.ts.dtocls.TsVar;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.UserApiService;
@@ -27,7 +26,8 @@ public class OdUserRest extends OdBaseRest {
     @PostMapping("login")
     public Object login(@PrincipalId Long userLogin) {
         ClsUser clsUser = service().login();
-        return ObjectMap.setNew("alert_msg", "Kiểm tra thông tin kết nối thành công");
+        return ObjectMap.setNew("alert_msg", "Kiểm tra thông tin kết nối thành công")
+                .set("result", clsUser);
     }
 
     @GetMapping("get-byid/{userId}")

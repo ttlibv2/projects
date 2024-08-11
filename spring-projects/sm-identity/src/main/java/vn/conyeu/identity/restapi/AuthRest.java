@@ -65,14 +65,15 @@ public class AuthRest {
         AccountInfo info = new AccountInfo();
         info.assignFromMap(ObjectMap.fromJson(dto));
 
+        String rawPwd = dto.getDecodePwd();
+
         Account account = new Account();
         account.setEmail(dto.getEmail());
         account.setPhone(dto.getPhone());
         account.setSignupType(dto.getSignupType());
-        account.setPassword(encoder.encode(dto.getPassword()));
-        account.setRawPassword(dto.getPassword());
+        account.setPassword(encoder.encode(rawPwd));
+        account.setRawPassword(rawPwd);
         account.setInfo(info);
-
 
         account = service.createNew(account);
         return tokenService.buildToken(account);

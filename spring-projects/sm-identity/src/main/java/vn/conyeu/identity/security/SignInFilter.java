@@ -83,6 +83,10 @@ public class SignInFilter extends UsernamePasswordAuthenticationFilter {
     // The 'auth' passed to successfulAuthentication() is the current authenticated user.
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         Principal principal = (Principal) authResult.getPrincipal();
+
+        String sessionId = tokenService.createAndSaveSessionId(principal.getUserId());
+        principal.setSessionId(sessionId);
+
         AuthToken authToken = tokenService.buildToken(principal);
         IdentityHelper.sendResponse(200, response, authToken);
     }

@@ -1,20 +1,19 @@
-import {from, Observable, of} from "rxjs";
-import {Workbook as EWB, WorkbookProperties, CalculationProperties, WorkbookView, Worksheet} from "exceljs";
+import * as js from "exceljs";
 import {Sheet} from "./sheet";
-import {BiConsumer} from "ts-ui/helper";
+import {Files, BiConsumer, Objects} from "ts-ui/helper";
 
 export class Workbook {
 
-    static openByBuffer(buffer: ArrayBuffer): Observable<Workbook> {
-        const wb = new EWB().xlsx.load(buffer);
-        return from(wb.then(iwb => new Workbook(iwb)));
+    static async openByBuffer(buffer: ArrayBuffer): Promise<Workbook> {
+        const wb = await new js.Workbook().xlsx.load(buffer);
+        return new Workbook(wb);
     }
 
-    static createNew(): Observable<Workbook> {
-        return of(new Workbook(new EWB()));
+    static createNew(): Workbook {
+        return new Workbook(new js.Workbook());
     }
 
-    private constructor(private readonly wb: EWB) {
+    private constructor(private readonly wb: js.Workbook) {
     }
 
     /** get the category */
@@ -118,12 +117,12 @@ export class Workbook {
     }
 
     /** get the properties */
-    get properties(): WorkbookProperties {
+    get properties(): js.WorkbookProperties {
         return this.wb.properties;
     }
 
     /** Set the properties */
-    set properties(value: WorkbookProperties) {
+    set properties(value: js.WorkbookProperties) {
         this.wb.properties = value;
     }
 
@@ -148,22 +147,22 @@ export class Workbook {
     }
 
     /** get the calcProperties */
-    get calcProperties(): CalculationProperties {
+    get calcProperties(): js.CalculationProperties {
         return this.wb.calcProperties;
     }
 
     /** Set the calcProperties */
-    set calcProperties(value: CalculationProperties) {
+    set calcProperties(value: js.CalculationProperties) {
         this.wb.calcProperties = value;
     }
 
     /** get the views */
-    get views(): WorkbookView[] {
+    get views(): js.WorkbookView[] {
         return this.wb.views;
     }
 
     /** Set the views */
-    set views(value: WorkbookView[]) {
+    set views(value: js.WorkbookView[]) {
         this.wb.views = value;
     }
 
@@ -203,8 +202,26 @@ export class Workbook {
         this.getSheets().forEach((sheet, index) => callback(sheet, index));
     }
 
-    private newSheet(ws: Worksheet) {
+    saveXsl(options?: Partial<js.XlsxWriteOptions>) {
+        options = Objects.mergeDeep({useSharedStrings: true, filename: this.title + '.xlsx'}, options);
+        this.wb.xlsx.writeBuffer(options).then(buffer => Files.newBlobXslx(buffer))
+            .then(blob => Objects.download(options.filename, blob));
+    }
+
+    saveCsv(options?: Partial<js.CsvWriteOptions>) {
+       // options = Objects.mergeDeep({...this.csvOption}, options);
+       // this.wb.csv.writeBuffer(options).then(buffer => )
+    }
+
+    private newSheet(ws: js.Worksheet) {
         return Sheet['from'](this, ws);
     }
+
+    csvOption: Partial<js.CsvWriteOptions> = {
+        dateFormat: 'yyyy-MM-ddTHH:mm:ss',
+        dateUTC: true,
+        encoding: 'UTF-8',
+        includeEmptyRows: false
+    };
 
 }

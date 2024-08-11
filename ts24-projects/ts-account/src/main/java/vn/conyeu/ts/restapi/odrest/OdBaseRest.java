@@ -1,4 +1,4 @@
-package vn.conyeu.ts.ticket_rest;
+package vn.conyeu.ts.restapi.odrest;
 
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.UserApiService;

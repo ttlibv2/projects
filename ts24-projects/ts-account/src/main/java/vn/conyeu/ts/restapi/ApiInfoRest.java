@@ -43,8 +43,7 @@ public class ApiInfoRest extends LongUIdRest<ApiInfo, ApiInfoService> {
                         .message("userid not support for api");
             }
             else {
-                apiInfo.setUserApi(userApiService.findByApiCode(userId, code)
-                        .orElseThrow(() -> service.noCode(code)));
+                apiInfo.setUserApi(userApiService.findByApiCode(userId, code).orElse(null));
             }
         }
 

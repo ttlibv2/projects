@@ -92,10 +92,6 @@ public class Ticket extends LongUIdDate<Ticket> {
     @Column(columnDefinition = "longtext")
     private String reply;
 
-    @JsonProperty("content_email")
-    @Column(columnDefinition = "longtext")
-    private String contentEmail;
-
     @JsonProperty("group_help")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "helpId")
@@ -143,11 +139,6 @@ public class Ticket extends LongUIdDate<Ticket> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "userId")
     private TsUser user;
-
-//    @Convert(converter = MapString.class)
-//    @Column(columnDefinition = "json")
-//    @JsonProperty("od_image")
-//    private ObjectMap odImage;
 
     @Column(length = 150)
     private String images;
@@ -225,6 +216,20 @@ public class Ticket extends LongUIdDate<Ticket> {
     @Column(columnDefinition = "json")
     private ObjectMap custom;
 
+    @JsonProperty("email_html")
+    @Column(columnDefinition = "longtext")
+    private String emailHtml;
+
+    @JsonProperty("email_template")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emailTemplate")
+    private Template emailTemplate;
+
+    @JsonProperty("email_object")
+    @Convert(converter = MapString.class)
+    @Column(columnDefinition = "json")
+    private ObjectMap emailObject;
+
     @JsonUnwrapped
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "ticket")
     private TicketDetail detail;
@@ -234,10 +239,10 @@ public class Ticket extends LongUIdDate<Ticket> {
 
     //-------------------@Transient
 
-    @JsonProperty("group_helpid") @Transient private Long groupHelpId;
-    @JsonProperty("support_helpid") @Transient  private Long supportHelpId;
-    @JsonProperty("software_id") @Transient private Long softwareId;
-    @JsonProperty("question_id") @Transient private Long questionId;
+    //@JsonProperty("group_helpid") @Transient private Long groupHelpId;
+    //@JsonProperty("support_helpid") @Transient  private Long supportHelpId;
+    //@JsonProperty("software_id") @Transient private Long softwareId;
+    //@JsonProperty("question_id") @Transient private Long questionId;
     @JsonProperty("chanels") @Transient private List<Chanel> chanels;
     @JsonProperty("imageBase64") @Transient private ObjectMap imageBase64;
 
@@ -253,18 +258,27 @@ public class Ticket extends LongUIdDate<Ticket> {
         set("report_token", token);
     }
 
+    public ObjectMap getEmailObject() {
+        if(emailObject == null) emailObject = new ObjectMap();
+        return emailObject;
+    }
+
+    @JsonProperty("edit_note")
     public boolean isEditNote() {
         return editNote == null || editNote;
     }
 
+    @JsonProperty("edit_ticket")
     public boolean isEditTicket() {
         return editTicket == null || editTicket;
     }
 
+    @JsonProperty("edit_reply")
     public boolean isEditReply() {
         return editReply == null || editReply;
     }
 
+    @JsonProperty("is_web")
     public boolean isWeb() {
         return "web".equals(source);
     }
@@ -323,15 +337,6 @@ public class Ticket extends LongUIdDate<Ticket> {
         return getDetail().getTicketNumber() != null;
     }
 
-    /**
-     * Set the source
-     *
-     * @param source the value
-     */
-    public void setSource(String source) {
-        this.source = source;
-    }
-
     @JsonIgnore
     public String getBodyHtml() {
         return body != null ? body.replace("\n", "<br/>") : null;
@@ -347,15 +352,9 @@ public class Ticket extends LongUIdDate<Ticket> {
         return note != null ? note.replace("\n", "<br/>") : null;
     }
 
-//    public boolean isUpFile() {
-//        if(Objects.isEmpty(odImage)) return false;
-//        else return !Objects.anyNull(odImage.values());
-//    }
-
     public boolean isEmailTicket() {
-        return Objects.notBlank(contentEmail);
+        return Objects.notBlank(emailHtml);
     }
-
 
     @Override
     public void assignFromMap(ObjectMap map) {

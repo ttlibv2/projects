@@ -3,10 +3,9 @@ package vn.conyeu.ts.dtocls;
 import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.NotFound;
-import vn.conyeu.ts.ticket_rest.TicketAction;
+import vn.conyeu.ts.restapi.odrest.TicketAction;
 
 import java.util.Collection;
-import java.util.List;
 
 public final class Errors {
 

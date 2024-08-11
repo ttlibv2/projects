@@ -212,13 +212,7 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
         cls.setSubject(subject);
         cls.setBody(body);
 
-        Long mailId = odComposeMsg.create(reply, cls);
-
-
-
-
-        cls.setId(mailId);
-        return cls;
+        return odComposeMsg.create(reply, cls);
     }
 
     public void deleteTicket(Long ticketNumber) {

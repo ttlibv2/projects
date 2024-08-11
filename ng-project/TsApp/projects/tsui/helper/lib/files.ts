@@ -1,11 +1,15 @@
 import { Objects } from "./objects";
 
-export class FileUtil {
+export class Files {
 
     static readonly ALL_ACCEPT = {
         xslx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         xsl: 'application/vnd.ms-excel'
     };
+
+    static newBlobXslx(buffer: ArrayBuffer): Blob {
+        return new Blob([buffer], {type:Files.ALL_ACCEPT.xslx});
+    }
 
     static extractAccept(extension: string, defaultValue: string): string {
         if(extension.includes('.')) {
@@ -13,7 +17,7 @@ export class FileUtil {
             extension = extension.substring(last+1);
         }
 
-        const accept = (<any>FileUtil.ALL_ACCEPT)[extension];
+        const accept = (<any>Files.ALL_ACCEPT)[extension];
         return Objects.notNull(accept) ? accept: defaultValue ?? extension;
     }
 

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriBuilder;
 import vn.conyeu.common.exception.BaseException;
+import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Lists;
@@ -29,6 +30,11 @@ public abstract class OdClient {
 
     protected OdClient(ClsApiCfg apiConfig) {
         this.cfg = apiConfig;
+    }
+
+    public static BaseException notLogin(String apiCode) {
+        return new Unauthorized("ts_api").detail("ts_api", apiCode)
+                .message("Bạn chưa cấu hình tài khoản kết nối hệ thống");
     }
 
     /**
@@ -112,9 +118,11 @@ public abstract class OdClient {
     }
 
     protected ClsUserContext createUserContext() {
-        Long userId = cfg.getUserId();
-        Object compId = cfg.getClsUser().getCompany_Uid();
-        ClsUserContext ctx = cfg.getUserContext();
+        cfg.checkUserLogin();
+        ClsUser clsUser = cfg.getClsUser();
+        Long userId = clsUser.getId();
+        Object compId = clsUser.getCompany_Uid();
+        ClsUserContext ctx = clsUser.getContext();
         ctx.set("allowed_company_ids", new Object[]{compId});
         return ClsUserContext.fix(userId, ctx);
     }

@@ -63,6 +63,10 @@ public class Account extends LongUIdDate<Account> {
             inverseJoinColumns = @JoinColumn(name = "roleId"))
     private Set<Role> roles;
 
+    public Account(Long entityId) {
+        super(entityId);
+    }
+
     /**
      * Set the info
      *

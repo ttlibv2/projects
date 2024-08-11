@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.commons.utils.Classes;
 import vn.conyeu.identity.helper.IdentityHelper;
 import vn.conyeu.restclient.ClientLogger;
@@ -19,8 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Service
-@Slf4j
+@Service @Slf4j
 public class OdService {
     final Map<Long, ServiceForUser> userServiceMap = new HashMap<>();
     final Map<String, ClsApiCfg> cfgDefaultMap = new HashMap<>();
@@ -110,7 +110,9 @@ public class OdService {
             if (override || !apiCfgMap.containsKey(apiCode)) {
                 updateConfig(userApiService
                         .findByApiCode(userId, apiCode).map(this::createClsApi)
-                        .orElseThrow(() -> Errors.noUserApiCode(apiCode)));
+                        //.orElseThrow(() -> Errors.noUserApiCode(apiCode)));
+                        .orElseThrow(() -> new Unauthorized("ts_api").detail("ts_api", apiCode)
+                                .message("Bạn chưa cấu hình tài khoản kết nối hệ thống")));
             }
 
             return apiCfgMap.get(apiCode);
