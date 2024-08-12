@@ -17,6 +17,7 @@
         <module name="od-client" />
         <module name="ts-account" />
         <module name="sm-web" />
+        <module name="ebook" />
         <module name="sm-client" />
         <module name="sm-exception" />
         <module name="ts-web" />
@@ -40,6 +41,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ebook" options="-parameters" />
       <module name="od-client" options="-parameters" />
       <module name="od-ticket" options="-parameters" />
       <module name="sm-account" options="-parameters" />

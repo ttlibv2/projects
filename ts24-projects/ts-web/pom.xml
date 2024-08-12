@@ -28,11 +28,15 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>vn.conyeu.ts</groupId>
-            <artifactId>ts-account</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>vn.conyeu.ts</groupId>-->
+<!--            <artifactId>ts-account</artifactId>-->
+<!--        </dependency>-->
 
+        <dependency>
+            <groupId>vn.conyeu</groupId>
+            <artifactId>ebook</artifactId>
+        </dependency>
         <!-- dev -->
 
         <dependency>
