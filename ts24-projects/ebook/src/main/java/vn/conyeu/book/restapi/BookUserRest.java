@@ -1,9 +1,9 @@
-package vn.conyeu.restapi;
+package vn.conyeu.book.restapi;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import vn.conyeu.domain.User;
-import vn.conyeu.service.UserService;
+import vn.conyeu.book.domain.User;
+import vn.conyeu.book.service.UserService;
 import vn.conyeu.common.restapi.LongUIdRest;
 
 @RestController

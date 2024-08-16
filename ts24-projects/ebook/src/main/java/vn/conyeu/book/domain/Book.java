@@ -1,4 +1,4 @@
-package vn.conyeu.domain;
+package vn.conyeu.book.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -8,8 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.domain.LongUIdDate;
-
-import java.util.List;
 
 //@formatter:off
 @Entity @Table(name="eb_book")

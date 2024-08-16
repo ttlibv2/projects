@@ -1,4 +1,4 @@
-package vn.conyeu.domain;
+package vn.conyeu.book.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,9 +36,9 @@ public class BookDto extends LongUIdDate<BookDto> {
     @Column(length = 500)
     private String poster;
 
-    private Double totalRate;
-
-    private Long totalReview;
+    private String totalRate;
+    private String totalReview;
+    private Long totalPage;
 
     private Long totalChapter;
 
@@ -61,6 +61,9 @@ public class BookDto extends LongUIdDate<BookDto> {
     @Column(length = 50)
     private String service;
 
+    private String postTime;
+    private Long currentPage;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "book")
     private List<ChapterDto> chapters;
 
@@ -71,4 +74,11 @@ public class BookDto extends LongUIdDate<BookDto> {
         if(chapters == null)chapters=new ArrayList<>();
         return chapters;
     }
+
+    public void addChapter(ChapterDto chapter) {
+        chapter.setBook(this);
+        getChapters().add(chapter);
+    }
+
+
 }

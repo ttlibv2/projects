@@ -1,4 +1,4 @@
-package vn.conyeu.domain;
+package vn.conyeu.book.domain;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;

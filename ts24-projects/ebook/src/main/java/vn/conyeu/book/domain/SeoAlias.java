@@ -1,4 +1,4 @@
-package vn.conyeu.domain;
+package vn.conyeu.book.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
