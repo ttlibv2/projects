@@ -11,6 +11,10 @@ const appRoutes: Route[] = [
         loadChildren: () => import('./views/signup/signup.module').then(m => m.SignupModule)
     },
     {
+        path: 'demo',
+        loadChildren: () => import('./views/demo/demo.module').then(m => m.DemoModule)
+    },
+    {
         path: 'not-found',
         loadChildren: () => import('./views/error/error.module').then(m => m.ErrorModule)
     },
@@ -21,7 +25,7 @@ const appRoutes: Route[] = [
     {
         path: '**',
         pathMatch: 'full',
-        redirectTo: '/not-found'
+        redirectTo: '/demo'
     }
 ];
 

@@ -16,6 +16,7 @@ import vn.conyeu.book.domain.BookDto;
 import vn.conyeu.book.domain.ChapterDto;
 import vn.conyeu.book.service.BookDtoService;
 import vn.conyeu.book.service.ChapterDtoService;
+import vn.conyeu.commons.utils.Objects;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -135,26 +136,27 @@ public class Test {
         Document html = getChapterDef();
 
         List<ChapterDto> chapterPage = chapterService.findSaveHtml(bookId, pageable).getContent();
+        ChapterDto first, last;
+        for(int pos=0;pos<chapterPage.size();pos++) {
+            first = chapterPage.get(pos);
 
-        for(ChapterDto chapter:chapterPage) {
             Document doc = html.clone();
-            doc.selectFirst("#chapter-title").text(chapter.getTitle());
-            doc.selectFirst("#chapter-html").html(chapter.getContentHtml());
+            doc.selectFirst("#chapter-title").text(first.getTitle());
+            doc.selectFirst("#chapter-html").html(first.getContentHtml());
 
-            String chapterNextUrl = truyenFull.getChapterUrlNext(chapter.getFullUrl())+".html";
-            doc.selectFirst("#chapter-link a").attr("href", "./"+chapterNextUrl);
+            last = Objects.getItemAt(chapterPage, pos+1);
+            String lastPage = last == null ? truyenFull.getChapterUrlNext(first.getFullUrl()) : last.getSeoUrl();
+            doc.selectFirst("#chapter-link a").attr("href", "./"+lastPage+".html");
 
-            String seoAlias = chapter.getSeoUrl()+".html";
+            String seoAlias = first.getSeoUrl()+".html";
             writeString(bookDir.resolve(seoAlias), doc);
 
             // update chapter
-            chapter.setSaveHtml(true);
-            chapterService.save(chapter);
+            first.setSaveHtml(true);
+            chapterService.save(first);
         }
 
         return chapterPage.size();
-
-
     }
 
     private static Document getChapterDef() {

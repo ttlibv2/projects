@@ -21,6 +21,7 @@
         <module name="sm-client" />
         <module name="sm-exception" />
         <module name="ts-web" />
+        <module name="od-demo" />
         <module name="sm-dslquery" />
       </profile>
       <profile name="Annotation profile for java-common" enabled="true">
@@ -43,6 +44,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ebook" options="-parameters" />
       <module name="od-client" options="-parameters" />
+      <module name="od-demo" options="-parameters" />
       <module name="od-ticket" options="-parameters" />
       <module name="sm-account" options="-parameters" />
       <module name="sm-address" options="-parameters" />

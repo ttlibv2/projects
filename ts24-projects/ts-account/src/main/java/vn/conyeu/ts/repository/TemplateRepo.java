@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface TemplateRepo extends LongUIdRepo<Template> {
 
-    @Query(value = "select e from #{#entityName} e where e.user.id=?2 and e.entityCode=?1",
-    countQuery = "select count(e) from #{#entityName} e where e.user.id=?2 and e.entityCode=?1")
-    Page<Template> findTemplateByUserAndCode(String entityCode, Long userId, Pageable pageable);
+    @Query(value = "select e from #{#entityName} e where e.user.id=?2 and e.thread=?1",
+    countQuery = "select count(e) from #{#entityName} e where e.user.id=?2 and e.thread=?1")
+    Page<Template> findTemplateByUserAndCode(String thread, Long userId, Pageable pageable);
 
     @Query(value = "select e from #{#entityName} e where e.user.id=?1 ",
             countQuery = "select count(e) from #{#entityName} e where e.user.id=?1 ")
@@ -21,9 +21,7 @@ public interface TemplateRepo extends LongUIdRepo<Template> {
     @Query("select e from #{#entityName} e where e.user.id=?1 ")
     List<Template> findTemplateByUser(Long userId);
 
-    @Query("select e from #{#entityName} e where e.user.id=?1 and e.entityCode in ?2")
-    List<Template> findTemplateByUser(Long userId, List<String> entityCodes);
+    @Query("select e from #{#entityName} e where e.user.id=?1 and e.thread in ?2")
+    List<Template> findTemplateByUser(Long userId, List<String> threads);
 
-    @Query("select count(e) > 0 from #{#entityName} e where e.user.id=?1 and e.entityCode=?2 and e.title=?3")
-    boolean existsByTitle(Long userId, String entity, String title);
 }

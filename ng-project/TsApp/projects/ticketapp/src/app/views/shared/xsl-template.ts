@@ -15,7 +15,8 @@ import { OverlayOptions } from "primeng/api";
 import { ModalService } from "../../services/ui/model.service";
 import {Workbook} from "ts-ui/exceljs";
 import {NgForOf} from "@angular/common";
-const { notNull, isNull, isBlank } = Objects;
+import {Observable, Observer} from "rxjs";
+const { notNull, isNull, isBlank, notBlank } = Objects;
 
 export interface UrlFile {
     label: string;
@@ -24,6 +25,7 @@ export interface UrlFile {
     accept?: string;
     selected?: boolean;
     sheets: string[];
+    downloadCmd?: any;
 }
 
 export interface DefaultData {
@@ -33,7 +35,7 @@ export interface DefaultData {
 }
 
 export interface InputData {
-    url_files: UrlFile[];
+    files: UrlFile[];
     defaults: DefaultData[];
 }
 
@@ -54,18 +56,7 @@ export class XslTemplate implements OnInit {
     @ViewChild(FileUpload, { static: true })
     fileUpload: FileUpload;
 
-
-    get formData(): any {
-        return this.forms?.formRawValue;
-    }
-
-    get defaultData(): DefaultData {
-        return this.formData?.defaultData;
-    }
-
-    get sheets(): FormArray {
-        return this.forms.getControl('sheets') as FormArray;
-    }
+    overlayOptions: OverlayOptions = {mode: 'modal'};
 
     forms: Forms;
     fileXsl: File;
@@ -75,40 +66,44 @@ export class XslTemplate implements OnInit {
     workbook: Workbook;
     sheetNames: string[] = [];
 
-
-
     constructor(private fb: FormBuilder,
         private modal: ModalService,
         private dialogRef: DynamicDialogRef,
         private toast: ToastService) {
     }
 
+    get formData(): any {return this.forms?.formRawValue;}
+    get defaultData(): DefaultData {return this.formData?.defaultData;}
+    get sheets(): FormArray {return this.forms.getControl('sheets') as FormArray;}
+    get disabledUrlFile(): boolean { return (this.files?.length || 0) <= 1; }
+    get chooseLabel(): string { return isNull(this.fileXsl) ? 'Chọn tệp đính kèm': `Đã chọn ${this.fileXsl.name}`;}
+
     ngOnInit(): void {
         let instanceData: Partial<InputData> = this.modal.getData(this.dialogRef) ?? {};
-        let  currentDefault = null;
+        let currentDefault = null;
 
         if (instanceData) {
-            this.files = instanceData.url_files || [];
-            this.files.forEach(f => Files.extractAccept(f.name, f.accept));
+            this.files = instanceData.files || [];
+            this.files.forEach(f => {
+                f.accept = f.accept ?? Files.extractAccept(f.name, null);
+               // f.downloadCmd = f.downloadCmd ?? (() => void);
+            });
+
+            this.urlFile = this.files.find(f => f.selected) ?? this.files[0];
             this.defaults = instanceData.defaults || [];
-            this.urlFile = this.files.find(f => f.selected);
 
             currentDefault = this.defaults.find(d => d.selected);
         }
 
+        const disabledUrlFile = this.files?.length <= 1;
         this.forms = Forms.builder(this.fb, {
-            urlFile: [this.urlFile, Validators.required],
+            urlFile: [{value: this.urlFile, disabled: disabledUrlFile}, Validators.required],
             defaultData: [currentDefault],
             sheets: this.fb.array([])
         });
 
-        this.addSheetControl();
-
+        this.changeUrlFile(this.urlFile);
     }
-
-
-
-    downloadFileMau(): void { }
 
     changeDefaultData(data: DefaultData) {
     }
@@ -130,39 +125,33 @@ export class XslTemplate implements OnInit {
                endRow: 99
            })
         }
-        // else {
-        //     this.worksheet = this.workbook.getWorksheet(sheet);
-
-
-        //     const { beginRow, endRow } = this.forms.formRawValue;
-
-        //     const view: any = this.worksheet.views?.find(v => v.state === 'frozen');
-        //     const fieldIndex = view?.ySplit || 2;//this.worksheet.views?.find(v => v.state === 'frozen')?.ySplit || 2;
-
-        //     const maxRow = this.worksheet.actualRowCount;
-        //     const ibeginRow = (isNull(beginRow) || beginRow <= fieldIndex || beginRow > maxRow) ? fieldIndex + 1 : beginRow;
-        //     const iendRow = isNull(endRow) ? maxRow : endRow > maxRow ? maxRow
-        //         : endRow < ibeginRow ? ibeginRow : endRow;
-
-
-        //     this.maxRow = maxRow;
-        //     this.fieldIndex = fieldIndex;
-        //     this.forms.pathValue({ beginRow: ibeginRow, endRow: iendRow, fieldIndex: fieldIndex });
-        // }
     }
+
+    onDownload(): void {}
 
     async chooseFile(files: File[]) {
         this.fileUpload.clear();
         this.fileXsl = files[0];
 
-        this.fileXsl.arrayBuffer().then(buffer => Workbook.openByBuffer(buffer))
-        // this.workbook = await this.file.arrayBuffer().then(buffer => new Workbook().xlsx.load(buffer));
-        // this.sheets = this.workbook.worksheets.map(s => s.name);
+        this.workbook = await Workbook.open(this.fileXsl);
+        this.sheetNames = this.workbook.getSheetNames();
 
-        // this.forms.pathValue({ sheetName: this.sheets[0] });
-        // this.forms.setDisableControl(false, ['sheetName', 'beginRow', 'endRow']);
+        if(this.urlFile.sheets?.length > 0) {
+            const names: any[] = this.sheets.getRawValue();
+            const hasError = names.some(item => !this.sheetNames.includes(item.sheetName));
+            if(hasError) {
+                this.toast.error('Tệp đính kèm đã chọn không đúng cấu trúc. Vui lòng tải mới ', 'Thông báo !!');
+                return;
+            }
+        }
 
-        // this.changeSheet(this.sheets[0]);
+        for(const ctrl of this.sheets.controls) {
+            const sheetName: string = ctrl.get('sheetName').getRawValue();
+            const sheet = this.workbook.getSheetByName(sheetName);
+            const beginRow = (sheet.frozenRows ?? 2) + 1;
+            ctrl.patchValue({beginRow, endRow: sheet.lastRow});
+        }
+
     }
 
     closeDialog(): void {
@@ -170,58 +159,37 @@ export class XslTemplate implements OnInit {
     }
 
     handleSubmit(): void {
-        // if (isNull(this.worksheet)) {
-        //     this.toast.warning('Vui lòng chọn [Sheet]');
-        //     return;
-        // }
 
-        // const result$ = new Observable((obsever: Observer<any>) => {
-        //     const { beginRow, endRow, fieldIndex, template, fileXsl } = this.forms.formRawValue;
+        const result$ = new Observable((observer: Observer<any>) => {
 
-        //     if (beginRow > endRow) {
-        //         this.forms.setControlError('beginRow', {});
-        //         obsever.error({ msg: 'Số dòng bắt đầu > Số dòng kết thúc' });
-        //         obsever.complete();
-        //     }
+            const result: any = {
+                defaultData: this.forms.getValue('defaultData'),
+                workbook: this.workbook,
+                fileXsl: this.fileXsl,
+                sheets: {}
+            };
 
-        //     const rowId = this.worksheet.getRow(fieldIndex);
-        //     const fields = this.getCellValue(rowId);
+            for(const ctrl of this.sheets.controls) {
+                const {sheetName, fieldIndex, beginRow, endRow} = ctrl.getRawValue();
 
-        //     const rows = this.worksheet
-        //         .getRows(beginRow, endRow - beginRow + 1)
-        //         .map(row => this.getCellValue(row))
-        //         .map(values => this.valuesToJson(fields, values));
+                const sheet = this.workbook.getSheetByName(sheetName);
+                const dataSheet: any = {sheetName, fieldIndex, beginRow, endRow};
 
-        //     obsever.next({fields, rows, template, fileXsl});
-        //     obsever.complete();
-        // });
+                dataSheet.rows = sheet.getJsonRow(fieldIndex, beginRow, endRow);
+                result.sheets[sheetName] = dataSheet;
+            }
 
+            observer.next(result);
+            observer.complete();
 
+        });
 
-        // this.asyncLoading = true;
-
-        // result$.subscribe({
-        //     error: obj => {
-        //         this.toast.error(obj.msg);
-        //         this.asyncLoading = false;
-        //     },
-        //     next: data => {
-        //         this.asyncLoading = false;
-        //         this.dialogRef.close(data);
-        //     }
-        // })
-
+        result$.subscribe(data => this.dialogRef.close(data));
     }
-
-
-
-    overlayOptions: OverlayOptions = {
-        mode: 'modal'
-    };
 
     private addSheetControl(sheetName?: string) {
         this.sheets.push(this.fb.group({
-            sheetName: [sheetName, Validators.required],
+            sheetName: [{value: sheetName, disabled: notBlank(sheetName)}, Validators.required],
             fieldIndex: [2, Validators.required],
             beginRow: [3, Validators.required],
             endRow: [3, Validators.required],

@@ -1,7 +1,8 @@
 import { booleanAttribute, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { MenuItem } from "primeng/api";
-import { Ticket, TicketTemplateData } from "../../models/ticket";
+import { Ticket } from "../../models/ticket";
+import {TicketTemplateData} from "../../models/template";
 import { TicketOption } from "../../models/ticket-option";
 import { FindPartnerComponent } from "../find-partner/find-partner.component";
 import { CatalogService } from "../../services/catalog.service";
@@ -14,7 +15,7 @@ import { ClsTeam } from "../../models/od-cls";
 import { LoggerService } from "ts-ui/logger";
 import { Observable, Observer, of, map } from "rxjs";
 import { Chanel } from "../../models/chanel";
-import { Template } from "../../models/template";
+import {EmailTemplateField, Template} from "../../models/template";
 import * as cls from "../../models/od-cls";
 import { CatalogComponent } from "../catalog/catalog.component";
 import { User } from "../../models/user";
@@ -163,7 +164,8 @@ export class TicketFormComponent implements OnInit, OnChanges {
   lsSoftName: string[] = [];
   currentTemplate: Template;
   userLogin: User;
-  viewTemplate: boolean = false;
+  viewTemplate: boolean = false
+  emailTemplate: EMailTe
 
   options: TicketOption = TicketOption.createDef();
   ticketIsSend: boolean = false;
@@ -530,11 +532,22 @@ export class TicketFormComponent implements OnInit, OnChanges {
   }
 
   changeEmailTemplate(template: Template): void {
-    if (notNull(template) && notBlank(template.data?.html)) {
+    if(isNull(template)) this.setupFieldEmailTemplate([]);
+    else if(notBlank(template.data?.html)){
       const html = template.data.html;
       this.forms.pathControlValue('content_email', html);
-      this.openEmailTemplate();
+      this.setupFieldEmailTemplate(template.data.fields);
     }
+  }
+
+  setupFieldEmailTemplate(fields: EmailTemplateField[]) {
+    const emailGroup: FormGroup = <any>this.forms.formGroup.get('email_object');
+
+    // remove current field
+    Object.keys(emailGroup.controls).forEach(c => emailGroup.removeControl(c));
+
+    // add field to group
+    fields.forEach(field => emailGroup.addControl(field.name, this.fb.control(field.defaultValue)));
   }
 
   openEmailTemplate(): void {
@@ -575,19 +588,29 @@ export class TicketFormComponent implements OnInit, OnChanges {
       header: 'Nạp dữ liệu ticket',
       width: '630px',
       data: {
-        url_files: [
-          {label: 'Mẫu mặc định', name: 'ticket_default.xslx', selected: true},
-          {label: 'Mẫu DS Lỗi', name: 'ticket_ds_loi.xslx', selected: false},
+        files: [
+          // {
+          //   label: 'Mẫu mặc định',
+          //   name: 'ticket_default.xlsx',
+          //   link: 'ticket_default.xlsx',
+          //   selected: false, sheets: ['data']
+          // },
+          {
+            label: 'Mẫu DS Lỗi',
+            name: 'ticket_ds_loi.xlsx',
+            link: 'ticket_ds_loi.xlsx',
+            selected: true, sheets: ['data', 'data2']
+          },
         ],
         defaults: this.templates.map(t=> ({label: t.title, item: t}) as DefaultData)
       } as InputData
     });
     //
-    // ref.onClose.subscribe({
-    //   next: (data: DialogResult<Ticket>) => {
-    //
-    //   }
-    // })
+    ref.onClose.subscribe({
+      next: (data: any) => {
+        console.log(data)
+      }
+    })
 
 
   }

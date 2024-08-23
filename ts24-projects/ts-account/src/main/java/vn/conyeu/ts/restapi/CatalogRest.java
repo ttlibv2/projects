@@ -82,7 +82,7 @@ public class CatalogRest {
 
             MultiValueMap<String, Template> valueMap = new LinkedMultiValueMap<>();
             for(Template template:templates) {
-                String entityCode = template.getEntityCode();
+                String entityCode = template.getThread();
                 valueMap.computeIfAbsent(entityCode, k -> new ArrayList<>()).add(template);
             }
 

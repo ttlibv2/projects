@@ -68,7 +68,7 @@ export class CatalogService extends ClientService {
         if (!(key in CATALOG_MAP)) continue;
         else {
           CATALOG_MAP[key](this.storage).bulkPut(catalog[key]).subscribe({
-            next: res => this.logger.info(`save ${key}....`)
+            next: (res:any) => this.logger.info(`save ${key}....`)
           });
         }
       }

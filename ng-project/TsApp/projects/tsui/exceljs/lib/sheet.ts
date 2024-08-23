@@ -132,6 +132,17 @@ export class Sheet {
         return this.columns.has(columnKey);
     }
 
+    getJsonRow(fieldIndex: number, beginRow: number, endRow: number): any[] {
+        const rows: any[] = this.ws.getRows(beginRow, endRow-beginRow+1);
+        return rows.map(row => row.values);
+    }
+
+    getValueRow(rowIndex: number): any[] {
+        const data = this.ws.getRow(rowIndex).values;
+        const row: js.CellValue[] = Array.isArray(data) ? data : Object.values(data);
+        return row;
+    }
+
     private setEColumn(ecol: js.Column): Column {
         const col = Column['from'](this, ecol);
         this.columns.set(ecol.key, col);

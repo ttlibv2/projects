@@ -3,7 +3,7 @@ import { MenuItem, PrimeTemplate, TooltipOptions } from 'primeng/api';
 import { TieredMenu } from 'primeng/tieredmenu';
 import { UniqueComponentId } from 'primeng/utils';
 import { ButtonProps, MenuButtonProps } from './splitbutton.interface';
-import { BehaviorSubject } from 'rxjs';
+import {Severity} from "ts-ui/common";
 
 type SplitButtonIconPosition = 'left' | 'right';
 
@@ -27,7 +27,7 @@ export class SplitButton {
      * Defines the style of the button.
      * @group Props
      */
-    @Input() severity: 'success' | 'info' | 'warning' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast' | null | undefined;
+    @Input() severity: Severity;
     /**
      * Add a shadow to indicate elevation.
      * @group Props

@@ -20,6 +20,7 @@
         <module>od-ticket</module>
         <module>od-client</module>
         <module>ebook</module>
+        <module>od-demo</module>
     </modules>
 
     <dependencyManagement>

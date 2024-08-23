@@ -28,8 +28,20 @@ export class Forms<E=any> {
         return <any>this.delegate.getRawValue();
     }
 
+    /**
+     * A control is `invalid` when its `status` is `INVALID`.
+     *
+     * @see {@link AbstractControl.status}
+     *
+     * @returns True if this control has failed one or more of its validation checks,
+     * false otherwise.
+     */
     get invalid(): boolean {
         return this.formGroup.invalid;
+    }
+
+    getValue(control: string): any {
+        return this.getControl(<any>control).getRawValue();
     }
     
     formValueChange(consumer: Consumer<Partial<E>>):void {

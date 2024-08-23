@@ -1,0 +1,12 @@
+<label [attr.for]="for" class="form-label" [ngClass]="containerClass">
+    <span class="text" *ngIf="text">
+        <span>{{ text }}</span>
+        <span *ngIf="visibleColon">:</span>
+    </span>
+
+    @if(visibleTooltip && tooltip) {
+        <span [ngClass]="tooltipIcon" [pTooltip]="tooltip" [tooltipOptions]="tooltipOptions"></span>
+    }
+
+    <span class="required" *ngIf="required">(*)</span>
+</label>

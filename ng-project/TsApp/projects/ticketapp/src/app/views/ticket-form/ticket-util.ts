@@ -71,7 +71,7 @@ export class TicketFormGroup {
         saveCache: [null],
         emailTicket: [null]
       }),
-
+      email_object: this.fb.group({}),
       edit_note: [true],
       edit_ticket: [true]
     });

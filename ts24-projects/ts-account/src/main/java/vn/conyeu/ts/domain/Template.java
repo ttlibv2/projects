@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import vn.conyeu.common.domain.LongUId;
 import vn.conyeu.common.domain.LongUIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.common.converter.MapString;
@@ -18,19 +19,18 @@ import vn.conyeu.common.converter.MapString;
 @Entity @Table(uniqueConstraints = @UniqueConstraint(name = "UID_USER", columnNames = {"entityCode","title","userId"}))
 @AttributeOverride(name = "id", column = @Column(name = "templateId"))
 @JsonIgnoreProperties({"user"})
-@DiscriminatorColumn(name = "thread", length = 30)
 //@formatter:on
-public class Template extends LongUIdDate<Template> {
+public class Template extends LongUId<Template> {
 
 	@Column(length = 150, nullable = false)
 	private String title;
 
-	@JsonProperty("entity_code")
-	@Column(length = 30, nullable = false, updatable = false)
-	private String entityCode;
+	@Column(length = 50, nullable = false)
+	private String code;
 
-	@Column(length = 20)
-	private String icon;
+	@JsonProperty("thread")
+	@Column(length = 30, nullable = false, updatable = false)
+	private String thread;
 
 	@Column(length = 300)
 	private String summary;
@@ -38,9 +38,16 @@ public class Template extends LongUIdDate<Template> {
 	@ColumnDefault("0")
 	private Boolean shared;
 
+	@ColumnDefault("0")
+	private Long position;
+
+	@ColumnDefault("0")
+	@JsonProperty("is_default")
+	private Boolean isDefault;
+
 	@Convert(converter = MapString.class)
 	@Column(columnDefinition = "json")
-	private ObjectMap style;
+	private ObjectMap custom;
 
 	@Convert(converter = MapString.class)
 	@Column(columnDefinition = "json")
@@ -49,13 +56,6 @@ public class Template extends LongUIdDate<Template> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userId", nullable = false)
 	private TsUser user;
-
-	@ColumnDefault("0")
-	private Long position;
-
-	@ColumnDefault("0")
-	@JsonProperty("is_default")
-	private Boolean isDefault;
 
 	@JsonProperty("template_id")
 	public Long getId() {
@@ -77,6 +77,11 @@ public class Template extends LongUIdDate<Template> {
 	public ObjectMap getData() {
 		data = ObjectMap.ifNull(data);
 		return data;
+	}
+
+	public ObjectMap getDataCustom() {
+		custom = ObjectMap.ifNull(custom);
+		return custom;
 	}
 
 }

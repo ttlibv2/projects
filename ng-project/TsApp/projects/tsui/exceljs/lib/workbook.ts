@@ -9,6 +9,11 @@ export class Workbook {
         return new Workbook(wb);
     }
 
+    static async open(file: File) {
+        const buffer = await file.arrayBuffer();
+        return Workbook.openByBuffer(buffer);
+    }
+
     static createNew(): Workbook {
         return new Workbook(new js.Workbook());
     }
@@ -204,7 +209,7 @@ export class Workbook {
 
     saveXsl(options?: Partial<js.XlsxWriteOptions>) {
         options = Objects.mergeDeep({useSharedStrings: true, filename: this.title + '.xlsx'}, options);
-        this.wb.xlsx.writeBuffer(options).then(buffer => Files.newBlobXslx(buffer))
+        this.wb.xlsx.writeBuffer(options).then(buffer => Files.newBlobXlsx(buffer))
             .then(blob => Objects.download(options.filename, blob));
     }
 

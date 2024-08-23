@@ -1,6 +1,7 @@
 import { Asserts } from "./asserts";
 import { BiFunction, Callback } from "./function";
 import { Objects } from "./objects";
+import {JsonAny} from "./common";
 const { notNull, equals, isNull } = Objects;
 
 
@@ -100,8 +101,10 @@ export class TsMap<K, V> extends Map<K, V> {
         return this;
     }
 
-    putJson(json: any): this {
-        Object.keys(json).forEach((key: any) => this.put(key, json[key]));
+    putJson(json: JsonAny): this {
+        Object.keys(json).forEach((key: any) => {
+            this.put(key, json[key]);
+        });
         return this;
     }
 

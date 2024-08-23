@@ -21,27 +21,6 @@ export enum TicketStatus {
   OPENING
 }
 
-export interface TicketTemplateData {
-  software_id?: number;
-  chanel_ids?: number[];
-  group_help_id?: number;
-  support_help_id?: number;
-  soft_name?: string;
-  team_id?: number;
-  assign_id?: number;
-  subject_type_id?: number;
-  category_id?: number;
-  category_sub_id?: number;
-  team_head_id?: number;
-  priority_id?: number;
-  tag_ids?: number[];
-  replied_id?: number;
-  ticket_type_id?: number;
-  options?: {
-    [key: keyof TicketOption]: any
-  }
-
-}
 
 
 export class OdTicketSend extends BaseModel {
@@ -86,7 +65,6 @@ export class Ticket extends BaseModel {
   email_templateid?: number;
   images: string;
   options?: TicketOption = TicketOption.createDef();
-  //details?: TicketDetail;
   od_image?: ImageObject;
   od_assign?: cls.ClsAssign;
   od_category_sub?: cls.ClsCategorySub;

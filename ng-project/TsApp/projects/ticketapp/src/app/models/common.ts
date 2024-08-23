@@ -1,9 +1,9 @@
 import { HttpParams } from "@angular/common/http";
 import { Type } from "@angular/core";
 import { BaseModel } from "./base-model";
-import { Callback } from 'ts-ui/helper';
+import { Callback, JsonAny } from 'ts-ui/helper';
 
-export type AssignObject<E = any> = JsonObject | E | Partial<E>;
+export type AssignObject<E = any> = JsonAny | E | Partial<E>;
 
 export type Severity = 'primary' | 'secondary' | 'success' | 'info' | 'danger' | 'help' | 'warning' | 'contrast';
 

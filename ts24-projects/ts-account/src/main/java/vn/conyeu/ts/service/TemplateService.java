@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.common.service.LongUIdService;
+import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.domain.Template;
 import vn.conyeu.ts.repository.TemplateRepo;
 
@@ -32,9 +33,9 @@ public class TemplateService extends LongUIdService<Template, TemplateRepo> {
     }
 
 //    @Cacheable()
-    public List<Template> findAll(Long userId, List<String> entityCodes) {
-        if(entityCodes == null || entityCodes.isEmpty()) return findAll(userId);
-        else return repo().findTemplateByUser(userId, entityCodes);
+    public List<Template> findAll(Long userId, List<String> threads) {
+        if(Objects.isEmpty(threads)) return findAll(userId);
+        else return repo().findTemplateByUser(userId, threads);
     }
 
 //    @Cacheable()
@@ -49,13 +50,7 @@ public class TemplateService extends LongUIdService<Template, TemplateRepo> {
 
     @Override
     public Template createNew(Template entity) {
-        boolean hasTitle = existsByTitle(entity.getUserId(), entity.getTitle(), entity.getEntityCode());
-        if(hasTitle) throw new BadRequest("e_title").message("Tieu de da ton tai");
         return super.createNew(entity);
-    }
-
-    public boolean existsByTitle(Long userId, String entity, String title) {
-        return repo().existsByTitle(userId, entity, title);
     }
 
     //@CacheEvict(allEntries = true)
