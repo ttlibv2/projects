@@ -24,6 +24,7 @@
         <module>sm-address</module>
         <module>sm-oauth2-login</module>
         <module>sm-i18n</module>
+        <module>sm-sheetdb</module>
     </modules>
     <packaging>pom</packaging>
 

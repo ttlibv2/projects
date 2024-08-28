@@ -33,6 +33,10 @@
             <artifactId>ts-account</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>vn.conyeu</groupId>
+            <artifactId>sm-sheetdb</artifactId>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>vn.conyeu</groupId>-->
 <!--            <artifactId>ebook</artifactId>-->

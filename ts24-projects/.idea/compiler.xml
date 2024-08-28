@@ -18,6 +18,7 @@
         <module name="ts-account" />
         <module name="sm-web" />
         <module name="ebook" />
+        <module name="sm-sheetdb" />
         <module name="sm-client" />
         <module name="sm-exception" />
         <module name="ts-web" />
@@ -58,6 +59,7 @@
       <module name="sm-identity" options="-parameters" />
       <module name="sm-oauth2-login" options="-parameters" />
       <module name="sm-security" options="-parameters" />
+      <module name="sm-sheetdb" options="-parameters" />
       <module name="sm-web" options="-parameters" />
       <module name="ts-account" options="-parameters" />
       <module name="ts-web" options="-parameters" />
