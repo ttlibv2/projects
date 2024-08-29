@@ -1,12 +1,18 @@
 package vn.conyeu.google.core;
 
 import com.google.api.services.sheets.v4.model.Color;
+import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
 import vn.conyeu.google.sheetdb.builder.ConsumerReturn;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class Utils {
+
+    public static <T> void setIfNotNull(Supplier<T> object,  Consumer<T> consumerSet) {
+        T value = object.get();
+        if(value != null) consumerSet.accept(value);;
+    }
 
     public static <T> T setIfNull(Supplier<T> object, Supplier<T> supplierNew, Consumer<T> consumerSet) {
         T value = object.get();
@@ -71,4 +77,7 @@ public final class Utils {
     }
 
 
+    public static <T> T getIfNull(T object, Supplier<T> aNew) {
+        return object == null ? aNew.get() : object;
+    }
 }

@@ -2,10 +2,9 @@ package vn.conyeu.google.sheetdb;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
+import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
-import vn.conyeu.google.sheetdb.builder.ConsumerReturn;
-import vn.conyeu.google.sheetdb.builder.SheetPropertiesBuilder;
-import vn.conyeu.google.sheetdb.builder.XmlBuilder;
+import vn.conyeu.google.sheetdb.builder.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -261,8 +260,9 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Deletes rows or columns in a sheet.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder deleteDimension(ConsumerReturn<DeleteDimensionRequest> consumer) {
-        DeleteDimensionRequest object = consumer.accept(new DeleteDimensionRequest());
+    public BatchUpdateBuilder deleteDimension(ConsumerReturn<DimensionRange> consumer) {
+        DimensionRange dimensionRange = consumer.accept(new DimensionRange());
+        DeleteDimensionRequest object = new DeleteDimensionRequest().setRange(dimensionRange);
         initRequest().setDeleteDimension(object);
         return this;
     }
@@ -381,10 +381,18 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Inserts new rows or columns in a sheet.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder insertDimension(ConsumerReturn<InsertDimensionRequest> consumer) {
-        InsertDimensionRequest object = consumer.accept(new InsertDimensionRequest());
-        initRequest().setInsertDimension(object);
+    public BatchUpdateBuilder insertDimension(ConsumerReturn<InsertDimensionBuilder> consumer) {
+        InsertDimensionBuilder builder= consumer.accept(new InsertDimensionBuilder());
+        initRequest().setInsertDimension(builder.build());
         return this;
+    }
+
+    /**
+     * Inserts new rows or columns in a sheet.
+     * The value may be {@code null}.
+     */
+    public BatchUpdateBuilder insertDimension(InsertDimensionBuilder builder) {
+        return insertDimension(b -> builder);
     }
 
     /**
@@ -411,9 +419,9 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Moves rows or columns to another location in a sheet.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder moveDimension(ConsumerReturn<MoveDimensionRequest> consumer) {
-        MoveDimensionRequest object = consumer.accept(new MoveDimensionRequest());
-        initRequest().setMoveDimension(object);
+    public BatchUpdateBuilder moveDimension(ConsumerReturn<MoveDimensionBuilder> consumer) {
+        MoveDimensionBuilder builder = consumer.accept(new MoveDimensionBuilder());
+        initRequest().setMoveDimension(builder.build());
         return this;
     }
 
@@ -441,9 +449,9 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Repeats a single cell across a range.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder repeatCell(ConsumerReturn<RepeatCellRequest> consumer) {
-        RepeatCellRequest object = consumer.accept(new RepeatCellRequest());
-        initRequest().setRepeatCell(object);
+    public BatchUpdateBuilder repeatCell(ConsumerReturn<RepeatCellBuilder> consumer) {
+        RepeatCellBuilder builder = consumer.accept(new RepeatCellBuilder());
+        initRequest().setRepeatCell(builder.build());
         return this;
     }
 
@@ -531,9 +539,9 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Updates many cells at once.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder updateCells(ConsumerReturn<UpdateCellsRequest> consumer) {
-        UpdateCellsRequest object = consumer.accept(new UpdateCellsRequest());
-        initRequest().setUpdateCells(object);
+    public BatchUpdateBuilder updateCells(ConsumerReturn<UpdateCellsBuilder> consumer) {
+        UpdateCellsBuilder builder = consumer.accept(new UpdateCellsBuilder());
+        initRequest().setUpdateCells(builder.build());
         return this;
     }
 
@@ -581,9 +589,9 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Updates dimensions' properties.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder updateDimensionProperties(ConsumerReturn<UpdateDimensionPropertiesRequest> consumer) {
-        UpdateDimensionPropertiesRequest object = consumer.accept(new UpdateDimensionPropertiesRequest());
-        initRequest().setUpdateDimensionProperties(object);
+    public BatchUpdateBuilder updateDimensionProperties(ConsumerReturn<UpdateDimensionBuilder> consumerReturn) {
+        UpdateDimensionBuilder builder = consumerReturn.accept(new UpdateDimensionBuilder());
+        initRequest().setUpdateDimensionProperties(builder.build());
         return this;
     }
 
@@ -627,13 +635,14 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
         return this;
     }
 
+
     /**
      * Updates a sheet's properties.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder updateSheetProperties(ConsumerReturn<UpdateSheetPropertiesRequest> consumer) {
-        UpdateSheetPropertiesRequest object = consumer.accept(new UpdateSheetPropertiesRequest());
-        initRequest().setUpdateSheetProperties(object);
+    public BatchUpdateBuilder updateSheetProperties(ConsumerReturn<SheetPropertiesBuilder> sheet) {
+        SheetPropertiesBuilder builder = sheet.accept(new SheetPropertiesBuilder(null));
+        initRequest().setUpdateSheetProperties(builder.buildUpdate());
         return this;
     }
 
@@ -651,9 +660,17 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Updates the spreadsheet's properties.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder updateSpreadsheetProperties(ConsumerReturn<UpdateSpreadsheetPropertiesRequest> consumer) {
-        UpdateSpreadsheetPropertiesRequest object = consumer.accept(new UpdateSpreadsheetPropertiesRequest());
-        initRequest().setUpdateSpreadsheetProperties(object);
+    public BatchUpdateBuilder updateSpreadsheetProperties(ConsumerReturn<XslPropertiesBuilder> consumer) {
+        XslPropertiesBuilder builder = consumer.accept(new XslPropertiesBuilder(null));
+        return updateSpreadsheetProperties(builder);
+    }
+
+    /**
+     * Updates the spreadsheet's properties.
+     * The value may be {@code null}.
+     */
+    public BatchUpdateBuilder updateSpreadsheetProperties(XslPropertiesBuilder builder) {
+        initRequest().setUpdateSpreadsheetProperties(builder.buildUpdate());
         return this;
     }
 
@@ -664,8 +681,9 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
         return request;
     }
 
-    public BatchUpdateSpreadsheetResponse execute(Sheets.Spreadsheets service, String spreadsheetId) throws IOException {
-        BatchUpdateSpreadsheetRequest request = build().clone();
-        return service.batchUpdate(spreadsheetId, request).execute();
+    public XslUpdateResponse execute(Sheets.Spreadsheets service, String spreadsheetId) throws IOException {
+            BatchUpdateSpreadsheetRequest request = build().clone();
+            BatchUpdateSpreadsheetResponse response = service.batchUpdate(spreadsheetId, request).setFields("*").execute();
+            return XslUpdateResponse.from(response);
     }
 }

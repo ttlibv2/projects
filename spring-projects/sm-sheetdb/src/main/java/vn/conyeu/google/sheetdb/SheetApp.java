@@ -21,7 +21,7 @@ public class SheetApp {
      * Creates a new spreadsheet with the given name.
      * @param name The name for the spreadsheet.
      * */
-    public Workbook create(String name) throws IOException {
+    public XslBook create(String name) throws IOException {
        return create(name, xsl -> {
            xsl.addSheet(name);
            return xsl;
@@ -34,7 +34,7 @@ public class SheetApp {
      * @param rows The number of rows for the spreadsheet.
      * @param columns The number of columns for the spreadsheet.
      * */
-    public Workbook create(String name, int rows, int columns) throws IOException {
+    public XslBook create(String name, int rows, int columns) throws IOException {
        return create(name, xsl -> {
            xsl.addSheet(name, rows, columns);
            return xsl;
@@ -46,16 +46,16 @@ public class SheetApp {
      * @param name The name for the spreadsheet.
      * @param custom the consumer custom properties xsl
      * */
-    public Workbook create(String name, ConsumerReturn<XslBuilder> custom) throws IOException {
+    public XslBook create(String name, ConsumerReturn<XslBuilder> custom) throws IOException {
         XslBuilder xslBuilder = custom.accept(new XslBuilder()).title(name);
         Spreadsheet ss = sheets.spreadsheets().create(xslBuilder.build()).execute();
         log.warn("{}", MapperHelper.serializeToString(ss));
-        return new Workbook(sheets.spreadsheets(), ss);
+        return new XslBook(sheets.spreadsheets(), ss);
     }
 
-    public Workbook openById(String fileId) throws IOException {
-        Spreadsheet ss = sheets.spreadsheets().get(fileId).execute();
-        return new Workbook(sheets.spreadsheets(), ss);
+    public XslBook openById(String fileId) throws IOException {
+        Spreadsheet ss = sheets.spreadsheets().get(fileId).setFields("*").execute();
+        return new XslBook(sheets.spreadsheets(), ss);
     }
 
 }

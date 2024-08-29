@@ -4,9 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import vn.conyeu.google.core.DbConfig;
 import vn.conyeu.google.core.GoogleLogin;
 import vn.conyeu.google.sheetdb.SheetApp;
-import vn.conyeu.google.sheetdb.Workbook;
-import vn.conyeu.google.sheetdb.builder.HorizontalAlign;
-import vn.conyeu.google.sheetdb.builder.SheetBuilder;
+import vn.conyeu.google.sheetdb.XslBook;
+import vn.conyeu.google.sheetdb.XslSheet;
 
 import java.io.IOException;
 
@@ -37,8 +36,9 @@ public class TestMain {
 //            return xsl;
 //        }).getUrl();
 
-        Workbook wb = sheetApp.openById("1henZsYYsmEvgK4HmFxgM3EIA-ae5oIxcrxWCLlI_8zM");
-        log.warn("{}", wb.xsl.getSheets());
+        XslBook wb = sheetApp.openById("1henZsYYsmEvgK4HmFxgM3EIA-ae5oIxcrxWCLlI_8zM");
+        XslSheet sheet = wb.getSheetByName("table1");
+        sheet.insertColumnBefore(1);
 
 
 

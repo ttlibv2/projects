@@ -1,14 +1,16 @@
 package vn.conyeu.google.sheetdb.builder;
 
-import com.google.api.services.sheets.v4.model.Color;
-import com.google.api.services.sheets.v4.model.ColorStyle;
-import com.google.api.services.sheets.v4.model.GridProperties;
-import com.google.api.services.sheets.v4.model.SheetProperties;
+import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.google.core.Utils;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
     private final SheetProperties props;
     private GridPropBuilder gridBuilder;
+    private final Set<String> fields = new HashSet<>();
+    private final Set<String> fieldsGrid = new HashSet<>();
 
     public SheetPropertiesBuilder(SheetProperties props) {
         this.props = XmlBuilder.ifNull(props, SheetProperties::new);
@@ -25,6 +27,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param columnCount columnCount or {@code null} for none
      */
     public GridPropBuilder columnCount(Integer columnCount) {
+        fieldsGrid.add("columnCount");
         return initGridBuilder().columnCount(columnCount);
     }
 
@@ -34,6 +37,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param columnGroupControlAfter columnGroupControlAfter or {@code null} for none
      */
     public GridPropBuilder columnGroupControlAfter(Boolean columnGroupControlAfter) {
+        fieldsGrid.add("columnGroupControlAfter");
         return initGridBuilder().columnGroupControlAfter(columnGroupControlAfter);
     }
 
@@ -43,6 +47,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param frozenColumnCount frozenColumnCount or {@code null} for none
      */
     public GridPropBuilder frozenColumnCount(Integer frozenColumnCount) {
+        fieldsGrid.add("frozenColumnCount");
         return initGridBuilder().frozenColumnCount(frozenColumnCount);
     }
 
@@ -52,6 +57,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param frozenRowCount frozenRowCount or {@code null} for none
      */
     public GridPropBuilder frozenRowCount(Integer frozenRowCount) {
+        fieldsGrid.add("frozenRowCount");
         return initGridBuilder().frozenRowCount(frozenRowCount);
     }
 
@@ -61,6 +67,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param hideGridlines hideGridlines or {@code null} for none
      */
     public GridPropBuilder hideGridlines(Boolean hideGridlines) {
+        fieldsGrid.add("hideGridlines");
         return initGridBuilder().hideGridlines(hideGridlines);
     }
 
@@ -70,6 +77,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param rowCount rowCount or {@code null} for none
      */
     public GridPropBuilder rowCount(Integer rowCount) {
+        fieldsGrid.add("rowCount");
         return initGridBuilder().rowCount(rowCount);
     }
 
@@ -79,6 +87,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param rowGroupControlAfter rowGroupControlAfter or {@code null} for none
      */
     public GridPropBuilder rowGroupControlAfter(Boolean rowGroupControlAfter) {
+        fieldsGrid.add("rowGroupControlAfter");
         return initGridBuilder().rowGroupControlAfter(rowGroupControlAfter);
     }
 
@@ -89,6 +98,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      */
     public SheetPropertiesBuilder hidden(Boolean hidden) {
         props.setHidden(hidden);
+        fields.add("hidden");
         return this;
     }
 
@@ -104,6 +114,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      * @param index index or {@code null} for none
      */
     public SheetPropertiesBuilder index(Integer index) {
+        fields.add("index");
         props.setIndex(index);
         return this;
     }
@@ -115,6 +126,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      */
     public SheetPropertiesBuilder rightToLeft(Boolean rightToLeft) {
         props.setRightToLeft(rightToLeft);
+        fields.add("rightToLeft");
         return this;
     }
 
@@ -145,6 +157,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      */
     public SheetPropertiesBuilder tabColor(Color tabColor) {
         props.setTabColor(tabColor);
+        fields.add("tabColor");
         return this;
     }
 
@@ -155,6 +168,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      */
     public SheetPropertiesBuilder tabColorStyle(ColorStyle tabColorStyle) {
         props.setTabColorStyle(tabColorStyle);
+        fields.add("tabColorStyle");
         return this;
     }
 
@@ -165,6 +179,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
      */
     public SheetPropertiesBuilder title(String title) {
         props.setTitle(title);
+        fields.add("title");
         return this;
     }
 
@@ -175,5 +190,24 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
                     GridProperties::new, props::setGridProperties));
         }
         return gridBuilder;
+    }
+
+    public UpdateSheetPropertiesRequest buildUpdate() {
+        UpdateSheetPropertiesRequest request = new UpdateSheetPropertiesRequest();
+        StringBuilder fieldBuilder = new StringBuilder();
+
+        if(!fields.isEmpty()) {
+            fieldBuilder.append(String.join(",", fields));
+            fieldBuilder.append(",");
+        }
+
+        if(!fieldsGrid.isEmpty()) {
+            fieldBuilder.append("gridProperties(");
+            fieldBuilder.append(String.join(",", fieldsGrid));
+            fieldBuilder.append(")");
+        }
+
+        return request.setProperties(props)
+                .setFields(fieldBuilder.toString());
     }
 }

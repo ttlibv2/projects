@@ -2,9 +2,14 @@ package vn.conyeu.google.sheetdb.builder;
 
 import com.google.api.services.sheets.v4.model.IterativeCalculationSettings;
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
+import com.google.api.services.sheets.v4.model.UpdateSpreadsheetPropertiesRequest;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
     private final SpreadsheetProperties props;
+    private Set<String> fields = new HashSet<>();
 
     public XslPropertiesBuilder(final SpreadsheetProperties props) {
         this.props = XmlBuilder.ifNull(props, SpreadsheetProperties::new);
@@ -22,6 +27,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      */
     public XslPropertiesBuilder autoRecalc(String autoRecalc) {
         props.setAutoRecalc(autoRecalc);
+        fields.add("autoRecalc");
         return this;
     }
 
@@ -33,6 +39,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      */
     public XslPropertiesBuilder iterativeCalculationSettings(IterativeCalculationSettings iterativeCalculationSettings) {
         props.setIterativeCalculationSettings(iterativeCalculationSettings);
+        fields.add("iterativeCalculationSettings");
         return this;
     }
 
@@ -51,6 +58,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      */
     public XslPropertiesBuilder locale(String locale) {
         props.setLocale(locale);
+        fields.add("locale");
         return this;
     }
 
@@ -73,6 +81,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      */
     public XslPropertiesBuilder timeZone(String timeZone) {
         props.setTimeZone(timeZone);
+        fields.add("timeZone");
         return this;
     }
 
@@ -83,7 +92,12 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      */
     public XslPropertiesBuilder title(String title) {
         props.setTitle(title);
+        fields.add("title");
         return this;
     }
 
+    public UpdateSpreadsheetPropertiesRequest buildUpdate() {
+        return new UpdateSpreadsheetPropertiesRequest()
+                .setProperties(build()).setFields(String.join(",", fields));
+    }
 }
