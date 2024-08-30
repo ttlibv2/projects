@@ -15,8 +15,11 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.sheets.v4.Sheets;
 import vn.conyeu.commons.utils.Sets;
+import vn.conyeu.google.db.DbApp;
 import vn.conyeu.google.drives.DriveApp;
-import vn.conyeu.google.sheetdb.SheetApp;
+import vn.conyeu.google.drives.DriveService;
+import vn.conyeu.google.sheet.SheetApp;
+import vn.conyeu.google.sheet.XslSheetService;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -81,20 +84,34 @@ public final class GoogleLogin {
     public DriveApp driveApp() {
         Credential credential = getCredential();
         HttpTransport HTTP_TRANSPORT = credential.getTransport();
-        return new DriveApp(new Drive
-                .Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(config.getAppName()).build());
+        return new DriveApp(drive(credential, HTTP_TRANSPORT));
     }
 
     public SheetApp sheetApp() {
         Credential credential = getCredential();
         HttpTransport HTTP_TRANSPORT = credential.getTransport();
-        return new SheetApp(new Sheets
+        return new SheetApp(sheets(credential, HTTP_TRANSPORT));
+    }
+
+    public DbApp dbApp() {
+        Credential credential = getCredential();
+        HttpTransport HTTP_TRANSPORT = credential.getTransport();
+        Drive drive = drive(credential, HTTP_TRANSPORT);
+        Sheets sheets = sheets(credential, HTTP_TRANSPORT);
+        return new DbApp(drive, sheets);
+    }
+
+    private DriveService drive(Credential credential, HttpTransport HTTP_TRANSPORT) {
+        return new DriveService(new Drive
                 .Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(config.getAppName()).build());
     }
 
-
+    private XslSheetService sheets(Credential credential, HttpTransport HTTP_TRANSPORT) {
+        return new XslSheetService(new Sheets
+                .Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                .setApplicationName(config.getAppName()).build());
+    }
 
 
 }

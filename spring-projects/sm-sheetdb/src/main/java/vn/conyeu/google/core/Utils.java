@@ -1,8 +1,7 @@
 package vn.conyeu.google.core;
 
 import com.google.api.services.sheets.v4.model.Color;
-import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
-import vn.conyeu.google.sheetdb.builder.ConsumerReturn;
+import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;

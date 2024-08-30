@@ -4,10 +4,12 @@ import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.FileContent;
 import com.google.api.client.http.InputStreamContent;
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import vn.conyeu.commons.utils.Asserts;
+import vn.conyeu.google.drives.builder.AbstractGFile;
+import vn.conyeu.google.drives.builder.FileBuilder;
+import vn.conyeu.google.sheet.builder.ConsumerReturn;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,14 +20,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class GFolder extends AbstractGFile {
-    protected boolean hasRoot;
+    protected final boolean hasRoot;
 
-    GFolder(Drive service, File model) {
+    public GFolder(DriveService service, File model) {
         super(service, model);
+        this.hasRoot = "My Drive".equalsIgnoreCase(model.getName());
     }
 
-    public void delete() throws IOException {
-        files.delete(getId()).execute();
+    public void delete()  {
+        service.deleteById(getId());
     }
 
     /**
@@ -33,20 +36,20 @@ public class GFolder extends AbstractGFile {
      * @param name The name of the folders to find.
      * @param limit the maximum number of files to return per page
      * */
-    public GPage<GFolder> getFolderByName(String name, int limit) throws IOException {
+    public GPage<GFolder> getFolderByName(String name, int limit)  {
         String query = "mimeType='%s' and name='%s'".formatted(GMime.FOLDER.mime, name);
         return search(new SearchBuilder().query(query).pageSize(limit)).mapTo(model -> (GFolder) model);
     }
 
-    public GFolder getFolderById(String folderId) throws IOException {
-        return newFolder(files.get(folderId).setFields("*").execute());
+    public GFolder getFolderById(String folderId)  {
+        return newFolder(service.openById(folderId, "*"));
     }
 
     /**
      * Gets a collection of all folders that are children of the current folder.
      * @param limit the maximum number of files to return per page
      * */
-    public GPage<GFolder> getFolders(int limit) throws IOException {
+    public GPage<GFolder> getFolders(int limit)  {
         String query = "mimeType='%s'".formatted(GMime.FOLDER.mime);
         return search(new SearchBuilder().query(query).pageSize(limit).orderBy("name"))
                 .mapTo(file -> (GFolder) file);
@@ -56,7 +59,7 @@ public class GFolder extends AbstractGFile {
      * Gets a collection of all files that are children of the current folder.
      * @param limit the maximum number of files to return per page
      * */
-    public GPage<GFile> getFiles(int limit) throws IOException {
+    public GPage<GFile> getFiles(int limit)  {
         String query = "mimeType != '%s'".formatted(GMime.FOLDER.mime);
         return search(new SearchBuilder().query(query).pageSize(limit).orderBy("name"))
                 .mapTo(file -> (GFile) file);
@@ -66,7 +69,7 @@ public class GFolder extends AbstractGFile {
      * Gets a collection of all files that are children of the current folder and have the given MIME type.
      * @param mimeType The MIME Type of the files to find.
      * */
-    public GPage<GFile> getFilesByType(String mimeType) throws IOException {
+    public GPage<GFile> getFilesByType(String mimeType)  {
         String query = "mimeType='%s' and mimeType != '%s'".formatted(mimeType, GMime.FOLDER.mime);
         return search(new SearchBuilder().query(query).pageSize(1000).orderBy("name"))
                 .mapTo(file -> (GFile) file);
@@ -76,13 +79,13 @@ public class GFolder extends AbstractGFile {
      * Gets a collection of all files that are children of the current folder and have the given name.
      * @param name The name of the files to find.
      * */
-    public GPage<GFile> getFilesByName(String name) throws IOException {
+    public GPage<GFile> getFilesByName(String name)  {
         String query = "name = '%s' and mimeType != '%s'".formatted(name, GMime.FOLDER.mime);
         return search(new SearchBuilder().query(query).pageSize(1000).orderBy("name"))
                 .mapTo(file -> (GFile) file);
     }
 
-    public GPage<AbstractGFile> search(SearchBuilder builder) throws IOException {
+    public GPage<AbstractGFile> search(SearchBuilder builder)  {
         Asserts.notBlank(builder.query, "The query not blank");
         FileList list = files.list().setFields(builder.fields)
                 .setQ(builder.buildQuery())
@@ -95,32 +98,22 @@ public class GFolder extends AbstractGFile {
     }
 
     public GFolder addFolder(String name) {
-        return addFolder(name, null);
+        return addFolder(b -> b.name(name));
     }
 
-    public GFolder addFolder(String name, Consumer<File> fileConsumer) {
-        File file = new File();
-        if (fileConsumer != null) fileConsumer.accept(file);
-
-        file.setName(name).setMimeType(GMime.FOLDER.mime);
-        file.setParents(List.of(getId()));
-
-        try {
-            File model = files.create(file).execute();
-            return newFolder(model);
-        } catch (IOException e) {
-            throw new DriveException(e);
-        }
+    public GFolder addFolder(ConsumerReturn<FileBuilder> consumer) {
+        File model = service.createFolder(b -> consumer.accept(b).parents(getId()));
+        return newFolder(model);
     }
 
-    public void deleteFolderByName(String name) throws IOException {
+    public void deleteFolderByName(String name)  {
         GPage<GFolder> gPage = getFolderByName(name, 1);
         if(gPage.isEmpty()) throw new DriveException("The folder '%s' not exists.", name);
         deleteFolderById(gPage.get(0).getId());
     }
 
-    public void deleteFolderById(String folderId) throws IOException {
-        files.delete(folderId).execute();
+    public void deleteFolderById(String folderId)  {
+        service.deleteById(folderId);
     }
 
     /**
@@ -130,7 +123,7 @@ public class GFolder extends AbstractGFile {
      * @param mimeType The MIME type of the new file.
      * @param data     The content for the new file.
      */
-    public GFile createFile(String name, String mimeType, String data) {
+    public GFile createFile(String name, GMime mimeType, String data) {
         return createFile(name, mimeType, data.getBytes());
     }
 
@@ -141,8 +134,8 @@ public class GFolder extends AbstractGFile {
      * @param mimeType The MIME type of the new file.
      * @param data     The content for the new file.
      */
-    public GFile createFile(String name, String mimeType, byte[] data) {
-        ByteArrayContent content = new ByteArrayContent(mimeType, data);
+    public GFile createFile(String name, GMime mimeType, byte[] data) {
+        ByteArrayContent content = new ByteArrayContent(mimeType.mime, data);
         return createFile(name, mimeType, content);
     }
 
@@ -153,8 +146,8 @@ public class GFolder extends AbstractGFile {
      * @param mimeType The MIME type of the new file.
      * @param file     The content for the new file.
      */
-    public GFile createFile(String name, String mimeType, java.io.File file) {
-        FileContent content = new FileContent(mimeType, file);
+    public GFile createFile(String name, GMime mimeType, java.io.File file) {
+        FileContent content = new FileContent(mimeType.mime, file);
         return createFile(name, mimeType, content);
     }
 
@@ -165,8 +158,8 @@ public class GFolder extends AbstractGFile {
      * @param mimeType The MIME type of the new file.
      * @param file     The content for the new file.
      */
-    public GFile createFile(String name, String mimeType, Path file) {
-        FileContent content = new FileContent(mimeType, file.toFile());
+    public GFile createFile(String name, GMime mimeType, Path file) {
+        FileContent content = new FileContent(mimeType.mime, file.toFile());
         return createFile(name, mimeType, content);
     }
 
@@ -177,8 +170,8 @@ public class GFolder extends AbstractGFile {
      * @param mimeType The MIME type of the new file.
      * @param data     The content for the new file.
      */
-    public GFile createFile(String name, String mimeType, InputStream data) {
-        InputStreamContent content = new InputStreamContent(mimeType, data);
+    public GFile createFile(String name, GMime mimeType, InputStream data) {
+        InputStreamContent content = new InputStreamContent(mimeType.mime, data);
         return createFile(name, mimeType, content);
     }
 
@@ -190,23 +183,17 @@ public class GFolder extends AbstractGFile {
         }
     }
 
-    private GFile createFile(String name, String mimeType, AbstractInputStreamContent content) {
-        if (mimeType == null) mimeType = content.getType();
-        File meta = new File().setName(name).setMimeType(mimeType);
-        try {
-            File model = files.create(meta, content).execute();
-        } catch (IOException exp) {
-            throw new DriveException(exp);
-        }
-        return new GFile(drive, model);
+    private GFile createFile(final String name, final GMime mimeType, AbstractInputStreamContent content) {
+        String newMime = mimeType == null ? content.getType() : mimeType.mime;
+        return newFile(service.createFile(b -> b.name(name).mimeType(newMime).content(content)));
     }
 
     private GFolder newFolder(File model) {
-        return new GFolder(drive, model);
+        return new GFolder(service, model);
     }
 
     private GFile newFile(File model) {
-        return new GFile(drive, model);
+        return new GFile(service, model);
     }
 
     private List<AbstractGFile> convertModels(List<File> models) {

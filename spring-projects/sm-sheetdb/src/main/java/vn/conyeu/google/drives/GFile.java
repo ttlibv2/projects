@@ -1,11 +1,11 @@
 package vn.conyeu.google.drives;
 
-import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import vn.conyeu.google.drives.builder.AbstractGFile;
 
-public class GFile extends AbstractGFile{
+public class GFile extends AbstractGFile {
 
-    GFile(Drive service, File model) {
+    public GFile(DriveService service, File model) {
         super(service, model);
     }
 

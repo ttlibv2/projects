@@ -98,4 +98,7 @@ public enum GMime {
         this.mime = mime;
     }
 
+    public String getMime() {
+        return mime;
+    }
 }
