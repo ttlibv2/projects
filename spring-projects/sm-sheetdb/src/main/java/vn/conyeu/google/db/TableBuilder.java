@@ -13,8 +13,9 @@ import java.util.Map;
 
 public class TableBuilder implements XmlBuilder<Sheet> {
     private final SheetBuilder sheet = new SheetBuilder();
-    private List<String> columnNames = new ArrayList<>();
-    private Map<String, ColumnBuilder> columns = new HashMap<>();
+    private final List<String> columnNames = new ArrayList<>();
+    private final Map<String, ColumnBuilder> columns = new HashMap<>();
+
     private String fontFamily = "Consolas";
 
 
@@ -27,17 +28,11 @@ public class TableBuilder implements XmlBuilder<Sheet> {
         RowDataBuilder rowVal = sheet.getRow(1);
 
         // build columns
-        for(String columnName:columnNames) {
-            ColumnBuilder cb = columns.get(columnName);
-
-
-
-
+        for(String colName:columnNames) {
+            Column cb = columns.get(colName).build();
+            rowId.addCell(c -> c.value(colName).bold(true).family(fontFamily));
+            rowVal.addCell(c -> c.family(fontFamily));
         }
-
-
-
-
 
         return sheet.build();
     }
