@@ -19,7 +19,7 @@ import vn.conyeu.google.db.DbApp;
 import vn.conyeu.google.drives.DriveApp;
 import vn.conyeu.google.drives.DriveService;
 import vn.conyeu.google.sheet.SheetApp;
-import vn.conyeu.google.sheet.XslSheetService;
+import vn.conyeu.google.sheet.SheetService;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -96,8 +96,8 @@ public final class GoogleLogin {
     public DbApp dbApp() {
         Credential credential = getCredential();
         HttpTransport HTTP_TRANSPORT = credential.getTransport();
-        Drive drive = drive(credential, HTTP_TRANSPORT);
-        Sheets sheets = sheets(credential, HTTP_TRANSPORT);
+        DriveService drive = drive(credential, HTTP_TRANSPORT);
+        SheetService sheets = sheets(credential, HTTP_TRANSPORT);
         return new DbApp(drive, sheets);
     }
 
@@ -107,8 +107,8 @@ public final class GoogleLogin {
                 .setApplicationName(config.getAppName()).build());
     }
 
-    private XslSheetService sheets(Credential credential, HttpTransport HTTP_TRANSPORT) {
-        return new XslSheetService(new Sheets
+    private SheetService sheets(Credential credential, HttpTransport HTTP_TRANSPORT) {
+        return new SheetService(new Sheets
                 .Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(config.getAppName()).build());
     }

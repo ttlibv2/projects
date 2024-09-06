@@ -7,6 +7,7 @@ import java.util.List;
 
 public class CellDataBuilder implements XmlBuilder<CellData> {
     private final CellData cell;
+    private ExtendedValue extendedValue;
 
     public CellDataBuilder(final CellData cell) {
         this.cell = XmlBuilder.ifNull(cell, CellData::new);
@@ -98,9 +99,31 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param userEnteredValue userEnteredValue or {@code null} for none
      */
-    public CellDataBuilder userEnteredValue(ExtendedValue userEnteredValue) {
-        cell.setUserEnteredValue(userEnteredValue);
+    private CellDataBuilder setValue(ConsumerReturn<ExtendedValue> consumer) {
+        ExtendedValue value = consumer.accept(new ExtendedValue());
+        cell.setUserEnteredValue(value);
         return this;
+    }
+
+    public CellDataBuilder value(String value) {
+        return setValue(ext -> {
+            if(value == null) ext.setStringValue(null);
+            else if(value.startsWith("=")) ext.setFormulaValue(value);
+            else ext.setStringValue(value);
+            return ext;
+        });
+    }
+
+    public CellDataBuilder value(Boolean value) {
+        return setValue(ext -> ext.setBoolValue(value));
+    }
+
+    public CellDataBuilder value(ErrorValue value) {
+        return setValue(ext -> ext.setErrorValue(value));
+    }
+
+    public CellDataBuilder value(Double value) {
+        return setValue(ext -> ext.setNumberValue(value));
     }
 
     private CellFormatBuilder cellFormatBuilder;

@@ -105,6 +105,10 @@ public class XslBuilder implements XmlBuilder<Spreadsheet> {
         return this;
     }
 
+    public XslBuilder addSheet(String name, ConsumerReturn<SheetBuilder> sheet) {
+        return addSheet(s -> sheet.accept(s).title(name));
+    }
+
     public XslBuilder addSheet(String name) {
         return addSheet(sheet -> sheet.title(name));
     }
@@ -113,6 +117,9 @@ public class XslBuilder implements XmlBuilder<Spreadsheet> {
         return addSheet(sheet -> sheet.title(name).rowCount(rows).columnCount(columns));
     }
 
+    public XslBuilder addSheet(String name, int rows, int columns, ConsumerReturn<SheetBuilder> sheet) {
+        return addSheet(s -> sheet.accept(s).title(name).rowCount(rows).columnCount(columns));
+    }
 
     private List<Sheet> sheets() {
         if (ss.getSheets() == null) {

@@ -8,13 +8,13 @@ import vn.conyeu.google.sheet.builder.XslBuilder;
 
 @Slf4j
 public class SheetApp {
-    private final XslSheetService service;
+    private final SheetService service;
 
     public SheetApp(Sheets sheets) {
-        this(new XslSheetService(sheets));
+        this(new SheetService(sheets));
     }
 
-    public SheetApp(XslSheetService service) {
+    public SheetApp(SheetService service) {
         this.service = service;
     }
 

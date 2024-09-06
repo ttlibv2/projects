@@ -1,19 +1,19 @@
 package vn.conyeu.google.sheet;
 
+import static vn.conyeu.google.core.ExecuteFunc.simple;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.google.core.ExecuteFunc;
 import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.sheet.builder.*;
 
 import java.io.IOException;
 
-public class XslSheetService {
+public class SheetService {
     private final Sheets sheets;
     private final Sheets.Spreadsheets.Values values;
 
-    public XslSheetService(Sheets sheets) {
+    public SheetService(Sheets sheets) {
         this.sheets = sheets;
         this.values = sheets.spreadsheets().values();
     }
@@ -24,7 +24,7 @@ public class XslSheetService {
      * @param custom the consumer custom properties xsl
      */
     public Spreadsheet createXsl(String name, ConsumerReturn<XslBuilder> custom) {
-        return ExecuteFunc.simple(() -> {
+        return simple(() -> {
             XslBuilder xslBuilder = custom.accept(new XslBuilder()).title(name);
             return sheets.spreadsheets().create(xslBuilder.build());
         });
@@ -35,7 +35,7 @@ public class XslSheetService {
      * @param fileId The unique identifier for the spreadsheet.
      */
     public Spreadsheet openXsl(String fileId, String fields) {
-        return ExecuteFunc.simple(() -> sheets.spreadsheets().get(fileId).setFields(fields));
+        return simple(() -> sheets.spreadsheets().get(fileId).setFields(fields));
     }
 
     /**

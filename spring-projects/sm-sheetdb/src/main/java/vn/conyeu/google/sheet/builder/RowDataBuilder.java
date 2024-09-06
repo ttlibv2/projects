@@ -4,6 +4,7 @@ import com.google.api.services.sheets.v4.model.CellData;
 import com.google.api.services.sheets.v4.model.RowData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RowDataBuilder implements XmlBuilder<RowData> {
     private final RowData row;
@@ -18,7 +19,7 @@ public class RowDataBuilder implements XmlBuilder<RowData> {
     }
 
     public CellDataBuilder getCell(int cellPos) {
-        CellData cellData = null;
+        CellData cellData;
 
         if(cellPos >= cellSize()) {
             cellData = new CellData();
@@ -42,6 +43,17 @@ public class RowDataBuilder implements XmlBuilder<RowData> {
         return row.getValues().size();
     }
 
+    public void formatCells(int countCell, ConsumerReturn<CellFormatBuilder> format) {
+        for(int beginPos=0;beginPos<countCell;beginPos++) {
+            getCell(beginPos).cellFormat(format);
+        }
+    }
+
+    public void setData(List<String> data) {
+        for(int pos=0;pos<data.size();pos++) {
+            getCell(pos).value(data.get(pos));
+        }
+    }
 
     private static RowData initRow(RowData row) {
         if(row == null)row = new RowData();
@@ -49,9 +61,4 @@ public class RowDataBuilder implements XmlBuilder<RowData> {
         return row;
     }
 
-    public void formatCells(int beginPos, int countCell, ConsumerReturn<CellFormatBuilder> format) {
-        for(;beginPos<countCell;beginPos++) {
-            getCell(beginPos).cellFormat(format);
-        }
-    }
 }

@@ -20,6 +20,9 @@ public class FileBuilder implements XmlBuilder<File> {
     private List<Permission> permissions;
     private Map<String, String> properties;
     private AbstractInputStreamContent content;
+    private String returnFields;
+    private String removeParents;
+    private String addParents;
 
     @Override
     public File build() {
@@ -64,6 +67,16 @@ public class FileBuilder implements XmlBuilder<File> {
      */
     public FileBuilder contentHints(File.ContentHints contentHints) {
         file.setContentHints(contentHints);
+        return this;
+    }
+
+    /**
+     * Set the returnFields
+     *
+     * @param returnFields the value
+     */
+    public FileBuilder fields(String returnFields) {
+        this.returnFields = returnFields;
         return this;
     }
 
@@ -232,6 +245,26 @@ public class FileBuilder implements XmlBuilder<File> {
     }
 
     /**
+     * Set the removeParents
+     *
+     * @param removeParents the value
+     */
+    public FileBuilder removeParents(String removeParents) {
+        this.removeParents = removeParents;
+        return this;
+    }
+
+    /**
+     * Set the addParents
+     *
+     * @param addParents the value
+     */
+    public FileBuilder addParents(String addParents) {
+        this.addParents = addParents;
+        return this;
+    }
+
+    /**
      * The IDs of the parent folders which contain the file. If not specified as
      * part of a create request, the file will be placed directly in the user's
      * My Drive folder. If not specified as part of a copy request, the file
@@ -299,6 +332,27 @@ public class FileBuilder implements XmlBuilder<File> {
     public FileBuilder content(AbstractInputStreamContent content) {
         this.content = content;
         return this;
+    }
+
+    /**
+     * Returns the returnFields
+     */
+    public String getFields() {
+        return returnFields;
+    }
+
+    /**
+     * Returns the removeParents
+     */
+    public String getRemoveParents() {
+        return removeParents;
+    }
+
+    /**
+     * Returns the addParents
+     */
+    public String getAddParents() {
+        return addParents;
     }
 
     public AbstractInputStreamContent getContent() {

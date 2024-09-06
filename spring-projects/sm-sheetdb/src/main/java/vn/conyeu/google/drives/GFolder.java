@@ -6,17 +6,14 @@ import com.google.api.client.http.FileContent;
 import com.google.api.client.http.InputStreamContent;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
-import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.drives.builder.AbstractGFile;
 import vn.conyeu.google.drives.builder.FileBuilder;
 import vn.conyeu.google.sheet.builder.ConsumerReturn;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class GFolder extends AbstractGFile {
@@ -38,7 +35,9 @@ public class GFolder extends AbstractGFile {
      * */
     public GPage<GFolder> getFolderByName(String name, int limit)  {
         String query = "mimeType='%s' and name='%s'".formatted(GMime.FOLDER.mime, name);
-        return search(new SearchBuilder().query(query).pageSize(limit)).mapTo(model -> (GFolder) model);
+        return search(builder(false).pageSize(limit)
+                .query(q -> q.all(q.folder(), q.name(name))))
+                .mapTo(model -> (GFolder) model);
     }
 
     public GFolder getFolderById(String folderId)  {
@@ -50,8 +49,8 @@ public class GFolder extends AbstractGFile {
      * @param limit the maximum number of files to return per page
      * */
     public GPage<GFolder> getFolders(int limit)  {
-        String query = "mimeType='%s'".formatted(GMime.FOLDER.mime);
-        return search(new SearchBuilder().query(query).pageSize(limit).orderBy("name"))
+        return search(builder(false)
+                .pageSize(limit).query(DriveQuery::folder))
                 .mapTo(file -> (GFolder) file);
     }
 
@@ -60,8 +59,7 @@ public class GFolder extends AbstractGFile {
      * @param limit the maximum number of files to return per page
      * */
     public GPage<GFile> getFiles(int limit)  {
-        String query = "mimeType != '%s'".formatted(GMime.FOLDER.mime);
-        return search(new SearchBuilder().query(query).pageSize(limit).orderBy("name"))
+        return search(builder(false).query(DriveQuery::notFolder))
                 .mapTo(file -> (GFile) file);
     }
 
@@ -70,8 +68,7 @@ public class GFolder extends AbstractGFile {
      * @param mimeType The MIME Type of the files to find.
      * */
     public GPage<GFile> getFilesByType(String mimeType)  {
-        String query = "mimeType='%s' and mimeType != '%s'".formatted(mimeType, GMime.FOLDER.mime);
-        return search(new SearchBuilder().query(query).pageSize(1000).orderBy("name"))
+        return search(builder(false).query(q -> q.isMime(mimeType)))
                 .mapTo(file -> (GFile) file);
     }
 
@@ -80,18 +77,13 @@ public class GFolder extends AbstractGFile {
      * @param name The name of the files to find.
      * */
     public GPage<GFile> getFilesByName(String name)  {
-        String query = "name = '%s' and mimeType != '%s'".formatted(name, GMime.FOLDER.mime);
-        return search(new SearchBuilder().query(query).pageSize(1000).orderBy("name"))
+        return search(builder(false)
+                .query(q -> q.all(q.notFolder(), q.name.eq(name))))
                 .mapTo(file -> (GFile) file);
     }
 
     public GPage<AbstractGFile> search(SearchBuilder builder)  {
-        Asserts.notBlank(builder.query, "The query not blank");
-        FileList list = files.list().setFields(builder.fields)
-                .setQ(builder.buildQuery())
-                .setPageSize(builder.pageSize).setPageToken(builder.pageToken)
-                .setOrderBy(builder.orderBy).execute();
-
+        FileList list = service.search(builder);
         String pageToken = list.getNextPageToken();
         List<AbstractGFile> models = convertModels(list.getFiles());
         return new GPage<>(models, list.getNextPageToken());
@@ -201,6 +193,14 @@ public class GFolder extends AbstractGFile {
                 ? newFolder(model) : newFile(model)).toList();
     }
 
+    SearchBuilder builder(Boolean trashed) {
+        SearchBuilder sb = new SearchBuilder();
+        if(trashed != null) sb.query(q -> q.trashed.eq(trashed));
+        return sb.pageSize(1000).orderBy("name")
+                .query(q -> q.parents(getId()));
+
+    }
+
     public static class GPage<E> implements Iterable<E> {
         final List<E> list;
         final String pageToken;
@@ -237,71 +237,4 @@ public class GFolder extends AbstractGFile {
         }
     }
 
-    public class SearchBuilder {
-        public String fields;
-        public Integer pageSize;
-        private String query;
-        private String pageToken;
-        private String orderBy;
-
-        public String buildQuery() {
-            return buildQuery(false);
-        }
-
-        public String buildQuery(boolean includeTrashed) {
-            if(!query.contains("in parents")) query += " and '%s' in parents".formatted(getId());
-            if(!includeTrashed) query += " and trashed=false";
-            return query;
-        }
-
-        /**
-         * Set the fields
-         *
-         * @param fields the value
-         */
-        public SearchBuilder fields(String fields) {
-            this.fields = fields;
-            return this;
-        }
-
-        /**
-         * Set the pageSize
-         *
-         * @param pageSize the value
-         */
-        public SearchBuilder pageSize(Integer pageSize) {
-            this.pageSize = pageSize;
-            return this;
-        }
-
-        /**
-         * Set the query
-         *
-         * @param query the value
-         */
-        public SearchBuilder query(String query) {
-            this.query = query + " and trashed=false";
-            return this;
-        }
-
-        /**
-         * Set the pageToken
-         *
-         * @param pageToken the value
-         */
-        public SearchBuilder pageToken(String pageToken) {
-            this.pageToken = pageToken;
-            return this;
-        }
-
-        /**
-         * Set the orderBy
-         *
-         * @param orderBy the value
-         */
-        public SearchBuilder orderBy(String orderBy) {
-            this.orderBy = orderBy;
-            return this;
-        }
-    }
 }

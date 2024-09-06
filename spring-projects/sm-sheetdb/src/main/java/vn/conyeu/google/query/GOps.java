@@ -12,7 +12,9 @@ public enum GOps implements Operator {
     GREATER_OR_EQUAL(Boolean.class),
     AND(Boolean.class),
     OR(Boolean.class),
-    NOT(Boolean.class);
+    NOT(Boolean.class),
+    AND_ALL(Boolean.class),
+    OR_ALL(Boolean.class);
 
     final Class type;
 

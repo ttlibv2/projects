@@ -4,7 +4,6 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
-import vn.conyeu.google.drives.builder.QueryClass;
 
 public abstract class BoolExpression extends DslExpression<Boolean> implements Predicate {
     private transient volatile BoolExpression not;
@@ -22,11 +21,36 @@ public abstract class BoolExpression extends DslExpression<Boolean> implements P
      * @return {@code this &amp;&amp; right}
      */
     public BoolExpression and(Predicate right) {
-        right = (Predicate) ExpressionUtils.extract(right);
-        if (right != null)
-            return new QueryClass.BoolOp(QueryClass.DriveOps.AND, mixin, right);
+        right = Utils.extractPredicate(right);
+        if (right != null) return new BoolOp(GOps.AND, mixin, right);
         else return this;
     }
+
+    /**
+     * Create a {@code this && any(predicates)} expression
+     *
+     * <p>Returns an intersection of this and the union of the given predicates</p>
+     *
+     * @param predicates union of predicates
+     * @return this &amp;&amp; any(predicates)
+     */
+    public BoolExpression andAnyOf(Predicate... predicates) {
+        Expression expr = Utils.anyOf(predicates);
+        return new BoolOp(GOps.AND_ALL, mixin, expr);
+    }
+
+    /**
+     * Create a {@code this or all(predicates)} expression
+     * <p>Return a union of this and the intersection of the given predicates</p>
+     *
+     * @param predicates intersection of predicates
+     * @return this or all(predicates)
+     */
+    public BoolExpression orAllOf(Predicate... predicates) {
+        Expression expr = Utils.allOf(predicates);
+        return new BoolOp(GOps.OR_ALL, mixin, expr);
+    }
+
 
     /**
      * Create a {@code this || right} expression
@@ -38,7 +62,7 @@ public abstract class BoolExpression extends DslExpression<Boolean> implements P
     public BoolExpression or(Predicate right) {
         right = (Predicate) ExpressionUtils.extract(right);
         if (right != null)
-            return new QueryClass.BoolOp(QueryClass.DriveOps.OR, mixin, right);
+            return new BoolOp(GOps.OR, mixin, right);
         else return this;
     }
 
@@ -51,7 +75,7 @@ public abstract class BoolExpression extends DslExpression<Boolean> implements P
     @Override
     public BoolExpression not() {
         if (not == null) {
-            not = new QueryClass.BoolOp(QueryClass.DriveOps.NOT, this);
+            not = new BoolOp(GOps.NOT, this);
         }
         return not;
     }
@@ -80,7 +104,7 @@ public abstract class BoolExpression extends DslExpression<Boolean> implements P
 
     private BoolExpression eq(Boolean right) {
         Expression<Boolean> constant = Expressions.constant(right);
-        return new QueryClass.BoolOp(QueryClass.DriveOps.EQUAL, mixin, constant);
+        return new BoolOp(GOps.EQUAL, mixin, constant);
     }
 
 }

@@ -9,6 +9,15 @@ import java.util.List;
 public class SheetBuilder implements XmlBuilder<Sheet> {
     private final Sheet sheet = new Sheet();
 
+    public SheetBuilder() {
+        initialize();
+    }
+
+    public void initialize() {
+        sheet.setData(new ArrayList<>());
+        sheet.getData().add(new GridData());
+    }
+
     @Override
     public Sheet build() {
         return sheet;
@@ -17,6 +26,15 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
     public RowDataBuilder getRow(int rowPos) {
         RowData rData = getRowDataPos(0, rowPos);
         return new RowDataBuilder(rData);
+    }
+
+    /**
+     * The ID of the sheet. Must be non-negative. This field cannot be changed once set.
+     *
+     * @return value or {@code null} for none
+     */
+    public Integer getSheetId() {
+        return getSheetProp().getSheetId();
     }
 
     public SheetBuilder bandedRanges(List<BandedRange> bandedRanges) {
@@ -111,9 +129,19 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      *
      * @param sheetType sheetType or {@code null} for none
      */
-    public SheetBuilder sheetType(String sheetType) {
-        getSheetProp().setSheetType(sheetType);
+    public SheetBuilder sheetType(SheetType sheetType) {
+        getSheetProp().setSheetType(sheetType.name());
         return this;
+    }
+
+    /**
+     * The ID of the sheet. Must be non-negative. This field cannot be changed once set.
+     *
+     * @param sheetId sheetId or {@code null} for none
+     */
+    public SheetBuilder sheetId(Integer sheetId) {
+         getSheetProp().setSheetId(sheetId);
+         return this;
     }
 
     /**
@@ -227,9 +255,14 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return this;
     }
 
-    public SheetBuilder protectedRanges(List<ProtectedRange> protectedRanges) {
-        sheet.setProtectedRanges(protectedRanges);
+    public SheetBuilder protectedRange(ConsumerReturn<ProtectedRangeBuilder> consumer) {
+        ProtectedRangeBuilder builder = consumer.accept(new ProtectedRangeBuilder());
+        initProtectedRanges().add(builder.build());
         return this;
+    }
+
+    private List<ProtectedRange> initProtectedRanges() {
+        return Utils.setIfNull(sheet::getProtectedRanges, ArrayList::new, sheet::setProtectedRanges);
     }
 
     public SheetBuilder rowGroups(List<DimensionGroup> rowGroups) {
@@ -282,6 +315,13 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
             }
             else return gData.getRowData().get(rowPos);
         }
+    }
+
+    public RowDataBuilder addRow() {
+        RowDataBuilder builder = new RowDataBuilder(null);
+        GridData gridData = sheet.getData().get(0);
+        gridData.getRowData().add(builder.build());
+        return builder;
     }
 
 }

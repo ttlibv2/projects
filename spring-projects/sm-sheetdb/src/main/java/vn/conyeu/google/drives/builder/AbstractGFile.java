@@ -4,7 +4,9 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Permission;
 import com.google.api.services.drive.model.PermissionList;
+import com.google.api.services.drive.model.User;
 import vn.conyeu.commons.utils.DateHelper;
+import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.google.drives.DriveService;
 
@@ -25,8 +27,8 @@ public abstract class AbstractGFile {
     protected void validateModel(File model) {
     }
 
-    public void async() {
-        this.model = service.openById(getId(), "*");
+    public final void async() {
+        async("*");
     }
 
     /**Gets the ID.*/
@@ -42,6 +44,16 @@ public abstract class AbstractGFile {
     /**    Gets the URL that can be used to open*/
     public String getUrl() {
         return model.getWebViewLink();
+    }
+
+    public List<User> getOwners() {
+        if(model.getOwners() == null) loadOwners();
+        return model.getOwners();
+    }
+
+    public User getOwner() {
+        List<User> userList = model.getOwners();
+        return Objects.getItemAt(userList, 0);
     }
 
     public LocalDateTime getModifiedTime() {
@@ -91,7 +103,7 @@ public abstract class AbstractGFile {
     }
 
     public void update()  {
-        service.updateFile(getId(), model);
+        service.update(getId(), model);
     }
 
     public Permission setOwner(String emailAddress, LocalDateTime expirationTime)  {
@@ -146,6 +158,16 @@ public abstract class AbstractGFile {
             PermissionList list = service.getPermission(getId(), 1000, null);
             model.setPermissions(list.getPermissions());
             return list.getPermissions();
+    }
+
+    public List<User> loadOwners() {
+        return async("owners").getOwners();
+    }
+
+    protected File async(String fields) {
+        File model = service.openById(getId(), fields);
+        MapperHelper.update(this.model, model);
+        return model;
     }
 
 

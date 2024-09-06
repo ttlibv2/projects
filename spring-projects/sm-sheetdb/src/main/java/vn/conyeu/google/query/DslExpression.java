@@ -26,4 +26,5 @@ public abstract class DslExpression<T> implements Expression<T> {
     public final String toString() {
         return mixin.toString();
     }
+
 }

@@ -3,20 +3,18 @@ package vn.conyeu.google.sheet;
 import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
 import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import vn.conyeu.google.sheet.builder.SheetPropertiesBuilder;
 import vn.conyeu.google.sheet.builder.XslPropertiesBuilder;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public final class XslBook {
     private final Spreadsheet xsl;
-    private final XslSheetService service;
+    private final SheetService service;
     //private final XslBatchUpdate batchUpdate;
     private final Map<String, XslSheet> sheetNames = new HashMap<>();
     private final Map<Integer, String> sheetIds = new HashMap<>();
@@ -25,7 +23,7 @@ public final class XslBook {
     //builder
     private XslPropertiesBuilder propertiesBuilder;
 
-    XslBook(XslSheetService service, Spreadsheet xsl) {
+    XslBook(SheetService service, Spreadsheet xsl) {
         this.service = Asserts.notNull(service);
         this.xsl = Asserts.notNull(xsl);
        // this.batchUpdate = new XslBatchUpdate(service, this);

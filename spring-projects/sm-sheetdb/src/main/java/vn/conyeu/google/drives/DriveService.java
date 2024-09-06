@@ -3,6 +3,7 @@ package vn.conyeu.google.drives;
 import com.google.api.client.http.AbstractInputStreamContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
 import com.google.api.services.drive.model.PermissionList;
 import vn.conyeu.google.drives.builder.FileBuilder;
@@ -12,15 +13,19 @@ import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import static vn.conyeu.google.core.ExecuteFunc.simple;
 
 public class DriveService {
-    private final Drive service;
+    //private final Drive service;
     private final Drive.Files files;
     private final Drive.Permissions permissions;
 
+    public final String DEFAULT_FIELDS = "id,name,properties,owners,webViewLink,description,mimeType";
+
     public DriveService(Drive service) {
-        this.service = service;
+        //this.service = service;
         this.files = service.files();
         this.permissions = service.permissions();
     }
+
+
 
     public File getRoot() {
         return simple(() -> files.get("root"));
@@ -30,13 +35,14 @@ public class DriveService {
         return simple(() -> files.get(fileId).setFields(fields));
     }
 
-    public void updateFile(String fileId, File model) {
+    public void update(String fileId, File model) {
         simple(() -> files.update(fileId, model));
     }
 
     public File createFolder(ConsumerReturn<FileBuilder> consumer) {
         FileBuilder builder = consumer.accept(new FileBuilder()).mimeType(GMime.FOLDER);
-        return simple(() -> files.create(builder.build()));
+        String fields = builder.getFields() == null ? DEFAULT_FIELDS : builder.getFields();
+        return simple(() -> files.create(builder.build()).setFields(fields));
     }
 
     public File createFile(ConsumerReturn<FileBuilder> consumer) {
@@ -50,6 +56,23 @@ public class DriveService {
         simple(() -> files.delete(fileId));
     }
 
+    public FileList search(SearchBuilder b) {
+        return simple(() -> files.list()
+                .setFields(b.getFields())
+                .setOrderBy(b.getOrderBy())
+                .setPageSize(b.getPageSize())
+                .setPageToken(b.getPageToken())
+                .setQ(b.buildQuery()));
+    }
+
+    public File update(String sourceId, ConsumerReturn<FileBuilder> consumer) {
+        FileBuilder builder = consumer.accept(new FileBuilder());
+        if(builder.getFields() == null)builder.fields(DEFAULT_FIELDS);
+        return simple(() -> files.update(sourceId, builder.build())
+                .setRemoveParents(builder.getRemoveParents())
+                .setAddParents(builder.getAddParents()));
+    }
+
     //----------------------- PERMISSION
 
     public Permission createPermission(String fileId, ConsumerReturn<PermissionBuilder> consumer) {
@@ -60,5 +83,6 @@ public class DriveService {
     public PermissionList getPermission(String fileId, int pageSize, String pageToken) {
         return simple(() -> permissions.list(fileId).setPageSize(pageSize).setPageToken(pageToken));
     }
+
 
 }

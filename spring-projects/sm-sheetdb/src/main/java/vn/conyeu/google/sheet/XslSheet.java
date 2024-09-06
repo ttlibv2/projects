@@ -1,6 +1,5 @@
 package vn.conyeu.google.sheet;
 
-import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.Utils;
@@ -10,7 +9,7 @@ import vn.conyeu.google.sheet.builder.SheetPropertiesBuilder;
 import java.util.List;
 
 public class XslSheet {
-    private final XslSheetService service;
+    private final SheetService service;
 
     //
     private final XslBook workbook;
@@ -22,7 +21,7 @@ public class XslSheet {
     //--
     private SheetPropertiesBuilder builder;
 
-    XslSheet(XslSheetService service, XslBook workbook, Sheet sheet) {
+    XslSheet(SheetService service, XslBook workbook, Sheet sheet) {
         this.service = Asserts.notNull(service);
         this.workbook = Asserts.notNull(workbook);
         this.sheet = Asserts.notNull(sheet);
