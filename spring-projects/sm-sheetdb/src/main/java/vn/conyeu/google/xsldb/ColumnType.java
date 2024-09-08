@@ -1,4 +1,4 @@
-package vn.conyeu.google.db;
+package vn.conyeu.google.xsldb;
 
 public enum ColumnType {
     STRING,

@@ -1,4 +1,4 @@
-package vn.conyeu.google.db;
+package vn.conyeu.google.xsldb;
 
 import lombok.extern.slf4j.Slf4j;
 import vn.conyeu.commons.utils.Asserts;
@@ -8,7 +8,9 @@ import vn.conyeu.google.drives.GFolder;
 import vn.conyeu.google.sheet.XslApp;
 import vn.conyeu.google.sheet.XslService;
 import vn.conyeu.google.sheet.XslBook;
+import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import vn.conyeu.google.sheet.builder.SheetBuilder;
+import vn.conyeu.google.sheet.builder.XslBuilder;
 
 @Slf4j
 public class DbApp {
@@ -32,44 +34,36 @@ public class DbApp {
         String owner = folder.getOwner().getEmailAddress();
 
         // create xsl schema
-        XslBook xslBook = xslApp.create("schema", b -> {
+        XslBook xslBook = createBook(folder.getId(), "schema", b -> {
             b.addSheet("schema_tb", s -> applySheetBuilder(s.sheetId(0), owner));
             b.addSheet("schema_col", s -> applySheetBuilder(s.sheetId(1), owner));
             return b;
         });
 
-        // move xsl to folder db
-        driveApp.update(xslBook.getId(), b -> b
-                .addParents(folder.getId())
-                .properties("schemaTb", xslBook.getId())
-        );
+        // update schema id
+        driveApp.update(folder.getId(), m -> m.properties("schemaId", xslBook.getId()));
 
-        return new SheetDb(drives, sheets, folder, xslBook);
+
+        return new SheetDb(this, folder, xslBook);
     }
 
     public SheetDb openById(String dbId) {
         return null;
     }
 
-    private SheetBuilder applySheetBuilder(SheetBuilder sheet, String owner) {
-        sheet.rowCount(2).columnCount(2).frozenRowCount(1);
-        sheet.protectedRange(p -> p.forRow(sheet.getSheetId(), 0)
-                .description("Only Admin").editorUser(owner));
+    protected XslBook createBook(String folderId, String name, ConsumerReturn<XslBuilder> consumer) {
+        XslBook xslBook = xslApp.create(name, consumer);
 
-        sheet.getRow(0).formatCells(2, c -> c
-                .textFormat(f -> f.bold(true).fontFamily("Consolas"))
+        // move xsl to folder db
+        driveApp.update(xslBook.getId(), b -> b
+                .addParents(folderId)
+                .properties("isTable", "true")
         );
 
-        sheet.getRow(1).formatCells(2, c -> c
-                .textFormat(f -> f.fontFamily("Consolas"))
-        );
+        return xslBook;
 
-
-
-
-
-
-        return sheet;
     }
+
+
 
 }

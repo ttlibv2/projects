@@ -110,8 +110,13 @@ public class XslBuilder implements XmlBuilder<Spreadsheet> {
     }
 
     public XslBuilder addSheet(ConsumerReturn<SheetBuilder> sheet) {
-        SheetBuilder builder = sheet.accept(new SheetBuilder());
+        SheetBuilder builder = sheet.accept(new SheetBuilder(null));
         sheets().add(builder.build());
+        return this;
+    }
+
+    public XslBuilder addSheet(SheetBuilder sheet) {
+        sheets().add(sheet.build());
         return this;
     }
 

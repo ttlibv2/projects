@@ -1,12 +1,14 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.Editors;
+import com.google.api.services.sheets.v4.model.GridRange;
 import com.google.api.services.sheets.v4.model.ProtectedRange;
 import vn.conyeu.commons.utils.Lists;
 import vn.conyeu.google.core.Utils;
 
 public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
     private final ProtectedRange range = new ProtectedRange();
+    private GridRangeBuilder rangeBuilder;
 
     @Override
     public ProtectedRange build() {
@@ -53,9 +55,15 @@ public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
      * @param consumer range or {@code null} for none
      */
     public ProtectedRangeBuilder range(ConsumerReturn<GridRangeBuilder> consumer) {
-        GridRangeBuilder builder = consumer.accept(new GridRangeBuilder());
-        range.setRange(builder.build());
+        consumer.accept(getRangeBuilder());
         return this;
+    }
+
+    private GridRangeBuilder getRangeBuilder() {
+        if(rangeBuilder == null ) {
+            rangeBuilder = new GridRangeBuilder(Utils.setIfNull(range::getRange, GridRange::new, range::setRange));
+        }
+        return rangeBuilder;
     }
 
     /**

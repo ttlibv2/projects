@@ -1,18 +1,23 @@
-package vn.conyeu.google.db;
+package vn.conyeu.google.xsldb;
 
 import vn.conyeu.google.drives.DriveApp;
 import vn.conyeu.google.sheet.XslApp;
 import vn.conyeu.google.sheet.XslSheet;
 
-public abstract class AbstractTb {
+import java.util.List;
+import java.util.Set;
+
+public abstract class AbstractTb<E> {
     private final DriveApp drives;
     private final XslApp sheets;
     private final XslSheet sheet;
+    private final SheetDb sheetDb;
 
-    AbstractTb(DriveApp drives, XslApp sheets, XslSheet sheet) {
+    AbstractTb(DriveApp drives, XslApp sheets, SheetDb sheetDb, XslSheet sheet) {
         this.drives = drives;
         this.sheets = sheets;
         this.sheet = sheet;
+        this.sheetDb = sheetDb;
     }
 
     /**
@@ -28,6 +33,12 @@ public abstract class AbstractTb {
     public String getName() {
         return sheet.getTitle();
     }
+
+    public List<Column> getColumns() {
+        return sheetDb.getColumnForTable(getName());
+    }
+
+
 
 
 }

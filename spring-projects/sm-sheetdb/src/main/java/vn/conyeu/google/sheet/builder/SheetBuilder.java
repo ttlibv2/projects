@@ -11,7 +11,7 @@ import java.util.OptionalInt;
 public class SheetBuilder implements XmlBuilder<Sheet> {
     private final Sheet sheet;
     private final List<RowDataBuilder> rowBuilders;
-    private Integer rowCount, columnCount;
+    private Integer maxRow, maxColumn;
     private Integer frozen_row;
 
     public SheetBuilder(Sheet model) {
@@ -20,10 +20,9 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         initialize();
     }
 
-    @Override
     public void initialize() {
-        rowCount = getGridProp().getRowCount();
-        columnCount = getGridProp().getColumnCount();
+        maxRow = getGridProp().getRowCount();
+        maxColumn = getGridProp().getColumnCount();
         frozen_row = getGridProp().getFrozenRowCount();
 
 
@@ -33,11 +32,10 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         //--
         GridData gridData = gridDataList.getFirst();
         List<RowData> rows = Utils.setIfNull(gridData::getRowData, ArrayList::new, gridData::setRowData);
-        for(RowData row:rows) rowBuilders.add(new RowDataBuilder(row));
+        for(RowData row:rows) rowBuilders.add(new RowDataBuilder(this));
 
     }
 
-    @Override
     public Sheet build() {
         sheet.getData().clear();
 
@@ -47,30 +45,27 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
             gridData.getRowData().add(rowData);
         }
 
-        // row_count
-        Integer row_count = rowCount;
-        if(rowCount == null || rowCount < getRowSize()) {
-            row_count = getRowSize();
-        }
-
-        // column_count
-        Integer col_count = columnCount;
-        int currColCount = getColumnSize();
-        if(col_count == null || col_count < currColCount) {
-            col_count = currColCount;
-        }
-
         //frozen_row
         if(frozen_row == null || frozen_row < 1) {
             frozen_row = 1;
         }
 
         getGridProp().setFrozenRowCount(frozen_row);
-        getGridProp().setRowCount(row_count);
-        getGridProp().setColumnCount(col_count);
+        getGridProp().setRowCount(getMaxRow());
+        getGridProp().setColumnCount(getMaxColumn());
 
         return sheet;
     }
+
+    public SheetBuilder init(int columns, int rows) {
+        rowCount(rows).columnCount(columns);
+
+        return this;
+    }
+
+
+
+
 
     public int getRowSize() {
         return rowBuilders.size();
@@ -80,7 +75,18 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return getOptionalColumnSize().orElse(0);
     }
 
-    private OptionalInt getOptionalColumnSize() {
+    public Integer getMaxColumn() {
+        int countColumn = getColumnSize();
+        if(maxColumn == null || maxColumn < countColumn) maxColumn = countColumn;
+        return maxColumn;
+    }
+
+    public Integer getMaxRow() {
+        if(maxRow == null || maxRow < getRowSize()) maxRow = getRowSize();
+        return maxRow;
+    }
+
+    protected OptionalInt getOptionalColumnSize() {
         return rowBuilders.stream().mapToInt(RowDataBuilder::size).max();
     }
 
@@ -177,7 +183,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param columnCount columnCount or {@code null} for none
      */
     public SheetBuilder columnCount(Integer columnCount) {
-        this.columnCount = columnCount;
+        this.maxColumn = columnCount;
         return this;
     }
 
@@ -227,7 +233,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param rowCount rowCount or {@code null} for none
      */
     public SheetBuilder rowCount(Integer rowCount) {
-        this.rowCount = rowCount;
+        this.maxRow = rowCount;
         return this;
     }
 
@@ -244,6 +250,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
     /*The protected ranges in this sheet.*/
     public SheetBuilder protectedRange(ConsumerReturn<ProtectedRangeBuilder> consumer) {
         ProtectedRangeBuilder builder = consumer.accept(new ProtectedRangeBuilder());
+        builder.range(r -> r.sheetId(getSheetId()));
         initProtectedRanges().add(builder.build());
         return this;
     }
@@ -332,8 +339,14 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         }
     }
 
+    public RowDataBuilder editRow(int index, ConsumerReturn<CellDataBuilder> consumer) {
+        RowDataBuilder builder = getRow(index);
+        builder.editCell(consumer);
+        return builder;
+    }
+
     public ColumnDataBuilder getColumn(int index) {
-        ColumnDataBuilder columnBuilder = new ColumnDataBuilder();
+        ColumnDataBuilder columnBuilder = new ColumnDataBuilder(this);
         columnBuilder.columnIndex(index);
 
         for(RowDataBuilder rowBuilder:rowBuilders) {
@@ -353,28 +366,31 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
 
     private GridProperties getGridProp() {
         SheetProperties sheetProp = getSheetProp();
-        GridProperties gprop = sheetProp.getGridProperties();
-        if (gprop != null) return gprop;
-        else {
-            gprop = new GridProperties();
-            sheetProp.setGridProperties(gprop);
-            return gprop;
+        GridProperties gridProperties = sheetProp.getGridProperties();
+        if (gridProperties == null) {
+            gridProperties = new GridProperties();
+            sheetProp.setGridProperties(gridProperties);
         }
+        return gridProperties;
     }
 
     public RowDataBuilder addRow() {
-        RowDataBuilder builder = new RowDataBuilder(null);
+        RowDataBuilder builder = new RowDataBuilder(this);
+        builder.rowIndex(rowBuilders.size() + 1);
         rowBuilders.add(builder);
         return builder;
     }
 
     public ColumnDataBuilder addColumn() {
-        int countColumn = getColumnSize();
-        ColumnDataBuilder columnBuilder = new ColumnDataBuilder();
-        columnBuilder.columnIndex(countColumn+1);
+
+
+
+
+        int cellPos = getColumnSize() + 1;
+        ColumnDataBuilder columnBuilder = new ColumnDataBuilder(this, cellPos);
 
         for(RowDataBuilder rowBuilder:rowBuilders) {
-            CellDataBuilder cellBuilder = rowBuilder.addCell();
+            CellDataBuilder cellBuilder = rowBuilder.getCell(cellPos);
             columnBuilder.addCell(cellBuilder);
         }
 

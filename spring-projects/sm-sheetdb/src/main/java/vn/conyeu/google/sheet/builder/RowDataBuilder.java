@@ -2,6 +2,7 @@ package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.CellData;
 import com.google.api.services.sheets.v4.model.RowData;
+import com.google.api.services.sheets.v4.model.TextFormat;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.Utils;
 
@@ -10,12 +11,24 @@ import java.util.List;
 
 public class RowDataBuilder implements XmlBuilder<RowData> {
     private final RowData row;
+    private final SheetBuilder sheetBuilder;
     private final List<CellDataBuilder> cells;
+    private Integer rowIndex;
 
-    public RowDataBuilder(RowData row) {
-        this.row = Utils.getIfNull(row, RowData::new);
+    public RowDataBuilder(SheetBuilder sheetBuilder) {
+        this(sheetBuilder, null);
+    }
+
+    public RowDataBuilder(SheetBuilder sheetBuilder, RowData model) {
+        this.row = Utils.getIfNull(model, RowData::new);
+        this.sheetBuilder = Asserts.notNull(sheetBuilder);
         this.cells = new ArrayList<>();
         this.initCellsBuilder();
+    }
+
+    public RowDataBuilder rowIndex(Integer rowIndex) {
+        this.rowIndex = rowIndex;
+        return this;
     }
 
     public int size() {
@@ -26,15 +39,52 @@ public class RowDataBuilder implements XmlBuilder<RowData> {
         return cells.isEmpty();
     }
 
-    public CellDataBuilder getCell(int index) {
-        tryAddCell(index);
-        return cells.get(index);
+    /**
+     * Returns cell at index
+     * @param cellIndex the index cell for get
+     * */
+    public CellDataBuilder getCell(int cellIndex) {
+        tryAddCell(cellIndex);
+        return cells.get(cellIndex);
     }
 
-    public RowDataBuilder editCell(int index, ConsumerReturn<CellDataBuilder> consumer) {
-        consumer.accept(getCell(index));
+    /**
+     * Update cell at index
+     * @param cellIndex the index cell for update
+     * @param consumer the custom cell
+     * */
+    public RowDataBuilder editCell(int cellIndex, ConsumerReturn<CellDataBuilder> consumer) {
+        consumer.accept(getCell(cellIndex));
         return this;
     }
+
+    /**
+     * Update all cell
+     * @param consumer the custom cell
+     * */
+    public RowDataBuilder editCell(ConsumerReturn<CellDataBuilder> consumer) {
+        tryAddCell(sheetBuilder.getMaxColumn());
+        for(CellDataBuilder cell:cells)consumer.accept(cell);
+        return this;
+    }
+
+    public RowDataBuilder protect(ConsumerReturn<ProtectedRangeBuilder> consumer) {
+        Integer sheetId = sheetBuilder.getSheetId();
+        Asserts.notNull(sheetId, "SheetBuilder not set `sheetId`");
+        Asserts.notNull(rowIndex, "RowDataBuilder not set `rowIndex`");
+        sheetBuilder.protectedRange(r -> consumer.accept(r).forRow(sheetId, rowIndex));
+        return this;
+    }
+
+
+
+
+
+
+
+
+
+
 
     public RowData build() {
         row.getValues().clear();
@@ -51,7 +101,7 @@ public class RowDataBuilder implements XmlBuilder<RowData> {
         for(CellData cellData:values)cells.add(new CellDataBuilder(cellData));
     }
 
-    public CellDataBuilder addCell() {
+    private CellDataBuilder addCell() {
         CellDataBuilder builder = new CellDataBuilder(null);
         cells.add(builder);
         return builder;
@@ -63,5 +113,4 @@ public class RowDataBuilder implements XmlBuilder<RowData> {
             for (int pos = cells.size(); pos <= rightPos; pos++) addCell();
         }
     }
-
 }

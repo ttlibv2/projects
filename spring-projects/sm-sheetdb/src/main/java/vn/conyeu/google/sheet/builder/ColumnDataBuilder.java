@@ -1,6 +1,7 @@
 package vn.conyeu.google.sheet.builder;
 
 import lombok.Getter;
+import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.GoogleException;
 
 import java.util.ArrayList;
@@ -9,9 +10,12 @@ import java.util.List;
 @Getter
 public class ColumnDataBuilder {
     private List<CellDataBuilder> cells;
+    private final SheetBuilder sheetBuilder;
     private Integer columnIndex;
 
-    public ColumnDataBuilder() {
+    public ColumnDataBuilder(SheetBuilder sheetBuilder, int columnPos) {
+        this.sheetBuilder = Asserts.notNull(sheetBuilder);
+        this.columnIndex = columnPos;
         cells = new ArrayList<>();
     }
 

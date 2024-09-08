@@ -1,6 +1,9 @@
-package vn.conyeu.google.db;
+package vn.conyeu.google.xsldb.builder;
 
 import vn.conyeu.google.sheet.builder.XmlBuilder;
+import vn.conyeu.google.xsldb.Column;
+import vn.conyeu.google.xsldb.ColumnType;
+import vn.conyeu.google.xsldb.Increment;
 
 public class ColumnBuilder implements XmlBuilder<Column> {
     private final Column column = new Column();
