@@ -14,6 +14,7 @@ public class ColumnBuilder implements XmlBuilder<Column> {
         return column.getColumnName();
     }
 
+
     /**
      * Set the columnId
      *
@@ -153,4 +154,9 @@ public class ColumnBuilder implements XmlBuilder<Column> {
         column.valueDefault(valueDefault);
         return this;
     }
+
+    public Column position(Integer position) {
+        return column.position(position);
+    }
+
 }

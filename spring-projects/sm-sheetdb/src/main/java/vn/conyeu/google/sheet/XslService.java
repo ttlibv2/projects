@@ -9,11 +9,11 @@ import vn.conyeu.google.sheet.builder.*;
 
 import java.io.IOException;
 
-public class SheetService {
+public class XslService {
     private final Sheets sheets;
     private final Sheets.Spreadsheets.Values values;
 
-    public SheetService(Sheets sheets) {
+    public XslService(Sheets sheets) {
         this.sheets = sheets;
         this.values = sheets.spreadsheets().values();
     }
@@ -45,11 +45,11 @@ public class SheetService {
         return batchUpdate(fileId, builder -> builder.addSheet(consumer)).getAddSheet().getProperties();
     }
 
-    public SpreadsheetProperties updateXsl(String fileId,ConsumerReturn<XslPropertiesBuilder> consumer) {
+    public SpreadsheetProperties updateXsl(String fileId,ConsumerReturn<XslModelBuilder> consumer) {
         return batchUpdate(fileId, builder -> builder.updateSpreadsheetProperties(consumer)).getSpreadsheetProperties();
     }
 
-    public SpreadsheetProperties updateXsl(String fileId,XslPropertiesBuilder b) {
+    public SpreadsheetProperties updateXsl(String fileId, XslModelBuilder b) {
         return batchUpdate(fileId, builder -> builder.updateSpreadsheetProperties(b)).getSpreadsheetProperties();
     }
 
@@ -57,7 +57,7 @@ public class SheetService {
         batchUpdate(fileId, builder -> builder.updateSheetProperties(b));
     }
 
-    public void updateSheet(String fileId,SheetPropertiesBuilder b) {
+    public void updateSheet(String fileId, SheetPropertiesBuilder b) {
         batchUpdate(fileId, builder -> builder.updateSheetProperties(bs -> b));
     }
 
@@ -188,7 +188,7 @@ public class SheetService {
             if(!isFormat &&  "textFormat".equals(type)) {
                 b.repeatCell(c -> c.sheetId(sheetId)
                         .startRowIndex(beginRow).startColumnIndex(beginCol)
-                        .cellFormat(cf -> cf.textFormat(tx -> tx))
+                        .cellFormat(CellFormatBuilder::clearFormat)
                         .fields("userEnteredFormat.textFormat"));
             }
 

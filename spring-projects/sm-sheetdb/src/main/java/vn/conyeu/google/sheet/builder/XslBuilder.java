@@ -8,29 +8,39 @@ import java.util.List;
 
 public class XslBuilder implements XmlBuilder<Spreadsheet> {
     private final Spreadsheet ss = new Spreadsheet();
-    private XslPropertiesBuilder propBuilder;
+    private XslModelBuilder propBuilder;
 
     @Override
     public Spreadsheet build() {
        return ss;
     }
 
-    public XslBuilder developerMetadata(List<DeveloperMetadata> developerMetadata) {
-        ss.setDeveloperMetadata(developerMetadata);
+    public XslBuilder developerMetadata(DeveloperMetadata developerMetadata) {
+        getDeveloperMetadata().add(developerMetadata);
         return this;
     }
 
-    public XslBuilder namedRanges(List<NamedRange> namedRanges) {
-        ss.setNamedRanges(namedRanges);
+    private List<DeveloperMetadata> getDeveloperMetadata() {
+        return Utils.setIfNull(ss::getDeveloperMetadata, ArrayList::new, ss::setDeveloperMetadata);
+    }
+
+
+    /*The named ranges defined in a spreadsheet.*/
+    public XslBuilder namedRanges(NamedRange namedRange) {
+       getNamedRanges().add(namedRange);
         return this;
+    }
+
+    private List<NamedRange> getNamedRanges() {
+        return Utils.setIfNull(ss::getNamedRanges, ArrayList::new, ss::setNamedRanges);
     }
 
     /**
      * The amount of time to wait before volatile functions are recalculated.
      * @param autoRecalc autoRecalc or {@code null} for none
      */
-    public XslBuilder autoRecalc(String autoRecalc) {
-        props().autoRecalc(autoRecalc);
+    public XslBuilder autoRecalc(RecalculationInterval autoRecalc) {
+        props().autoRecalc(Utils.enumName(autoRecalc));
         return this;
     }
 
@@ -128,9 +138,9 @@ public class XslBuilder implements XmlBuilder<Spreadsheet> {
         return ss.getSheets();
     }
 
-    private XslPropertiesBuilder props() {
+    private XslModelBuilder props() {
         if (propBuilder == null) {
-            propBuilder = new XslPropertiesBuilder(Utils.setIfNull(ss::getProperties,
+            propBuilder = new XslModelBuilder(Utils.setIfNull(ss::getProperties,
                     SpreadsheetProperties::new, ss::setProperties));
         }
         return propBuilder;

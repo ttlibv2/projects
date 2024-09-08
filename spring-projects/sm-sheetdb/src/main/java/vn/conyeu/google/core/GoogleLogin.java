@@ -18,8 +18,8 @@ import vn.conyeu.commons.utils.Sets;
 import vn.conyeu.google.db.DbApp;
 import vn.conyeu.google.drives.DriveApp;
 import vn.conyeu.google.drives.DriveService;
-import vn.conyeu.google.sheet.SheetApp;
-import vn.conyeu.google.sheet.SheetService;
+import vn.conyeu.google.sheet.XslApp;
+import vn.conyeu.google.sheet.XslService;
 
 import java.io.*;
 import java.security.GeneralSecurityException;
@@ -87,17 +87,17 @@ public final class GoogleLogin {
         return new DriveApp(drive(credential, HTTP_TRANSPORT));
     }
 
-    public SheetApp sheetApp() {
+    public XslApp sheetApp() {
         Credential credential = getCredential();
         HttpTransport HTTP_TRANSPORT = credential.getTransport();
-        return new SheetApp(sheets(credential, HTTP_TRANSPORT));
+        return new XslApp(sheets(credential, HTTP_TRANSPORT));
     }
 
     public DbApp dbApp() {
         Credential credential = getCredential();
         HttpTransport HTTP_TRANSPORT = credential.getTransport();
         DriveService drive = drive(credential, HTTP_TRANSPORT);
-        SheetService sheets = sheets(credential, HTTP_TRANSPORT);
+        XslService sheets = sheets(credential, HTTP_TRANSPORT);
         return new DbApp(drive, sheets);
     }
 
@@ -107,8 +107,8 @@ public final class GoogleLogin {
                 .setApplicationName(config.getAppName()).build());
     }
 
-    private SheetService sheets(Credential credential, HttpTransport HTTP_TRANSPORT) {
-        return new SheetService(new Sheets
+    private XslService sheets(Credential credential, HttpTransport HTTP_TRANSPORT) {
+        return new XslService(new Sheets
                 .Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(config.getAppName()).build());
     }

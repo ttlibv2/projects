@@ -1,31 +1,87 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.*;
+import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 
 public class SheetBuilder implements XmlBuilder<Sheet> {
-    private final Sheet sheet = new Sheet();
+    private final Sheet sheet;
+    private final List<RowDataBuilder> rowBuilders;
+    private Integer rowCount, columnCount;
+    private Integer frozen_row;
 
-    public SheetBuilder() {
+    public SheetBuilder(Sheet model) {
+        sheet = Utils.getIfNull(model, Sheet::new);
+        rowBuilders = new ArrayList<>();
         initialize();
     }
 
+    @Override
     public void initialize() {
-        sheet.setData(new ArrayList<>());
-        sheet.getData().add(new GridData());
+        rowCount = getGridProp().getRowCount();
+        columnCount = getGridProp().getColumnCount();
+        frozen_row = getGridProp().getFrozenRowCount();
+
+
+        List<GridData> gridDataList = Utils.setIfNull(sheet::getData, ArrayList::new, sheet::setData);
+        if(gridDataList.isEmpty()) gridDataList.add(new GridData());
+
+        //--
+        GridData gridData = gridDataList.getFirst();
+        List<RowData> rows = Utils.setIfNull(gridData::getRowData, ArrayList::new, gridData::setRowData);
+        for(RowData row:rows) rowBuilders.add(new RowDataBuilder(row));
+
     }
 
     @Override
     public Sheet build() {
+        sheet.getData().clear();
+
+        GridData gridData = sheet.getData().getFirst();
+        for(RowDataBuilder rowBuilder:rowBuilders) {
+            RowData rowData = rowBuilder.build();
+            gridData.getRowData().add(rowData);
+        }
+
+        // row_count
+        Integer row_count = rowCount;
+        if(rowCount == null || rowCount < getRowSize()) {
+            row_count = getRowSize();
+        }
+
+        // column_count
+        Integer col_count = columnCount;
+        int currColCount = getColumnSize();
+        if(col_count == null || col_count < currColCount) {
+            col_count = currColCount;
+        }
+
+        //frozen_row
+        if(frozen_row == null || frozen_row < 1) {
+            frozen_row = 1;
+        }
+
+        getGridProp().setFrozenRowCount(frozen_row);
+        getGridProp().setRowCount(row_count);
+        getGridProp().setColumnCount(col_count);
+
         return sheet;
     }
 
-    public RowDataBuilder getRow(int rowPos) {
-        RowData rData = getRowDataPos(0, rowPos);
-        return new RowDataBuilder(rData);
+    public int getRowSize() {
+        return rowBuilders.size();
+    }
+
+    public int getColumnSize() {
+        return getOptionalColumnSize().orElse(0);
+    }
+
+    private OptionalInt getOptionalColumnSize() {
+        return rowBuilders.stream().mapToInt(RowDataBuilder::size).max();
     }
 
     /**
@@ -37,54 +93,12 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return getSheetProp().getSheetId();
     }
 
-    public SheetBuilder bandedRanges(List<BandedRange> bandedRanges) {
-        sheet.setBandedRanges(bandedRanges);
-        return this;
-    }
-
-    public SheetBuilder basicFilter(ConsumerReturn<BasicFilter> basicFilter) {
-        BasicFilter filter = basicFilter.accept(initBasicFilter());
-        sheet.setBasicFilter(filter);
-        return this;
-    }
-
-    private BasicFilter initBasicFilter() {
-        BasicFilter filter = sheet.getBasicFilter();
-        return filter == null ? new BasicFilter():filter;
-    }
-
-    public SheetBuilder charts(List<EmbeddedChart> charts) {
-        sheet.setCharts(charts);
-        return this;
-    }
-
-    public SheetBuilder columnGroups(List<DimensionGroup> columnGroups) {
-        sheet.setColumnGroups(columnGroups);
-        return this;
-    }
-
-    public SheetBuilder conditionalFormats(List<ConditionalFormatRule> conditionalFormats) {
-        sheet.setConditionalFormats(conditionalFormats);
-        return this;
-    }
-
-    public SheetBuilder data(List<GridData> data) {
-        sheet.setData(data);
-        return this;
-    }
-
-    public SheetBuilder developerMetadata(List<DeveloperMetadata> developerMetadata) {
-        sheet.setDeveloperMetadata(developerMetadata);
-        return this;
-    }
-
-    public SheetBuilder filterViews(List<FilterView> filterViews) {
-        sheet.setFilterViews(filterViews);
-        return this;
-    }
-
-    public SheetBuilder merges(List<GridRange> merges) {
-        sheet.setMerges(merges);
+    /**
+     * The index of the sheet within the spreadsheet.
+     * @param index index or {@code null} for none
+     */
+    public SheetBuilder index(Integer index) {
+        getSheetProp().setIndex(index);
         return this;
     }
 
@@ -95,22 +109,6 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      */
     public SheetBuilder hidden(Boolean hidden) {
         getSheetProp().setHidden(hidden);
-        return this;
-    }
-
-    /**
-     * The index of the sheet within the spreadsheet. When adding or updating sheet properties, if
-     * this field is excluded then the sheet is added or moved to the end of the sheet list. When
-     * updating sheet indices or inserting sheets, movement is considered in "before the move"
-     * indexes. For example, if there were 3 sheets (S1, S2, S3) in order to move S1 ahead of S2 the
-     * index would have to be set to 2. A sheet index update request is ignored if the requested index
-     * is identical to the sheets current index or if the requested new index is equal to the current
-     * sheet index + 1.
-     *
-     * @param index index or {@code null} for none
-     */
-    public SheetBuilder index(Integer index) {
-        getSheetProp().setIndex(index);
         return this;
     }
 
@@ -130,7 +128,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param sheetType sheetType or {@code null} for none
      */
     public SheetBuilder sheetType(SheetType sheetType) {
-        getSheetProp().setSheetType(sheetType.name());
+        getSheetProp().setSheetType(Utils.enumName(sheetType));
         return this;
     }
 
@@ -146,35 +144,23 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
 
     /**
      * The color of the tab in the UI.
-     *
-     * @param tabColor tabColor or {@code null} for none
+     * @param rgbColor rgb color
      */
-    public SheetBuilder tabColor(ConsumerReturn<Color> tabColor) {
-        Color color = tabColor.accept(initTabColor());
-        getSheetProp().setTabColor(color);
+    public SheetBuilder tabColorStyle(Color rgbColor) {
+        getSheetProp().setTabColorStyle(new ColorStyle().setRgbColor(rgbColor));
         return this;
-    }
-
-    private Color initTabColor() {
-        Color color = getSheetProp().getTabColor();
-        return color == null ? new Color() : color;
     }
 
     /**
      * The color of the tab in the UI. If tab_color is also set, this field takes precedence.
      *
-     * @param tabColorStyle tabColorStyle or {@code null} for none
+     * @param themeColor theme color
      */
-    public SheetBuilder tabColorStyle(ConsumerReturn<ColorStyle> tabColorStyle) {
-        ColorStyle style = tabColorStyle.accept(initTabColorStyle());
-        getSheetProp().setTabColorStyle(style);
+    public SheetBuilder tabColorStyle(ThemeColorType themeColor) {
+        getSheetProp().setTabColorStyle(new ColorStyle().setThemeColor(Utils.enumName(themeColor)));
         return this;
     }
 
-    private ColorStyle initTabColorStyle() {
-        ColorStyle style = getSheetProp().getTabColorStyle();
-        return style == null ? new ColorStyle():style;
-    }
     /**
      * The name of the sheet.
      *
@@ -191,7 +177,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param columnCount columnCount or {@code null} for none
      */
     public SheetBuilder columnCount(Integer columnCount) {
-        getGridProp().setColumnCount(columnCount);
+        this.columnCount = columnCount;
         return this;
     }
 
@@ -221,7 +207,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param frozenRowCount frozenRowCount or {@code null} for none
      */
     public SheetBuilder frozenRowCount(Integer frozenRowCount) {
-        getGridProp().setFrozenRowCount(frozenRowCount);
+        this.frozen_row = frozenRowCount;
         return this;
     }
 
@@ -241,7 +227,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param rowCount rowCount or {@code null} for none
      */
     public SheetBuilder rowCount(Integer rowCount) {
-        getGridProp().setRowCount(rowCount);
+        this.rowCount = rowCount;
         return this;
     }
 
@@ -255,9 +241,71 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return this;
     }
 
+    /*The protected ranges in this sheet.*/
     public SheetBuilder protectedRange(ConsumerReturn<ProtectedRangeBuilder> consumer) {
         ProtectedRangeBuilder builder = consumer.accept(new ProtectedRangeBuilder());
         initProtectedRanges().add(builder.build());
+        return this;
+    }
+
+    /**A banded (alternating colors) range in a sheet.*/
+    public SheetBuilder bandedRange(ConsumerReturn<BandedRangeBuilder> consumer) {
+        BandedRangeBuilder builder = consumer.accept(new BandedRangeBuilder());
+        getBandedRanges().add(builder.build());
+        return this;
+    }
+
+    private List<BandedRange> getBandedRanges() {
+        return Utils.setIfNull(sheet::getBandedRanges, ArrayList::new, sheet::setBandedRanges);
+    }
+
+    /*The filter on this sheet, if any.*/
+    public SheetBuilder basicFilter(ConsumerReturn<BasicFilter> consumer) {
+        consumer.accept(initBasicFilter());
+        return this;
+    }
+
+    private BasicFilter initBasicFilter() {
+       return Utils.setIfNull(sheet::getBasicFilter, BasicFilter::new, sheet::setBasicFilter);
+    }
+
+    /*The specifications of every chart on this sheet.*/
+    public SheetBuilder charts(ConsumerReturn<EmbeddedChart> consumer) {
+        getCharts().add(consumer.accept(new EmbeddedChart()));
+        return this;
+    }
+
+    private List<EmbeddedChart> getCharts() {
+        return Utils.setIfNull(sheet::getCharts, ArrayList::new, sheet::setCharts);
+    }
+
+    /*All column groups on this sheet, ordered by increasing range start index, then by group depth.*/
+    public SheetBuilder columnGroup(ConsumerReturn<DimensionGroup> consumer) {
+        getColumnGroups().add(consumer.accept(new DimensionGroup()));
+        return this;
+    }
+
+    private List<DimensionGroup> getColumnGroups() {
+        return Utils.setIfNull(sheet::getColumnGroups, ArrayList::new, sheet::setColumnGroups);
+    }
+
+    public SheetBuilder conditionalFormats(List<ConditionalFormatRule> conditionalFormats) {
+        sheet.setConditionalFormats(conditionalFormats);
+        return this;
+    }
+
+    public SheetBuilder developerMetadata(List<DeveloperMetadata> developerMetadata) {
+        sheet.setDeveloperMetadata(developerMetadata);
+        return this;
+    }
+
+    public SheetBuilder filterViews(List<FilterView> filterViews) {
+        sheet.setFilterViews(filterViews);
+        return this;
+    }
+
+    public SheetBuilder merges(List<GridRange> merges) {
+        sheet.setMerges(merges);
         return this;
     }
 
@@ -273,6 +321,27 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
     public SheetBuilder slicers(List<Slicer> slicers) {
         sheet.setSlicers(slicers);
         return this;
+    }
+
+    public RowDataBuilder getRow(int index) {
+        if(index < 0) throw new GoogleException("The index < 0");
+        else if(index < getRowSize()) return rowBuilders.get(index);
+        else {
+            for (int pos = getRowSize(); pos <= index; pos++) addRow();
+            return rowBuilders.get(index);
+        }
+    }
+
+    public ColumnDataBuilder getColumn(int index) {
+        ColumnDataBuilder columnBuilder = new ColumnDataBuilder();
+        columnBuilder.columnIndex(index);
+
+        for(RowDataBuilder rowBuilder:rowBuilders) {
+            CellDataBuilder cellBuilder = rowBuilder.getCell(index);
+            columnBuilder.addCell(cellBuilder);
+        }
+
+        return columnBuilder;
     }
 
     private SheetProperties getSheetProp() {
@@ -293,35 +362,23 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         }
     }
 
-    private RowData getRowDataPos(int gridPos, int rowPos) {
-        List<GridData> lisGrid = Utils.setIfNull(sheet::getData, ArrayList::new, sheet::setData);
-        if(gridPos >= lisGrid.size()) {
-            GridData gData = new GridData();
-            gData.setRowData(new ArrayList<>());
-            lisGrid.add(gData);
-
-            RowData rData = new RowData();
-            rData.setValues(new ArrayList<>());
-            gData.getRowData().add(rData);
-            return rData;
-        }
-        else {
-            GridData gData = lisGrid.get(gridPos);
-            if(rowPos >= gData.size()) {
-                RowData rData = new RowData();
-                rData.setValues(new ArrayList<>());
-                gData.getRowData().add(rData);
-                return rData;
-            }
-            else return gData.getRowData().get(rowPos);
-        }
-    }
-
     public RowDataBuilder addRow() {
         RowDataBuilder builder = new RowDataBuilder(null);
-        GridData gridData = sheet.getData().get(0);
-        gridData.getRowData().add(builder.build());
+        rowBuilders.add(builder);
         return builder;
+    }
+
+    public ColumnDataBuilder addColumn() {
+        int countColumn = getColumnSize();
+        ColumnDataBuilder columnBuilder = new ColumnDataBuilder();
+        columnBuilder.columnIndex(countColumn+1);
+
+        for(RowDataBuilder rowBuilder:rowBuilders) {
+            CellDataBuilder cellBuilder = rowBuilder.addCell();
+            columnBuilder.addCell(cellBuilder);
+        }
+
+        return columnBuilder;
     }
 
 }

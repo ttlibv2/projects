@@ -9,7 +9,7 @@ public class BorderBuilder implements XmlBuilder<Border> {
     private final Border border;
 
     public BorderBuilder(Border border) {
-        this.border = border == null ? new Border() : border;
+        this.border = Utils.getIfNull(border, Border::new);
     }
 
     @Override
@@ -20,20 +20,21 @@ public class BorderBuilder implements XmlBuilder<Border> {
     /**
      * The color of the border.
      *
-     * @param color color or {@code null} for none
+     * @param rgbColor rgbColor or {@code null} for none
      */
-    public BorderBuilder color(ConsumerReturn<Color> color) {
-        color.accept(Utils.setIfNull(border::getColor, Color::new, border::setColor));
+    public BorderBuilder colorStyle(Color rgbColor) {
+        border.setColorStyle(new ColorStyle().setRgbColor(rgbColor));
         return this;
     }
 
+
     /**
-     * The color of the border. If color is also set, this field takes precedence.
+     * The color of the border.
      *
-     * @param colorStyle colorStyle or {@code null} for none
+     * @param themeColor theme color or {@code null} for none
      */
-    public BorderBuilder colorStyle(ConsumerReturn<ColorStyle> colorStyle) {
-        colorStyle.accept(Utils.setIfNull(border::getColorStyle, ColorStyle::new, border::setColorStyle));
+    public BorderBuilder colorStyle(ThemeColorType themeColor) {
+        border.setColorStyle(new ColorStyle().setThemeColor(Utils.enumName(themeColor)));
         return this;
     }
 
@@ -42,18 +43,9 @@ public class BorderBuilder implements XmlBuilder<Border> {
      *
      * @param style style or {@code null} for none
      */
-    public BorderBuilder style(String style) {
-        border.setStyle(style);
+    public BorderBuilder style(Style style) {
+        border.setStyle(Utils.enumName(style));
         return this;
     }
 
-    /**
-     * The width of the border, in pixels. Deprecated; the width is determined by the "style" field.
-     *
-     * @param width width or {@code null} for none
-     */
-    public BorderBuilder width(Integer width) {
-        border.setWidth(width);
-        return this;
-    }
 }

@@ -26,7 +26,6 @@ public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
     public ProtectedRangeBuilder editorUser(String... emailAddresses) {
         initEditors().setUsers(Lists.newList(emailAddresses));
         return this;
-
     }
 
     private Editors initEditors() {
@@ -60,16 +59,6 @@ public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
     }
 
     /**
-     * The range that is being protected. The range may be fully unbounded, in which case this is
-     * considered a protected sheet.
-     * @param sheetId sheetId or null for none
-     *
-     */
-    public ProtectedRangeBuilder forRow(Integer sheetId, Integer beginRow, Integer endRow) {
-        return range(r -> r.sheetId(sheetId).startRowIndex(beginRow).endRowIndex(endRow));
-    }
-
-    /**
      * Protected row
      * @param sheetId sheetId
      * @param beginRow 0-index
@@ -84,11 +73,27 @@ public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
      * @param sheetId sheetId or null for none
      *
      */
-    public ProtectedRangeBuilder range(Integer sheetId, Integer beginRow, Integer endRow, Integer beginCol, Integer endCol) {
-        return range(r -> r.sheetId(sheetId)
-                .startRowIndex(beginRow).endRowIndex(endRow)
-                .startColumnIndex(beginCol).endColumnIndex(endCol)
-        );
+    public ProtectedRangeBuilder forRow(Integer sheetId, Integer beginRow, Integer endRow) {
+        return range(r -> r.sheetId(sheetId).beginRow(beginRow).endRow(endRow));
+    }
+
+    /**
+     * Protected column
+     * @param sheetId sheetId
+     * @param beginCol 0-index
+     */
+    public ProtectedRangeBuilder forColumn(Integer sheetId, Integer beginCol) {
+        return forColumn(sheetId, beginCol, beginCol+1);
+    }
+
+    /**
+     * Protected column
+     * @param sheetId sheetId
+     * @param beginCol 0-index
+     * @param endCol 1-index
+     */
+    public ProtectedRangeBuilder forColumn(Integer sheetId, Integer beginCol, Integer endCol) {
+        return range(r -> r.sheetId(sheetId).beginColumn(beginCol).endColumn(endCol));
     }
 
     /**

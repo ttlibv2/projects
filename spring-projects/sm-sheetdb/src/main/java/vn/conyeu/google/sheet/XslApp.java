@@ -7,14 +7,14 @@ import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import vn.conyeu.google.sheet.builder.XslBuilder;
 
 @Slf4j
-public class SheetApp {
-    private final SheetService service;
+public class XslApp {
+    private final XslService service;
 
-    public SheetApp(Sheets sheets) {
-        this(new SheetService(sheets));
+    public XslApp(Sheets sheets) {
+        this(new XslService(sheets));
     }
 
-    public SheetApp(SheetService service) {
+    public XslApp(XslService service) {
         this.service = service;
     }
 

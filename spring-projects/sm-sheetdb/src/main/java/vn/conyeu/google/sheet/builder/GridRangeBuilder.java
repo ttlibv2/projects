@@ -1,34 +1,20 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.GridRange;
+import vn.conyeu.google.core.Utils;
 
 public class GridRangeBuilder implements XmlBuilder<GridRange> {
-    private final GridRange range = new GridRange();
+    private final GridRange range;
+
+    public GridRangeBuilder(GridRange range) {
+        this.range = Utils.getIfNull(range, GridRange::new);
+    }
 
     @Override
     public GridRange build() {
         return range;
     }
 
-    /**
-     * The end column (exclusive) of the range, or not set if unbounded.
-     *
-     * @param endColumnIndex endColumnIndex or {@code null} for none
-     */
-    public GridRangeBuilder endColumnIndex(Integer endColumnIndex) {
-        range.setEndColumnIndex(endColumnIndex);
-        return this;
-    }
-
-    /**
-     * The end row (exclusive) of the range, or not set if unbounded.
-     *
-     * @param endRowIndex endRowIndex or {@code null} for none
-     */
-    public GridRangeBuilder endRowIndex(Integer endRowIndex) {
-        range.setEndRowIndex(endRowIndex);
-        return this;
-    }
 
     /**
      * The sheet this range is on.
@@ -41,11 +27,32 @@ public class GridRangeBuilder implements XmlBuilder<GridRange> {
     }
 
     /**
+     * The end column (exclusive) of the range, or not set if unbounded.
+     *
+     * @param endColumnIndex endColumnIndex or {@code null} for none
+     */
+    public GridRangeBuilder endColumn(Integer endColumnIndex) {
+        range.setEndColumnIndex(endColumnIndex);
+        return this;
+    }
+
+    /**
+     * The end row (exclusive) of the range, or not set if unbounded.
+     *
+     * @param endRowIndex endRowIndex or {@code null} for none
+     */
+    public GridRangeBuilder endRow(Integer endRowIndex) {
+        range.setEndRowIndex(endRowIndex);
+        return this;
+    }
+
+
+    /**
      * The start column (inclusive) of the range, or not set if unbounded.
      *
      * @param startColumnIndex startColumnIndex or {@code null} for none
      */
-    public GridRangeBuilder startColumnIndex(Integer startColumnIndex) {
+    public GridRangeBuilder beginColumn(Integer startColumnIndex) {
         range.setStartColumnIndex(startColumnIndex);
         return this;
     }
@@ -55,7 +62,7 @@ public class GridRangeBuilder implements XmlBuilder<GridRange> {
      *
      * @param startRowIndex startRowIndex or {@code null} for none
      */
-    public GridRangeBuilder startRowIndex(Integer startRowIndex) {
+    public GridRangeBuilder beginRow(Integer startRowIndex) {
         range.setStartRowIndex(startRowIndex);
         return this;
     }

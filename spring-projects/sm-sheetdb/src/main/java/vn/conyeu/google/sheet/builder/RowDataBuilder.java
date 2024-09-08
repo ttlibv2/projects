@@ -2,63 +2,66 @@ package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.CellData;
 import com.google.api.services.sheets.v4.model.RowData;
+import vn.conyeu.commons.utils.Asserts;
+import vn.conyeu.google.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RowDataBuilder implements XmlBuilder<RowData> {
     private final RowData row;
+    private final List<CellDataBuilder> cells;
 
     public RowDataBuilder(RowData row) {
-        this.row = initRow(row);
+        this.row = Utils.getIfNull(row, RowData::new);
+        this.cells = new ArrayList<>();
+        this.initCellsBuilder();
     }
 
-    @Override
-    public RowData build() {
-        return row;
+    public int size() {
+        return cells.size();
     }
 
-    public CellDataBuilder getCell(int cellPos) {
-        CellData cellData;
-
-        if(cellPos >= cellSize()) {
-            cellData = new CellData();
-            row.getValues().add(cellData);
-        }
-        else cellData = row.getValues().get(cellPos);
-        return new CellDataBuilder(cellData);
+    public boolean isEmpty() {
+        return cells.isEmpty();
     }
 
-    public RowDataBuilder addCell(ConsumerReturn<CellDataBuilder> cell) {
-        CellDataBuilder builder = cell.accept(new CellDataBuilder(null));
-        row.getValues().add(builder.build());
+    public CellDataBuilder getCell(int index) {
+        tryAddCell(index);
+        return cells.get(index);
+    }
+
+    public RowDataBuilder editCell(int index, ConsumerReturn<CellDataBuilder> consumer) {
+        consumer.accept(getCell(index));
         return this;
     }
 
-    public boolean isEmptyCell() {
-        return row.getValues().isEmpty();
-    }
+    public RowData build() {
+        row.getValues().clear();
 
-    public int cellSize() {
-        return row.getValues().size();
-    }
-
-    public void formatCells(int countCell, ConsumerReturn<CellFormatBuilder> format) {
-        for(int beginPos=0;beginPos<countCell;beginPos++) {
-            getCell(beginPos).cellFormat(format);
+        for(CellDataBuilder cell:cells){
+            row.getValues().add(cell.build());
         }
-    }
 
-    public void setData(List<String> data) {
-        for(int pos=0;pos<data.size();pos++) {
-            getCell(pos).value(data.get(pos));
-        }
-    }
-
-    private static RowData initRow(RowData row) {
-        if(row == null)row = new RowData();
-        if(row.getValues() == null) row.setValues(new ArrayList<>());
         return row;
+    }
+
+    private void initCellsBuilder() {
+        List<CellData> values = Utils.setIfNull(row::getValues, ArrayList::new, row::setValues);
+        for(CellData cellData:values)cells.add(new CellDataBuilder(cellData));
+    }
+
+    public CellDataBuilder addCell() {
+        CellDataBuilder builder = new CellDataBuilder(null);
+        cells.add(builder);
+        return builder;
+    }
+
+    private void tryAddCell(int rightPos) {
+        Asserts.isTrue(rightPos >= 0, "@index");
+        if(rightPos >= cells.size()) {
+            for (int pos = cells.size(); pos <= rightPos; pos++) addCell();
+        }
     }
 
 }

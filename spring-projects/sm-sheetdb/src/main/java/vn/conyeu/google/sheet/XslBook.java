@@ -6,7 +6,7 @@ import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.google.core.Utils;
 import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import vn.conyeu.google.sheet.builder.SheetPropertiesBuilder;
-import vn.conyeu.google.sheet.builder.XslPropertiesBuilder;
+import vn.conyeu.google.sheet.builder.XslModelBuilder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,16 +14,16 @@ import java.util.Map;
 
 public final class XslBook {
     private final Spreadsheet xsl;
-    private final SheetService service;
+    private final XslService service;
     //private final XslBatchUpdate batchUpdate;
     private final Map<String, XslSheet> sheetNames = new HashMap<>();
     private final Map<Integer, String> sheetIds = new HashMap<>();
     private SpreadsheetProperties properties;
 
     //builder
-    private XslPropertiesBuilder propertiesBuilder;
+    private XslModelBuilder propertiesBuilder;
 
-    XslBook(SheetService service, Spreadsheet xsl) {
+    XslBook(XslService service, Spreadsheet xsl) {
         this.service = Asserts.notNull(service);
         this.xsl = Asserts.notNull(xsl);
        // this.batchUpdate = new XslBatchUpdate(service, this);
@@ -283,8 +283,8 @@ public final class XslBook {
         return this.async("*");
     }
 
-    private XslPropertiesBuilder getBuilder() {
-        if(propertiesBuilder == null) propertiesBuilder = new XslPropertiesBuilder(null);
+    private XslModelBuilder getBuilder() {
+        if(propertiesBuilder == null) propertiesBuilder = new XslModelBuilder(null);
         return propertiesBuilder;
     }
 

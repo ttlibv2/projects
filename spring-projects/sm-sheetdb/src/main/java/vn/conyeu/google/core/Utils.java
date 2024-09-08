@@ -79,4 +79,8 @@ public final class Utils {
     public static <T> T getIfNull(T object, Supplier<T> aNew) {
         return object == null ? aNew.get() : object;
     }
+
+    public static String enumName(Enum<?> object) {
+        return object == null ? null : object.name();
+    }
 }

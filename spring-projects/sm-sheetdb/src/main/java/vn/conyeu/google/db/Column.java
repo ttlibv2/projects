@@ -1,6 +1,8 @@
 package vn.conyeu.google.db;
 
+import com.google.api.client.googleapis.util.Utils;
 import lombok.Getter;
+import vn.conyeu.google.sheet.builder.SheetUtil;
 
 @Getter
 public class Column {
@@ -18,6 +20,14 @@ public class Column {
     private Boolean insertable;
     private Boolean updatable;
     private String valueDefault;
+    private Integer position;
+    private String letter;
+
+    public Column position(Integer position) {
+        this.position = position;
+        this.letter = position == null ? null : SheetUtil.numberToLetter(position);
+        return this;
+    }
 
     /**
      * Set the columnId

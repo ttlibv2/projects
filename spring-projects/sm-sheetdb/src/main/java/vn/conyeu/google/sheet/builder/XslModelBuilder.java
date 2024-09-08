@@ -7,11 +7,11 @@ import com.google.api.services.sheets.v4.model.UpdateSpreadsheetPropertiesReques
 import java.util.HashSet;
 import java.util.Set;
 
-public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
+public class XslModelBuilder implements XmlBuilder<SpreadsheetProperties> {
     private final SpreadsheetProperties props;
     private Set<String> fields = new HashSet<>();
 
-    public XslPropertiesBuilder(final SpreadsheetProperties props) {
+    public XslModelBuilder(final SpreadsheetProperties props) {
         this.props = XmlBuilder.ifNull(props, SpreadsheetProperties::new);
     }
 
@@ -25,7 +25,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      *
      * @param autoRecalc autoRecalc or {@code null} for none
      */
-    public XslPropertiesBuilder autoRecalc(String autoRecalc) {
+    public XslModelBuilder autoRecalc(String autoRecalc) {
         props.setAutoRecalc(autoRecalc);
         fields.add("autoRecalc");
         return this;
@@ -37,7 +37,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      *
      * @param iterativeCalculationSettings iterativeCalculationSettings or {@code null} for none
      */
-    public XslPropertiesBuilder iterativeCalculationSettings(IterativeCalculationSettings iterativeCalculationSettings) {
+    public XslModelBuilder iterativeCalculationSettings(IterativeCalculationSettings iterativeCalculationSettings) {
         props.setIterativeCalculationSettings(iterativeCalculationSettings);
         fields.add("iterativeCalculationSettings");
         return this;
@@ -56,7 +56,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      *
      * @param locale locale or {@code null} for none
      */
-    public XslPropertiesBuilder locale(String locale) {
+    public XslModelBuilder locale(String locale) {
         props.setLocale(locale);
         fields.add("locale");
         return this;
@@ -67,7 +67,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      *
      * @param theme spreadsheetTheme or {@code null} for none
      */
-    public XslPropertiesBuilder spreadsheetTheme(ConsumerReturn<XslThemeBuilder> theme) {
+    public XslModelBuilder spreadsheetTheme(ConsumerReturn<XslThemeBuilder> theme) {
         XslThemeBuilder builder = new XslThemeBuilder(props.getSpreadsheetTheme());
         props.setSpreadsheetTheme(theme.accept(builder).build());
         return this;
@@ -79,7 +79,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      *
      * @param timeZone timeZone or {@code null} for none
      */
-    public XslPropertiesBuilder timeZone(String timeZone) {
+    public XslModelBuilder timeZone(String timeZone) {
         props.setTimeZone(timeZone);
         fields.add("timeZone");
         return this;
@@ -90,7 +90,7 @@ public class XslPropertiesBuilder implements XmlBuilder<SpreadsheetProperties> {
      *
      * @param title title or {@code null} for none
      */
-    public XslPropertiesBuilder title(String title) {
+    public XslModelBuilder title(String title) {
         props.setTitle(title);
         fields.add("title");
         return this;

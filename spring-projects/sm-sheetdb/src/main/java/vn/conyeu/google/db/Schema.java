@@ -1,16 +1,16 @@
 package vn.conyeu.google.db;
 
 import vn.conyeu.google.drives.DriveApp;
-import vn.conyeu.google.sheet.SheetApp;
+import vn.conyeu.google.sheet.XslApp;
 import vn.conyeu.google.sheet.XslBook;
 import vn.conyeu.google.sheet.XslSheet;
 
 public class Schema {
     private final DriveApp drives;
-    private final SheetApp sheets;
+    private final XslApp sheets;
     private final XslBook xslBook;
 
-    Schema(DriveApp drives, SheetApp sheets, XslBook xslBook) {
+    Schema(DriveApp drives, XslApp sheets, XslBook xslBook) {
         this.drives = drives;
         this.sheets = sheets;
         this.xslBook = xslBook;
@@ -26,7 +26,7 @@ public class Schema {
 
     public class SchemaTb extends AbstractTb {
 
-        SchemaTb(DriveApp drives, SheetApp sheets, XslSheet sheet) {
+        SchemaTb(DriveApp drives, XslApp sheets, XslSheet sheet) {
             super(drives, sheets, sheet);
         }
 
@@ -34,7 +34,7 @@ public class Schema {
 
     public class SchemaCol extends AbstractTb {
 
-        SchemaCol(DriveApp drives, SheetApp sheets, XslSheet sheet) {
+        SchemaCol(DriveApp drives, XslApp sheets, XslSheet sheet) {
             super(drives, sheets, sheet);
         }
     }

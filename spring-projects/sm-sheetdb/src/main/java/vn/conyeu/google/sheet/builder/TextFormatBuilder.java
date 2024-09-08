@@ -50,22 +50,24 @@ public class TextFormatBuilder implements XmlBuilder<TextFormat> {
     /**
      * The foreground color of the text.
      *
-     * @param foregroundColor foregroundColor or {@code null} for none
+     * @param rgbColor RGB color
      */
-    public TextFormatBuilder foregroundColor(ConsumerReturn<Color> foregroundColor) {
-        foregroundColor.accept(Utils.setIfNull(format::getForegroundColor, Color::new, format::setForegroundColor));
+    public TextFormatBuilder foregroundColorStyle(Color rgbColor) {
+        format.setForegroundColorStyle(new ColorStyle().setRgbColor(rgbColor));
         return this;
     }
 
     /**
-     * The foreground color of the text. If foreground_color is also set, this field takes precedence.
+     * The foreground color of the text.
      *
-     * @param foregroundColorStyle foregroundColorStyle or {@code null} for none
+     * @param themeColor Theme color
      */
-    public TextFormatBuilder foregroundColorStyle(ConsumerReturn<ColorStyle> foregroundColorStyle) {
-        foregroundColorStyle.accept(Utils.setIfNull(format::getForegroundColorStyle, ColorStyle::new, format::setForegroundColorStyle));
+    public TextFormatBuilder foregroundColorStyle(ThemeColorType themeColor) {
+        format.setForegroundColorStyle(new ColorStyle().setThemeColor(Utils.enumName(themeColor)));
         return this;
     }
+
+
 
     /**
      * True if the text is italicized.

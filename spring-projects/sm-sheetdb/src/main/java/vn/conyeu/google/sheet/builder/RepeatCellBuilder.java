@@ -132,7 +132,7 @@ public class RepeatCellBuilder implements XmlBuilder<RepeatCellRequest> {
     }
 
     /**
-     * The value the user entered in the cell. e.g, `1234`, `'Hello'`, or `=NOW()` Note: Dates, Times
+     * The value the user entered the cell. e.g, `1234`, `'Hello'`, or `=NOW()` Note: Dates, Times
      * and DateTimes are represented as doubles in serial number format.
      *
      * @param userEnteredValue userEnteredValue or {@code null} for none

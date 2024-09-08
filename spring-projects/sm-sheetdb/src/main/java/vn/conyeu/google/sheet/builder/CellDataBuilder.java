@@ -7,10 +7,12 @@ import java.util.List;
 
 public class CellDataBuilder implements XmlBuilder<CellData> {
     private final CellData cell;
-    private ExtendedValue extendedValue;
+    private ValueBuilder valueBuilder;
+    private CellFormatBuilder formatBuilder;
+    private DataValidationRuleBuilder ruleBuilder;
 
-    public CellDataBuilder(final CellData cell) {
-        this.cell = XmlBuilder.ifNull(cell, CellData::new);
+    public CellDataBuilder(CellData cell) {
+        this.cell = Utils.getIfNull(cell, CellData::new);
     }
 
     @Override
@@ -23,21 +25,21 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      * <p>
      * When writing, the new data validation rule will overwrite any prior rule.
      *
-     * @param dataValidation dataValidation or {@code null} for none
+     * @param consumer dataValidation or {@code null} for none
      */
-    public CellDataBuilder dataValidation(DataValidationRule dataValidation) {
-        cell.setDataValidation(dataValidation);
+    public CellDataBuilder dataValidation(ConsumerReturn<DataValidationRuleBuilder> consumer) {
+        consumer.accept(getRuleBuilder());
         return this;
     }
 
     /**
-     * A hyperlink this cell points to, if any. This field is read-only.  (To set it, use a
-     * `=HYPERLINK` formula in the userEnteredValue.formulaValue field.)
+     * The formatted value of the cell. This is the value as it's shown to the user. This field is
+     * read-only.
      *
-     * @param hyperlink hyperlink or {@code null} for none
+     * @param formattedValue formattedValue or {@code null} for none
      */
-    public CellDataBuilder hyperlink(String hyperlink) {
-        cell.setHyperlink(hyperlink);
+    public CellDataBuilder formattedValue(String formattedValue) {
+        cell.setFormattedValue(formattedValue);
         return this;
     }
 
@@ -82,194 +84,54 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
     }
 
     /**
-     * The format the user entered for the cell.
-     * <p>
-     * When writing, the new format will be merged with the existing format.
+     * Represents a string resetAll(). Leading single quotes are not included. For example, if the user
+     * typed `'123` into the UI, this would be represented as a `stringValue` of `"123"`.
      *
-     * @param format userEnteredFormat or {@code null} for none
+     * @param stringValue stringValue or {@code null} for none
      */
-    public CellDataBuilder cellFormat(ConsumerReturn<CellFormatBuilder> format) {
-        format.accept(getCellFormat());
-        return this;
-    }
-
-    public CellDataBuilder verticalAlignment(VerticalAlign alignment) {
-        getCellFormat().verticalAlignment(alignment);
-        return this;
-    }
-
-    public CellDataBuilder wrapStrategy(WrapStrategy strategy) {
-        getCellFormat().wrapStrategy(strategy);
-        return this;
-    }
-
-    public CellDataBuilder backgroundColorStyle(ConsumerReturn<ColorStyle> backgroundColorStyle) {
-        getCellFormat().backgroundColorStyle(backgroundColorStyle);
-        return this;
-    }
-
-    public CellDataBuilder borders(ConsumerReturn<BordersBuilder> borders) {
-        getCellFormat().borders(borders);
+    public CellDataBuilder stringValue(String stringValue) {
+        initValue().stringValue(stringValue);
         return this;
     }
 
     /**
-     * The top border of the cell.
+     * Represents a double resetAll(). Note: Dates, Times and DateTimes are represented as doubles in
+     * "serial number" format.
      *
-     * @param top top or {@code null} for none
+     * @param numberValue numberValue or {@code null} for none
      */
-    public CellDataBuilder borderTop(ConsumerReturn<BorderBuilder> top) {
-        getCellFormat().borderTop(top);
+    public CellDataBuilder numberValue(Double numberValue) {
+        initValue().numberValue(numberValue);
         return this;
     }
 
     /**
-     * The bottom border of the cell.
+     * Represents a formula.
      *
-     * @param bottom bottom or {@code null} for none
+     * @param formulaValue formulaValue or {@code null} for none
      */
-    public CellDataBuilder borderBottom(ConsumerReturn<BorderBuilder> bottom) {
-        getCellFormat().borderBottom(bottom);
+    public CellDataBuilder formulaValue(String formulaValue) {
+        initValue().formulaValue(formulaValue);
         return this;
     }
 
     /**
-     * The left border of the cell.
+     * Represents an error. This field is read-only.
      *
-     * @param left left or {@code null} for none
+     * @param errorValue errorValue or {@code null} for none
      */
-    public CellDataBuilder borderLeft(ConsumerReturn<BorderBuilder> left) {
-        getCellFormat().borderLeft(left);
+    public CellDataBuilder errorValue(ErrorValue errorValue) {
+        initValue().errorValue(errorValue);
         return this;
     }
 
     /**
-     * The right border of the cell.
+     * Represents a boolean resetAll().
      *
-     * @param right right or {@code null} for none
+     * @param boolValue boolValue or {@code null} for none
      */
-    public CellDataBuilder borderRight(ConsumerReturn<BorderBuilder> right) {
-        getCellFormat().borderRight(right);
-        return this;
-    }
-
-    /**
-     * The background color of the cell.
-     *
-     * @param backgroundColor backgroundColor or {@code null} for none
-     */
-    public CellDataBuilder backgroundColor(Color backgroundColor) {
-        getCellFormat().backgroundColor(backgroundColor);
-        return this;
-    }
-
-    /**
-     * The background color of the cell. If background_color is also set, this field takes precedence.
-     *
-     * @param backgroundColorStyle backgroundColorStyle or {@code null} for none
-     */
-    public CellDataBuilder backgroundColorStyle(ColorStyle backgroundColorStyle) {
-        getCellFormat().backgroundColorStyle(backgroundColorStyle);
-        return this;
-    }
-
-    /**
-     * The borders of the cell.
-     *
-     * @param borders borders or {@code null} for none
-     */
-    public CellDataBuilder borders(Borders borders) {
-        getCellFormat().borders(borders);
-        return this;
-    }
-
-    /**
-     * The horizontal alignment of the value in the cell.
-     *
-     * @param horizontalAlignment horizontalAlignment or {@code null} for none
-     */
-    public CellDataBuilder horizontalAlignment(String horizontalAlignment) {
-        getCellFormat().horizontalAlignment(horizontalAlignment);
-        return this;
-    }
-
-    /**
-     * How a hyperlink, if it exists, should be displayed in the cell.
-     *
-     * @param hyperlinkDisplayType hyperlinkDisplayType or {@code null} for none
-     */
-    public CellDataBuilder hyperlinkDisplayType(String hyperlinkDisplayType) {
-        getCellFormat().hyperlinkDisplayType(hyperlinkDisplayType);
-        return this;
-    }
-
-    /**
-     * A format describing how number values should be represented to the user.
-     *
-     * @param numberFormat numberFormat or {@code null} for none
-     */
-    public CellDataBuilder numberFormat(NumberFormat numberFormat) {
-        getCellFormat().numberFormat(numberFormat);
-        return this;
-    }
-
-    /**
-     * The padding of the cell.
-     *
-     * @param padding padding or {@code null} for none
-     */
-    public CellDataBuilder padding(Padding padding) {
-        getCellFormat().padding(padding);
-        return this;
-    }
-
-    /**
-     * The direction of the text in the cell.
-     *
-     * @param textDirection textDirection or {@code null} for none
-     */
-    public CellDataBuilder textDirection(String textDirection) {
-        getCellFormat().textDirection(textDirection);
-        return this;
-    }
-
-    public CellDataBuilder bold(boolean bold) {
-       textFormat(f -> f.bold(bold));
-        return this;
-    }
-
-    public CellDataBuilder family(String family) {
-        textFormat(f -> f.fontFamily(family));
-        return this;
-    }
-
-    /**
-     * The format of the text in the cell (unless overridden by a format run).
-     *
-     * @param consumer textFormat or {@code null} for none
-     */
-    public CellDataBuilder textFormat(ConsumerReturn<TextFormatBuilder> consumer) {
-        getCellFormat().textFormat(consumer);
-        return this;
-    }
-
-    /**
-     * The rotation applied to text in a cell
-     *
-     * @param textRotation textRotation or {@code null} for none
-     */
-    public CellDataBuilder textRotation(TextRotation textRotation) {
-        getCellFormat().textRotation(textRotation);
-        return this;
-    }
-
-    /**
-     * The vertical alignment of the value in the cell.
-     *
-     * @param verticalAlignment verticalAlignment or {@code null} for none
-     */
-    public CellDataBuilder verticalAlignment(String verticalAlignment) {
-        getCellFormat().verticalAlignment(verticalAlignment);
+    public CellDataBuilder boolValue(Boolean boolValue) {
+        initValue().boolValue(boolValue);
         return this;
     }
 
@@ -278,97 +140,254 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param wrapStrategy wrapStrategy or {@code null} for none
      */
-    public CellDataBuilder wrapStrategy(String wrapStrategy) {
-        getCellFormat().wrapStrategy(wrapStrategy);
+    public CellDataBuilder wrapStrategy(WrapStrategy wrapStrategy) {
+        initFormat().wrapStrategy(wrapStrategy);
+        return this;
+    }
+
+    /**
+     * The vertical alignment of the value in the cell.
+     *
+     * @param verticalAlignment verticalAlignment or {@code null} for none
+     */
+    public CellDataBuilder verticalAlignment(VerticalAlign verticalAlignment) {
+        initFormat().verticalAlignment(verticalAlignment);
+        return this;
+    }
+
+    /**
+     * The left border of the cell.
+     *
+     * @param left left or {@code null} for none
+     */
+    public CellDataBuilder leftBorder(ConsumerReturn<BorderBuilder> left) {
+        initFormat().leftBorder(left);
+        return this;
+    }
+
+    /**
+     * How a hyperlink, if it exists, should be displayed in the cell.
+     *
+     * @param hyperlinkDisplayType hyperlinkDisplayType or {@code null} for none
+     */
+    public CellDataBuilder hyperlinkDisplayType(HyperlinkDisplayType hyperlinkDisplayType) {
+        initFormat().hyperlinkDisplayType(hyperlinkDisplayType);
+        return this;
+    }
+
+    /**
+     * The rotation applied to text in a cell
+     *
+     * @param angle    The angle between the standard orientation and the desired orientation. Measured in degrees. Valid values are between -90 and 90. Positive angles are angled upwards, negative are angled downwards. Note: For LTR text direction positive angles are in the counterclockwise direction, whereas for RTL they are in the clockwise direction
+     * @param vertical If true, text reads top to bottom, but the orientation of individual characters is unchanged. For example: | V | | e | | r | | t | | i | | c | | a | | l |
+     */
+    public CellDataBuilder textRotation(Integer angle, Boolean vertical) {
+        initFormat().textRotation(angle, vertical);
+        return this;
+    }
+
+    /**
+     * True if the text is bold.
+     *
+     * @param bold bold or {@code null} for none
+     */
+    public CellDataBuilder bold(Boolean bold) {
+        initFormat().bold(bold);
+        return this;
+    }
+
+    /**
+     * True if the text is underlined.
+     *
+     * @param underline underline or {@code null} for none
+     */
+    public CellDataBuilder underline(Boolean underline) {
+        initFormat().underline(underline);
+        return this;
+    }
+
+    /**
+     * The background color of the cell
+     *
+     * @param rgbColor RGB color
+     */
+    public CellDataBuilder backgroundColorStyle(Color rgbColor) {
+        initFormat().backgroundColorStyle(rgbColor);
         return this;
     }
 
     /**
      * A format describing how number values should be represented to the user.
-     * @param format numberFormat or {@code null} for none
+     *
+     * @param pattern Pattern string used for formatting. If not set, a default pattern based on the user's locale will be used if necessary for the given type. See the [Date and Number Formats guide](/ sheets/ api/ guides/ formats) for more information about the supported patterns.
+     * @param type    The type of the number format. When writing, this field must be set.
      */
-    public CellDataBuilder numberFormat(ConsumerReturn<NumberFormatBuilder> format) {
-        getCellFormat().numberFormat(format);
+    public CellDataBuilder numberFormat(String pattern, String type) {
+        initFormat().numberFormat(pattern, type);
         return this;
     }
 
+    /**
+     * The horizontal alignment of the value in the cell.
+     *
+     * @param horizontalAlignment horizontalAlignment or {@code null} for none
+     */
+    public CellDataBuilder horizontalAlignment(HorizontalAlign horizontalAlignment) {
+        initFormat().horizontalAlignment(horizontalAlignment);
+        return this;
+    }
+
+    /**
+     * The direction of the text in the cell.
+     *
+     * @param textDirection textDirection or {@code null} for none
+     */
+    public CellDataBuilder textDirection(TextDirection textDirection) {
+        initFormat().textDirection(textDirection);
+        return this;
+    }
+
+    /**
+     * The background color of the cell
+     *
+     * @param themeColor Theme color
+     */
+    public CellDataBuilder backgroundColorStyle(ThemeColorType themeColor) {
+        initFormat().backgroundColorStyle(themeColor);
+        return this;
+    }
+
+    /**
+     * The bottom border of the cell.
+     *
+     * @param bottom bottom or {@code null} for none
+     */
+    public CellDataBuilder bottomBorder(ConsumerReturn<BorderBuilder> bottom) {
+        initFormat().bottomBorder(bottom);
+        return this;
+    }
 
     /**
      * The padding of the cell.
-     * @param padding padding or {@code null} for none
+     * @param topBottom The top+bottom padding of the cell.
+     * @param leftRight The left+right padding of the cell.
      */
-    public CellDataBuilder padding(ConsumerReturn<Padding> padding) {
-        getCellFormat().padding(padding);
-        return this;
-    }
-    /**
-     * The rotation applied to text in a cell
-     * @param textRotation textRotation or {@code null} for none
-     */
-    public CellDataBuilder textRotation(ConsumerReturn<TextRotation> textRotation) {
-        getCellFormat().textRotation(textRotation);
+    public CellDataBuilder padding(Integer topBottom, Integer leftRight) {
+        initFormat().padding(topBottom, leftRight);
         return this;
     }
 
     /**
-     * The value the user entered in the cell. e.g, `1234`, `'Hello'`, or `=NOW()` Note: Dates, Times
-     * and DateTimes are represented as doubles in serial number format.
+     * True if the text has a strikethrough.
      *
-     * @param consumer userEnteredValue or {@code null} for none
+     * @param strikethrough strikethrough or {@code null} for none
      */
-    private CellDataBuilder setValue(ConsumerReturn<ExtendedValue> consumer) {
-        ExtendedValue value = consumer.accept(new ExtendedValue());
-        cell.setUserEnteredValue(value);
+    public CellDataBuilder strikethrough(Boolean strikethrough) {
+        initFormat().strikethrough(strikethrough);
         return this;
     }
 
     /**
-     * Represents a string value. Leading single quotes are not included. For example, if the user
-     * typed `'123` into the UI, this would be represented as a `stringValue` of `"123"`.
-     * @param value stringValue or {@code null} for none
+     * True if the text is italicized.
+     *
+     * @param italic italic or {@code null} for none
      */
-    public CellDataBuilder value(String value) {
-        return setValue(ext -> {
-            if (value == null) ext.setStringValue(null);
-            else if (value.startsWith("=")) ext.setFormulaValue(value);
-            else ext.setStringValue(value);
-            return ext;
-        });
-    }
-    /**
-     * Represents a boolean value.
-     * @param boolValue boolValue or {@code null} for none
-     */
-    public CellDataBuilder value(Boolean boolValue) {
-        return setValue(ext -> ext.setBoolValue(boolValue));
+    public CellDataBuilder italic(Boolean italic) {
+        initFormat().italic(italic);
+        return this;
     }
 
     /**
-     * Represents an error. This field is read-only.
-     * @param errorValue errorValue or {@code null} for none
+     * The foreground color of the text.
+     *
+     * @param rgbColor RGB color
      */
-    public CellDataBuilder value(ErrorValue errorValue) {
-        return setValue(ext -> ext.setErrorValue(errorValue));
+    public CellDataBuilder foregroundColorStyle(Color rgbColor) {
+        initFormat().foregroundColorStyle(rgbColor);
+        return this;
     }
 
     /**
-     * Represents a double value. Note: Dates, Times and DateTimes are represented as doubles in
-     * "serial number" format.
-     * @param numberValue numberValue or {@code null} for none
+     * The foreground color of the text.
+     *
+     * @param themeColor Theme color
      */
-    public CellDataBuilder value(Double numberValue) {
-        return setValue(ext -> ext.setNumberValue(numberValue));
+    public CellDataBuilder foregroundColorStyle(ThemeColorType themeColor) {
+        initFormat().foregroundColorStyle(themeColor);
+        return this;
     }
 
-    private CellFormatBuilder cellFormatBuilder;
+    /**
+     * The size of the font.
+     *
+     * @param fontSize fontSize or {@code null} for none
+     */
+    public CellDataBuilder fontSize(Integer fontSize) {
+        initFormat().fontSize(fontSize);
+        return this;
+    }
 
+    /**
+     * The padding of the cell.
+     * @param top The top padding of the cell.
+     * @param right The right padding of the cell.
+     * @param bottom The bottom padding of the cell.
+     * @param left The left padding of the cell.
+     */
+    public CellDataBuilder padding(Integer top, Integer right, Integer bottom, Integer left) {
+        initFormat().padding(top, right, bottom, left);
+        return this;
+    }
 
-    private CellFormatBuilder getCellFormat() {
-        if (cellFormatBuilder == null) {
-            cellFormatBuilder = new CellFormatBuilder(Utils.setIfNull(
-                    cell::getUserEnteredFormat, CellFormat::new,
-                    cell::setUserEnteredFormat));
+    /**
+     * The top border of the cell.
+     *
+     * @param top top or {@code null} for none
+     */
+    public CellDataBuilder topBorder(ConsumerReturn<BorderBuilder> top) {
+        initFormat().topBorder(top);
+        return this;
+    }
+
+    /**
+     * The font family.
+     *
+     * @param fontFamily fontFamily or {@code null} for none
+     */
+    public CellDataBuilder fontFamily(String fontFamily) {
+        initFormat().fontFamily(fontFamily);
+        return this;
+    }
+
+    /**
+     * The right border of the cell.
+     *
+     * @param right right or {@code null} for none
+     */
+    public CellDataBuilder rightBorder(ConsumerReturn<BorderBuilder> right) {
+        initFormat().rightBorder(right);
+        return this;
+    }
+
+    private CellFormatBuilder initFormat() {
+        if (formatBuilder == null) {
+            formatBuilder = new CellFormatBuilder(Utils.setIfNull(cell::getUserEnteredFormat, CellFormat::new, cell::setUserEnteredFormat));
         }
-        return cellFormatBuilder;
+        return formatBuilder;
+    }
+
+    private ValueBuilder initValue() {
+        if (valueBuilder == null) {
+            valueBuilder = new ValueBuilder(Utils.setIfNull(cell::getUserEnteredValue, ExtendedValue::new, cell::setUserEnteredValue));
+        }
+        return valueBuilder;
+    }
+
+    private DataValidationRuleBuilder getRuleBuilder() {
+        if(ruleBuilder == null) {
+            ruleBuilder = new DataValidationRuleBuilder(Utils.setIfNull(cell::getDataValidation,
+                    DataValidationRule::new, cell::setDataValidation));
+        }
+        return ruleBuilder;
     }
 }

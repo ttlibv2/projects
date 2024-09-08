@@ -6,7 +6,6 @@ import vn.conyeu.google.core.Utils;
 public class CellFormatBuilder implements XmlBuilder<CellFormat> {
     private final CellFormat cellFormat;
     private BordersBuilder bordersBuilder;
-    private NumberFormatBuilder numberFormatBuilder;
     private TextFormatBuilder textFormatBuilder;
 
     public CellFormatBuilder() {
@@ -14,11 +13,7 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
     }
 
     public CellFormatBuilder(CellFormat cellFormat) {
-        this.cellFormat = cellFormat == null ? new CellFormat() : cellFormat;
-    }
-
-    public static CellFormatBuilder create(CellFormat cellFormat) {
-        return new CellFormatBuilder(cellFormat);
+        this.cellFormat = Utils.getIfNull(cellFormat, CellFormat::new);
     }
 
     @Override
@@ -26,165 +21,8 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
         return cellFormat;
     }
 
-    public CellFormatBuilder verticalAlignment(VerticalAlign alignment) {
-        cellFormat.setVerticalAlignment(alignment.name());
-        return this;
-    }
-
-    public CellFormatBuilder wrapStrategy(WrapStrategy strategy) {
-        cellFormat.setWrapStrategy(strategy.name());
-        return this;
-    }
-
-    public CellFormatBuilder backgroundColorStyle(ConsumerReturn<ColorStyle> backgroundColorStyle) {
-        backgroundColorStyle.accept(Utils.setIfNull(cellFormat::getBackgroundColorStyle,
-                ColorStyle::new, cellFormat::setBackgroundColorStyle));
-        return this;
-    }
-
-    public CellFormatBuilder borders(ConsumerReturn<BordersBuilder> borders) {
-        borders.accept(initBorders());
-        return this;
-    }
-
-    /**
-     * The top border of the cell.
-     *
-     * @param top top or {@code null} for none
-     */
-    public CellFormatBuilder borderTop(ConsumerReturn<BorderBuilder> top) {
-        initBorders().top(top);
-        return this;
-    }
-
-    /**
-     * The bottom border of the cell.
-     *
-     * @param bottom bottom or {@code null} for none
-     */
-    public CellFormatBuilder borderBottom(ConsumerReturn<BorderBuilder> bottom) {
-        initBorders().bottom(bottom);
-        return this;
-    }
-
-    /**
-     * The left border of the cell.
-     *
-     * @param left left or {@code null} for none
-     */
-    public CellFormatBuilder borderLeft(ConsumerReturn<BorderBuilder> left) {
-        initBorders().left(left);
-        return this;
-    }
-
-    /**
-     * The right border of the cell.
-     *
-     * @param right right or {@code null} for none
-     */
-    public CellFormatBuilder borderRight(ConsumerReturn<BorderBuilder> right) {
-        initBorders().right(right);
-        return this;
-    }
-
-    /**
-     * The background color of the cell.
-     *
-     * @param backgroundColor backgroundColor or {@code null} for none
-     */
-    public CellFormatBuilder backgroundColor(Color backgroundColor) {
-        cellFormat.setBackgroundColor(backgroundColor);
-        return this;
-    }
-
-    /**
-     * The background color of the cell. If background_color is also set, this field takes precedence.
-     *
-     * @param backgroundColorStyle backgroundColorStyle or {@code null} for none
-     */
-    public CellFormatBuilder backgroundColorStyle(ColorStyle backgroundColorStyle) {
-        cellFormat.setBackgroundColorStyle(backgroundColorStyle);
-        return this;
-    }
-
-    /**
-     * The borders of the cell.
-     *
-     * @param borders borders or {@code null} for none
-     */
-    public CellFormatBuilder borders(Borders borders) {
-        cellFormat.setBorders(borders);
-        return this;
-    }
-
-    /**
-     * The horizontal alignment of the value in the cell.
-     *
-     * @param horizontalAlignment horizontalAlignment or {@code null} for none
-     */
-    public CellFormatBuilder horizontalAlignment(String horizontalAlignment) {
-        cellFormat.setHorizontalAlignment(horizontalAlignment);
-        return this;
-    }
-
-    /**
-     * How a hyperlink, if it exists, should be displayed in the cell.
-     *
-     * @param hyperlinkDisplayType hyperlinkDisplayType or {@code null} for none
-     */
-    public CellFormatBuilder hyperlinkDisplayType(String hyperlinkDisplayType) {
-        cellFormat.setHyperlinkDisplayType(hyperlinkDisplayType);
-        return this;
-    }
-
-    /**
-     * A format describing how number values should be represented to the user.
-     *
-     * @param numberFormat numberFormat or {@code null} for none
-     */
-    public CellFormatBuilder numberFormat(NumberFormat numberFormat) {
-        cellFormat.setNumberFormat(numberFormat);
-        return this;
-    }
-
-    /**
-     * The padding of the cell.
-     *
-     * @param padding padding or {@code null} for none
-     */
-    public CellFormatBuilder padding(Padding padding) {
-        cellFormat.setPadding(padding);
-        return this;
-    }
-
-    /**
-     * The direction of the text in the cell.
-     *
-     * @param textDirection textDirection or {@code null} for none
-     */
-    public CellFormatBuilder textDirection(String textDirection) {
-        cellFormat.setTextDirection(textDirection);
-        return this;
-    }
-
-
-    /**
-     * The rotation applied to text in a cell
-     *
-     * @param textRotation textRotation or {@code null} for none
-     */
-    public CellFormatBuilder textRotation(TextRotation textRotation) {
-        cellFormat.setTextRotation(textRotation);
-        return this;
-    }
-
-    /**
-     * The vertical alignment of the value in the cell.
-     *
-     * @param verticalAlignment verticalAlignment or {@code null} for none
-     */
-    public CellFormatBuilder verticalAlignment(String verticalAlignment) {
-        cellFormat.setVerticalAlignment(verticalAlignment);
+    public CellFormatBuilder clearFormat() {
+        cellFormat.setTextFormat(new TextFormat());
         return this;
     }
 
@@ -193,72 +31,250 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
      *
      * @param wrapStrategy wrapStrategy or {@code null} for none
      */
-    public CellFormatBuilder wrapStrategy(String wrapStrategy) {
-        cellFormat.setWrapStrategy(wrapStrategy);
+    public CellFormatBuilder wrapStrategy(WrapStrategy wrapStrategy) {
+        cellFormat.setWrapStrategy(Utils.enumName(wrapStrategy));
         return this;
     }
 
     /**
-     * A format describing how number values should be represented to the user.
-     * @param format numberFormat or {@code null} for none
-     */
-    public CellFormatBuilder numberFormat(ConsumerReturn<NumberFormatBuilder> format) {
-        format.accept(initNumberFormat());
-        return this;
-    }
-
-    /**
-     * The padding of the cell.
-     * @param padding padding or {@code null} for none
-     */
-    public CellFormatBuilder padding(ConsumerReturn<Padding> padding) {
-        padding.accept(Utils.setIfNull(cellFormat::getPadding, Padding::new, cellFormat::setPadding));
-        return this;
-    }
-
-    /**
-     * The format of the text in the cell (unless overridden by a format run).
+     * The vertical alignment of the value in the cell.
      *
-     * @param consumer textFormat or {@code null} for none
+     * @param verticalAlignment verticalAlignment or {@code null} for none
      */
-    public CellFormatBuilder textFormat(ConsumerReturn<TextFormatBuilder> consumer) {
-        consumer.accept(initTextFormat());
+    public CellFormatBuilder verticalAlignment(VerticalAlign verticalAlignment) {
+        cellFormat.setVerticalAlignment(Utils.enumName(verticalAlignment));
         return this;
     }
 
     /**
      * The rotation applied to text in a cell
-     * @param textRotation textRotation or {@code null} for none
+     *
+     * @param angle    The angle between the standard orientation and the desired orientation. Measured in degrees. Valid values are between -90 and 90. Positive angles are angled upwards, negative are angled downwards. Note: For LTR text direction positive angles are in the counterclockwise direction, whereas for RTL they are in the clockwise direction
+     * @param vertical If true, text reads top to bottom, but the orientation of individual characters is unchanged. For example: | V | | e | | r | | t | | i | | c | | a | | l |
      */
-    public CellFormatBuilder textRotation(ConsumerReturn<TextRotation> textRotation) {
-        textRotation.accept(Utils.setIfNull(cellFormat::getTextRotation, TextRotation::new, cellFormat::setTextRotation));
+    public CellFormatBuilder textRotation(Integer angle, Boolean vertical) {
+        cellFormat.setTextRotation(new TextRotation().setAngle(angle).setVertical(vertical));
         return this;
     }
 
-
-    private BordersBuilder initBorders() {
-        if (bordersBuilder == null) {
-            Borders borders = Utils.setIfNull(cellFormat::getBorders, Borders::new, cellFormat::setBorders);
-            bordersBuilder = new BordersBuilder(borders);
-        }
-        return bordersBuilder;
+    /**
+     * True if the text is underlined.
+     *
+     * @param underline underline or {@code null} for none
+     */
+    public CellFormatBuilder underline(Boolean underline) {
+        initFormat().underline(underline);
+        return this;
     }
 
+    /**
+     * True if the text has a strikethrough.
+     *
+     * @param strikethrough strikethrough or {@code null} for none
+     */
+    public CellFormatBuilder strikethrough(Boolean strikethrough) {
+        initFormat().strikethrough(strikethrough);
+        return this;
+    }
 
-    private TextFormatBuilder initTextFormat() {
+    /**
+     * True if the text is italicized.
+     *
+     * @param italic italic or {@code null} for none
+     */
+    public CellFormatBuilder italic(Boolean italic) {
+        initFormat().italic(italic);
+        return this;
+    }
+
+    /**
+     * The foreground color of the text.
+     *
+     * @param rgbColor RGB color
+     */
+    public CellFormatBuilder foregroundColorStyle(Color rgbColor) {
+        initFormat().foregroundColorStyle(rgbColor);
+        return this;
+    }
+
+    /**
+     * The foreground color of the text.
+     *
+     * @param themeColor Theme color
+     */
+    public CellFormatBuilder foregroundColorStyle(ThemeColorType themeColor) {
+        initFormat().foregroundColorStyle(themeColor);
+        return this;
+    }
+
+    /**
+     * The size of the font.
+     *
+     * @param fontSize fontSize or {@code null} for none
+     */
+    public CellFormatBuilder fontSize(Integer fontSize) {
+        initFormat().fontSize(fontSize);
+        return this;
+    }
+
+    /**
+     * The font family.
+     *
+     * @param fontFamily fontFamily or {@code null} for none
+     */
+    public CellFormatBuilder fontFamily(String fontFamily) {
+        initFormat().fontFamily(fontFamily);
+        return this;
+    }
+
+    /**
+     * True if the text is bold.
+     *
+     * @param bold bold or {@code null} for none
+     */
+    public CellFormatBuilder bold(Boolean bold) {
+        initFormat().bold(bold);
+        return this;
+    }
+
+    /**
+     * The direction of the text in the cell.
+     *
+     * @param textDirection textDirection or {@code null} for none
+     */
+    public CellFormatBuilder textDirection(TextDirection textDirection) {
+        cellFormat.setTextDirection(Utils.enumName(textDirection));
+        return this;
+    }
+
+    /**
+     * The padding of the cell.
+     * @param topBottom The top+bottom padding of the cell.
+     * @param leftRight The left+right padding of the cell.
+     */
+    public CellFormatBuilder padding(Integer topBottom, Integer leftRight) {
+        cellFormat.setPadding(new Padding().setTop(topBottom).setRight(leftRight)
+                .setBottom(topBottom).setLeft(leftRight));
+        return this;
+    }
+
+    /**
+     * The padding of the cell.
+     * @param top The top padding of the cell.
+     * @param right The right padding of the cell.
+     * @param bottom The bottom padding of the cell.
+     * @param left The left padding of the cell.
+     */
+    public CellFormatBuilder padding(Integer top, Integer right, Integer bottom, Integer left) {
+        cellFormat.setPadding(new Padding().setTop(top).setRight(right)
+                .setBottom(bottom).setLeft(left));
+        return this;
+    }
+
+    private Padding initPadding() {
+        return Utils.setIfNull(cellFormat::getPadding, Padding::new, cellFormat::setPadding);
+    }
+
+    /**
+     * A format describing how number values should be represented to the user.
+     *
+     * @param pattern Pattern string used for formatting. If not set, a default pattern based on the user's locale will be used if necessary for the given type. See the [Date and Number Formats guide](/ sheets/ api/ guides/ formats) for more information about the supported patterns.
+     * @param type    The type of the number format. When writing, this field must be set.
+     */
+    public CellFormatBuilder numberFormat(String pattern, String type) {
+        cellFormat.setNumberFormat(new NumberFormat().setPattern(pattern).setType(type));
+        return this;
+    }
+
+    /**
+     * How a hyperlink, if it exists, should be displayed in the cell.
+     *
+     * @param hyperlinkDisplayType hyperlinkDisplayType or {@code null} for none
+     */
+    public CellFormatBuilder hyperlinkDisplayType(HyperlinkDisplayType hyperlinkDisplayType) {
+        cellFormat.setHyperlinkDisplayType(Utils.enumName(hyperlinkDisplayType));
+        return this;
+    }
+
+    /**
+     * The horizontal alignment of the value in the cell.
+     *
+     * @param horizontalAlignment horizontalAlignment or {@code null} for none
+     */
+    public CellFormatBuilder horizontalAlignment(HorizontalAlign horizontalAlignment) {
+        cellFormat.setHorizontalAlignment(Utils.enumName(horizontalAlignment));
+        return this;
+    }
+
+    /**
+     * The background color of the cell
+     *
+     * @param rgbColor RGB color
+     */
+    public CellFormatBuilder backgroundColorStyle(Color rgbColor) {
+        cellFormat.setBackgroundColorStyle(new ColorStyle().setRgbColor(rgbColor));
+        return this;
+    }
+
+    /**
+     * The background color of the cell
+     *
+     * @param themeColor Theme color
+     */
+    public CellFormatBuilder backgroundColorStyle(ThemeColorType themeColor) {
+        cellFormat.setBackgroundColorStyle(new ColorStyle().setThemeColor(Utils.enumName(themeColor)));
+        return this;
+    }
+
+    /**
+     * The bottom border of the cell.
+     *
+     * @param bottom bottom or {@code null} for none
+     */
+    public BordersBuilder bottomBorder(ConsumerReturn<BorderBuilder> bottom) {
+        return initBorders().bottom(bottom);
+    }
+
+    /**
+     * The left border of the cell.
+     *
+     * @param left left or {@code null} for none
+     */
+    public BordersBuilder leftBorder(ConsumerReturn<BorderBuilder> left) {
+        return initBorders().left(left);
+    }
+
+    /**
+     * The right border of the cell.
+     *
+     * @param right right or {@code null} for none
+     */
+    public BordersBuilder rightBorder(ConsumerReturn<BorderBuilder> right) {
+        return initBorders().right(right);
+    }
+
+    /**
+     * The top border of the cell.
+     *
+     * @param top top or {@code null} for none
+     */
+    public BordersBuilder topBorder(ConsumerReturn<BorderBuilder> top) {
+        return initBorders().top(top);
+    }
+
+    private TextFormatBuilder initFormat() {
         if (textFormatBuilder == null) {
-            TextFormat value = Utils.setIfNull(cellFormat::getTextFormat, TextFormat::new, cellFormat::setTextFormat);
-            textFormatBuilder = new TextFormatBuilder(value);
+            textFormatBuilder = new TextFormatBuilder(Utils.setIfNull(cellFormat::getTextFormat,
+                    TextFormat::new, cellFormat::setTextFormat));
         }
         return textFormatBuilder;
     }
 
-    private NumberFormatBuilder initNumberFormat() {
-        if (numberFormatBuilder == null) {
-            NumberFormat nf = Utils.setIfNull(cellFormat::getNumberFormat, NumberFormat::new, cellFormat::setNumberFormat);
-            numberFormatBuilder = new NumberFormatBuilder(nf);
+    private BordersBuilder initBorders() {
+        if(bordersBuilder == null) {
+            bordersBuilder = new BordersBuilder(Utils.setIfNull(cellFormat::getBorders, Borders::new, cellFormat::setBorders));
         }
-        return numberFormatBuilder;
+        return bordersBuilder;
     }
 
 }

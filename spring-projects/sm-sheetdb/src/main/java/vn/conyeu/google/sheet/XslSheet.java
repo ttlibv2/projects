@@ -9,9 +9,7 @@ import vn.conyeu.google.sheet.builder.SheetPropertiesBuilder;
 import java.util.List;
 
 public class XslSheet {
-    private final SheetService service;
-
-    //
+    private final XslService service;
     private final XslBook workbook;
     private final Sheet sheet;
     private SheetProperties properties;
@@ -21,12 +19,10 @@ public class XslSheet {
     //--
     private SheetPropertiesBuilder builder;
 
-    XslSheet(SheetService service, XslBook workbook, Sheet sheet) {
+    XslSheet(XslService service, XslBook workbook, Sheet sheet) {
         this.service = Asserts.notNull(service);
         this.workbook = Asserts.notNull(workbook);
         this.sheet = Asserts.notNull(sheet);
-        //this.values = service.values();
-        //this.batchUpdate = batchUpdate;
         this.properties = Utils.getIfNull(sheet.getProperties(), SheetProperties::new);
         this.gridProperties = Utils.setIfNull(properties::getGridProperties,
                 GridProperties::new, properties::setGridProperties);

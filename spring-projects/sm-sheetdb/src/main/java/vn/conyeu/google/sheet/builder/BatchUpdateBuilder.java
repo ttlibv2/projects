@@ -1,9 +1,8 @@
-package vn.conyeu.google.sheet;
+package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.google.core.Utils;
-import vn.conyeu.google.sheet.builder.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -659,8 +658,8 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Updates the spreadsheet's properties.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder updateSpreadsheetProperties(ConsumerReturn<XslPropertiesBuilder> consumer) {
-        XslPropertiesBuilder builder = consumer.accept(new XslPropertiesBuilder(null));
+    public BatchUpdateBuilder updateSpreadsheetProperties(ConsumerReturn<XslModelBuilder> consumer) {
+        XslModelBuilder builder = consumer.accept(new XslModelBuilder(null));
         return updateSpreadsheetProperties(builder);
     }
 
@@ -668,7 +667,7 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Updates the spreadsheet's properties.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder updateSpreadsheetProperties(XslPropertiesBuilder builder) {
+    public BatchUpdateBuilder updateSpreadsheetProperties(XslModelBuilder builder) {
         initRequest().setUpdateSpreadsheetProperties(builder.buildUpdate());
         return this;
     }
