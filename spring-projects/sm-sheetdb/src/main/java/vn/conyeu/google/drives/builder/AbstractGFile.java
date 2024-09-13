@@ -3,8 +3,8 @@ package vn.conyeu.google.drives.builder;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Permission;
-import com.google.api.services.drive.model.PermissionList;
 import com.google.api.services.drive.model.User;
+import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.DateHelper;
 import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.commons.utils.Objects;
@@ -12,68 +12,90 @@ import vn.conyeu.google.drives.DriveService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public abstract class AbstractGFile {
-    protected final DriveService service;
-    protected File model;
+    protected final DriveService drives;
+    protected final File fileModel;
 
-    public AbstractGFile(DriveService service, File model) {
-        validateModel(model);
-        this.service = service;
-        this.model = model;
+    public AbstractGFile(DriveService drives, File file) {
+        this.drives = Asserts.notNull(drives, "@DriveService");
+        this.fileModel = Asserts.notNull(file);
+        this.validateModel(file);
     }
 
-    protected void validateModel(File model) {
-    }
-
-    public final void async() {
-        async("*");
-    }
+    protected void validateModel(File model) {}
 
     /**Gets the ID.*/
     public String getId() {
-        return model.getId();
+        return fileModel.getId();
     }
 
     /**Gets the name*/
     public String getName() {
-        return model.getName();
+        return fileModel.getName();
     }
 
     /**    Gets the URL that can be used to open*/
     public String getUrl() {
-        return model.getWebViewLink();
+        return fileModel.getWebViewLink();
+    }
+
+    /**
+     * The MIME type of the file.
+     * @return value or {@code null} for none
+     */
+    public String getMimeType() {
+        return fileModel.getMimeType();
+    }
+
+    public List<String> getParents() {
+        return asyncIf(fileModel::getParents, "parents");
     }
 
     public List<User> getOwners() {
-        if(model.getOwners() == null) loadOwners();
-        return model.getOwners();
+        return asyncIf(fileModel::getOwners, "owners");
+    }
+
+    public Map<String, String> getProperties() {
+        Map<String, String> map = asyncIf(fileModel::getProperties, "properties");
+        if(map == null) {
+            map = new HashMap<>();
+            fileModel.setProperties(map);
+        }
+        return map;
+    }
+
+    public String getProperty(String field) {
+        Map<String, String> map = getProperties();
+        return map == null ? null : map.get(field);
     }
 
     public User getOwner() {
-        List<User> userList = model.getOwners();
+        List<User> userList = getOwners();
         return Objects.getItemAt(userList, 0);
     }
 
     public LocalDateTime getModifiedTime() {
-        DateTime dt = model.getModifiedTime();
+        DateTime dt = fileModel.getModifiedTime();
         return dt == null ? null : DateHelper.localDateTime(dt.getValue());
     }
 
     public LocalDateTime getCreatedTime() {
-        DateTime dt = model.getCreatedTime();
+        DateTime dt = fileModel.getCreatedTime();
         return dt == null ? null : DateHelper.localDateTime(dt.getValue());
     }
 
     public List<String> getPermissionIds() {
-        List<String> list = model.getPermissionIds();
+        List<String> list = fileModel.getPermissionIds();
         return list == null ? new ArrayList<>() : list;
     }
 
     public List<Permission> getPermissions() {
-        List<Permission> list = model.getPermissions();
-        return list == null ? loadPermission() : list;
+        return asyncIf(fileModel::getPermissions, "permissions");
     }
 
     /**
@@ -81,7 +103,8 @@ public abstract class AbstractGFile {
      * If the user who executes the script does not have edit access to the Folder/File, this method returns an empty array.
      * */
     public List<Permission> getViewers() {
-        return  getPermissions().stream().filter(p -> Objects.anyEquals(p.getRole(), "reader", "commenter")).toList();
+        return  getPermissions().stream().filter(p -> Objects
+                .anyEquals(p.getRole(), "reader", "commenter")).toList();
     }
 
     public Permission getPermissionByEmail(String email) {
@@ -91,19 +114,19 @@ public abstract class AbstractGFile {
     }
 
     public File setDescription(String description) {
-        return model.setDescription(description);
+        return fileModel.setDescription(description);
     }
 
     public File setName(String name) {
-        return model.setName(name);
+        return fileModel.setName(name);
     }
 
     public File setStarred(Boolean starred) {
-        return model.setStarred(starred);
+        return fileModel.setStarred(starred);
     }
 
     public void update()  {
-        service.update(getId(), model);
+        drives.update(getId(), fileModel);
     }
 
     public Permission setOwner(String emailAddress, LocalDateTime expirationTime)  {
@@ -111,7 +134,7 @@ public abstract class AbstractGFile {
     }
 
     public Permission setSharing(Role role, Access access, String emailAddress, LocalDateTime expirationTime) {
-        return service.createPermission(getId(), b -> b.role(role).type(access).emailAddress(emailAddress).expirationTime(expirationTime));
+        return drives.createPermission(getId(), b -> b.role(role).type(access).emailAddress(emailAddress).expirationTime(expirationTime));
     }
 
     /**
@@ -121,7 +144,7 @@ public abstract class AbstractGFile {
      * @param emailAddress The email address of the user to add.
      */
     public Permission addEditor(String emailAddress)  {
-        return service.createPermission(getId(), b -> b.editor(emailAddress));
+        return drives.createPermission(getId(), b -> b.editor(emailAddress));
     }
 
     /**
@@ -140,7 +163,7 @@ public abstract class AbstractGFile {
      * @param emailAddress The email address of the user to add.
      */
     public Permission addViewer(String emailAddress)  {
-        return service.createPermission(getId(), b -> b.viewer(emailAddress));
+        return drives.createPermission(getId(), b -> b.viewer(emailAddress));
     }
 
     /**
@@ -154,20 +177,28 @@ public abstract class AbstractGFile {
         }
     }
 
-    public List<Permission> loadPermission()  {
-            PermissionList list = service.getPermission(getId(), 1000, null);
-            model.setPermissions(list.getPermissions());
-            return list.getPermissions();
+    protected File asyncFile(String fields) {
+        updateModel(drives.openById(getId(), fields));
+        return fileModel;
     }
 
-    public List<User> loadOwners() {
-        return async("owners").getOwners();
+    protected <E> E asyncIf(Supplier<E> supplier, String fields) {
+        Asserts.notNull(supplier, "Supplier<E>");
+        if(supplier == null) asyncFile(fields);
+        return supplier.get();
     }
 
-    protected File async(String fields) {
-        File model = service.openById(getId(), fields);
-        MapperHelper.update(this.model, model);
-        return model;
+
+    protected AbstractGFile updateModel(File updateModel) {
+        MapperHelper.update(this.fileModel, updateModel);
+        return this;
+    }
+
+    public AbstractGFile moveTo(String folderId) {
+        String removeParent = Objects.getItemAt(fileModel.getParents(), 0);
+        File model = drives.update(getId(), f -> f.removeParents(removeParent).addParents(folderId));
+        updateModel(model);
+        return this;
     }
 
 

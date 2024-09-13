@@ -8,6 +8,8 @@ import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.sheet.builder.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XslService {
     private final Sheets sheets;
@@ -25,7 +27,7 @@ public class XslService {
      */
     public Spreadsheet createXsl(String name, ConsumerReturn<XslBuilder> custom) {
         return simple(() -> {
-            XslBuilder xslBuilder = custom.accept(new XslBuilder()).title(name);
+            XslBuilder xslBuilder = custom.accept(new XslBuilder(null)).title(name);
             return sheets.spreadsheets().create(xslBuilder.build());
         });
     }
@@ -35,8 +37,20 @@ public class XslService {
      * @param fileId The unique identifier for the spreadsheet.
      */
     public Spreadsheet openXsl(String fileId, String fields) {
-        return simple(() -> sheets.spreadsheets().get(fileId).setFields(fields));
+        return openXsl(fileId, fields, new ArrayList<>());
     }
+
+
+    /**
+     * Opens the spreadsheet with the given ID.
+     * @param fileId The unique identifier for the spreadsheet.
+     */
+    public Spreadsheet openXsl(String fileId, String fields, List<String> ranges) {
+        return simple(() -> sheets.spreadsheets().get(fileId)
+                .setIncludeGridData(ranges != null && !ranges.isEmpty())
+                .setRanges(ranges).setFields(fields));
+    }
+
 
     /**
      * Inserts a new sheet into the spreadsheet

@@ -17,8 +17,8 @@ public class DbApp {
     private final DriveService drives;
     private final XslService sheets;
 
-    private final DriveApp driveApp;
-    private final XslApp xslApp;
+    protected final DriveApp driveApp;
+    protected final XslApp xslApp;
 
     public DbApp(DriveService drives, XslService sheets) {
         this.drives = Asserts.notNull(drives);
@@ -27,28 +27,18 @@ public class DbApp {
         this.xslApp = new XslApp(sheets);
     }
 
+    /**
+     * Create database without name
+     * @param name the database name
+     * */
     public SheetDb create(String name) {
-
-        // create folder db
         GFolder folder = driveApp.createFolder(b -> b.name(name).properties("isDb", "true"));
-        String owner = folder.getOwner().getEmailAddress();
-
-        // create xsl schema
-        XslBook xslBook = createBook(folder.getId(), "schema", b -> {
-            b.addSheet("schema_tb", s -> applySheetBuilder(s.sheetId(0), owner));
-            b.addSheet("schema_col", s -> applySheetBuilder(s.sheetId(1), owner));
-            return b;
-        });
-
-        // update schema id
-        driveApp.update(folder.getId(), m -> m.properties("schemaId", xslBook.getId()));
-
-
-        return new SheetDb(this, folder, xslBook);
+        return new SheetDb(this, folder);
     }
 
     public SheetDb openById(String dbId) {
-        return null;
+        GFolder folder = driveApp.getFolderById(dbId);
+        return new SheetDb(this, folder);
     }
 
     protected XslBook createBook(String folderId, String name, ConsumerReturn<XslBuilder> consumer) {
@@ -65,5 +55,17 @@ public class DbApp {
     }
 
 
+    SheetBuilder applyXslSheet(GFolder folder, SheetBuilder sheet) {
+        String owner = folder.getOwner().getEmailAddress();
+        sheet.sheetId(1).rowCount(2).columnCount(2).frozenRowCount(1);
+        sheet.getGrid(0).editRow(0, r -> r
+                .editCells(c -> c.fontFamily("Consolas").bold(true))
+                .protect(p -> p.description("Only Owner Editor").users(owner))
+        );
 
+
+
+
+        return sheet;
+    }
 }

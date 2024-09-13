@@ -13,7 +13,7 @@ public class SheetPropertiesBuilder implements XmlBuilder<SheetProperties> {
     private final Set<String> fieldsGrid = new HashSet<>();
 
     public SheetPropertiesBuilder(SheetProperties props) {
-        this.props = XmlBuilder.ifNull(props, SheetProperties::new);
+        this.props = Utils.getIfNull(props, SheetProperties::new);
     }
 
     @Override

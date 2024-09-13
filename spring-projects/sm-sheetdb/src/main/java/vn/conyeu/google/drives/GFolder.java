@@ -12,9 +12,7 @@ import vn.conyeu.google.sheet.builder.ConsumerReturn;
 
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 
 public class GFolder extends AbstractGFile {
     protected final boolean hasRoot;
@@ -24,8 +22,13 @@ public class GFolder extends AbstractGFile {
         this.hasRoot = "My Drive".equalsIgnoreCase(model.getName());
     }
 
+    @Override
+    public final String getMimeType() {
+        return GMime.FOLDER.getMime();
+    }
+
     public void delete()  {
-        service.deleteById(getId());
+        drives.deleteById(getId());
     }
 
     /**
@@ -34,14 +37,13 @@ public class GFolder extends AbstractGFile {
      * @param limit the maximum number of files to return per page
      * */
     public GPage<GFolder> getFolderByName(String name, int limit)  {
-        String query = "mimeType='%s' and name='%s'".formatted(GMime.FOLDER.mime, name);
         return search(builder(false).pageSize(limit)
                 .query(q -> q.all(q.folder(), q.name(name))))
                 .mapTo(model -> (GFolder) model);
     }
 
     public GFolder getFolderById(String folderId)  {
-        return newFolder(service.openById(folderId, "*"));
+        return newFolder(drives.openById(folderId, "*"));
     }
 
     /**
@@ -82,8 +84,12 @@ public class GFolder extends AbstractGFile {
                 .mapTo(file -> (GFile) file);
     }
 
+    public GPage<AbstractGFile> search(SearchBuilder.SearchFunc query)  {
+        return search(builder(false).pageSize(1000).query(query));
+    }
+
     public GPage<AbstractGFile> search(SearchBuilder builder)  {
-        FileList list = service.search(builder);
+        FileList list = drives.search(builder);
         String pageToken = list.getNextPageToken();
         List<AbstractGFile> models = convertModels(list.getFiles());
         return new GPage<>(models, list.getNextPageToken());
@@ -94,7 +100,7 @@ public class GFolder extends AbstractGFile {
     }
 
     public GFolder addFolder(ConsumerReturn<FileBuilder> consumer) {
-        File model = service.createFolder(b -> consumer.accept(b).parents(getId()));
+        File model = drives.createFolder(b -> consumer.accept(b).parents(getId()));
         return newFolder(model);
     }
 
@@ -105,7 +111,7 @@ public class GFolder extends AbstractGFile {
     }
 
     public void deleteFolderById(String folderId)  {
-        service.deleteById(folderId);
+        drives.deleteById(folderId);
     }
 
     /**
@@ -177,15 +183,15 @@ public class GFolder extends AbstractGFile {
 
     private GFile createFile(final String name, final GMime mimeType, AbstractInputStreamContent content) {
         String newMime = mimeType == null ? content.getType() : mimeType.mime;
-        return newFile(service.createFile(b -> b.name(name).mimeType(newMime).content(content)));
+        return newFile(drives.createFile(b -> b.name(name).mimeType(newMime).content(content)));
     }
 
     private GFolder newFolder(File model) {
-        return new GFolder(service, model);
+        return new GFolder(drives, model);
     }
 
     private GFile newFile(File model) {
-        return new GFile(service, model);
+        return new GFile(drives, model);
     }
 
     private List<AbstractGFile> convertModels(List<File> models) {
@@ -199,42 +205,6 @@ public class GFolder extends AbstractGFile {
         return sb.pageSize(1000).orderBy("name")
                 .query(q -> q.parents(getId()));
 
-    }
-
-    public static class GPage<E> implements Iterable<E> {
-        final List<E> list;
-        final String pageToken;
-
-        public GPage(List<E> list, String pageToken) {
-            this.list = list;
-            this.pageToken = pageToken;
-        }
-
-        public String getPageToken() {
-            return pageToken;
-        }
-
-        @Override
-        public Iterator<E> iterator() {
-            return list.iterator();
-        }
-
-        public <C> GPage<C> mapTo(Function<E, C> mapper) {
-            List<C> listC = list.stream().map(mapper).toList();
-            return new GPage<>(listC, pageToken);
-        }
-
-        public boolean isEmpty() {
-            return list.isEmpty();
-        }
-
-        public E get(int index) {
-            return list.get(index);
-        }
-
-        public int getSize() {
-            return list.size();
-        }
     }
 
 }

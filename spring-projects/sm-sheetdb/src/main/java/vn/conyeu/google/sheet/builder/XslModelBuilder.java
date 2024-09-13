@@ -3,16 +3,17 @@ package vn.conyeu.google.sheet.builder;
 import com.google.api.services.sheets.v4.model.IterativeCalculationSettings;
 import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
 import com.google.api.services.sheets.v4.model.UpdateSpreadsheetPropertiesRequest;
+import vn.conyeu.google.core.Utils;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class XslModelBuilder implements XmlBuilder<SpreadsheetProperties> {
     private final SpreadsheetProperties props;
-    private Set<String> fields = new HashSet<>();
+    private final Set<String> fields = new HashSet<>();
 
     public XslModelBuilder(final SpreadsheetProperties props) {
-        this.props = XmlBuilder.ifNull(props, SpreadsheetProperties::new);
+        this.props = Utils.getIfNull(props, SpreadsheetProperties::new);
     }
 
     @Override

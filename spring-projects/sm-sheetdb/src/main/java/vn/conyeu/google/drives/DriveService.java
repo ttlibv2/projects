@@ -35,6 +35,10 @@ public class DriveService {
         return simple(() -> files.get(fileId).setFields(fields));
     }
 
+    public File download(String fileId) {
+        return simple(() -> files.get(fileId).setAlt("media"));
+    }
+
     public void update(String fileId, File model) {
         simple(() -> files.update(fileId, model));
     }

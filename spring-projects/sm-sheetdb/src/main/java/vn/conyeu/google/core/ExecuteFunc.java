@@ -14,7 +14,7 @@ public interface ExecuteFunc<T> {
     static <T> T simple(ExecuteFunc<T> request) {
         try{return request.get().execute();}
         catch (IOException exp) {
-            throw new GoogleException(exp);
+            throw new GoogleException(exp.getMessage());
         }
     }
 }

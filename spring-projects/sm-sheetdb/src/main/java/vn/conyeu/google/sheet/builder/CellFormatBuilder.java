@@ -8,10 +8,6 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
     private BordersBuilder bordersBuilder;
     private TextFormatBuilder textFormatBuilder;
 
-    public CellFormatBuilder() {
-        this(null);
-    }
-
     public CellFormatBuilder(CellFormat cellFormat) {
         this.cellFormat = Utils.getIfNull(cellFormat, CellFormat::new);
     }
@@ -153,21 +149,15 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
      * @param leftRight The left+right padding of the cell.
      */
     public CellFormatBuilder padding(Integer topBottom, Integer leftRight) {
-        cellFormat.setPadding(new Padding().setTop(topBottom).setRight(leftRight)
-                .setBottom(topBottom).setLeft(leftRight));
+        padding(p -> p.setTop(topBottom).setBottom(topBottom).setLeft(leftRight).setRight(leftRight));
         return this;
     }
 
     /**
      * The padding of the cell.
-     * @param top The top padding of the cell.
-     * @param right The right padding of the cell.
-     * @param bottom The bottom padding of the cell.
-     * @param left The left padding of the cell.
      */
-    public CellFormatBuilder padding(Integer top, Integer right, Integer bottom, Integer left) {
-        cellFormat.setPadding(new Padding().setTop(top).setRight(right)
-                .setBottom(bottom).setLeft(left));
+    public CellFormatBuilder padding(ConsumerReturn<Padding> consumer) {
+        consumer.accept(initPadding());
         return this;
     }
 
@@ -181,10 +171,19 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
      * @param pattern Pattern string used for formatting. If not set, a default pattern based on the user's locale will be used if necessary for the given type. See the [Date and Number Formats guide](/ sheets/ api/ guides/ formats) for more information about the supported patterns.
      * @param type    The type of the number format. When writing, this field must be set.
      */
-    public CellFormatBuilder numberFormat(String pattern, String type) {
-        cellFormat.setNumberFormat(new NumberFormat().setPattern(pattern).setType(type));
+    public CellFormatBuilder numberFormat(NumberFormatType type, String pattern) {
+        cellFormat.setNumberFormat(new NumberFormat().setPattern(pattern).setType(Utils.enumName(type)));
         return this;
     }
+
+    /**
+     * A format describing how number values should be represented to the user.
+     * @see #numberFormat(NumberFormatType, String)
+     * */
+    public CellFormatBuilder numberFormat(NumberFormatPattern pattern) {
+        return numberFormat(pattern.formatType, pattern.pattern);
+    }
+
 
     /**
      * How a hyperlink, if it exists, should be displayed in the cell.

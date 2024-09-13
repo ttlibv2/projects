@@ -10,6 +10,7 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
     private int lastCol;
     private boolean useAbsolute;
 
+
     public static A1RangeBuilder name(String name) {
         return new A1RangeBuilder().sheetName(name);
     }

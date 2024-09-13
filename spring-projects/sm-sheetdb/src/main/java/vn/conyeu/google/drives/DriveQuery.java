@@ -275,6 +275,10 @@ public class DriveQuery {
                 return super.has(key, value);
             }
 
+            public BoolExpression has(String key) {
+                return super.has(key, "true");
+            }
+
             @Override
             public BoolExpression hasKey(String key) {
                 return super.hasKey(key);
@@ -567,11 +571,11 @@ public class DriveQuery {
             add(GOps.OR_ALL, "{0} or ({1})");
 
             // string
-            add(GOps.LIKE, "{0} contains '{1}'");
-            add(QueryClass.DriveOps.IN, "'{1}' in {0}");
-            add(QueryClass.DriveOps.HAS, "{0} has { key = '{1}' and value = '{2}' }");
-            add(QueryClass.DriveOps.HAS_KEY, "{0} has { key = '{1}' }");
-            add(QueryClass.DriveOps.HAS_VALUE, "{0} has { value = '{2}' }");
+            add(GOps.LIKE, "{0} contains {1}");
+            add(QueryClass.DriveOps.IN, "{1} in {0}");
+            add(QueryClass.DriveOps.HAS, "{0} has { key={1} and value ={2}}");
+            add(QueryClass.DriveOps.HAS_KEY, "{0} has {key={1}}");
+            add(QueryClass.DriveOps.HAS_VALUE, "{0} has {value={2}}");
 
         }
 
@@ -590,6 +594,10 @@ public class DriveQuery {
 
         private DriveSerializer(DriveTemplates templates) {
             super(templates);
+        }
+
+        public String serialize(Expression expression) {
+            return handle(expression).toString();
         }
 
         @Override

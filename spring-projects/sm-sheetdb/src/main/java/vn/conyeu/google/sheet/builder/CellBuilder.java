@@ -1,21 +1,31 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.*;
+import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
+import vn.conyeu.google.xsldb.ColumnType;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class CellDataBuilder implements XmlBuilder<CellData> {
+public class CellBuilder implements XmlBuilder<CellData> {
     private final CellData cell;
     private ValueBuilder valueBuilder;
     private CellFormatBuilder formatBuilder;
     private DataValidationRuleBuilder ruleBuilder;
 
-    public CellDataBuilder(CellData cell) {
+    public CellBuilder(CellData cell) {
         this.cell = Utils.getIfNull(cell, CellData::new);
     }
 
     @Override
+    public CellBuilder copy() {
+        return new CellBuilder(cell.clone());
+    }
+
     public CellData build() {
         return cell;
     }
@@ -27,8 +37,8 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param consumer dataValidation or {@code null} for none
      */
-    public CellDataBuilder dataValidation(ConsumerReturn<DataValidationRuleBuilder> consumer) {
-        consumer.accept(getRuleBuilder());
+    public CellBuilder dataValidation(ConsumerReturn<DataValidationRuleBuilder> consumer) {
+        consumer.accept(initRuleBuilder());
         return this;
     }
 
@@ -38,7 +48,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param formattedValue formattedValue or {@code null} for none
      */
-    public CellDataBuilder formattedValue(String formattedValue) {
+    public CellBuilder formattedValue(String formattedValue) {
         cell.setFormattedValue(formattedValue);
         return this;
     }
@@ -48,7 +58,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param note note or {@code null} for none
      */
-    public CellDataBuilder note(String note) {
+    public CellBuilder note(String note) {
         cell.setNote(note);
         return this;
     }
@@ -61,7 +71,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param pivotTable pivotTable or {@code null} for none
      */
-    public CellDataBuilder pivotTable(PivotTable pivotTable) {
+    public CellBuilder pivotTable(PivotTable pivotTable) {
         cell.setPivotTable(pivotTable);
         return this;
     }
@@ -78,7 +88,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param textFormatRuns textFormatRuns or {@code null} for none
      */
-    public CellDataBuilder textFormatRuns(List<TextFormatRun> textFormatRuns) {
+    public CellBuilder textFormatRuns(List<TextFormatRun> textFormatRuns) {
         cell.setTextFormatRuns(textFormatRuns);
         return this;
     }
@@ -89,7 +99,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param stringValue stringValue or {@code null} for none
      */
-    public CellDataBuilder stringValue(String stringValue) {
+    public CellBuilder stringValue(String stringValue) {
         initValue().stringValue(stringValue);
         return this;
     }
@@ -100,7 +110,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param numberValue numberValue or {@code null} for none
      */
-    public CellDataBuilder numberValue(Double numberValue) {
+    public CellBuilder numberValue(Double numberValue) {
         initValue().numberValue(numberValue);
         return this;
     }
@@ -110,18 +120,8 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param formulaValue formulaValue or {@code null} for none
      */
-    public CellDataBuilder formulaValue(String formulaValue) {
+    public CellBuilder formulaValue(String formulaValue) {
         initValue().formulaValue(formulaValue);
-        return this;
-    }
-
-    /**
-     * Represents an error. This field is read-only.
-     *
-     * @param errorValue errorValue or {@code null} for none
-     */
-    public CellDataBuilder errorValue(ErrorValue errorValue) {
-        initValue().errorValue(errorValue);
         return this;
     }
 
@@ -130,17 +130,58 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param boolValue boolValue or {@code null} for none
      */
-    public CellDataBuilder boolValue(Boolean boolValue) {
+    public CellBuilder boolValue(Boolean boolValue) {
         initValue().boolValue(boolValue);
         return this;
     }
+
+    public CellBuilder dateTimeValue(LocalDateTime dt) {
+        return dateTimeValue(dt, SheetUtil.ISO_DATETIME);
+    }
+
+    public CellBuilder dateTimeValue(LocalDateTime dateTime, DateTimeFormatter format) {
+        return stringValue(dateTime.format(format));
+    }
+
+    public CellBuilder dateValue(LocalDate dt) {
+        return dateValue(dt, SheetUtil.ISO_DATE);
+    }
+
+    public CellBuilder dateValue(LocalDate dt, DateTimeFormatter format) {
+        return stringValue(dt.format(format));
+    }
+
+    public CellBuilder timeValue(LocalTime dt) {
+        return timeValue(dt, SheetUtil.ISO_TIME);
+    }
+
+    public CellBuilder timeValue(LocalTime dt, DateTimeFormatter format) {
+        return stringValue(dt.format(format));
+    }
+
+    public CellBuilder setValue(Object value) {
+        if(value == null) stringValue(null);
+        else if(value instanceof String str) {
+            if(str.startsWith("="))formulaValue(str);
+            else stringValue(str);
+        }
+        else if(value instanceof Boolean bool) boolValue(bool);
+        else if(value instanceof Number in) numberValue(in.doubleValue());
+        else if(value instanceof LocalDateTime dt) dateTimeValue(dt);
+        else if(value instanceof LocalDate lc) dateValue(lc);
+        else if(value instanceof LocalTime lt) timeValue(lt);
+        else throw new GoogleException("The value type '%s' not support", value.getClass());
+        return this;
+    }
+
+
 
     /**
      * The wrap strategy for the value in the cell.
      *
      * @param wrapStrategy wrapStrategy or {@code null} for none
      */
-    public CellDataBuilder wrapStrategy(WrapStrategy wrapStrategy) {
+    public CellBuilder wrapStrategy(WrapStrategy wrapStrategy) {
         initFormat().wrapStrategy(wrapStrategy);
         return this;
     }
@@ -150,7 +191,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param verticalAlignment verticalAlignment or {@code null} for none
      */
-    public CellDataBuilder verticalAlignment(VerticalAlign verticalAlignment) {
+    public CellBuilder verticalAlignment(VerticalAlign verticalAlignment) {
         initFormat().verticalAlignment(verticalAlignment);
         return this;
     }
@@ -160,7 +201,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param left left or {@code null} for none
      */
-    public CellDataBuilder leftBorder(ConsumerReturn<BorderBuilder> left) {
+    public CellBuilder leftBorder(ConsumerReturn<BorderBuilder> left) {
         initFormat().leftBorder(left);
         return this;
     }
@@ -170,7 +211,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param hyperlinkDisplayType hyperlinkDisplayType or {@code null} for none
      */
-    public CellDataBuilder hyperlinkDisplayType(HyperlinkDisplayType hyperlinkDisplayType) {
+    public CellBuilder hyperlinkDisplayType(HyperlinkDisplayType hyperlinkDisplayType) {
         initFormat().hyperlinkDisplayType(hyperlinkDisplayType);
         return this;
     }
@@ -181,7 +222,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      * @param angle    The angle between the standard orientation and the desired orientation. Measured in degrees. Valid values are between -90 and 90. Positive angles are angled upwards, negative are angled downwards. Note: For LTR text direction positive angles are in the counterclockwise direction, whereas for RTL they are in the clockwise direction
      * @param vertical If true, text reads top to bottom, but the orientation of individual characters is unchanged. For example: | V | | e | | r | | t | | i | | c | | a | | l |
      */
-    public CellDataBuilder textRotation(Integer angle, Boolean vertical) {
+    public CellBuilder textRotation(Integer angle, Boolean vertical) {
         initFormat().textRotation(angle, vertical);
         return this;
     }
@@ -191,7 +232,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param bold bold or {@code null} for none
      */
-    public CellDataBuilder bold(Boolean bold) {
+    public CellBuilder bold(Boolean bold) {
         initFormat().bold(bold);
         return this;
     }
@@ -201,7 +242,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param underline underline or {@code null} for none
      */
-    public CellDataBuilder underline(Boolean underline) {
+    public CellBuilder underline(Boolean underline) {
         initFormat().underline(underline);
         return this;
     }
@@ -211,7 +252,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param rgbColor RGB color
      */
-    public CellDataBuilder backgroundColorStyle(Color rgbColor) {
+    public CellBuilder backgroundColorStyle(Color rgbColor) {
         initFormat().backgroundColorStyle(rgbColor);
         return this;
     }
@@ -222,9 +263,17 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      * @param pattern Pattern string used for formatting. If not set, a default pattern based on the user's locale will be used if necessary for the given type. See the [Date and Number Formats guide](/ sheets/ api/ guides/ formats) for more information about the supported patterns.
      * @param type    The type of the number format. When writing, this field must be set.
      */
-    public CellDataBuilder numberFormat(String pattern, String type) {
-        initFormat().numberFormat(pattern, type);
+    public CellBuilder numberFormat(NumberFormatType type, String pattern) {
+        initFormat().numberFormat(type, pattern);
         return this;
+    }
+
+    /**
+     * A format describing how number values should be represented to the user.
+     * @see #numberFormat(NumberFormatType, String)
+     * */
+    public CellBuilder numberFormat(NumberFormatPattern pattern) {
+        return numberFormat(pattern.formatType, pattern.pattern);
     }
 
     /**
@@ -232,7 +281,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param horizontalAlignment horizontalAlignment or {@code null} for none
      */
-    public CellDataBuilder horizontalAlignment(HorizontalAlign horizontalAlignment) {
+    public CellBuilder horizontalAlignment(HorizontalAlign horizontalAlignment) {
         initFormat().horizontalAlignment(horizontalAlignment);
         return this;
     }
@@ -242,7 +291,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param textDirection textDirection or {@code null} for none
      */
-    public CellDataBuilder textDirection(TextDirection textDirection) {
+    public CellBuilder textDirection(TextDirection textDirection) {
         initFormat().textDirection(textDirection);
         return this;
     }
@@ -252,7 +301,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param themeColor Theme color
      */
-    public CellDataBuilder backgroundColorStyle(ThemeColorType themeColor) {
+    public CellBuilder backgroundColorStyle(ThemeColorType themeColor) {
         initFormat().backgroundColorStyle(themeColor);
         return this;
     }
@@ -262,27 +311,18 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param bottom bottom or {@code null} for none
      */
-    public CellDataBuilder bottomBorder(ConsumerReturn<BorderBuilder> bottom) {
+    public CellBuilder bottomBorder(ConsumerReturn<BorderBuilder> bottom) {
         initFormat().bottomBorder(bottom);
         return this;
     }
 
-    /**
-     * The padding of the cell.
-     * @param topBottom The top+bottom padding of the cell.
-     * @param leftRight The left+right padding of the cell.
-     */
-    public CellDataBuilder padding(Integer topBottom, Integer leftRight) {
-        initFormat().padding(topBottom, leftRight);
-        return this;
-    }
 
     /**
      * True if the text has a strikethrough.
      *
      * @param strikethrough strikethrough or {@code null} for none
      */
-    public CellDataBuilder strikethrough(Boolean strikethrough) {
+    public CellBuilder strikethrough(Boolean strikethrough) {
         initFormat().strikethrough(strikethrough);
         return this;
     }
@@ -292,7 +332,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param italic italic or {@code null} for none
      */
-    public CellDataBuilder italic(Boolean italic) {
+    public CellBuilder italic(Boolean italic) {
         initFormat().italic(italic);
         return this;
     }
@@ -302,7 +342,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param rgbColor RGB color
      */
-    public CellDataBuilder foregroundColorStyle(Color rgbColor) {
+    public CellBuilder foregroundColorStyle(Color rgbColor) {
         initFormat().foregroundColorStyle(rgbColor);
         return this;
     }
@@ -312,7 +352,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param themeColor Theme color
      */
-    public CellDataBuilder foregroundColorStyle(ThemeColorType themeColor) {
+    public CellBuilder foregroundColorStyle(ThemeColorType themeColor) {
         initFormat().foregroundColorStyle(themeColor);
         return this;
     }
@@ -322,20 +362,27 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param fontSize fontSize or {@code null} for none
      */
-    public CellDataBuilder fontSize(Integer fontSize) {
+    public CellBuilder fontSize(Integer fontSize) {
         initFormat().fontSize(fontSize);
+        return this;
+    }
+
+
+    /**
+     * The padding of the cell.
+     * @param topBottom The top+bottom padding of the cell.
+     * @param leftRight The left+right padding of the cell.
+     */
+    public CellBuilder padding(Integer topBottom, Integer leftRight) {
+        initFormat().padding(topBottom, leftRight);
         return this;
     }
 
     /**
      * The padding of the cell.
-     * @param top The top padding of the cell.
-     * @param right The right padding of the cell.
-     * @param bottom The bottom padding of the cell.
-     * @param left The left padding of the cell.
      */
-    public CellDataBuilder padding(Integer top, Integer right, Integer bottom, Integer left) {
-        initFormat().padding(top, right, bottom, left);
+    public CellBuilder padding(ConsumerReturn<Padding> consumer) {
+        initFormat().padding(consumer);
         return this;
     }
 
@@ -344,7 +391,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param top top or {@code null} for none
      */
-    public CellDataBuilder topBorder(ConsumerReturn<BorderBuilder> top) {
+    public CellBuilder topBorder(ConsumerReturn<BorderBuilder> top) {
         initFormat().topBorder(top);
         return this;
     }
@@ -354,8 +401,13 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param fontFamily fontFamily or {@code null} for none
      */
-    public CellDataBuilder fontFamily(String fontFamily) {
+    public CellBuilder fontFamily(String fontFamily) {
         initFormat().fontFamily(fontFamily);
+        return this;
+    }
+
+    public CellBuilder format(ConsumerReturn<CellFormatBuilder> consumer) {
+        consumer.accept(initFormat());
         return this;
     }
 
@@ -364,7 +416,7 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
      *
      * @param right right or {@code null} for none
      */
-    public CellDataBuilder rightBorder(ConsumerReturn<BorderBuilder> right) {
+    public CellBuilder rightBorder(ConsumerReturn<BorderBuilder> right) {
         initFormat().rightBorder(right);
         return this;
     }
@@ -383,11 +435,19 @@ public class CellDataBuilder implements XmlBuilder<CellData> {
         return valueBuilder;
     }
 
-    private DataValidationRuleBuilder getRuleBuilder() {
+    private DataValidationRuleBuilder initRuleBuilder() {
         if(ruleBuilder == null) {
             ruleBuilder = new DataValidationRuleBuilder(Utils.setIfNull(cell::getDataValidation,
                     DataValidationRule::new, cell::setDataValidation));
         }
         return ruleBuilder;
     }
+
+    public void applyColumn(ColumnType type) {
+        numberFormat(type.getType(), type.getPattern());
+    }
+
+
+
+
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 public final class XslBook {
     private final Spreadsheet xsl;
     private final XslService service;
-    //private final XslBatchUpdate batchUpdate;
     private final Map<String, XslSheet> sheetNames = new HashMap<>();
     private final Map<Integer, String> sheetIds = new HashMap<>();
     private SpreadsheetProperties properties;
@@ -26,9 +25,15 @@ public final class XslBook {
     XslBook(XslService service, Spreadsheet xsl) {
         this.service = Asserts.notNull(service);
         this.xsl = Asserts.notNull(xsl);
-       // this.batchUpdate = new XslBatchUpdate(service, this);
         this.properties = Utils.getIfNull(xsl.getProperties(), SpreadsheetProperties::new);
         this.initWorkSheet(false);
+    }
+
+    /**
+     * Returns the xsl
+     */
+    public Spreadsheet getXsl() {
+        return xsl;
     }
 
     /**

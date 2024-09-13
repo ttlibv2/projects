@@ -1,15 +1,23 @@
 package vn.conyeu.google.drives;
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.JPQLSerializer;
+import lombok.extern.slf4j.Slf4j;
 import vn.conyeu.google.query.BoolExpression;
 import java.util.function.Function;
 
+@Slf4j
 public final class SearchBuilder {
     public String fields;
     public Integer pageSize = 1000;
     private String pageToken;
     private String orderBy;
+    private DriveQuery query;
+    private BoolExpression predicate;
 
     private SearchFunc queryFunc;
+
+
 
     public static SearchBuilder fromQuery(SearchFunc queryFunc) {
         SearchBuilder sb = new SearchBuilder();
@@ -21,14 +29,12 @@ public final class SearchBuilder {
         return new SearchBuilder();
     }
 
-    /**
-     * Set the queryFunc
-     *
-     * @param query the value
-     */
-    public SearchBuilder query(SearchFunc query) {
-        if(this.queryFunc == null) this.queryFunc = query;
-        else this.queryFunc = q -> queryFunc.apply(q).and(query.apply(q));
+    public SearchBuilder query(SearchFunc function) {
+        if(query == null) query = new DriveQuery();
+
+        BoolExpression expression = function.apply(query);
+        if(predicate == null) predicate = expression;
+        else predicate = predicate.and(expression);
         return this;
     }
 
@@ -101,8 +107,9 @@ public final class SearchBuilder {
     }
 
     public String buildQuery() {
-        DriveQuery driveQuery = new DriveQuery();
-        return queryFunc.apply(driveQuery).toString();
+        String searchQuery = new DriveQuery.DriveSerializer().serialize(predicate);
+        log.warn("searchQuery: {}", searchQuery);
+        return searchQuery;
     }
 
     @FunctionalInterface

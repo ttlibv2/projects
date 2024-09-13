@@ -1,12 +1,13 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.GridProperties;
+import vn.conyeu.google.core.Utils;
 
 public class GridPropBuilder implements XmlBuilder<GridProperties> {
     private final GridProperties prop;
 
     public GridPropBuilder(final GridProperties props) {
-        this.prop = XmlBuilder.ifNull(props, GridProperties::new);
+        this.prop = Utils.getIfNull(props, GridProperties::new);
     }
 
     @Override

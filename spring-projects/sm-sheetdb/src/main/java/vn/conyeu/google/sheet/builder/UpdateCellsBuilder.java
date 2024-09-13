@@ -106,11 +106,11 @@ public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
         return this;
     }
 
-    public UpdateCellsBuilder addRow(int countCell, Consumer<CellDataBuilder> consumerCell) {
+    public UpdateCellsBuilder addRow(int countCell, Consumer<CellBuilder> consumerCell) {
         RowData rowData = new RowData();
         rowData.setValues(new ArrayList<>());
         for(int pos=0;pos<countCell;pos++) {
-            CellDataBuilder builder = new CellDataBuilder(null);
+            CellBuilder builder = new CellBuilder(null);
             consumerCell.accept(builder);
             rowData.getValues().add(builder.build());
         }

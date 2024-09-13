@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import vn.conyeu.google.sheet.builder.XslBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 public class XslApp {
     private final XslService service;
@@ -47,7 +50,11 @@ public class XslApp {
     }
 
     public XslBook openById(String fileId) {
-        Spreadsheet ss = service.openXsl(fileId, "*");
+        return openById(fileId, new ArrayList<>());
+    }
+
+    public XslBook openById(String fileId, List<String> ranges ) {
+        Spreadsheet ss = service.openXsl(fileId, "*", ranges);
         return new XslBook(service, ss);
     }
 

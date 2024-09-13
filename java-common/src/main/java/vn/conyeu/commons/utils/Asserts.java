@@ -750,4 +750,15 @@ public final class Asserts {
         int index = IntStream.range(0, objects.length).filter(pos -> Objects.isNull(objects[pos])).findFirst().orElse(-1);
         if(index != -1) throw Objects.newIllegal("The value at [%s] is null", index);
     }
+
+    public static void validateIndex(int index, int min, int max) {
+       validateIndex(index, min, max, () -> {
+           String msg = "The index invalid -- (index < %s || index >= %s)";
+           return new IndexOutOfBoundsException(Objects.formatString(msg, min, max));
+       });
+    }
+
+    public static void validateIndex(int index, int min, int max, Supplier<RuntimeException> supplierThrow) {
+        if(index < min || index >= max) throw supplierThrow.get();
+    }
 }

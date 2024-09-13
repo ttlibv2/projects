@@ -9,7 +9,7 @@ public class TextFormatBuilder implements XmlBuilder<TextFormat> {
     private final TextFormat format;
 
     public TextFormatBuilder(TextFormat format) {
-        this.format = XmlBuilder.ifNull(format, TextFormat::new);
+        this.format =Utils.getIfNull(format, TextFormat::new);
     }
 
     @Override

@@ -7,12 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XslBuilder implements XmlBuilder<Spreadsheet> {
-    private final Spreadsheet ss = new Spreadsheet();
+    private final Spreadsheet ss;
     private XslModelBuilder propBuilder;
+
+    public XslBuilder(Spreadsheet ss) {
+        this.ss = Utils.getIfNull(ss, Spreadsheet::new);
+    }
 
     @Override
     public Spreadsheet build() {
        return ss;
+    }
+
+    @Override
+    public XslBuilder copy() {
+        return new XslBuilder(ss.clone());
     }
 
     public XslBuilder developerMetadata(DeveloperMetadata developerMetadata) {

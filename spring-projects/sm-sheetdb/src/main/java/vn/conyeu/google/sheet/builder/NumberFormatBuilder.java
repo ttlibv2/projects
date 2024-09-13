@@ -1,12 +1,13 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.NumberFormat;
+import vn.conyeu.google.core.Utils;
 
 public class NumberFormatBuilder implements XmlBuilder<NumberFormat> {
     private final NumberFormat format;
 
     public NumberFormatBuilder(NumberFormat format) {
-        this.format = XmlBuilder.ifNull(format, NumberFormat::new);
+        this.format = Utils.getIfNull(format, NumberFormat::new);
     }
 
     @Override

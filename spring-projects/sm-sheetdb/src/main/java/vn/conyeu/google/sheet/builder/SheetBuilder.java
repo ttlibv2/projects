@@ -1,93 +1,87 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.*;
-import vn.conyeu.google.core.GoogleException;
+import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.function.Consumer;
 
 public class SheetBuilder implements XmlBuilder<Sheet> {
     private final Sheet sheet;
-    private final List<RowDataBuilder> rowBuilders;
-    private Integer maxRow, maxColumn;
-    private Integer frozen_row;
+    private final List<GridBuilder> grids;
+    private ConsumerReturn<CellFormatBuilder> defaultFormat;
 
     public SheetBuilder(Sheet model) {
         sheet = Utils.getIfNull(model, Sheet::new);
-        rowBuilders = new ArrayList<>();
+        grids = new ArrayList<>();
         initialize();
     }
 
     public void initialize() {
-        maxRow = getGridProp().getRowCount();
-        maxColumn = getGridProp().getColumnCount();
-        frozen_row = getGridProp().getFrozenRowCount();
 
-
-        List<GridData> gridDataList = Utils.setIfNull(sheet::getData, ArrayList::new, sheet::setData);
-        if(gridDataList.isEmpty()) gridDataList.add(new GridData());
-
-        //--
-        GridData gridData = gridDataList.getFirst();
-        List<RowData> rows = Utils.setIfNull(gridData::getRowData, ArrayList::new, gridData::setRowData);
-        for(RowData row:rows) rowBuilders.add(new RowDataBuilder(this));
+        // initialize grid_builder
+        Utils.setIfNull(sheet::getData, ArrayList::new, sheet::setData);
+        for (GridData data : sheet.getData()) {
+            grids.add(new GridBuilder(this, data));
+        }
 
     }
 
+    @Override
+    public SheetBuilder copy() {
+        return new SheetBuilder(sheet.clone());
+    }
+
     public Sheet build() {
+        Sheet sheet = this.sheet.clone();
         sheet.getData().clear();
 
-        GridData gridData = sheet.getData().getFirst();
-        for(RowDataBuilder rowBuilder:rowBuilders) {
-            RowData rowData = rowBuilder.build();
-            gridData.getRowData().add(rowData);
+        //update grid_data
+        for (GridBuilder grid : grids) {
+            sheet.getData().add(grid.build());
         }
 
         //frozen_row
-        if(frozen_row == null || frozen_row < 1) {
+        Integer frozen_row = getGridProp().getFrozenRowCount();
+        if (frozen_row == null || frozen_row < 1) {
             frozen_row = 1;
         }
 
         getGridProp().setFrozenRowCount(frozen_row);
-        getGridProp().setRowCount(getMaxRow());
-        getGridProp().setColumnCount(getMaxColumn());
+
+        Integer actuRow = getRowSize(), maxRow = getGridProp().getRowCount();
+        Integer countRow = maxRow == null || maxRow < actuRow ? actuRow : maxRow;
+        getGridProp().setRowCount(countRow);
+
+        Integer actuCol = getColumnSize(), maxColumn = getGridProp().getColumnCount();
+        Integer countCol = maxColumn == null || maxColumn < actuCol ? actuCol : maxColumn;
+        getGridProp().setColumnCount(countCol);
 
         return sheet;
     }
 
-    public SheetBuilder init(int columns, int rows) {
-        rowCount(rows).columnCount(columns);
-
-        return this;
+    public int gridSize() {
+        return grids.size();
     }
 
-
-
-
-
-    public int getRowSize() {
-        return rowBuilders.size();
+    /**
+     * The number of columns in the grid.
+     *
+     * @return value or {@code null} for none
+     */
+    public Integer getColumnCount() {
+        return getGridProp().getColumnCount();
     }
 
-    public int getColumnSize() {
-        return getOptionalColumnSize().orElse(0);
-    }
-
-    public Integer getMaxColumn() {
-        int countColumn = getColumnSize();
-        if(maxColumn == null || maxColumn < countColumn) maxColumn = countColumn;
-        return maxColumn;
-    }
-
-    public Integer getMaxRow() {
-        if(maxRow == null || maxRow < getRowSize()) maxRow = getRowSize();
-        return maxRow;
-    }
-
-    protected OptionalInt getOptionalColumnSize() {
-        return rowBuilders.stream().mapToInt(RowDataBuilder::size).max();
+    /**
+     * The number of rows in the grid.
+     *
+     * @return value or {@code null} for none
+     */
+    public Integer getRowCount() {
+        return getGridProp().getRowCount();
     }
 
     /**
@@ -96,11 +90,13 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @return value or {@code null} for none
      */
     public Integer getSheetId() {
-        return getSheetProp().getSheetId();
+        Integer sheetId = getSheetProp().getSheetId();
+        return Asserts.notNull(sheetId, "The sheetId not set");
     }
 
     /**
      * The index of the sheet within the spreadsheet.
+     *
      * @param index index or {@code null} for none
      */
     public SheetBuilder index(Integer index) {
@@ -144,12 +140,13 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param sheetId sheetId or {@code null} for none
      */
     public SheetBuilder sheetId(Integer sheetId) {
-         getSheetProp().setSheetId(sheetId);
-         return this;
+        getSheetProp().setSheetId(sheetId);
+        return this;
     }
 
     /**
      * The color of the tab in the UI.
+     *
      * @param rgbColor rgb color
      */
     public SheetBuilder tabColorStyle(Color rgbColor) {
@@ -183,7 +180,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param columnCount columnCount or {@code null} for none
      */
     public SheetBuilder columnCount(Integer columnCount) {
-        this.maxColumn = columnCount;
+        getGridProp().setColumnCount(columnCount);
         return this;
     }
 
@@ -213,7 +210,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param frozenRowCount frozenRowCount or {@code null} for none
      */
     public SheetBuilder frozenRowCount(Integer frozenRowCount) {
-        this.frozen_row = frozenRowCount;
+        getGridProp().setFrozenRowCount(frozenRowCount);
         return this;
     }
 
@@ -233,7 +230,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      * @param rowCount rowCount or {@code null} for none
      */
     public SheetBuilder rowCount(Integer rowCount) {
-        this.maxRow = rowCount;
+        getGridProp().setRowCount(rowCount);
         return this;
     }
 
@@ -247,15 +244,51 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return this;
     }
 
+    public GridBuilder findGrid(int index) {
+        Asserts.validateIndex(index, 0, gridSize());
+        return grids.get(index);
+    }
+
+    public GridBuilder getGrid(int index) {
+        if (index < 0 || index >= gridSize()) {
+            addGrids(gridSize(), index < 0 ? 1 : index - gridSize() + 1);
+        }
+        return grids.get(index);
+    }
+
+    /**
+     * edit row at index
+     *
+     * @param rowIndex the row index
+     * @param consumer the custom edit for all cell of row
+     */
+    public SheetBuilder editRow(int rowIndex, ConsumerReturn<RowBuilder> consumer) {
+        consumer.accept(getGrid(0).getRow(rowIndex));
+        return this;
+    }
+
     /*The protected ranges in this sheet.*/
-    public SheetBuilder protectedRange(ConsumerReturn<ProtectedRangeBuilder> consumer) {
-        ProtectedRangeBuilder builder = consumer.accept(new ProtectedRangeBuilder());
-        builder.range(r -> r.sheetId(getSheetId()));
+    protected SheetBuilder protect(Integer rowIndex, ConsumerReturn<ProtectedPermission> consumer) {
+        if (rowIndex == null || rowIndex < 0) throw new IndexOutOfBoundsException("The index invalid -- " + rowIndex);
+        ProtectedRangeBuilder builder = new ProtectedRangeBuilder(null);
+        builder.forRow(getSheetId(), rowIndex);
+        consumer.accept(builder.getPermission());
         initProtectedRanges().add(builder.build());
         return this;
     }
 
-    /**A banded (alternating colors) range in a sheet.*/
+    /*The protected ranges in this sheet.*/
+    protected SheetBuilder protect(ConsumerReturn<ProtectedPermission> consumer) {
+        ProtectedRangeBuilder builder = new ProtectedRangeBuilder(null)
+                .range(r -> r.sheetId(getSheetId()));
+        consumer.accept(builder.getPermission());
+        initProtectedRanges().add(builder.build());
+        return this;
+    }
+
+    /**
+     * A banded (alternating colors) range in a sheet.
+     */
     public SheetBuilder bandedRange(ConsumerReturn<BandedRangeBuilder> consumer) {
         BandedRangeBuilder builder = consumer.accept(new BandedRangeBuilder());
         getBandedRanges().add(builder.build());
@@ -273,7 +306,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
     }
 
     private BasicFilter initBasicFilter() {
-       return Utils.setIfNull(sheet::getBasicFilter, BasicFilter::new, sheet::setBasicFilter);
+        return Utils.setIfNull(sheet::getBasicFilter, BasicFilter::new, sheet::setBasicFilter);
     }
 
     /*The specifications of every chart on this sheet.*/
@@ -330,33 +363,6 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return this;
     }
 
-    public RowDataBuilder getRow(int index) {
-        if(index < 0) throw new GoogleException("The index < 0");
-        else if(index < getRowSize()) return rowBuilders.get(index);
-        else {
-            for (int pos = getRowSize(); pos <= index; pos++) addRow();
-            return rowBuilders.get(index);
-        }
-    }
-
-    public RowDataBuilder editRow(int index, ConsumerReturn<CellDataBuilder> consumer) {
-        RowDataBuilder builder = getRow(index);
-        builder.editCell(consumer);
-        return builder;
-    }
-
-    public ColumnDataBuilder getColumn(int index) {
-        ColumnDataBuilder columnBuilder = new ColumnDataBuilder(this);
-        columnBuilder.columnIndex(index);
-
-        for(RowDataBuilder rowBuilder:rowBuilders) {
-            CellDataBuilder cellBuilder = rowBuilder.getCell(index);
-            columnBuilder.addCell(cellBuilder);
-        }
-
-        return columnBuilder;
-    }
-
     private SheetProperties getSheetProp() {
         if (sheet.getProperties() == null) {
             sheet.setProperties(new SheetProperties());
@@ -374,27 +380,25 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return gridProperties;
     }
 
-    public RowDataBuilder addRow() {
-        RowDataBuilder builder = new RowDataBuilder(this);
-        builder.rowIndex(rowBuilders.size() + 1);
-        rowBuilders.add(builder);
-        return builder;
+    private Integer getRowSize() {
+        return grids.stream().mapToInt(GridBuilder::getRowSize).max().orElse(0);
     }
 
-    public ColumnDataBuilder addColumn() {
+    private Integer getColumnSize() {
+        return grids.stream().mapToInt(GridBuilder::getColumnSize).max().orElse(0);
+    }
 
-
-
-
-        int cellPos = getColumnSize() + 1;
-        ColumnDataBuilder columnBuilder = new ColumnDataBuilder(this, cellPos);
-
-        for(RowDataBuilder rowBuilder:rowBuilders) {
-            CellDataBuilder cellBuilder = rowBuilder.getCell(cellPos);
-            columnBuilder.addCell(cellBuilder);
+    private void addGrids(int index, int howMany) {
+        for (int pos = index; pos < index + howMany; pos++) {
+            GridBuilder gb = new GridBuilder(this, null);
+            grids.add(gb);
         }
+    }
 
-        return columnBuilder;
+    public SheetBuilder defaultFormat(ConsumerReturn<CellFormatBuilder> formatBuilder) {
+        if(defaultFormat == null) defaultFormat = formatBuilder;
+        else defaultFormat = defaultFormat.andThen(formatBuilder);
+        return this;
     }
 
 }

@@ -9,6 +9,10 @@ public class GFile extends AbstractGFile {
         super(service, model);
     }
 
+    public static GFile cast(AbstractGFile file) {
+        return (GFile) file;
+    }
+
     @Override
     protected void validateModel(File model) {
         if(GHelper.isFolder(model)) {

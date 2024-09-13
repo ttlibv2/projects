@@ -64,4 +64,8 @@ public class DriveApp {
     private GFile newFile(File model) {
         return new GFile(service, model);
     }
+
+    public void download(String fileId) {
+        service.download(fileId);
+    }
 }
