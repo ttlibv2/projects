@@ -165,6 +165,10 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
         return Utils.setIfNull(cellFormat::getPadding, Padding::new, cellFormat::setPadding);
     }
 
+    private NumberFormat initNumberFormat() {
+        return Utils.setIfNull(cellFormat::getNumberFormat, NumberFormat::new, cellFormat::setNumberFormat);
+    }
+
     /**
      * A format describing how number values should be represented to the user.
      *
@@ -172,7 +176,7 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
      * @param type    The type of the number format. When writing, this field must be set.
      */
     public CellFormatBuilder numberFormat(NumberFormatType type, String pattern) {
-        cellFormat.setNumberFormat(new NumberFormat().setPattern(pattern).setType(Utils.enumName(type)));
+        initNumberFormat().setPattern(pattern).setType(Utils.enumName(type));
         return this;
     }
 
@@ -183,7 +187,14 @@ public class CellFormatBuilder implements XmlBuilder<CellFormat> {
     public CellFormatBuilder numberFormat(NumberFormatPattern pattern) {
         return numberFormat(pattern.formatType, pattern.pattern);
     }
-
+    /**
+     * A format describing how number values should be represented to the user.
+     * @see #numberFormat(NumberFormatType, String)
+     * */
+    public CellFormatBuilder numberFormat( String pattern) {
+        initNumberFormat().setPattern(pattern);
+        return this;
+    }
 
     /**
      * How a hyperlink, if it exists, should be displayed in the cell.

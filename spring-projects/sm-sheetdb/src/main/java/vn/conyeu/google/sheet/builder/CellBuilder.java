@@ -268,6 +268,17 @@ public class CellBuilder implements XmlBuilder<CellData> {
         return this;
     }
 
+
+    /**
+     * A format describing how number values should be represented to the user.
+     * @see #numberFormat(NumberFormatType, String)
+     * */
+    public CellBuilder numberFormat(String pattern) {
+         initFormat().numberFormat(pattern);
+        return this;
+    }
+
+
     /**
      * A format describing how number values should be represented to the user.
      * @see #numberFormat(NumberFormatType, String)

@@ -32,8 +32,8 @@ public class NumberFormatBuilder implements XmlBuilder<NumberFormat> {
      *
      * @param type type or {@code null} for none
      */
-    public NumberFormatBuilder type(String type) {
-        format.setType(type);
+    public NumberFormatBuilder type(NumberFormatType type) {
+        format.setType(Utils.enumName(type));
         return this;
     }
 }

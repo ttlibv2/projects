@@ -81,8 +81,7 @@ public class SheetDb {
         GridBuilder grid = sheet.getGrid(0);
         for(Column col:columns) {
           grid.getRange(1, 11).setValues(
-                  col.getColumnName(),
-
+                  List.of(col.getColumnName())
           );
         }
 
