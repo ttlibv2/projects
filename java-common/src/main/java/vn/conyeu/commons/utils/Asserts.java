@@ -79,7 +79,7 @@ public final class Asserts {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object is not {@code null}
      */
-    public static void isNull(Object object, String message, Object...arguments) {
+    public static void isNull(Object object, String message, Object... arguments) {
         if (object != null) {
             message = Objects.formatString(message, arguments);
             throw new IllegalArgumentException(message);
@@ -175,7 +175,7 @@ public final class Asserts {
      * @param messageSupplier a supplier for the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the text is empty
      */
-    public static String hasLength( String text, Supplier<String> messageSupplier) {
+    public static String hasLength(String text, Supplier<String> messageSupplier) {
         if (!Objects.hasLength(text)) throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         else return text;
     }
@@ -187,7 +187,7 @@ public final class Asserts {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the text does not contain valid text content
      */
-    public static String hasText( String text, String message) {
+    public static String hasText(String text, String message) {
         if (!Objects.hasText(text)) throw new IllegalArgumentException(message);
         else return text;
     }
@@ -199,7 +199,7 @@ public final class Asserts {
      * @param messageSupplier a supplier for the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the text does not contain valid text content
      */
-    public static String hasText( String text, Supplier<String> messageSupplier) {
+    public static String hasText(String text, Supplier<String> messageSupplier) {
         if (!Objects.hasText(text)) throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         else return text;
     }
@@ -212,7 +212,7 @@ public final class Asserts {
      * @param message      the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the text contains the substring
      */
-    public static void doesNotContain( String textToSearch, String substring, String message) {
+    public static void doesNotContain(String textToSearch, String substring, String message) {
         if (Objects.hasLength(textToSearch) && Objects.hasLength(substring) &&
                 textToSearch.contains(substring)) {
             throw new IllegalArgumentException(message);
@@ -227,14 +227,14 @@ public final class Asserts {
      * @param messageSupplier a supplier for the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the text contains the substring
      */
-    public static void doesNotContain( String textToSearch, String substring, Supplier<String> messageSupplier) {
+    public static void doesNotContain(String textToSearch, String substring, Supplier<String> messageSupplier) {
         if (Objects.hasLength(textToSearch) && Objects.hasLength(substring) &&
                 textToSearch.contains(substring)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    public static <T> T[] notEmpty( T[] array) {
+    public static <T> T[] notEmpty(T[] array) {
         return notEmpty(array, "array must be not empty.");
     }
 
@@ -245,7 +245,7 @@ public final class Asserts {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object array is {@code null} or contains no elements
      */
-    public static <T> T[] notEmpty( T[] array, String message) {
+    public static <T> T[] notEmpty(T[] array, String message) {
         if (Objects.isEmpty(array)) throw Objects.newIllegal(message, "must be not empty.");
         else return array;
     }
@@ -257,7 +257,7 @@ public final class Asserts {
      * @param messageSupplier a supplier for the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object array is {@code null} or contains no elements
      */
-    public static void notEmpty( Object[] array, Supplier<String> messageSupplier) {
+    public static void notEmpty(Object[] array, Supplier<String> messageSupplier) {
         if (Objects.isEmpty(array)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
@@ -279,7 +279,7 @@ public final class Asserts {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object array contains a {@code null} element
      */
-    public static void noNullElements( Object[] array, String message) {
+    public static void noNullElements(Object[] array, String message) {
         if (array != null) {
             for (Object element : array) {
                 if (element == null) {
@@ -296,7 +296,7 @@ public final class Asserts {
      * @param messageSupplier a supplier for the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the object array contains a {@code null} element
      */
-    public static void noNullElements( Object[] array, Supplier<String> messageSupplier) {
+    public static void noNullElements(Object[] array, Supplier<String> messageSupplier) {
         if (array != null) {
             for (Object element : array) {
                 if (element == null) {
@@ -313,7 +313,7 @@ public final class Asserts {
      * @param message    the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the collection is {@code null} or contains no elements
      */
-    public static void notEmpty( Collection<?> collection, String message) {
+    public static void notEmpty(Collection<?> collection, String message) {
         if (Objects.isEmpty(collection)) {
             throw new IllegalArgumentException(message);
         }
@@ -326,7 +326,7 @@ public final class Asserts {
      * @param messageSupplier a supplier for the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the collection is {@code null} or contains no elements
      */
-    public static void notEmpty( Collection<?> collection, Supplier<String> messageSupplier) {
+    public static void notEmpty(Collection<?> collection, Supplier<String> messageSupplier) {
         if (Objects.isEmpty(collection)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
@@ -340,7 +340,7 @@ public final class Asserts {
      * @param message    the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the collection contains a {@code null} element
      */
-    public static void noNullElements( Collection<?> collection, String message) {
+    public static void noNullElements(Collection<?> collection, String message) {
         if (collection != null) {
             for (Object element : collection) {
                 if (element == null) {
@@ -357,7 +357,7 @@ public final class Asserts {
      * @param messageSupplier a supplier for the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the collection contains a {@code null} element
      */
-    public static void noNullElements( Collection<?> collection, Supplier<String> messageSupplier) {
+    public static void noNullElements(Collection<?> collection, Supplier<String> messageSupplier) {
         if (collection != null) {
             for (Object element : collection) {
                 if (element == null) {
@@ -376,7 +376,7 @@ public final class Asserts {
      * @param message the exception message to use if the assertion fails
      * @throws IllegalArgumentException if the map is {@code null} or contains no entries
      */
-    public static void notEmpty( Map<?, ?> map, String message) {
+    public static void notEmpty(Map<?, ?> map, String message) {
         if (Objects.isEmpty(map)) {
             throw new IllegalArgumentException(message);
         }
@@ -395,7 +395,7 @@ public final class Asserts {
      * @throws IllegalArgumentException if the map is {@code null} or contains no entries
      * @since 5.0
      */
-    public static void notEmpty( Map<?, ?> map, Supplier<String> messageSupplier) {
+    public static void notEmpty(Map<?, ?> map, Supplier<String> messageSupplier) {
         if (Objects.isEmpty(map)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
@@ -408,7 +408,7 @@ public final class Asserts {
      * @deprecated as of 4.3.7, in favor of {@link #notEmpty(Map, String)}
      */
     @Deprecated
-    public static void notEmpty( Map<?, ?> map) {
+    public static void notEmpty(Map<?, ?> map) {
         notEmpty(map, "[Assertion failed] - this map must not be empty; it must contain at least one entry");
     }
 
@@ -425,7 +425,7 @@ public final class Asserts {
      *                of the offending object's type will be appended.
      * @throws IllegalArgumentException if the object is not an instance of type
      */
-    public static void isInstanceOf(Class<?> type,  Object obj, String message) {
+    public static void isInstanceOf(Class<?> type, Object obj, String message) {
         notNull(type, "Type to check against must not be null");
         if (!type.isInstance(obj)) {
             instanceCheckFailed(type, obj, message);
@@ -476,7 +476,7 @@ public final class Asserts {
      *                  offending sub type will be appended.
      * @throws IllegalArgumentException if the classes are not assignable
      */
-    public static void isAssignable(Class<?> superType,  Class<?> subType, String message) {
+    public static void isAssignable(Class<?> superType, Class<?> subType, String message) {
         notNull(superType, "Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
             assignableCheckFailed(superType, subType, message);
@@ -496,7 +496,7 @@ public final class Asserts {
      * @throws IllegalArgumentException if the classes are not assignable
      * @since 5.0
      */
-    public static void isAssignable(Class<?> superType,  Class<?> subType, Supplier<String> messageSupplier) {
+    public static void isAssignable(Class<?> superType, Class<?> subType, Supplier<String> messageSupplier) {
         notNull(superType, "Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
             assignableCheckFailed(superType, subType, nullSafeGet(messageSupplier));
@@ -516,7 +516,7 @@ public final class Asserts {
     }
 
 
-    private static void instanceCheckFailed(Class<?> type,  Object obj,  String msg) {
+    private static void instanceCheckFailed(Class<?> type, Object obj, String msg) {
         throw createInstanceCheckFailed(type, obj, msg);
     }
 
@@ -540,7 +540,7 @@ public final class Asserts {
 
     }
 
-    private static void assignableCheckFailed(Class<?> superType,  Class<?> subType,  String msg) {
+    private static void assignableCheckFailed(Class<?> superType, Class<?> subType, String msg) {
         String result = "";
         boolean defaultMessage = true;
         if (Objects.hasLength(msg)) {
@@ -561,12 +561,12 @@ public final class Asserts {
         return (msg.endsWith(":") || msg.endsWith(";") || msg.endsWith(",") || msg.endsWith("."));
     }
 
-    private static String messageWithTypeName(String msg,  Object typeName) {
+    private static String messageWithTypeName(String msg, Object typeName) {
         return msg + (msg.endsWith(" ") ? "" : ": ") + typeName;
     }
 
-    
-    private static <T> T nullSafeGet( Supplier<T> messageSupplier) {
+
+    private static <T> T nullSafeGet(Supplier<T> messageSupplier) {
         return messageSupplier != null ? messageSupplier.get() : null;
     }
 
@@ -607,9 +607,8 @@ public final class Asserts {
 
     public static String notBlank(String object, String message, Object... args) {
         if (Objects.notBlank(object)) return object;
-       else throw Objects.newIllegal(message, args);
+        else throw Objects.newIllegal(message, args);
     }
-
 
 
     /**
@@ -714,6 +713,7 @@ public final class Asserts {
 
     /**
      * Throw IllegalArgumentException if the condition is false, otherwise return the value.
+     *
      * @param <T>         the value type
      * @param condition   the condition about the parameter to check
      * @param returnValue the value of the argument
@@ -721,44 +721,47 @@ public final class Asserts {
      * @throws IllegalArgumentException if the condition is false
      */
     public static <T> T isTrue(final boolean condition, final T returnValue, final String message) {
-        if (!condition) {throw new IllegalArgumentException(message);}
+        if (!condition) {
+            throw new IllegalArgumentException(message);
+        }
         return returnValue;
     }
 
     public static <T> T notNullWithThrowable(T object, Supplier<RuntimeException> throwableSupplier) {
-        if(object == null) throw throwableSupplier.get();
+        if (object == null) throw throwableSupplier.get();
         else return object;
     }
 
     public static Path isFile(Path path) {
-        if(path == null) return null;
+        if (path == null) return null;
         else return isFile(path, "The path `%s` is null or not file", path.toString());
     }
-    public static Path isFile(Path path, String msg, Object...args) {
-        if(Objects.isNull(path) || Files.isDirectory(path)) {
+
+    public static Path isFile(Path path, String msg, Object... args) {
+        if (Objects.isNull(path) || Files.isDirectory(path)) {
             throw new IllegalArgumentException(buildMessage(msg, args));
         }
         return path;
     }
 
     public static <T> List<T> isEmpty(List<T> list, String message) {
-        if(list == null || !list.isEmpty()) throw new IllegalArgumentException(message);
+        if (list == null || !list.isEmpty()) throw new IllegalArgumentException(message);
         else return list;
     }
 
     public static void allNotNull(Object... objects) {
         int index = IntStream.range(0, objects.length).filter(pos -> Objects.isNull(objects[pos])).findFirst().orElse(-1);
-        if(index != -1) throw Objects.newIllegal("The value at [%s] is null", index);
+        if (index != -1) throw Objects.newIllegal("The value at [%s] is null", index);
     }
 
     public static void validateIndex(int index, int min, int max) {
-       validateIndex(index, min, max, () -> {
-           String msg = "The index invalid -- (index < %s || index >= %s)";
-           return new IndexOutOfBoundsException(Objects.formatString(msg, min, max));
-       });
+        validateIndex(index, min, max, () -> {
+            String msg = "The index invalid -- (index=%s -> index < %s || index >= %s)";
+            return new IndexOutOfBoundsException(Objects.formatString(msg, index, min, max));
+        });
     }
 
     public static void validateIndex(int index, int min, int max, Supplier<RuntimeException> supplierThrow) {
-        if(index < min || index >= max) throw supplierThrow.get();
+        if (index < min || index >= max) throw supplierThrow.get();
     }
 }

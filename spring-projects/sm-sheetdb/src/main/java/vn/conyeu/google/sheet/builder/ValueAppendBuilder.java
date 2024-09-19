@@ -5,12 +5,12 @@ import vn.conyeu.commons.utils.Objects;
 
 public class ValueAppendBuilder {
     private String spreadsheetId;
-    private ValueRenderOption valueInputOption;
-    private InsertDataOption insertDataOption;
     private boolean includeValuesInResponse;
     private ValueRange valueRange;
     private String a1Range;
     private String fields;
+    private InsertDataOption insertDataOption = InsertDataOption.INSERT_ROWS;
+    private ValueInputOption valueInputOption = ValueInputOption.USER_ENTERED;
     private ValueRenderOption responseValueRenderOption = ValueRenderOption.FORMATTED_VALUE;
     private DateTimeRenderOption responseDateTimeRenderOption = DateTimeRenderOption.FORMATTED_STRING;
 
@@ -36,8 +36,26 @@ public class ValueAppendBuilder {
      * The A1 notation of a range to search for a logical table of data. Values
      * are appended after the last row of the table.
      */
+    public ValueAppendBuilder range(String sheetName, Integer firstRow) {
+        range(r -> r.name(sheetName).firstRow(firstRow).firstCol(0));
+        return this;
+    }
+
+    /**
+     * The A1 notation of a range to search for a logical table of data. Values
+     * are appended after the last row of the table.
+     */
     public ValueAppendBuilder range(ConsumerReturn<A1RangeBuilder> consumer) {
         a1Range = consumer.accept(new A1RangeBuilder()).build();
+        return this;
+    }
+
+    /**
+     * The A1 notation of a range to search for a logical table of data. Values
+     * are appended after the last row of the table.
+     */
+    public ValueAppendBuilder range(A1RangeBuilder builder) {
+        a1Range = builder.build();
         return this;
     }
 
@@ -45,8 +63,8 @@ public class ValueAppendBuilder {
      * How the input data should be interpreted.
      * @param valueInputOption the value
      */
-    public ValueAppendBuilder valueInputOption(ValueRenderOption valueInputOption) {
-        this.valueInputOption = Objects.firstIfNull(valueInputOption, ValueRenderOption.FORMATTED_VALUE);
+    public ValueAppendBuilder valueInputOption(ValueInputOption valueInputOption) {
+        this.valueInputOption = Objects.firstIfNull(valueInputOption, ValueInputOption.USER_ENTERED);
         return this;
     }
 
@@ -104,7 +122,7 @@ public class ValueAppendBuilder {
         return spreadsheetId;
     }
 
-    public ValueRenderOption getValueInputOption() {
+    public ValueInputOption getValueInputOption() {
         return valueInputOption;
     }
 

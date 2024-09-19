@@ -78,6 +78,14 @@ export class AgTable<E = any> implements OnInit, OnChanges {
     return this.optionService.getCallback('getRowId');
   }
 
+  autoSizeAllColumns(): void {
+    this.tableApi.autoSizeAllColumns();
+  }
+
+  deleteAll(): void {
+    this.tableApi.setGridOption('rowData', []);
+  }
+
 
   getRowNode(data: E): ITableNode {
     const getRowIdFunc = this.getRowIdFunc;
@@ -94,11 +102,15 @@ export class AgTable<E = any> implements OnInit, OnChanges {
     }
   }
 
+  getColumnHeader(column: Column | string) {
+    return this.tableApi.getColumnDef(column)?.headerName;
+  }
+
   setColumns(columns: ColDef[]) {
     this.tableApi.setGridOption('columnDefs', columns);
   }
 
-  setRows(...data: E[]) {
+  setRows(data: E[]) {
     this.tableApi.setGridOption('rowData', data);
   }
 
@@ -115,7 +127,11 @@ export class AgTable<E = any> implements OnInit, OnChanges {
 
   }
 
-  addRows(...data: E[]): ITableNode<E>[] {
+  addRow(data: E): IRowNode<E> {
+    return this.tableApi.applyTransaction({ add: [data] }).add[0];
+  }
+
+  addRows(data: E[]): ITableNode<E>[] {
     return this.tableApi.applyTransaction({ add: data }).add;
   }
 

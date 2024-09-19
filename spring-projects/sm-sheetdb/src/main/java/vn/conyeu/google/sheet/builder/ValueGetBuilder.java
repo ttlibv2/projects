@@ -26,7 +26,7 @@ public class ValueGetBuilder {
      * @param sheetName the value
      */
     public A1RangeBuilder sheetName(String sheetName) {
-        return range.sheetName(sheetName);
+        return range.name(sheetName);
     }
 
     /**

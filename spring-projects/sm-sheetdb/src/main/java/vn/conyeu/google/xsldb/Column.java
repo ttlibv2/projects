@@ -1,13 +1,17 @@
 package vn.conyeu.google.xsldb;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import vn.conyeu.google.sheet.builder.SheetUtil;
 
 @Getter
+@ToString
+@NoArgsConstructor
 public class Column {
     private String columnId;
     private String columnName;
-    private ColumnType columnType;
+    private ColumnType columnType = ColumnType.STRING;
     private Integer length;
     private Integer decimal;
     private String comment;
@@ -21,6 +25,11 @@ public class Column {
     private String valueDefault;
     private Integer position;
     private String letter;
+
+    public Column(String columnName, ColumnType columnType) {
+        this.columnName = columnName;
+        this.columnType = columnType;
+    }
 
     public Column position(Integer position) {
         this.position = position;

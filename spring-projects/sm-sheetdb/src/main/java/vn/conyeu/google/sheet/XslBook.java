@@ -3,6 +3,7 @@ package vn.conyeu.google.sheet;
 import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
+import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
 import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import vn.conyeu.google.sheet.builder.SheetPropertiesBuilder;
@@ -273,6 +274,12 @@ public final class XslBook {
      * */
     public XslSheet getSheetByName(String name) {
         return sheetNames.get(name);
+    }
+
+    public XslSheet getSheetAt(int index) {
+        Sheet model = Objects.getItemAt(xsl.getSheets(), index);
+        if(model == null) throw new GoogleException("The sheet at %s invalid", index);
+        else return getSheetByName(model.getProperties().getTitle());
     }
 
 

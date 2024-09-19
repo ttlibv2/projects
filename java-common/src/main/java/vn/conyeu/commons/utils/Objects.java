@@ -1671,5 +1671,7 @@ public final class Objects {
                 .collect(Collectors.toMap(arr -> arr[0], arr -> arr.length==2?convertFunc.apply(arr[1]): convertFunc.apply(null)));
     }
 
-
+    public static int hash(Object... values) {
+        return Arrays.hashCode(values);
+    }
 }

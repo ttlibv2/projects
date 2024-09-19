@@ -1,18 +1,18 @@
 package vn.conyeu.google.drives.builder;
 
 import com.google.api.client.http.AbstractInputStreamContent;
-import com.google.api.client.util.DateTime;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.Permission;
-import com.google.api.services.drive.model.User;
 import vn.conyeu.commons.utils.Lists;
 import vn.conyeu.google.drives.GMime;
+import vn.conyeu.google.sheet.builder.ConsumerReturn;
 import vn.conyeu.google.sheet.builder.XmlBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class FileBuilder implements XmlBuilder<File> {
     private final File file = new File();
@@ -282,8 +282,9 @@ public class FileBuilder implements XmlBuilder<File> {
      * The full list of permissions for the file.
      * @param permission permissions or {@code null} for none
      */
-    public FileBuilder permissions(Permission permission) {
-        permissions().add(permission);
+    public FileBuilder permissions(ConsumerReturn<PermissionBuilder> consumer) {
+        PermissionBuilder builder =  consumer.accept(new PermissionBuilder());
+        permissions().add(builder.build());
         return this;
     }
 
@@ -295,7 +296,7 @@ public class FileBuilder implements XmlBuilder<File> {
     /**
      * A collection of arbitrary key-value pairs which are visible to all apps.
      */
-    public FileBuilder properties(String field, String value) {
+    public FileBuilder property(String field, String value) {
         properties().put(field, value);
         return this;
     }

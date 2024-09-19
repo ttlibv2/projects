@@ -157,9 +157,10 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * Appends dimensions to the end of a sheet.
      * The value may be {@code null}.
      */
-    public BatchUpdateBuilder appendDimension(ConsumerReturn<AppendDimensionRequest> consumer) {
-        AppendDimensionRequest object = consumer.accept(new AppendDimensionRequest());
-        initRequest().setAppendDimension(object);
+    public BatchUpdateBuilder appendDimension(Dimension dimension, Integer sheetId, Integer length) {
+        initRequest().setAppendDimension(new AppendDimensionRequest()
+                .setDimension(Utils.enumName(dimension))
+                .setSheetId(sheetId).setLength(length));
         return this;
     }
 

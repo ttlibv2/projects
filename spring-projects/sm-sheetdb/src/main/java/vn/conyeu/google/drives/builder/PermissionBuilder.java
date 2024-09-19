@@ -3,6 +3,7 @@ package vn.conyeu.google.drives.builder;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.drive.model.Permission;
 import vn.conyeu.commons.utils.DateHelper;
+import vn.conyeu.google.core.Utils;
 import vn.conyeu.google.sheet.builder.XmlBuilder;
 import java.time.LocalDateTime;
 
@@ -106,7 +107,7 @@ public class PermissionBuilder implements XmlBuilder<Permission> {
      * @param role role or {@code null} for none
      */
     public PermissionBuilder role(Role role) {
-        permission.setRole(role == null ? null : role.name());
+        permission.setRole(role == null ? null : role.value);
         return this;
     }
 
@@ -119,7 +120,7 @@ public class PermissionBuilder implements XmlBuilder<Permission> {
      * @param type type or {@code null} for none
      */
     public PermissionBuilder type(Access type) {
-        permission.setType(type == null ? null : type.name());
+        permission.setType(type == null ? null : type.name().toLowerCase());
         return this;
     }
 

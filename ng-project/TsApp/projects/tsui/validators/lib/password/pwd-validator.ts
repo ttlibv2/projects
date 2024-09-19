@@ -45,7 +45,8 @@ export class PwdValidator {
      * @param rules The new rules to set.
      */
     updateRules(rules: Set<PwdRule>): void {
-        this.rules.;
+        //this.rules.;
+        throw new Error('updateRules');
     }
 
     /**

@@ -1,5 +1,6 @@
 package vn.conyeu.google.sheet.builder;
 
+import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.GoogleException;
 
 import java.util.List;
@@ -8,8 +9,8 @@ import java.util.function.Consumer;
 
 public class XlRange {
     private final GridBuilder grid;
-    private Integer beginRow, endRow;
-    private Integer beginCol, endCol;
+    private final Integer beginRow, endRow;
+    private final Integer beginCol, endCol;
 
     XlRange(GridBuilder grid, Integer rowIndex, Integer beginCol, Integer endRow, Integer endCol) {
         this.grid = grid;
@@ -34,6 +35,20 @@ public class XlRange {
     }
 
     /**
+     * Returns the beginCol
+     */
+    public Integer getFirstColumn() {
+        return beginCol;
+    }
+
+    /**
+     * Returns the beginRow
+     */
+    public Integer getFirstRow() {
+        return beginRow;
+    }
+
+    /**
      * Sets the value of the range. The value can be numeric, string, boolean or date.
      * If it begins with '=' it is interpreted as a formula.
      *
@@ -53,14 +68,35 @@ public class XlRange {
         return setCellCb(data, CellBuilder::setValue);
     }
 
+    public XlRange setValues(int columnIndex, Object... data) {
+
+        int numCols = endCol - beginCol + 1;
+        int numRows = endRow - beginRow + 1;
+
+        // validate numRows + value.size()
+        validateRowSize(numRows, data.length);
+
+        // validate numCols + columnIndex
+        Asserts.validateIndex(columnIndex, 0, numCols);
+
+        // loop set value
+        for(int r=0;r<data.length;r++) {
+            int cellIndex = columnIndex + beginCol;
+            grid.getRow(r).getCell(cellIndex)
+                    .setValue(data[r]);
+        }
+
+        return this;
+    }
+
     /**
      * Sets the number or date format to the given formatting string.
      * The accepted format patterns are described in the Sheets API documentation.
      *
      * @param numberFormat A number format string.
      */
-    public XlRange setNumberFormats(String numberFormat) {
-        return setCellCb(cell -> cell.numberFormat(numberFormat));
+    public XlRange setNumberFormats(NumberFormatType type, String pattern) {
+        return setCellCb(cell -> cell.numberFormat(type, pattern));
     }
 
     /**
@@ -75,44 +111,40 @@ public class XlRange {
 
     /**
      * Sets the font size, with the size being the point size to use.
-     * @param size 	A font size in point size.
-     * */
+     *
+     * @param size A font size in point size.
+     */
     public XlRange setFontSize(Integer size) {
         return setCellCb(cell -> cell.fontSize(size));
     }
 
     /**
      * Sets a rectangular grid of font sizes (must match dimensions of this range). The sizes are in points.
-     * @param sizes	A font size in point size.
-     * */
-    public XlRange setFontSize(List<List<Integer>> sizes	) {
-        return setCellCb(sizes	, CellBuilder::fontSize);
+     *
+     * @param sizes A font size in point size.
+     */
+    public XlRange setFontSize(List<List<Integer>> sizes) {
+        return setCellCb(sizes, CellBuilder::fontSize);
     }
 
     public XlRange setItalic(boolean italic) {
         return setCellCb(cell -> cell.italic(italic));
     }
 
-    public XlRange setItalic(List<List<Boolean>> italics	) {
+    public XlRange setItalic(List<List<Boolean>> italics) {
         return setCellCb(italics, CellBuilder::italic);
     }
 
-    public XlRange bold(boolean bold) {
+    public XlRange setBold(boolean bold) {
         return setCellCb(cell -> cell.bold(bold));
     }
 
-    public XlRange bolds(List<List<Boolean>> bolds	) {
+    public XlRange setBolds(List<List<Boolean>> bolds) {
         return setCellCb(bolds, CellBuilder::bold);
     }
 
 
-
-
-
-
-
-
-
+    //----------------------------
 
     private <E> XlRange setCellCb(Consumer<CellBuilder> consumer) {
         for (int r = beginRow - 1; r < endRow; r++) {
@@ -159,5 +191,16 @@ public class XlRange {
             String msg = "The number of rows in the data does not match the number of rows in the range. The data has %s but the range has %s";
             throw new GoogleException(msg, size, numRows);
         }
+    }
+
+    public void protect(String editorUser, String description) {
+        grid.getSheet().protectAll(p -> p.users(editorUser).description(description)
+                .range(r -> r.beginRow(beginRow).endRow(endRow+1)
+                        .beginColumn(beginCol).endColumn(endCol+1)));
+    }
+
+    public String findValueAt(int rowIndex) {
+        int rowPos = beginRow + rowIndex;
+        return grid.findRow(rowPos).findCell(beginCol).getValue();
     }
 }

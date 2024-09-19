@@ -94,13 +94,13 @@ public final class GoogleApp {
     }
 
     public DriveApp loginDrive() {
-        Credential credential = getCredential("/drive_credential.json", DriveScopes.all());
+        Credential credential = getCredential("/db_credential.json", DriveScopes.all());
         HttpTransport HTTP_TRANSPORT = credential.getTransport();
         return new DriveApp(drive(credential, HTTP_TRANSPORT));
     }
 
     public XslApp loginSheet() {
-        Credential credential = getCredential("/sheet_credential.json", SheetsScopes.all());
+        Credential credential = getCredential("/db_credential.json", SheetsScopes.all());
         HttpTransport HTTP_TRANSPORT = credential.getTransport();
         return new XslApp(sheets(credential, HTTP_TRANSPORT));
     }

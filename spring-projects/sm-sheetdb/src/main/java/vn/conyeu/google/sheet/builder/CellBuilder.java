@@ -30,6 +30,10 @@ public class CellBuilder implements XmlBuilder<CellData> {
         return cell;
     }
 
+    public String getValue() {
+        return cell.getFormattedValue();
+    }
+
     /**
      * A data validation rule on the cell, if any.
      * <p>

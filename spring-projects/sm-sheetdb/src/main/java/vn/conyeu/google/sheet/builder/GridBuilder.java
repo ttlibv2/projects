@@ -1,11 +1,11 @@
 package vn.conyeu.google.sheet.builder;
 
+import com.google.api.services.sheets.v4.model.DimensionProperties;
 import com.google.api.services.sheets.v4.model.GridData;
 import com.google.api.services.sheets.v4.model.RowData;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
-import vn.conyeu.google.xsldb.ColumnType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,19 +15,23 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
     private final SheetBuilder sheet;
     private final GridData grid;
     private final List<RowBuilder> rows;
-    private List<ColumnBuilder> columns;
+    private List<DimensionProperties> columnMetadata;
+    private List<DimensionProperties> rowMetadata;
 
     public GridBuilder(final SheetBuilder sheet, GridData data) {
         this.sheet = Asserts.notNull(sheet, "SheetBuilder");
         this.grid = Utils.getIfNull(data, GridData::new);
         this.rows = new ArrayList<>();
-        this.columns = new ArrayList<>();
         this.initialize();
     }
 
     public void initialize() {
         List<RowData> rowData = Utils.setIfNull(grid::getRowData, ArrayList::new, grid::setRowData);
         for (RowData row : rowData) addRow(row);
+
+        // columnMetadata
+        this.columnMetadata = Utils.setIfNull(grid::getColumnMetadata, ArrayList::new, grid::setColumnMetadata);
+        this.rowMetadata = Utils.setIfNull(grid::getRowMetadata, ArrayList::new, grid::setRowMetadata);
     }
 
     /**
@@ -40,14 +44,8 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
     public GridData build() {
         grid.getRowData().clear();
 
-        // apply column
-        int cellIndex = 0;
-        for(ColumnBuilder columnBuilder:columns) {
-            for(RowBuilder rowBuilder:rows) {
-                ColumnType ct = columnBuilder.getType();
-                rowBuilder.editCell(cellIndex++, c -> c.applyColumn(ct));
-                grid.getRowData().add(rowBuilder.build());
-            }
+        for(RowBuilder rowBuilder:rows) {
+            grid.getRowData().add(rowBuilder.build());
         }
 
         return grid;
@@ -57,19 +55,18 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
         return new GridBuilder(sheet, grid.clone());
     }
 
+    public int getColumnSize() {
+        return rows.stream().mapToInt(RowBuilder::size).max().orElse(columnMetadata.size());
+    }
+
     public int getRowSize() {
         return rows.size();
     }
 
+
+
     public boolean isRowEmpty() {
         return rows.isEmpty();
-    }
-
-    /**
-     * Returns size cell
-     */
-    public int getColumnSize() {
-        return columns.size();
     }
 
     public GridBuilder clear() {
@@ -78,12 +75,26 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
         return this;
     }
 
+    public DimensionProperties getRowMetadata(int index) {
+        int size = rowMetadata.size();
+        if(index < 0 || index >= size) {
+            int numRows = index < 0 ? 1 : index  - size + 1;
+            addRowMetadatas(size, numRows);
+        }
+        return rowMetadata.get(index);
+    }
+
+    public GridBuilder hideRow(int index) {
+        getRowMetadata(index).setHiddenByUser(true);
+        return this;
+    }
+
     /**
      * Delete row at index
      * @param index the index row to delete
      * */
     public GridBuilder removeRow(int index) {
-        validateIndex(index);
+        validateRowIndex(index);
         rows.remove(index);
         return this;
     }
@@ -137,8 +148,7 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
      */
     public GridBuilder editCells(int rowIndex, ConsumerReturn<CellBuilder> consumer) {
         RowBuilder rowBuilder = getRow(rowIndex, true);
-        rowBuilder.fixCountCell(getColumnSize());
-        rowBuilder.forEach(consumer::accept);
+        rowBuilder.editCells(consumer);
         return this;
     }
 
@@ -148,7 +158,7 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
      * @throws IndexOutOfBoundsException index invalid
      * */
     public RowBuilder findRow(int index) {
-        validateIndex(index);
+        validateRowIndex(index);
         return rows.get(index);
     }
 
@@ -182,12 +192,12 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
 
     private RowBuilder addRow(RowData row) {
         RowBuilder builder = new RowBuilder(this, row);
-        builder.fixCountCell(getColumnSize());
+        //builder.fixCountCell(getColumnSize());
         rows.add(builder);
         return builder;
     }
 
-    private void validateIndex(int index) {
+    private void validateRowIndex(int index) {
         Asserts.validateIndex(index, 0, getRowSize());
     }
 
@@ -195,54 +205,31 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
         return List.copyOf(rows);
     }
 
-    public GridBuilder addColumn(String name, ConsumerReturn<ColumnBuilder> consumer) {
-        return addColumn(c -> consumer.accept(c).name(name));
-    }
-
-    public GridBuilder addColumn(String name, ColumnType type, ConsumerReturn<ColumnBuilder> consumer) {
-        return addColumn(c -> consumer.accept(c).name(name).type(type));
-    }
-
-    public GridBuilder addColumn(ConsumerReturn<ColumnBuilder> consumer) {
-        ColumnBuilder builder = consumer.accept(new ColumnBuilder());
-        builder.index(columns.size());
-
-        ColumnType colType = builder.getType();
-
-        // add column to row
-        for(RowBuilder rowBuilder:rows) {
-            rowBuilder.addCell();
-        }
-
-        columns.add(builder);
-        return this;
-    }
-
     /**
      * Returns the range with the top left cell at the given coordinates.
-     * @param row The row index of the cell to return; row indexing starts with 1.
-     * @param column The column index of the cell to return; column indexing starts with 1.
+     * @param row The row index of the cell to return; row indexing starts with 0.
+     * @param column The column index of the cell to return; column indexing starts with 0.
      * */
     public XlRange getRange(Integer row, Integer column) {
-        return new XlRange(this, row, column, row, column);
+        return getRange(row, column, 1, 1);
     }
 
     /**
      * Returns the range with the top left cell at the given coordinates, and with the given number of rows.
-     * @param row The row index of the cell to return; row indexing starts with 1.
-     * @param column The column index of the cell to return; column indexing starts with 1.
-     * @param numRows 	The number of rows to return.
+     * @param row The row index of the cell to return; row indexing starts with 0.
+     * @param column The column index of the cell to return; column indexing starts with 0.
+     * @param numRows     The number of rows to return.
      * */
     public XlRange getRange(Integer row, Integer column, Integer numRows) {
-        return new XlRange(this, row, column, row + numRows - 1, column);
+        return getRange(row, column, numRows, 1);
     }
 
     /**
      * Returns the range with the top left cell at the given coordinates with the given number of rows and columns.
-     * @param row The row index of the cell to return; row indexing starts with 1.
-     * @param column The column index of the cell to return; column indexing starts with 1.
-     * @param numRows 	The number of rows to return.
-     * @param numColumns 	The number of columns to return.
+     * @param row The row index of the cell to return; row indexing starts with 0.
+     * @param column The column index of the cell to return; column indexing starts with 0.
+     * @param numRows     The number of rows to return.
+     * @param numColumns     The number of columns to return.
      * */
     public XlRange getRange(Integer row, Integer column, Integer numRows, Integer numColumns) {
         return new XlRange(this, row, column, row + numRows - 1, column + numColumns - 1);
@@ -257,4 +244,24 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
         throw new UnsupportedOperationException();
     }
 
+    private void addRowMetadatas(int index, int numRows) {
+        if(index < 0 || index > rowMetadata.size()) {
+            throw new GoogleException("The index < 0 || > %s", rowMetadata.size());
+        }
+
+        for(int r=0;r<numRows;r++) {
+            int pos = index + r;
+            rowMetadata.add(pos, new DimensionProperties());
+        }
+
+    }
+
+    public XlRange getColumn(int columnIndex, int numRows) {
+        return getRange(0, columnIndex, numRows);
+    }
+
+    public XlRange findColumn(int columnIndex) {
+        Asserts.validateIndex(columnIndex, 0, getColumnSize());
+        return getRange(0, columnIndex, getRowSize());
+    }
 }

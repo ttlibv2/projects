@@ -40,6 +40,19 @@ public abstract class BoolExpression extends DslExpression<Boolean> implements P
     }
 
     /**
+     * Create a {@code this && any(predicates)} expression
+     *
+     * <p>Returns an intersection of this and the union of the given predicates</p>
+     *
+     * @param predicates union of predicates
+     * @return this &amp;&amp; all(predicates)
+     */
+    public BoolExpression and(Predicate... predicates) {
+        Expression expr = Utils.allOf(predicates);
+        return new BoolOp(GOps.AND_ALL, mixin, expr);
+    }
+
+    /**
      * Create a {@code this or all(predicates)} expression
      * <p>Return a union of this and the intersection of the given predicates</p>
      *

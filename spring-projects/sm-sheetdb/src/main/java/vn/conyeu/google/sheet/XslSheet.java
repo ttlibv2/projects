@@ -2,8 +2,11 @@ package vn.conyeu.google.sheet;
 
 import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.commons.utils.Asserts;
+import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.google.core.Utils;
 import vn.conyeu.google.sheet.builder.Dimension;
+import vn.conyeu.google.sheet.builder.GridBuilder;
+import vn.conyeu.google.sheet.builder.SheetBuilder;
 import vn.conyeu.google.sheet.builder.SheetPropertiesBuilder;
 
 import java.util.List;
@@ -11,13 +14,13 @@ import java.util.List;
 public class XslSheet {
     private final XslService service;
     private final XslBook workbook;
-    private final Sheet sheet;
+    protected final Sheet sheet;
     private SheetProperties properties;
     private GridProperties gridProperties;
 
-
     //--
     private SheetPropertiesBuilder builder;
+    private SheetBuilder sheetBuilder;
 
     XslSheet(XslService service, XslBook workbook, Sheet sheet) {
         this.service = Asserts.notNull(service);
@@ -26,6 +29,13 @@ public class XslSheet {
         this.properties = Utils.getIfNull(sheet.getProperties(), SheetProperties::new);
         this.gridProperties = Utils.setIfNull(properties::getGridProperties,
                 GridProperties::new, properties::setGridProperties);
+    }
+
+    /**
+     * Returns the sheet
+     */
+    public Sheet getModel() {
+        return sheet;
     }
 
     /**
@@ -127,6 +137,23 @@ public class XslSheet {
         return properties.getSheetId();
     }
 
+    private SheetBuilder getSheetBuilder() {
+        if (sheetBuilder == null) sheetBuilder = new SheetBuilder(sheet);
+        return sheetBuilder;
+    }
+
+    public GridBuilder getDataBuilder() {
+        return getSheetBuilder().getGrid(0);
+    }
+
+    public GridData getData() {
+        return Objects.getItemAt(sheet.getData(), 0);
+    }
+
+    public String getUrl() {
+        return workbook.getUrl() + "?gid=" + getSheetId();
+    }
+
     /**
      * The type of sheet. Defaults to GRID. This field cannot be changed once set.
      *
@@ -163,6 +190,10 @@ public class XslSheet {
         return properties.getTitle();
     }
 
+    public final String getXslId() {
+        return workbook.getId();
+    }
+
     /**
      * True if the sheet is hidden in the UI, false if it's visible.
      *
@@ -181,7 +212,8 @@ public class XslSheet {
      */
     public XslSheet setIndex(Integer index) {
         properties.setIndex(index);
-        getBuilder().index(index); return this;
+        getBuilder().index(index);
+        return this;
     }
 
     /**
@@ -191,7 +223,8 @@ public class XslSheet {
      */
     public XslSheet setRightToLeft(Boolean rightToLeft) {
         properties.setRightToLeft(rightToLeft);
-        getBuilder().rightToLeft(rightToLeft); return this;
+        getBuilder().rightToLeft(rightToLeft);
+        return this;
     }
 
     /**
@@ -201,7 +234,8 @@ public class XslSheet {
      */
     public XslSheet setTabColor(Color tabColor) {
         properties.setTabColor(tabColor);
-        getBuilder().tabColor(tabColor); return this;
+        getBuilder().tabColor(tabColor);
+        return this;
     }
 
     /**
@@ -211,7 +245,8 @@ public class XslSheet {
      */
     public XslSheet setTabColorStyle(ColorStyle tabColorStyle) {
         properties.setTabColorStyle(tabColorStyle);
-        getBuilder().tabColorStyle(tabColorStyle); return this;
+        getBuilder().tabColorStyle(tabColorStyle);
+        return this;
     }
 
     /**
@@ -221,7 +256,8 @@ public class XslSheet {
      */
     public XslSheet setTitle(String title) {
         properties.setTitle(title);
-        getBuilder().title(title); return this;
+        getBuilder().title(title);
+        return this;
     }
 
     public void remove() {
@@ -239,89 +275,100 @@ public class XslSheet {
 
     /**
      * Hides a single column at the given index. Use 0-index for this method.
+     *
      * @param columnIndex The starting index of the columns to hide.
-     * */
+     */
     public void hideColumn(int columnIndex) {
-       service.hideColumn(getBookId(),getSheetId(), columnIndex, 1);
+        service.hideColumn(getBookId(), getSheetId(), columnIndex, 1);
     }
 
     /**
      * Hides one or more consecutive columns starting at the given index. Use 0-index for this method.
+     *
      * @param columnIndex The starting index of the columns to hide.
-     * @param numColumns The number of columns to hide.
-     * */
+     * @param numColumns  The number of columns to hide.
+     */
     public void hideColumn(int columnIndex, int numColumns) {
-       service.hideColumn(getBookId(),getSheetId(), columnIndex, numColumns);
+        service.hideColumn(getBookId(), getSheetId(), columnIndex, numColumns);
     }
 
     /**
      * Hides the row at the given index.
-     * @param rowIndex 	The index of the row to hide.
-     * */
+     *
+     * @param rowIndex The index of the row to hide.
+     */
     public void hideRow(int rowIndex) {
         hideRows(rowIndex, 1);
     }
 
     /**
      * Hides one or more consecutive rows starting at the given index.
-     * @param rowIndex 	The index of the row to hide.
-     * @param numRows The number of rows to hide.
-     * */
+     *
+     * @param rowIndex The index of the row to hide.
+     * @param numRows  The number of rows to hide.
+     */
     public void hideRows(int rowIndex, int numRows) {
-       service.hideRow(getBookId(),getSheetId(), rowIndex, numRows);
+        service.hideRow(getBookId(), getSheetId(), rowIndex, numRows);
     }
 
     /**
      * Unhides the row at the given index.
-     * @param rowIndex 	The index of the row to unhide.
-     * */
+     *
+     * @param rowIndex The index of the row to unhide.
+     */
     public void showRow(int rowIndex) {
         showRows(rowIndex, 1);
     }
 
     /**
      * Unhides one or more consecutive rows starting at the given index.
-     * @param rowIndex 	The index of the row to unhide.
-     * @param numRows The number of rows to unhide.
-     * */
+     *
+     * @param rowIndex The index of the row to unhide.
+     * @param numRows  The number of rows to unhide.
+     */
     public void showRows(int rowIndex, int numRows) {
-       service.showRow(getBookId(),getSheetId(), rowIndex, numRows);
+        service.showRow(getBookId(), getSheetId(), rowIndex, numRows);
     }
 
     /**
      * Unhides a single column at the given index. Use 0-index for this method.
+     *
      * @param columnIndex The starting index of the columns to unhide.
-     * */
+     */
     public void showColumn(int columnIndex) {
         showColumns(columnIndex, 1);
     }
 
     /**
      * Unhides one or more consecutive columns starting at the given index. Use 0-index for this method.
+     *
      * @param columnIndex The starting index of the columns to unhide.
-     * @param numColumns The number of columns to unhide.
-     * */
+     * @param numColumns  The number of columns to unhide.
+     */
     public void showColumns(int columnIndex, int numColumns) {
-       service.showColumn(getBookId(),getSheetId(), columnIndex, numColumns);
+        service.showColumn(getBookId(), getSheetId(), columnIndex, numColumns);
     }
 
     /**
      * Hides this sheet. Has no effect if the sheet is already hidden.
      * If this method is called on the only visible sheet, it throws an exception.
-     * */
+     */
     public void hideSheet() {
         setHidden(true).save();
     }
 
-    /**Makes the sheet visible. Has no effect if the sheet is already visible.*/
+    /**
+     * Makes the sheet visible. Has no effect if the sheet is already visible.
+     */
     public void showSheet() {
         setHidden(false).save();
     }
 
     /**
      * Inserts a blank column in a sheet at the specified location.
-     * @param columnIndex 	The index indicating where to insert a column.
-     * */
+     *
+     * @param columnIndex The index indicating where to insert a column.
+     */
     public void insertColumn(int columnIndex) {
         insertColumns(columnIndex, 1);
 
@@ -329,144 +376,187 @@ public class XslSheet {
 
     /**
      * Inserts a blank column in a sheet at the specified location.
-     * @param columnIndex 	The index indicating where to insert a column.
-     * @param numColumns 	The number of columns to insert.
-     * */
+     *
+     * @param columnIndex The index indicating where to insert a column.
+     * @param numColumns  The number of columns to insert.
+     */
     public void insertColumns(int columnIndex, int numColumns) {
-       service.insertColumns(getBookId(),getSheetId(), columnIndex, numColumns);
+        service.insertColumns(getBookId(), getSheetId(), columnIndex, numColumns);
     }
 
     /**
      * Inserts a column after the given column position.
-     * @param afterPosition 	The column after which the new column should be added.
-     * */
+     *
+     * @param afterPosition The column after which the new column should be added.
+     */
     public void insertColumnAfter(int afterPosition) {
         insertColumnAfter(afterPosition, 1);
     }
 
     /**
      * Inserts a given number of columns after the given column position.
-     * @param afterPosition 	The column after which the new column should be added.
-     * @param howMany 	The number of columns to insert.
-     * */
+     *
+     * @param afterPosition The column after which the new column should be added.
+     * @param howMany       The number of columns to insert.
+     */
     public void insertColumnAfter(int afterPosition, int howMany) {
-       service.insertColumns(getBookId(),getSheetId(), afterPosition+1, howMany);
+        service.insertColumns(getBookId(), getSheetId(), afterPosition + 1, howMany);
     }
 
     /**
      * Inserts a blank row in a sheet at the specified location.
-     * @param rowIndex 	The index indicating where to insert a row.
-     * */
+     *
+     * @param rowIndex The index indicating where to insert a row.
+     */
     public void insertRow(int rowIndex) {
         insertRows(rowIndex, 1);
     }
 
     /**
      * Inserts a blank row in a sheet at the specified location.
-     * @param rowIndex 	The index indicating where to insert a row.
-     * @param numRows 	The number of rows to insert.
-     * */
+     *
+     * @param rowIndex The index indicating where to insert a row.
+     * @param numRows  The number of rows to insert.
+     */
     public void insertRows(int rowIndex, int numRows) {
-       service.insertRows(getBookId(),getSheetId(), rowIndex, numRows);
+        service.insertRows(getBookId(), getSheetId(), rowIndex, numRows);
     }
 
     /**
      * Inserts a row after the given row position.
-     * @param afterPosition 	The row after which the new row should be added.
-     * */
+     *
+     * @param afterPosition The row after which the new row should be added.
+     */
     public void insertRowsAfter(int afterPosition) {
         insertRowsAfter(afterPosition, 1);
     }
 
     /**
      * Inserts a given number of columns after the given row position.
-     * @param afterPosition 	The row after which the new row should be added.
-     * @param howMany 	The number of rows to insert.
-     * */
+     *
+     * @param afterPosition The row after which the new row should be added.
+     * @param howMany       The number of rows to insert.
+     */
     public void insertRowsAfter(int afterPosition, int howMany) {
-       service.insertRows(getBookId(),getSheetId(), afterPosition+1, howMany);
+        service.insertRows(getBookId(), getSheetId(), afterPosition + 1, howMany);
     }
 
     /**
      * Moves the columns selected by the given range to the position indicated by the destinationIndex.
-     * @param columnIndex the column index
+     *
+     * @param beginCol      the column index
      * @param destinationIndex The index that the columns should be moved to.
      */
-    public void moveColumns(int columnIndex, int endColumn, int destinationIndex) {
-       service.moveDimension(getBookId(),getSheetId(), Dimension.COLUMNS, columnIndex, endColumn, destinationIndex);
+    public void moveColumn(int beginCol, int destinationIndex) {
+        moveColumns(beginCol, beginCol+1, destinationIndex);
+    }
+
+    /**
+     * Moves the columns selected by the given range to the position indicated by the destinationIndex.
+     *
+     * @param beginCol      the column index
+     * @param destinationIndex The index that the columns should be moved to.
+     */
+    public void moveColumns(int beginCol, int endColumn, int destinationIndex) {
+        service.moveDimension(getBookId(), getSheetId(), Dimension.COLUMNS, beginCol, endColumn, destinationIndex);
     }
 
     /**
      * Moves the rows selected by the given range to the position indicated by the destinationIndex.
-     * @param rowIndex the row index
+     *
+     * @param beginRow         the row index
      * @param destinationIndex The index that the columns should be moved to.
      */
-    public void moveRows(int rowIndex, int endRow, int destinationIndex) {
-       service.moveDimension(getBookId(),getSheetId(), Dimension.ROWS, rowIndex, endRow, destinationIndex);
+    public void moveRow(int beginRow, int destinationIndex) {
+        moveRows(beginRow, beginRow + 1, destinationIndex);
+    }
+
+    /**
+     * Moves the rows selected by the given range to the position indicated by the destinationIndex.
+     *
+     * @param beginRow         the row index
+     * @param destinationIndex The index that the columns should be moved to.
+     */
+    public void moveRows(int beginRow, int endRow, int destinationIndex) {
+        service.moveDimension(getBookId(), getSheetId(), Dimension.ROWS, beginRow, endRow, destinationIndex);
     }
 
     /**
      * Deletes the row at the given row position.
+     *
      * @param rowPosition The position of the row, starting at 0 for the first row.
-     * */
+     */
     public void deleteRow(int rowPosition) {
         deleteRows(rowPosition, 1);
     }
 
     /**
      * Deletes a number of rows starting at the given row position.
-     * @param rowPosition 	The position of the first row to delete.
-     * @param howMany 	The number of rows to delete.
-     * */
+     *
+     * @param rowPosition The position of the first row to delete.
+     * @param howMany     The number of rows to delete.
+     */
     public void deleteRows(int rowPosition, int howMany) {
-       service.deleteDimension(getBookId(),getSheetId(), Dimension.ROWS, rowPosition, rowPosition+howMany);
+        service.deleteDimension(getBookId(), getSheetId(), Dimension.ROWS, rowPosition, rowPosition + howMany);
     }
 
     /**
      * Deletes the column at the given column position.
+     *
      * @param columnPosition The position of the column, starting at 0 for the first column.
-     * */
+     */
     public void deleteColumn(int columnPosition) {
         deleteRows(columnPosition, 1);
     }
 
     /**
      * Deletes a number of columns starting at the given column position.
-     * @param columnPosition 	The position of the first column to delete.
-     * @param howMany 	The number of columns to delete.
-     * */
+     *
+     * @param columnPosition The position of the first column to delete.
+     * @param howMany        The number of columns to delete.
+     */
     public void deleteColumns(int columnPosition, int howMany) {
-       service.deleteDimension(getBookId(),getSheetId(), Dimension.COLUMNS, columnPosition, columnPosition+howMany);
+        service.deleteDimension(getBookId(), getSheetId(), Dimension.COLUMNS, columnPosition, columnPosition + howMany);
     }
+
+    public void changeColumn(Integer colIndex) {
+        service.updateCells(getXslId(), c -> c
+                .beginRow(0).endRow(getRowCount())
+                .beginCol(colIndex).endColumn(colIndex));
+    }
+
+
+
+
 
     /**
      * Clears the sheet of text formatting.
      * Formatting refers to how data is formatted as allowed by choices under the "Format" menu (ex: bold, italics, conditional formatting)
-     * */
+     */
     public void clearTextFormat(int beginRow, int beginCol) {
-       service.clearTextFormat(getBookId(),getSheetId(), beginRow, beginCol);
+        service.clearTextFormat(getBookId(), getSheetId(), beginRow, beginCol);
     }
 
     /**
      * Clears the sheet of formatting, while preserving contents.
      * Formatting refers to how data is formatted as allowed by choices under the "Format" menu (ex: bold, italics, conditional formatting) and not width or height of cells.
-     * */
+     */
     public void clearFormat(int beginRow, int beginCol) {
-       service.clearFormat(getBookId(),getSheetId(), beginRow, beginCol);
+        service.clearFormat(getBookId(), getSheetId(), beginRow, beginCol);
     }
 
     /**
      * Clears the sheet of contents, while preserving formatting information.
-     * */
+     */
     public void clearContent(int beginRow, int beginCol) {
-       service.clearContent(getBookId(),getSheetId(), beginRow, beginCol);
+        service.clearContent(getBookId(), getSheetId(), beginRow, beginCol);
     }
 
     /**
      * Clears the sheet of content and formatting information.
-     * */
+     */
     public void clearAll(int beginRow, int beginCol) {
-       service.clearAll(getBookId(),getSheetId(), beginRow, beginCol);
+        service.clearAll(getBookId(), getSheetId(), beginRow, beginCol);
     }
 
     public void clearAll() {
@@ -475,11 +565,12 @@ public class XslSheet {
 
     /**
      * Copies a single sheet from a spreadsheet to another spreadsheet.
+     *
      * @param destinationSpreadsheetId The ID of the spreadsheet to copy the sheet to.
      * @return the properties of the newly created sheet.
-     * */
+     */
     public XslSheet copyTo(String destinationSpreadsheetId) {
-        SheetProperties sp =service.copyTo(getBookId(), getSheetId(), destinationSpreadsheetId);
+        SheetProperties sp = service.copyTo(getBookId(), getSheetId(), destinationSpreadsheetId);
         Spreadsheet ss = new Spreadsheet().setSpreadsheetId(destinationSpreadsheetId);
         return new XslBook(service, ss).newSheet(new Sheet().setProperties(sp));
     }
@@ -487,25 +578,35 @@ public class XslSheet {
     /**
      * Appends a row to the bottom of the current data region in the sheet.
      * If a cell's content begins with =, it's interpreted as a formula.
-     * @param data 	An array of values to insert after the last row in the sheet.
-     * */
-    public void appendRow(Object[] data) { }
+     *
+     * @param data An array of values to insert after the last row in the sheet.
+     */
+    public void appendRow(List<Object> data) {
+        service.appendValueRow(getXslId(), getTitle(), data);
+    }
+
+    /**
+     * Appends a row to the bottom of the current data region in the sheet.
+     * If a cell's content begins with =, it's interpreted as a formula.
+     *
+     * @param data An array of values to insert after the last row in the sheet.
+     */
+    public void appendRows(List<List<Object>> data) {
+        service.appendValueRows(getXslId(), getTitle(), data);
+    }
 
     /**
      * Returns the rectangular grid of values for this range starting at the given coordinates.
      * A -1 value given as the row or column position is equivalent to getting the very last row or column that has data in the sheet.
-     * @param startRow	The position of the starting row.
-     * @param startColumn	The position of the starting column.
-     * @param numRows	The number of rows to return values for.
-     * @param numColumns	The number of columns to return values for.
-     * */
+     *
+     * @param startRow    The position of the starting row.
+     * @param startColumn The position of the starting column.
+     * @param numRows     The number of rows to return values for.
+     * @param numColumns  The number of columns to return values for.
+     */
     public List<Object[]> getSheetValues(int startRow, int startColumn, int numRows, int numColumns) {
-        return null;
+        throw new UnsupportedOperationException();
     }
-
-
-
-
 
     private SheetPropertiesBuilder getBuilder() {
         if (builder == null) builder = new SheetPropertiesBuilder(null);

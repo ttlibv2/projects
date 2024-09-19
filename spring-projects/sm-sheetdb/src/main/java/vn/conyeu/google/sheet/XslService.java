@@ -259,8 +259,51 @@ public class XslService {
         }
     }
 
-    public ValueRange append(String fileId,ConsumerReturn<ValueAppendBuilder> consumer) {
-        try {
+    /**
+     * @param fileId The ID of the spreadsheet to update.
+     * @param range The A1 notation of a range to search for a logical table of data. Values are appended after the last row of the table.
+     * @param dataRow The request body contains an instance of ValueRange.
+     * */
+    public ValueRange appendValueRow(String fileId, String range, List<Object> dataRow) {
+        return appendValueRows(fileId, range, List.of(dataRow), new AppendOption());
+    }
+
+    /**
+     * @param fileId The ID of the spreadsheet to update.
+     * @param range The A1 notation of a range to search for a logical table of data. Values are appended after the last row of the table.
+     * @param dataRows The request body contains an instance of ValueRange.
+     * */
+    public ValueRange appendValueRows(String fileId, String range, List<List<Object>> dataRows) {
+        return appendValueRows(fileId, range, dataRows, new AppendOption());
+    }
+
+    /**
+     * @param fileId The ID of the spreadsheet to update.
+     * @param range The A1 notation of a range to search for a logical table of data. Values are appended after the last row of the table.
+     * @param rowValue The request body contains an instance of ValueRange.
+     * @param option The option Query parameters
+     * */
+    public ValueRange appendValueRows(String fileId, String range, List<List<Object>> rowValue, AppendOption option) {
+        return appendValue(fileId, v -> option.apply(v).range(A1RangeBuilder.valueOf(range))
+                .valueRange(r -> r.majorDimension(Dimension.ROWS).addValues(rowValue))
+        );
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private ValueRange appendValue(String fileId, ConsumerReturn<ValueAppendBuilder> consumer) {
+        return simple(() -> {
             ValueAppendBuilder b = consumer.accept(new ValueAppendBuilder());
             return values.append(fileId, b.getA1Range(), b.getValueRange())
                     .setIncludeValuesInResponse(b.isIncludeValuesInResponse())
@@ -268,11 +311,9 @@ public class XslService {
                     .setResponseDateTimeRenderOption(b.getResponseDateTimeRenderOption().name())
                     .setResponseValueRenderOption(b.getResponseValueRenderOption().name())
                     .setInsertDataOption(b.getInsertDataOption().name())
-                    .setFields(b.getFields()).execute().getUpdates().getUpdatedData();
-        }//
-        catch (IOException exp) {
-            throw new GoogleException(exp);
-        }
+                    .setFields(b.getFields());
+        }).getUpdates().getUpdatedData();
+
     }
 
     protected XslUpdateResponse batchUpdate(String fileId,ConsumerReturn<BatchUpdateBuilder> consumer) {
@@ -282,5 +323,14 @@ public class XslService {
         } catch (IOException exp) {
             throw new GoogleException(exp);
         }
+    }
+
+
+    /**
+     * Updates many cells at once.
+     * The value may be {@code null}.
+     */
+    public void updateCells(String fileId, ConsumerReturn<UpdateCellsBuilder> consumer) {
+        batchUpdate(fileId, b -> b.updateCells(consumer));
     }
 }

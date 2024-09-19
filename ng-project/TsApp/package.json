@@ -4,7 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve ticketapp --hmr true --port 4200",
+    "start:tskpi": "ng serve tskpi --hmr true --port 4400",
+
     "build": "ng build ticketapp --base-href /tsweb/ --ssr false --prerender false --source-map true",
+    "build:tskpi": "ng build tskpi --base-href / --ssr false --prerender false --source-map false",
+
     "watch": "ng build --watch --configuration development",
     "build:ui": "ng build ts-ui --watch",
     "build:scss": "gulp theme"

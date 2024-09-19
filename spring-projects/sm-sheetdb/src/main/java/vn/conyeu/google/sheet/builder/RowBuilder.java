@@ -5,7 +5,6 @@ import com.google.api.services.sheets.v4.model.RowData;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
-import vn.conyeu.google.xsldb.ColumnType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -189,13 +188,20 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
     public RowBuilder editCells(ConsumerReturn<CellBuilder> consumer) {
 
         // apply for cell exists
-        for(CellBuilder cell:cells) consumer.accept(cell);
+        loopCells(consumer::accept);
 
         // save to use after
-        if(this.editCellConsumer == null) this.editCellConsumer = consumer;
+        if (this.editCellConsumer == null) this.editCellConsumer = consumer;
         else this.editCellConsumer = this.editCellConsumer.andThen(consumer);
 
         return this;
+    }
+
+    private void loopCells(Consumer<CellBuilder> consumer) {
+        int cellSize = cells.isEmpty() ? grid.getSheet().getColumnCount() : cells.size();
+        for (int c = 0; c < cellSize; c++) {
+            consumer.accept(getCell(c));
+        }
     }
 
     /**
@@ -224,7 +230,15 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
 
     private CellBuilder createCell(int index) {
         CellBuilder builder = new CellBuilder(null);
-        if(editCellConsumer != null) editCellConsumer.accept(builder);
+
+        // apply default format
+        ConsumerReturn<CellFormatBuilder> formatConsumer = grid.getSheet().getDefaultFormat();
+        if(formatConsumer != null) builder.format(formatConsumer);
+
+        // apply custom cell
+        if (editCellConsumer != null) editCellConsumer.accept(builder);
+
+        // add & return
         cells.add(index, builder);
         return builder;
     }
@@ -238,7 +252,7 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
 
     protected void fixCountCell(int countCell) {
         int cells = size();
-        if(countCell > cells) {
+        if (countCell > cells) {
             int howMany = countCell - cells;
             addCells(cells, howMany);
         }

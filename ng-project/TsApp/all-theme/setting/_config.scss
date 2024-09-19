@@ -42,7 +42,7 @@ $errorColor: #f87171 !default;
 
 
 //scale
-$scaleSM: 1 !default; //0.875 !default;
+$scaleSM: 0.675 !default; //0.875 !default;
 $scaleLG: 1.25 !default;
 
 //focus
@@ -64,7 +64,7 @@ $actionIconHoverColor: clr.$shade600 !default;
 $actionIconBorderRadius: 50% !default;
 
 //input field (e.g. inputtext, spinner, inputmask)
-$inputPadding: 0.15rem 0.5rem !default;
+$inputPadding: 0.4rem 0.5rem !default;
 $inputTextFontSize: 1rem !default;
 $inputShadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05);
 
@@ -122,7 +122,7 @@ $passwordMediumBg: #f59e0b !default;
 $passwordStrongBg: #22c55e !default;
 
 //button
-$buttonPadding: 0.15rem 0.5rem;//0.5rem 1rem !default;
+$buttonPadding: 0.5rem 1rem;//0.5rem 1rem !default;
 $buttonIconOnlyWidth: 2.5rem !default;
 $buttonIconOnlyPadding: 0.5rem 0 !default;
 $buttonBg: $secondaryColor !default;

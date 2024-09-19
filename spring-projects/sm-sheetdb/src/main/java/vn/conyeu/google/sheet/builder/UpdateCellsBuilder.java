@@ -12,9 +12,9 @@ import java.util.function.Consumer;
 
 public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
     private final UpdateCellsRequest request = new UpdateCellsRequest();
-    private GridRange gridRange = new GridRange();
+    private final GridRange gridRange = new GridRange();
     private final Set<String> fields = new HashSet<>();
-    private List<RowData> rows = new ArrayList<>();
+    private final List<RowData> rows = new ArrayList<>();
 
     @Override
     public UpdateCellsRequest build() {
@@ -43,25 +43,25 @@ public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
         return this;
     }
 
-    /**
-     * The range to write data to.
-     * <p>
-     * If the data in rows does not cover the entire requested range, the fields matching those set in
-     * fields will be cleared.
-     *
-     * @param range range or {@code null} for none
-     */
-    public UpdateCellsBuilder range(GridRange range) {
-        gridRange = range == null ? new GridRange(): range;
-        return this;
-    }
+//    /**
+//     * The range to write data to.
+//     * <p>
+//     * If the data in rows does not cover the entire requested range, the fields matching those set in
+//     * fields will be cleared.
+//     *
+//     * @param range range or {@code null} for none
+//     */
+//    public UpdateCellsBuilder range(GridRange range) {
+//        gridRange = range == null ? new GridRange(): range;
+//        return this;
+//    }
 
     /**
      * The end column (exclusive) of the range, or not set if unbounded.
      *
      * @param endColumnIndex endColumnIndex or {@code null} for none
      */
-    public UpdateCellsBuilder endColumnIndex(Integer endColumnIndex) {
+    public UpdateCellsBuilder endColumn(Integer endColumnIndex) {
         gridRange.setEndColumnIndex(endColumnIndex);
         return this;
     }
@@ -71,7 +71,7 @@ public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
      *
      * @param endRowIndex endRowIndex or {@code null} for none
      */
-    public UpdateCellsBuilder endRowIndex(Integer endRowIndex) {
+    public UpdateCellsBuilder endRow(Integer endRowIndex) {
         gridRange.setEndRowIndex(endRowIndex);
         return this;
     }
@@ -91,7 +91,7 @@ public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
      *
      * @param startColumnIndex startColumnIndex or {@code null} for none
      */
-    public UpdateCellsBuilder startColumnIndex(Integer startColumnIndex) {
+    public UpdateCellsBuilder beginCol(Integer startColumnIndex) {
         gridRange.setStartColumnIndex(startColumnIndex);
         return this;
     }
@@ -101,7 +101,7 @@ public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
      *
      * @param startRowIndex startRowIndex or {@code null} for none
      */
-    public UpdateCellsBuilder startRowIndex(Integer startRowIndex) {
+    public UpdateCellsBuilder beginRow(Integer startRowIndex) {
         gridRange.setStartRowIndex(startRowIndex);
         return this;
     }

@@ -153,21 +153,21 @@ $prefix: ".p-button";
   }
 
   &-sm {
-    @include util.scaledFontSize(cfg.$fontSize, cfg.$scaleSM);
+    //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleSM);
     @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleSM);
 
-    .p-button-icon {
-      @include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleSM);
-    }
+   // .p-button-icon {
+      //@include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleSM);
+  //  }
   }
 
   &-lg {
-    @include util.scaledFontSize(cfg.$fontSize, cfg.$scaleLG);
+    //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleLG);
     @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleLG);
 
-    .p-button-icon {
-      @include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleLG);
-    }
+    //.p-button-icon {
+     // @include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleLG);
+   // }
   }
 
   &-loading-label-only {

@@ -6,12 +6,12 @@ import vn.conyeu.google.core.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class SheetBuilder implements XmlBuilder<Sheet> {
     private final Sheet sheet;
     private final List<GridBuilder> grids;
     private ConsumerReturn<CellFormatBuilder> defaultFormat;
+    private GridBuilder grid;
 
     public SheetBuilder(Sheet model) {
         sheet = Utils.getIfNull(model, Sheet::new);
@@ -27,6 +27,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
             grids.add(new GridBuilder(this, data));
         }
 
+        grid = getGrid(0);
     }
 
     @Override
@@ -82,6 +83,10 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
      */
     public Integer getRowCount() {
         return getGridProp().getRowCount();
+    }
+
+    public Integer getFrozenRow() {
+        return getGridProp().getFrozenRowCount();
     }
 
     /**
@@ -278,6 +283,14 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
     }
 
     /*The protected ranges in this sheet.*/
+    protected SheetBuilder protectAll(ConsumerReturn<ProtectedRangeBuilder> consumer) {
+        ProtectedRangeBuilder builder = consumer.accept(new ProtectedRangeBuilder(null));
+        builder.range(r -> r.sheetId(getSheetId()));
+        initProtectedRanges().add(builder.build());
+        return this;
+    }
+
+    /*The protected ranges in this sheet.*/
     protected SheetBuilder protect(ConsumerReturn<ProtectedPermission> consumer) {
         ProtectedRangeBuilder builder = new ProtectedRangeBuilder(null)
                 .range(r -> r.sheetId(getSheetId()));
@@ -386,6 +399,7 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
 
     private Integer getColumnSize() {
         return grids.stream().mapToInt(GridBuilder::getColumnSize).max().orElse(0);
+//        throw new UnsupportedOperationException();
     }
 
     private void addGrids(int index, int howMany) {
@@ -401,4 +415,10 @@ public class SheetBuilder implements XmlBuilder<Sheet> {
         return this;
     }
 
+    /**
+     * Returns the defaultFormat
+     */
+    public ConsumerReturn<CellFormatBuilder> getDefaultFormat() {
+        return defaultFormat;
+    }
 }

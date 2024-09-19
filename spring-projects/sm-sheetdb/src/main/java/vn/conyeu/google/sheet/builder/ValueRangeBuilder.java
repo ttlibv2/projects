@@ -30,7 +30,7 @@ public class ValueRangeBuilder implements XmlBuilder<ValueRange> {
      * @param majorDimension majorDimension or {@code null} for none
      */
     public ValueRangeBuilder majorDimension(Dimension majorDimension) {
-        valueRange.setMajorDimension(majorDimension.name());
+        valueRange.setMajorDimension(Utils.enumName(majorDimension));
         return this;
     }
 
@@ -66,4 +66,8 @@ public class ValueRangeBuilder implements XmlBuilder<ValueRange> {
     }
 
 
+    public ValueRangeBuilder addValues(List<List<Object>> rowValue) {
+        rowValue.forEach(this::addValue);
+        return this;
+    }
 }

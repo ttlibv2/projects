@@ -99,7 +99,7 @@ public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
      * @param consumer range or {@code null} for none
      */
     public ProtectedRangeBuilder range(ConsumerReturn<GridRangeBuilder> consumer) {
-        GridRangeBuilder builder = consumer.accept(new GridRangeBuilder(null));
+        GridRangeBuilder builder = consumer.accept(new GridRangeBuilder(range.getRange()));
         range.setRange(builder.build());
         return this;
     }

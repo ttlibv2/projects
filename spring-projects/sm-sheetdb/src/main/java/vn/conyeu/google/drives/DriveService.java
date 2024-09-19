@@ -71,7 +71,7 @@ public class DriveService {
 
     public File update(String sourceId, ConsumerReturn<FileBuilder> consumer) {
         FileBuilder builder = consumer.accept(new FileBuilder());
-        if(builder.getFields() == null)builder.fields(DEFAULT_FIELDS);
+        //if(builder.getFields() == null)builder.fields(DEFAULT_FIELDS);
         return simple(() -> files.update(sourceId, builder.build())
                 .setRemoveParents(builder.getRemoveParents())
                 .setAddParents(builder.getAddParents()));

@@ -2,9 +2,14 @@ package vn.conyeu.google.core;
 
 import com.google.api.services.sheets.v4.model.Color;
 import vn.conyeu.google.sheet.builder.ConsumerReturn;
+
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class Utils {
 
@@ -82,5 +87,10 @@ public final class Utils {
 
     public static String enumName(Enum<?> object) {
         return object == null ? null : object.name();
+    }
+
+    public static String join(Object...objects) {
+        List<String> strings = Stream.of(objects).filter(Objects::nonNull).map(Object::toString).collect(Collectors.toList());
+        return strings.isEmpty() ? null : String.join("::", strings);
     }
 }

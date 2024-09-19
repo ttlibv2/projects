@@ -1,6 +1,6 @@
 package vn.conyeu.google.sheet.builder;
 
-import vn.conyeu.commons.utils.Objects;
+import static vn.conyeu.google.sheet.builder.SheetUtil.*;
 
 public final class A1RangeBuilder implements XmlBuilder<String> {
     private String sheetName;
@@ -8,11 +8,44 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
     private int firstCol;
     private int lastRow;
     private int lastCol;
-    private boolean useAbsolute;
+    private boolean useAbs;
 
+    public static A1RangeBuilder sheetName(String name) {
+        return new A1RangeBuilder().name(name);
+    }
 
-    public static A1RangeBuilder name(String name) {
-        return new A1RangeBuilder().sheetName(name);
+    /**
+     * Creates a CellRangeAddress from a cell range reference string.
+     *
+     * @param ref usually a standard area ref (e.g. "B1:D8").  May be a single
+     *            cell ref (e.g. "B5") in which case the result is a 1 x 1 cell
+     *            range. May also be a whole row range (e.g. "3:5"), or a whole
+     *            column range (e.g. "C:F")
+     */
+    public static A1RangeBuilder valueOf(String ref) {
+        int sep = ref.indexOf(':');
+        CellReference a;
+        CellReference b;
+        if (sep == -1) {
+            a = new CellReference(ref);
+            b = a;
+        } else {
+            a = new CellReference(ref.substring(0, sep));
+            b = new CellReference(ref.substring(sep + 1));
+        }
+
+        return A1RangeBuilder.sheetName(a.getSheetName())
+                .firstRow(a.getRow()).firstCol(a.getCol())
+                .lastRow(b.getRow()).lastCol(b.getCol());
+
+    }
+
+    @Override
+    public A1RangeBuilder copy() {
+        return A1RangeBuilder.sheetName(sheetName)
+                .firstRow(firstRow).firstCol(firstCol)
+                .lastRow(lastRow).lastCol(lastCol)
+                .useAbsolute(useAbs);
     }
 
     /**
@@ -20,7 +53,7 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
      *
      * @param sheetName the value
      */
-    public A1RangeBuilder sheetName(String sheetName) {
+    public A1RangeBuilder name(String sheetName) {
         this.sheetName = sheetName;
         return this;
     }
@@ -66,37 +99,66 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
     }
 
     /**
-     * Set the useAbsolute
+     * Set the useAbs
      *
-     * @param useAbsolute the value
+     * @param useAbs the value
      */
-    public A1RangeBuilder useAbsolute(boolean useAbsolute) {
-        this.useAbsolute = useAbsolute;
+    public A1RangeBuilder useAbsolute(boolean useAbs) {
+        this.useAbs = useAbs;
         return this;
     }
 
-    @Override
-    public String build() {
-        StringBuilder sb = new StringBuilder();
+    /**
+     * @return the text format of this range using specified sheet name.
+     */
+    public String formatAsString() {
 
-        if (Objects.notBlank(sheetName)) {
-            sb.append(sheetName).append("!");
+        if (lastRow < firstRow || lastCol < firstCol) {
+            throw new IllegalArgumentException("Invalid cell range, having lastRow < firstRow || lastCol < firstCol, " +
+                    "had rows " + lastRow + " >= " + firstRow + " or cells " + lastCol + " >= " + firstCol);
         }
 
-        appendFormatCell(sb, firstCol, firstRow);
-        appendFormatCell(sb, lastCol, lastRow);
+        StringBuilder sb = new StringBuilder();
+
+        if (sheetName != null) {
+            sb.append(SheetNameFormatter.format(sheetName));
+            sb.append(SHEET_NAME_DELIMITER);
+        }
+
+        CellReference cellRefFrom = new CellReference(firstRow, firstCol, useAbs, useAbs);
+        sb.append(cellRefFrom.formatAsString());
+
+        //for a single-cell reference return A1 instead of A1:A1
+        //for full-column ranges or full-row ranges return A:A instead of A,
+        //and 1:1 instead of 1
+        CellReference cellRefTo = new CellReference(lastRow, lastCol, useAbs, useAbs);
+        if(!cellRefFrom.equals(cellRefTo)){
+            sb.append(':');
+            sb.append(cellRefTo.formatAsString());
+        }
+
         return sb.toString();
     }
 
-    private void appendFormatCell(StringBuilder sb, int colPos, int rowPos) {
-        if(colPos >=0) {
-            if(useAbsolute)sb.append("$");
-            sb.append(SheetUtil.numberToLetter(colPos));
-        }
 
-        if(rowPos >=0) {
-            if(useAbsolute)sb.append("$");
-            sb.append(rowPos + 1);
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public String build() {
+        return formatAsString();
     }
+
+
+
 }

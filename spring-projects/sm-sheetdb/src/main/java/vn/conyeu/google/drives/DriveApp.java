@@ -47,8 +47,8 @@ public class DriveApp {
         return newFolder(file);
     }
 
-    public AbstractGFile move(String folderId, String sourceId) {
-        File model = service.update(sourceId, b -> b.parents(folderId));
+    public AbstractGFile move(String folderId, String sourceId, ConsumerReturn<FileBuilder> custom) {
+        File model = service.update(sourceId, b -> custom.accept(b).addParents(folderId));
         return GHelper.isFolder(model) ? newFolder(model) : newFile(model);
     }
 
