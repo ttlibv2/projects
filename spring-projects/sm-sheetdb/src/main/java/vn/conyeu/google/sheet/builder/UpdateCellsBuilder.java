@@ -1,31 +1,31 @@
 package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.GridRange;
-import com.google.api.services.sheets.v4.model.RowData;
 import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
+import vn.conyeu.google.core.FindList;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
-    private final UpdateCellsRequest request = new UpdateCellsRequest();
-    private final GridRange gridRange = new GridRange();
-    private final Set<String> fields = new HashSet<>();
-    private final List<RowData> rows = new ArrayList<>();
+    private final UpdateCellsRequest request;
+    private final GridRange gridRange;
+    private final FindList<RowBuilder> rows;
+
+    public UpdateCellsBuilder() {
+        request = new UpdateCellsRequest();
+        gridRange = new GridRange();
+        rows = new FindList<>(i -> new RowBuilder(null));
+    }
 
     @Override
     public UpdateCellsRequest build() {
+        request.setRows(new ArrayList<>());
         request.setRange(gridRange);
 
-        if (!rows.isEmpty()) {
-            request.setRows(rows);
-        }
-
-        if (!fields.isEmpty()) {
-            request.setFields(String.join(",", fields));
+        for(RowBuilder rowBuilder:rows) {
+            request.getRows().add(rowBuilder.build());
         }
 
         return request;
@@ -43,18 +43,6 @@ public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
         return this;
     }
 
-//    /**
-//     * The range to write data to.
-//     * <p>
-//     * If the data in rows does not cover the entire requested range, the fields matching those set in
-//     * fields will be cleared.
-//     *
-//     * @param range range or {@code null} for none
-//     */
-//    public UpdateCellsBuilder range(GridRange range) {
-//        gridRange = range == null ? new GridRange(): range;
-//        return this;
-//    }
 
     /**
      * The end column (exclusive) of the range, or not set if unbounded.
@@ -106,15 +94,51 @@ public class UpdateCellsBuilder implements XmlBuilder<UpdateCellsRequest> {
         return this;
     }
 
-    public UpdateCellsBuilder addRow(int countCell, Consumer<CellBuilder> consumerCell) {
-        RowData rowData = new RowData();
-        rowData.setValues(new ArrayList<>());
-        for(int pos=0;pos<countCell;pos++) {
-            CellBuilder builder = new CellBuilder(null);
-            consumerCell.accept(builder);
-            rowData.getValues().add(builder.build());
-        }
+    /**
+     * find or create new row at index
+     * @param rowIndex 0-index
+     * */
+    public RowBuilder getRow(int rowIndex) {
+        return rows.get(rowIndex);
+    }
 
+    /**
+     * find or create new cell at index
+     * @param rowIndex 0-index
+     * @param columnIndex 0-index
+     * */
+    public CellBuilder getCell(int rowIndex, int columnIndex) {
+        return getRow(rowIndex).getCell(columnIndex);
+    }
+
+    /**
+     * find or create new cell at index
+     * @param rowIndex 0-index
+     * @param columnIndex 0-index
+     * */
+    public UpdateCellsBuilder editCell(int rowIndex, int columnIndex, Consumer<CellBuilder> consumerReturn) {
+        consumerReturn.accept(getRow(rowIndex).getCell(columnIndex));
         return this;
     }
+
+
+
+    public UpdateCellsBuilder addRow(Consumer<List<CellBuilder>> cells) {
+        RowBuilder rowBuilder = getRow(rows.size());
+        cells.accept(rowBuilder.getCells());
+        return this;
+    }
+
+//    private UpdateCellsBuilder addRow(int countCell, Consumer<CellBuilder> consumerCell) {
+//        RowData rowData = new RowData();
+//        rowData.setValues(new ArrayList<>());
+//        for(int pos=0;pos<countCell;pos++) {
+//            CellBuilder builder = new CellBuilder(null);
+//            consumerCell.accept(builder);
+//            rowData.getValues().add(builder.build());
+//        }
+//
+//        rows.add(rowData);
+//        return this;
+//    }
 }

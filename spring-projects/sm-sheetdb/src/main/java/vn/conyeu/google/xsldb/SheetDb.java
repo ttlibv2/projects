@@ -1,13 +1,10 @@
 package vn.conyeu.google.xsldb;
 
-import com.google.api.services.drive.model.Permission;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.google.core.GoogleException;
-import vn.conyeu.google.core.Utils;
-import vn.conyeu.google.drives.*;
-import vn.conyeu.google.drives.builder.AbstractGFile;
-import vn.conyeu.google.drives.builder.Access;
-import vn.conyeu.google.drives.builder.Role;
+import vn.conyeu.google.drives.DriveApp;
+import vn.conyeu.google.drives.GFolder;
+import vn.conyeu.google.drives.GMime;
 import vn.conyeu.google.sheet.XslApp;
 import vn.conyeu.google.sheet.XslBook;
 import vn.conyeu.google.sheet.XslSheet;
@@ -62,24 +59,14 @@ public class SheetDb {
         return folder.getOwner().getEmailAddress();
     }
 
-    /**
-     * Load schema
-     */
-    protected SheetDb loadSchema() {
-        files.clear();
-        folder.search(q -> q.notFolder()
-                .and(q.properties.has("istable"), q.isMime(GMime.G_SHEET)))
-                .mapTo(file -> this.files.put(file.getName(), file.getId()));
-
-        return this;
-    }
 
     /**
      * Create table
+     *
      * @param name the name of table
      */
-    public SheetTb createTb(String name) {
-        return createTb(name, new ArrayList<>());
+    public SheetTb createTable(String name) {
+        return createTable(name, new ArrayList<>());
     }
 
     /**
@@ -87,86 +74,91 @@ public class SheetDb {
      *
      * @param name the name of table
      */
-    public SheetTb createTb(String name, List<Column> columns) {
+    public SheetTb createTable(String name, List<Column> columns) {
         validateTableExists(name);
-       return createXsl(name, sheet -> applySheet(sheet, columns));
+        SheetTb sheetTb = createXsl(name, sheet -> applySheet(sheet, columns));
+        sheetTb.putColumns(columns);
+        return sheetTb;
     }
 
     public <E> SheetTb<E> openTable(String name) {
-        if(files.isEmpty()) loadSchema();
-        if(!files.containsKey(name)) throw new DbException("The table %s not exist", name);
-        if(tables.containsKey(name)) return tables.get(name);
+        if (files.isEmpty()) loadSchema();
+        if (!files.containsKey(name)) throw new DbException("The table %s not exist", name);
+        if (!tables.containsKey(name)) {
+            String fileId = files.get(name);
+            XslBook xslBook = sheets.openById(fileId, name + "!2:2");
+            return putSchema(xslBook, name).parseColumnFromGrid();
+        }
+        return tables.get(name);
+    }
 
-        String fileId = files.get(name);
-        XslBook xslBook = sheets.openById(fileId, List.of("1:11"));
-        return putSchema(xslBook.getSheetByName(name));
+    /**
+     * Load schema
+     */
+    protected SheetDb loadSchema() {
+        files.clear();
+        folder.search(q -> q.notFolder()
+                        .and(q.properties.has("istable"), q.isMime(GMime.G_SHEET)))
+                .mapTo(file -> this.files.put(file.getName(), file.getId()));
+
+        return this;
     }
 
     private void validateTableExists(String name) {
-        if(files.containsKey(name)) {
+        if (files.containsKey(name)) {
             throw new DbException("The table '%s' exist", name);
         }
     }
 
     private SheetBuilder applySheet(SheetBuilder sheet, List<Column> columns) {
-        int frozenRow = 11, countT = 1;
+        int frozenRow = 2, countDataRow = 1;
         int colSize = Math.max(2, columns.size());
 
-        sheet.sheetId(0).rowCount(frozenRow + countT)
+        sheet.sheetId(0).rowCount(frozenRow + countDataRow)
                 .frozenRowCount(frozenRow).columnCount(colSize)
                 .defaultFormat(c -> c.fontFamily("Consolas").fontSize(12));
 
         GridBuilder grid = sheet.getGrid(0);
-        grid.getRow(0).editCells(c -> c.bold(true));
-        for (int r = 1; r < frozenRow; r++) grid.hideRow(r);
-
-
-        // permision row id
-        String email = folder.getOwner().getEmailAddress();
-        grid.getRange(0, 0, frozenRow, colSize).protect(email, "Only Owner "+email+" edit");
 
         // set value column
         for (int c = 0; c < columns.size(); c++) {
             Column col = columns.get(c);
-            ColumnType colType = col.getColumnType();
+            ColumnType colType = col.getType();
 
             // set name column
             XlRange range = grid.getRange(0, c, frozenRow);
-            range.setValues(0,col.getColumnName(),
-                    Utils.join(colType, colType.getPattern()),
-                    Utils.join(col.getNullable()),
-                    Utils.join(col.getUnique()),
-                    Utils.join(col.getPrimaryKey()),
-                    Utils.join(col.getLength(), col.getDecimal()),
-                    Utils.join( col.getInsertable()),
-                    Utils.join(col.getUpdatable()),
-                    Utils.join(col.getIncrement()),
-                    Utils.join(col.getComment()),
-                    Utils.join(col.getValueDefault())
-            );
+            range.setValues(0, col.getName(), col.toString());
 
             // set type column
-            range = grid.getRange(frozenRow, c, countT);
-            range.setNumberFormats(colType.formatType, colType.pattern);
+            range = grid.getRange(frozenRow, c, countDataRow).applyDefaultCell();
+            range.setNumberFormat(colType.formatType, colType.pattern);
+
         }
+
+        grid.getRow(0).editCells(c -> c.bold(true));
+        for (int r = 1; r < frozenRow; r++) grid.hideRow(r);
+
+        // permision row id
+        String email = getOwner();
+        grid.protectRow(0, 2, List.of(email), "Only Owner "+email+" edit");
+
         return sheet;
     }
 
     private <E> SheetTb<E> createXsl(String name, ConsumerReturn<SheetBuilder> consumer) {
         XslBook xslBook = sheets.create(name, xsl -> xsl.addSheet(s -> consumer.accept(s).title(name)).title(name));
-        drives.move(getId(), xslBook.getId(), f -> {
-            f.property("istable", "true");
-            return f;
-
-        });
-
-        return putSchema(xslBook.getSheetByName(name));
+        drives.move(getId(), xslBook.getId(), f -> f.property("istable", "true"));
+        putSchema(xslBook, name);
+        return tables.get(name);
     }
 
-    private SheetTb putSchema(XslSheet xslSheet) {
+    private SheetTb putSchema(XslBook xslBook, String sheetName) {
+        XslSheet xslSheet = xslBook.getSheetByName(sheetName);
         SheetTb sheetTb = new SheetTb(this, xslSheet);
-        files.put(xslSheet.getTitle(), xslSheet.getXslId());
-        tables.put(xslSheet.getTitle(), sheetTb);
+        files.put(xslSheet.getName(), xslSheet.getBookId());
+        tables.put(xslSheet.getName(), sheetTb);
         return sheetTb;
     }
+
+
 }

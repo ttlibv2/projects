@@ -21,6 +21,7 @@
         <module>od-client</module>
         <module>ebook</module>
         <module>od-demo</module>
+        <module>od-salute</module>
     </modules>
 
     <dependencyManagement>

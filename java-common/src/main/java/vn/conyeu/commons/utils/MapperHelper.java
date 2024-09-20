@@ -69,7 +69,20 @@ public final class MapperHelper {
      * @see #serializeToString(ObjectMapper, Object)
      */
     public static String serializeToString(Object obj) {
-        return serializeToString(mapper, obj);
+      return serializeToString(mapper, obj);
+    }
+
+    /**
+     * Convert object to string
+     *
+     * @param obj the object to string
+     * @see #serializeToString(ObjectMapper, Object)
+     */
+    public static String serializeToString(Object obj, boolean pretty) {
+        ObjectMapper mapperNew;
+        if(pretty) mapperNew = mapper.copy().enable(SerializationFeature.INDENT_OUTPUT);
+        else mapperNew = mapper().copy().disable(SerializationFeature.INDENT_OUTPUT);
+        return serializeToString(mapperNew, obj);
     }
 
     /**

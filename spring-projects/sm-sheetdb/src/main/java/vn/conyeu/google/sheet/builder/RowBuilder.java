@@ -3,6 +3,7 @@ package vn.conyeu.google.sheet.builder;
 import com.google.api.services.sheets.v4.model.CellData;
 import com.google.api.services.sheets.v4.model.RowData;
 import vn.conyeu.commons.utils.Asserts;
+import vn.conyeu.google.core.FindList;
 import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
 
@@ -12,16 +13,20 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
-    private final List<CellBuilder> cells;
-    private final GridBuilder grid;
+    private final FindList<CellBuilder> cells;
     private final RowData row;
     private ProtectedRangeBuilder protectBuilder;
     private ConsumerReturn<CellBuilder> editCellConsumer;
+    private GridBuilder grid;
 
-    public RowBuilder(final GridBuilder grid, RowData model) {
-        this.grid = Asserts.notNull(grid, "GridBuilder");
+    public RowBuilder(RowData model) {
+        this(null, model);
+    }
+
+    public RowBuilder(GridBuilder grid, RowData model) {
+        this.grid = grid;//Asserts.notNull(grid, "GridBuilder");
         this.row = Utils.getIfNull(model, RowData::new);
-        this.cells = new ArrayList<>();
+        this.cells = new FindList<>(i -> new CellBuilder());
         this.initialize();
     }
 
@@ -31,23 +36,7 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
         for (CellData cellData : values) cells.add(new CellBuilder(cellData));
     }
 
-    /**
-     * Returns the sheet
-     */
-    public SheetBuilder getSheet() {
-        return grid.getSheet();
-    }
-
-    /**
-     * Copy row to new
-     */
-    public RowBuilder copy() {
-        return new RowBuilder(grid, row.clone());
-    }
-
-    /**
-     * Build row
-     */
+    @Override
     public RowData build() {
         row.getValues().clear();
 
@@ -57,6 +46,38 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
 
         return row;
     }
+
+    @Override
+    public RowBuilder copy() {
+        return new RowBuilder(grid, row.clone());
+    }
+
+    /**
+     * Set the grid
+     *
+     * @param grid the value
+     */
+    public RowBuilder setGrid(GridBuilder grid) {
+        Asserts.isNull(this.grid, "The gridBuilder has exist.");
+        this.grid = grid;
+        return this;
+    }
+
+    /**
+     * Returns the grid
+     */
+    private GridBuilder getGrid() {
+        return Asserts.notNull(grid, "@GridBuilder not set");
+    }
+
+    /**
+     * Returns the sheet
+     */
+    public SheetBuilder getSheet() {
+        return getGrid().getSheet();
+    }
+
+
 
     /**
      * Returns count cell
@@ -152,7 +173,7 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
      */
     public CellBuilder findCell(int index) {
         validateCellIndex(index);
-        return cells.get(index);
+        return cells.find(index);
     }
 
     /**
@@ -161,9 +182,6 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
      * @param index the index cell
      */
     public CellBuilder getCell(int index) {
-        int size = size();
-        if (index < 0) index = size;
-        if (index >= size) addCells(size, size - index + 1);
         return cells.get(index);
     }
 
@@ -198,7 +216,7 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
     }
 
     private void loopCells(Consumer<CellBuilder> consumer) {
-        int cellSize = cells.isEmpty() ? grid.getSheet().getColumnCount() : cells.size();
+        int cellSize = cells.isEmpty() ? getSheet().getColumnCount() : cells.size();
         for (int c = 0; c < cellSize; c++) {
             consumer.accept(getCell(c));
         }
@@ -210,7 +228,7 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
      * @param consumer the custom permission protected
      */
     public RowBuilder protect(ConsumerReturn<ProtectedPermission> consumer) {
-        Integer rowIndex = grid.getRows().indexOf(this);
+        Integer rowIndex = getGrid().getRows().indexOf(this);
         getSheet().protect(rowIndex, consumer);
         return this;
     }
@@ -232,7 +250,7 @@ public class RowBuilder implements XmlBuilder<RowData>, Iterable<CellBuilder> {
         CellBuilder builder = new CellBuilder(null);
 
         // apply default format
-        ConsumerReturn<CellFormatBuilder> formatConsumer = grid.getSheet().getDefaultFormat();
+        ConsumerReturn<CellFormatBuilder> formatConsumer = getSheet().getDefaultFormat();
         if(formatConsumer != null) builder.format(formatConsumer);
 
         // apply custom cell

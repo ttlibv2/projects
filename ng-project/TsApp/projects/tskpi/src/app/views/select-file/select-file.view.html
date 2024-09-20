@@ -24,7 +24,7 @@
                       </div>
                       <div class="p-fluid field col-3">
                         <label>Đến dòng <b class="text-danger">[{{maxRow}}]</b></label>
-                        <p-inputNumber v formControlName="endRow"></p-inputNumber>
+                        <p-inputNumber [min]="minRow" [max]="maxRow" formControlName="endRow"></p-inputNumber>
                       </div>
                 </div>
               </div>

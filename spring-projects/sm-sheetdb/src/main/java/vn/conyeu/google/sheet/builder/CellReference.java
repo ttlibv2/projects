@@ -1,6 +1,5 @@
 package vn.conyeu.google.sheet.builder;
 
-import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
 
 import java.util.regex.Matcher;
@@ -62,11 +61,11 @@ public class CellReference {
 
     // FIXME: _sheetName may be null, depending on the entry point.
     // Perhaps it would be better to declare _sheetName is never null, using an empty string to represent a 2D reference.
-    private final String _sheetName;
-    private final int _rowIndex;
-    private final int _colIndex;
-    private final boolean _isRowAbs;
-    private final boolean _isColAbs;
+    private final String sheetName;
+    private final Integer rowIndex;
+    private final Integer colIndex;
+    private final boolean isRowAbs;
+    private final boolean isColAbs;
 
     /**
      * Create an cell ref from a string representation.  Sheet names containing special characters should be
@@ -79,63 +78,59 @@ public class CellReference {
         }
 
         CellRefParts parts = separateRefParts(cellRef);
-        _sheetName = parts.sheetName;
+        sheetName = parts.sheetName;
 
         String colRef = parts.colRef;
-        _isColAbs = (colRef.length() > 0) && colRef.charAt(0) == '$';
-        if (_isColAbs) {
+        isColAbs = (colRef.length() > 0) && colRef.charAt(0) == '$';
+        if (isColAbs) {
             colRef = colRef.substring(1);
         }
         if (colRef.length() == 0) {
-            _colIndex = -1;
+            colIndex = -1;
         } else {
-            _colIndex = SheetUtil.letterToNumber(colRef);
+            colIndex = SheetUtil.letterToNumber(colRef);
         }
 
         String rowRef=parts.rowRef;
-        _isRowAbs = (rowRef.length() > 0) && rowRef.charAt(0) == '$';
-        if (_isRowAbs) {
+        isRowAbs = (rowRef.length() > 0) && rowRef.charAt(0) == '$';
+        if (isRowAbs) {
             rowRef = rowRef.substring(1);
         }
         if (rowRef.length() == 0) {
-            _rowIndex = -1;
+            rowIndex = -1;
         } else {
             // throws NumberFormatException if rowRef is not convertible to an int
-            _rowIndex = Integer.parseInt(rowRef)-1; // -1 to convert 1-based to zero-based
+            rowIndex = Integer.parseInt(rowRef)-1; // -1 to convert 1-based to zero-based
         }
     }
 
-    public CellReference(int pRow, int pCol) {
+    public CellReference(Integer pRow, Integer pCol) {
         this(pRow, pCol, false, false);
     }
-    public CellReference(int pRow, short pCol) {
-        this(pRow, pCol & 0xFFFF, false, false);
-    }
 
-
-    public CellReference(int pRow, int pCol, boolean pAbsRow, boolean pAbsCol) {
+    public CellReference(Integer pRow, Integer pCol, boolean pAbsRow, boolean pAbsCol) {
         this(null, pRow, pCol, pAbsRow, pAbsCol);
     }
-    public CellReference(String pSheetName, int pRow, int pCol, boolean pAbsRow, boolean pAbsCol) {
-        Asserts.isTrue(pRow >=0, "row index may not be negative, but had " + pRow);
-        Asserts.isTrue(pCol >=0, "column index may not be negative, but had " + pCol);
-        _sheetName = pSheetName;
-        _rowIndex=pRow;
-        _colIndex=pCol;
-        _isRowAbs = pAbsRow;
-        _isColAbs=pAbsCol;
+    public CellReference(String pSheetName, Integer pRow, Integer pCol, boolean pAbsRow, boolean pAbsCol) {
+        //Asserts.isTrue(pRow >=0, "row index may not be negative, but had " + pRow);
+        //Asserts.isTrue(pCol >=0, "column index may not be negative, but had " + pCol);
+        this.sheetName = pSheetName;
+        this.rowIndex =pRow;
+        this.colIndex =pCol;
+        this.isRowAbs = pAbsRow;
+        this.isColAbs =pAbsCol;
     }
 
-    public int getRow(){return _rowIndex;}
-    public short getCol(){return (short) _colIndex;}
-    public boolean isRowAbsolute(){return _isRowAbs;}
-    public boolean isColAbsolute(){return _isColAbs;}
+    public Integer getRow(){return rowIndex;}
+    public Integer getCol(){return colIndex;}
+    public boolean isRowAbsolute(){return isRowAbs;}
+    public boolean isColAbsolute(){return isColAbs;}
     /**
      * @return possibly {@code null} if this is a 2D reference.  Special characters are not
      * escaped or delimited
      */
     public String getSheetName(){
-        return _sheetName;
+        return sheetName;
     }
 
     public static boolean isPartAbsolute(String part) {
@@ -295,8 +290,8 @@ public class CellReference {
      */
     public String formatAsString(boolean includeSheetName) {
         StringBuilder sb = new StringBuilder(32);
-        if(includeSheetName && _sheetName != null) {
-            SheetUtil.appendFormatSheetName(sb, _sheetName);
+        if(includeSheetName && sheetName != null) {
+            SheetUtil.appendFormatSheetName(sb, sheetName);
             sb.append(SHEET_NAME_DELIMITER);
         }
         appendCellReference(sb);
@@ -324,8 +319,8 @@ public class CellReference {
      */
     public String formatAsR1C1String(boolean includeSheetName) {
         StringBuilder sb = new StringBuilder(32);
-        if(includeSheetName && _sheetName != null) {
-            SheetUtil.appendFormatSheetName(sb, _sheetName);
+        if(includeSheetName && sheetName != null) {
+            SheetUtil.appendFormatSheetName(sb, sheetName);
             sb.append(SHEET_NAME_DELIMITER);
         }
         appendR1C1CellReference(sb);
@@ -348,9 +343,9 @@ public class CellReference {
      */
     public String[] getCellRefParts() {
         return new String[] {
-                _sheetName,
-                Integer.toString(_rowIndex+1),
-                convertNumToColString(_colIndex)
+                sheetName,
+                Integer.toString(rowIndex +1),
+                convertNumToColString(colIndex)
         };
     }
 
@@ -359,17 +354,18 @@ public class CellReference {
      * Sheet name is not included.
      */
     protected void appendCellReference(StringBuilder sb) {
-        if (_colIndex != -1) {
-            if(_isColAbs) {
+        if (colIndex != null && colIndex != -1) {
+            if(isColAbs) {
                 sb.append(ABSOLUTE_REFERENCE_MARKER);
             }
-            sb.append( convertNumToColString(_colIndex));
+
+            sb.append( convertNumToColString(colIndex));
         }
-        if (_rowIndex != -1) {
-            if(_isRowAbs) {
+        if (rowIndex != null && rowIndex != -1) {
+            if(isRowAbs) {
                 sb.append(ABSOLUTE_REFERENCE_MARKER);
             }
-            sb.append(_rowIndex+1);
+            sb.append(rowIndex +1);
         }
     }
 
@@ -378,11 +374,11 @@ public class CellReference {
      * Sheet name is not included.
      */
    protected void appendR1C1CellReference(StringBuilder sb) {
-        if (_rowIndex != -1) {
-            sb.append('R').append(_rowIndex+1);
+        if (rowIndex != null && rowIndex != -1) {
+            sb.append('R').append(rowIndex +1);
         }
-        if (_colIndex != -1) {
-            sb.append('C').append(_colIndex+1);
+        if (colIndex != null && colIndex != -1) {
+            sb.append('C').append(colIndex +1);
         }
     }
 
@@ -401,16 +397,16 @@ public class CellReference {
         if(!(o instanceof CellReference cr)) {
             return false;
         }
-        return _rowIndex == cr._rowIndex
-                && _colIndex == cr._colIndex
-                && _isRowAbs == cr._isRowAbs
-                && _isColAbs == cr._isColAbs
-                && Objects.equals(_sheetName, cr._sheetName);
+        return rowIndex == cr.rowIndex
+                && colIndex == cr.colIndex
+                && isRowAbs == cr.isRowAbs
+                && isColAbs == cr.isColAbs
+                && Objects.equals(sheetName, cr.sheetName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(_rowIndex,_colIndex,_isRowAbs,_isColAbs,_sheetName);
+        return Objects.hash(rowIndex, colIndex, isRowAbs, isColAbs, sheetName);
     }
 
 

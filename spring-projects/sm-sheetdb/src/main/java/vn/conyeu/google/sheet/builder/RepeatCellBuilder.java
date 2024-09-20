@@ -2,13 +2,11 @@ package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.model.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class RepeatCellBuilder implements XmlBuilder<RepeatCellRequest> {
     private final RepeatCellRequest request = new RepeatCellRequest();
-    private final Set<String> fields = new HashSet<>();
+    //private final Set<String> fields1 = new HashSet<>();
     private CellFormat cellFormat;
     private CellData cellData;
     private GridRange gridRange;
@@ -18,7 +16,7 @@ public class RepeatCellBuilder implements XmlBuilder<RepeatCellRequest> {
         if (cellFormat != null) initCell().setUserEnteredFormat(cellFormat);
         if (cellData != null) request.setCell(cellData);
         if (gridRange != null) request.setRange(gridRange);
-        if (!fields.isEmpty()) request.setFields(String.join(",", fields));
+        //if (!fields.isEmpty()) request.setFields(String.join(",", fields));
         return request;
     }
 
@@ -147,7 +145,7 @@ public class RepeatCellBuilder implements XmlBuilder<RepeatCellRequest> {
      *
      * @param endColumnIndex endColumnIndex or {@code null} for none
      */
-    public RepeatCellBuilder endColumnIndex(Integer endColumnIndex) {
+    public RepeatCellBuilder endCol(Integer endColumnIndex) {
         initRange().setEndColumnIndex(endColumnIndex);
         return this;
     }
@@ -157,7 +155,7 @@ public class RepeatCellBuilder implements XmlBuilder<RepeatCellRequest> {
      *
      * @param endRowIndex endRowIndex or {@code null} for none
      */
-    public RepeatCellBuilder endRowIndex(Integer endRowIndex) {
+    public RepeatCellBuilder endRow(Integer endRowIndex) {
         initRange().setEndRowIndex(endRowIndex);
         return this;
     }
@@ -177,7 +175,7 @@ public class RepeatCellBuilder implements XmlBuilder<RepeatCellRequest> {
      *
      * @param startColumnIndex startColumnIndex or {@code null} for none
      */
-    public RepeatCellBuilder startColumnIndex(Integer startColumnIndex) {
+    public RepeatCellBuilder beginCol(Integer startColumnIndex) {
         initRange().setStartColumnIndex(startColumnIndex);
         return this;
     }
@@ -187,7 +185,7 @@ public class RepeatCellBuilder implements XmlBuilder<RepeatCellRequest> {
      *
      * @param startRowIndex startRowIndex or {@code null} for none
      */
-    public RepeatCellBuilder startRowIndex(Integer startRowIndex) {
+    public RepeatCellBuilder beginRow(Integer startRowIndex) {
         initRange().setStartRowIndex(startRowIndex);
         return this;
     }

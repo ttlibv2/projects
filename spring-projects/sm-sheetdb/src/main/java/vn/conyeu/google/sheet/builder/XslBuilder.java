@@ -10,6 +10,10 @@ public class XslBuilder implements XmlBuilder<Spreadsheet> {
     private final Spreadsheet ss;
     private XslModelBuilder propBuilder;
 
+    public XslBuilder() {
+        this(null);
+    }
+
     public XslBuilder(Spreadsheet ss) {
         this.ss = Utils.getIfNull(ss, Spreadsheet::new);
     }

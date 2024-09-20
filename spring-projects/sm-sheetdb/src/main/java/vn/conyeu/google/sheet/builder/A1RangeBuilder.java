@@ -4,10 +4,10 @@ import static vn.conyeu.google.sheet.builder.SheetUtil.*;
 
 public final class A1RangeBuilder implements XmlBuilder<String> {
     private String sheetName;
-    private int firstRow;
-    private int firstCol;
-    private int lastRow;
-    private int lastCol;
+    private Integer firstRow;
+    private Integer firstCol;
+    private Integer lastRow;
+    private Integer lastCol;
     private boolean useAbs;
 
     public static A1RangeBuilder sheetName(String name) {
@@ -61,9 +61,9 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
     /**
      * Set the firstRow
      *
-     * @param firstRow the value
+     * @param firstRow (0-index) the value
      */
-    public A1RangeBuilder firstRow(int firstRow) {
+    public A1RangeBuilder firstRow(Integer firstRow) {
         this.firstRow = firstRow;
         return this;
     }
@@ -71,9 +71,9 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
     /**
      * Set the firstCol
      *
-     * @param firstCol the value
+     * @param firstCol (0-index) the value
      */
-    public A1RangeBuilder firstCol(int firstCol) {
+    public A1RangeBuilder firstCol(Integer firstCol) {
         this.firstCol = firstCol;
         return this;
     }
@@ -81,9 +81,9 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
     /**
      * Set the lastRow
      *
-     * @param lastRow the value
+     * @param lastRow (0-index) the value
      */
-    public A1RangeBuilder lastRow(int lastRow) {
+    public A1RangeBuilder lastRow(Integer lastRow) {
         this.lastRow = lastRow;
         return this;
     }
@@ -91,9 +91,9 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
     /**
      * Set the lastCol
      *
-     * @param lastCol the value
+     * @param lastCol (0-index) the value
      */
-    public A1RangeBuilder lastCol(int lastCol) {
+    public A1RangeBuilder lastCol(Integer lastCol) {
         this.lastCol = lastCol;
         return this;
     }
@@ -113,9 +113,12 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
      */
     public String formatAsString() {
 
-        if (lastRow < firstRow || lastCol < firstCol) {
-            throw new IllegalArgumentException("Invalid cell range, having lastRow < firstRow || lastCol < firstCol, " +
-                    "had rows " + lastRow + " >= " + firstRow + " or cells " + lastCol + " >= " + firstCol);
+        if(lastRow != null && firstRow != null && lastRow < firstRow) {
+            throw new IllegalArgumentException("Invalid cell range, having lastRow < firstRow, had rows " + lastRow + " >= " + firstRow );
+        }
+
+        if(lastCol != null && firstCol != null && lastCol < firstCol) {
+            throw new IllegalArgumentException("Invalid cell range, having lastCol < firstCol, had rows " + lastCol + " >= " + firstCol );
         }
 
         StringBuilder sb = new StringBuilder();
@@ -125,17 +128,19 @@ public final class A1RangeBuilder implements XmlBuilder<String> {
             sb.append(SHEET_NAME_DELIMITER);
         }
 
-        CellReference cellRefFrom = new CellReference(firstRow, firstCol, useAbs, useAbs);
-        sb.append(cellRefFrom.formatAsString());
+        if(firstRow != null || firstCol != null) {
+            CellReference cellRefFrom = new CellReference(firstRow, firstCol, useAbs, useAbs);
+            sb.append(cellRefFrom.formatAsString());
+        }
 
         //for a single-cell reference return A1 instead of A1:A1
         //for full-column ranges or full-row ranges return A:A instead of A,
         //and 1:1 instead of 1
-        CellReference cellRefTo = new CellReference(lastRow, lastCol, useAbs, useAbs);
-        if(!cellRefFrom.equals(cellRefTo)){
-            sb.append(':');
-            sb.append(cellRefTo.formatAsString());
+        if(lastRow != null || lastCol != null) {
+            CellReference cellRefTo = new CellReference(lastRow, lastCol, useAbs, useAbs);
+            sb.append(':').append(cellRefTo.formatAsString());
         }
+
 
         return sb.toString();
     }

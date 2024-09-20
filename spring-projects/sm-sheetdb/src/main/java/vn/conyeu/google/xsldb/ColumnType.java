@@ -3,6 +3,7 @@ package vn.conyeu.google.xsldb;
 import vn.conyeu.google.sheet.builder.NumberFormatType;
 
 public enum ColumnType {
+    INT(NumberFormatType.NUMBER, "0"),
     STRING(NumberFormatType.TEXT, null),
     JSON(NumberFormatType.TEXT, null),
     DATE(NumberFormatType.DATE, "yyyy-MM-dd"),

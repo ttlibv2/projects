@@ -57,6 +57,6 @@ public class MoveDimensionBuilder implements XmlBuilder<MoveDimensionRequest> {
      *
      * @param startIndex startIndex or {@code null} for none
      */
-    public MoveDimensionBuilder startIndex(Integer startIndex) { dimensionRange.setStartIndex(startIndex); return this;
+    public MoveDimensionBuilder beginIndex(Integer startIndex) { dimensionRange.setStartIndex(startIndex); return this;
     }
 }

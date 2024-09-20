@@ -2,6 +2,7 @@ package vn.conyeu.google.core;
 
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import lombok.extern.slf4j.Slf4j;
+import vn.conyeu.commons.utils.MapperHelper;
 
 import java.io.IOException;
 
@@ -16,6 +17,7 @@ public interface ExecuteFunc<T> {
         try{
 
             AbstractGoogleClientRequest<T>  requestNew = request.get();
+           // System.out.println(MapperHelper.serializeToString(requestNew));
             return requestNew.execute();
         }
         catch (IOException exp) {

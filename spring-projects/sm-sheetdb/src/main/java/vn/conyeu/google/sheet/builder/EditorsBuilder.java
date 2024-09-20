@@ -4,6 +4,8 @@ import com.google.api.services.sheets.v4.model.Editors;
 import vn.conyeu.commons.utils.Lists;
 import vn.conyeu.google.core.Utils;
 
+import java.util.List;
+
 public class EditorsBuilder implements XmlBuilder<Editors> {
     private final Editors editors;
 
@@ -45,6 +47,15 @@ public class EditorsBuilder implements XmlBuilder<Editors> {
      * @param emailAddresses users or {@code null} for none
      */
     public EditorsBuilder users(String... emailAddresses) {
+        editors.setUsers(Lists.newList(emailAddresses));
+        return this;
+    }
+
+    /**
+     * The email addresses of users with edit access to the protected range.
+     * @param emailAddresses users or {@code null} for none
+     */
+    public EditorsBuilder users(List<String> emailAddresses) {
         editors.setUsers(Lists.newList(emailAddresses));
         return this;
     }

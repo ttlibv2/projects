@@ -4,15 +4,12 @@ import com.google.api.services.sheets.v4.model.*;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.google.core.Utils;
-import vn.conyeu.google.sheet.builder.Dimension;
-import vn.conyeu.google.sheet.builder.GridBuilder;
-import vn.conyeu.google.sheet.builder.SheetBuilder;
-import vn.conyeu.google.sheet.builder.SheetPropertiesBuilder;
+import vn.conyeu.google.sheet.builder.*;
 
 import java.util.List;
 
 public class XslSheet {
-    private final XslService service;
+    public final XslService service;
     private final XslBook workbook;
     protected final Sheet sheet;
     private SheetProperties properties;
@@ -186,12 +183,8 @@ public class XslSheet {
      *
      * @return value or {@code null} for none
      */
-    public String getTitle() {
+    public String getName() {
         return properties.getTitle();
-    }
-
-    public final String getXslId() {
-        return workbook.getId();
     }
 
     /**
@@ -257,6 +250,18 @@ public class XslSheet {
     public XslSheet setTitle(String title) {
         properties.setTitle(title);
         getBuilder().title(title);
+        return this;
+    }
+
+    public XslSheet setColumnCount(Integer columnCount) {
+        gridProperties.setColumnCount(columnCount);
+        getBuilder().columnCount(columnCount);
+        return this;
+    }
+
+    public XslSheet setRowCount(Integer rowCount) {
+        gridProperties.setRowCount(rowCount);
+        getBuilder().rowCount(rowCount);
         return this;
     }
 
@@ -444,21 +449,21 @@ public class XslSheet {
     /**
      * Moves the columns selected by the given range to the position indicated by the destinationIndex.
      *
-     * @param beginCol      the column index
-     * @param destinationIndex The index that the columns should be moved to.
+     * @param beginCol         the column 0-index
+     * @param destinationIndex The 0-index that the columns should be moved to.
      */
     public void moveColumn(int beginCol, int destinationIndex) {
-        moveColumns(beginCol, beginCol+1, destinationIndex);
+        moveColumns(beginCol, beginCol + 1, destinationIndex);
     }
 
     /**
      * Moves the columns selected by the given range to the position indicated by the destinationIndex.
      *
-     * @param beginCol      the column index
-     * @param destinationIndex The index that the columns should be moved to.
+     * @param beginCol         the column 0-index
+     * @param destinationIndex The 0-index that the columns should be moved to.
      */
     public void moveColumns(int beginCol, int endColumn, int destinationIndex) {
-        service.moveDimension(getBookId(), getSheetId(), Dimension.COLUMNS, beginCol, endColumn, destinationIndex);
+        service.moveDimension(Dimension.COLUMNS, getBookId(), getSheetId(), beginCol, endColumn, destinationIndex);
     }
 
     /**
@@ -478,7 +483,7 @@ public class XslSheet {
      * @param destinationIndex The index that the columns should be moved to.
      */
     public void moveRows(int beginRow, int endRow, int destinationIndex) {
-        service.moveDimension(getBookId(), getSheetId(), Dimension.ROWS, beginRow, endRow, destinationIndex);
+        service.moveDimension(Dimension.ROWS, getBookId(), getSheetId(), beginRow, endRow, destinationIndex);
     }
 
     /**
@@ -519,14 +524,21 @@ public class XslSheet {
         service.deleteDimension(getBookId(), getSheetId(), Dimension.COLUMNS, columnPosition, columnPosition + howMany);
     }
 
+    public void deleteColumnByIndex(Integer... columnIndexes) {
+        deleteColumnByIndex(List.of(columnIndexes));
+    }
+
+    public void deleteColumnByIndex(List<Integer> columnIndexes) {
+        BatchUpdateBuilder builder = new BatchUpdateBuilder();
+        for (int col : columnIndexes) builder.deleteColumn(getSheetId(), col);
+        service.batchUpdate(getBookId(), builder);
+    }
+
     public void changeColumn(Integer colIndex) {
-        service.updateCells(getXslId(), c -> c
+        service.updateCells(getBookId(), c -> c
                 .beginRow(0).endRow(getRowCount())
                 .beginCol(colIndex).endColumn(colIndex));
     }
-
-
-
 
 
     /**
@@ -582,7 +594,7 @@ public class XslSheet {
      * @param data An array of values to insert after the last row in the sheet.
      */
     public void appendRow(List<Object> data) {
-        service.appendValueRow(getXslId(), getTitle(), data);
+        service.appendValueRow(getBookId(), getName(), data);
     }
 
     /**
@@ -592,20 +604,37 @@ public class XslSheet {
      * @param data An array of values to insert after the last row in the sheet.
      */
     public void appendRows(List<List<Object>> data) {
-        service.appendValueRows(getXslId(), getTitle(), data);
+        service.appendValueRows(getBookId(), getName(), data);
     }
 
     /**
-     * Returns the rectangular grid of values for this range starting at the given coordinates.
-     * A -1 value given as the row or column position is equivalent to getting the very last row or column that has data in the sheet.
-     *
-     * @param startRow    The position of the starting row.
-     * @param startColumn The position of the starting column.
-     * @param numRows     The number of rows to return values for.
+     * @param beginRow (0-index) The position of the starting row.
+     * @param numRows  The number of rows to return values for.
+     */
+    public List<List<Object>> getRowValues(int beginRow, int numRows) {
+        String range = A1RangeBuilder.sheetName(getName()).firstRow(beginRow)
+                .lastRow(beginRow + numRows - 1).build();
+        return service.getRowValues(getBookId(), range).getValues();
+    }
+
+    /**
+     * @param beginColumn (0-index) The position of the starting column.
      * @param numColumns  The number of columns to return values for.
      */
-    public List<Object[]> getSheetValues(int startRow, int startColumn, int numRows, int numColumns) {
-        throw new UnsupportedOperationException();
+    public List<List<Object>> getColumnValues(int beginRow, int beginColumn, int numRows, int numColumns) {
+        String range = A1RangeBuilder.sheetName(getName())
+                .lastRow(beginRow + numRows - 1).lastCol(beginColumn + numColumns - 1)
+                .firstRow(beginRow).firstCol(beginColumn).build();
+
+        return service.getColumnValues(getBookId(), range).getValues();
+    }
+
+    public XslUpdateResponse batchUpdate(ConsumerReturn<BatchUpdateBuilder> consumer) {
+        return service.batchUpdate(getBookId(), consumer);
+    }
+
+    public XslUpdateResponse batchUpdate(BatchUpdateBuilder batchUpdateBuilder) {
+        return service.batchUpdate(getBookId(), batchUpdateBuilder);
     }
 
     private SheetPropertiesBuilder getBuilder() {
@@ -613,7 +642,7 @@ public class XslSheet {
         return builder;
     }
 
-    private String getBookId() {
+    public String getBookId() {
         return workbook.getId();
     }
 }

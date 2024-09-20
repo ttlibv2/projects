@@ -50,11 +50,12 @@ public class XslApp {
     }
 
     public XslBook openById(String fileId) {
-        return openById(fileId, new ArrayList<>());
+        return openById(fileId, new String[0]);
     }
 
-    public XslBook openById(String fileId, List<String> ranges ) {
-        Spreadsheet ss = service.openXsl(fileId, "*", ranges);
+    public XslBook openById(String fileId, String... ranges ) {
+        List<String> list = ranges.length == 0 ? new ArrayList<>() : List.of(ranges);
+        Spreadsheet ss = service.openXsl(fileId, "*", list);
         return new XslBook(service, ss);
     }
 

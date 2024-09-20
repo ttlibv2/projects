@@ -17,6 +17,10 @@ public class CellBuilder implements XmlBuilder<CellData> {
     private CellFormatBuilder formatBuilder;
     private DataValidationRuleBuilder ruleBuilder;
 
+    public CellBuilder() {
+        this(null);
+    }
+
     public CellBuilder(CellData cell) {
         this.cell = Utils.getIfNull(cell, CellData::new);
     }

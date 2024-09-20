@@ -12,12 +12,18 @@ public class XlRange {
     private final Integer beginRow, endRow;
     private final Integer beginCol, endCol;
 
-    XlRange(GridBuilder grid, Integer rowIndex, Integer beginCol, Integer endRow, Integer endCol) {
+    XlRange(GridBuilder grid, Integer beginRow, Integer beginCol, Integer endRow, Integer endCol) {
         this.grid = grid;
-        this.beginRow = rowIndex;
+        this.beginRow = beginRow;
         this.beginCol = beginCol;
         this.endRow = endRow;
         this.endCol = endCol;
+    }
+
+    public XlRange applyDefaultCell() {
+        ConsumerReturn<CellFormatBuilder> consumer = grid.getSheet().getDefaultFormat();
+        if (consumer != null) setCellCb(cb -> cb.format(consumer));
+        return this;
     }
 
     /**
@@ -70,8 +76,8 @@ public class XlRange {
 
     public XlRange setValues(int columnIndex, Object... data) {
 
-        int numCols = endCol - beginCol + 1;
-        int numRows = endRow - beginRow + 1;
+        int numCols = endCol - beginCol;
+        int numRows = endRow - beginRow;
 
         // validate numRows + value.size()
         validateRowSize(numRows, data.length);
@@ -80,7 +86,7 @@ public class XlRange {
         Asserts.validateIndex(columnIndex, 0, numCols);
 
         // loop set value
-        for(int r=0;r<data.length;r++) {
+        for (int r = 0; r < data.length; r++) {
             int cellIndex = columnIndex + beginCol;
             grid.getRow(r).getCell(cellIndex)
                     .setValue(data[r]);
@@ -93,9 +99,9 @@ public class XlRange {
      * Sets the number or date format to the given formatting string.
      * The accepted format patterns are described in the Sheets API documentation.
      *
-     * @param numberFormat A number format string.
+     * @param type A number format string.
      */
-    public XlRange setNumberFormats(NumberFormatType type, String pattern) {
+    public XlRange setNumberFormat(NumberFormatType type, String pattern) {
         return setCellCb(cell -> cell.numberFormat(type, pattern));
     }
 
@@ -147,8 +153,8 @@ public class XlRange {
     //----------------------------
 
     private <E> XlRange setCellCb(Consumer<CellBuilder> consumer) {
-        for (int r = beginRow - 1; r < endRow; r++) {
-            for (int c = beginCol - 1; c < endCol; c++) {
+        for (int r = beginRow; r < endRow; r++) {
+            for (int c = beginCol; c < endCol; c++) {
                 consumer.accept(grid.getRow(r).getCell(c));
             }
         }
@@ -156,8 +162,8 @@ public class XlRange {
     }
 
     private <E> XlRange setCellCb(List<List<E>> data, BiConsumer<CellBuilder, E> consumer) {
-        int numRows = endRow - beginRow + 1;
-        int numCols = endCol - beginCol + 1;
+        int numRows = endRow - beginRow;
+        int numCols = endCol - beginCol;
 
         // validate numRows + value.size()
         validateRowSize(numRows, data.size());
@@ -195,8 +201,8 @@ public class XlRange {
 
     public void protect(String editorUser, String description) {
         grid.getSheet().protectAll(p -> p.users(editorUser).description(description)
-                .range(r -> r.beginRow(beginRow).endRow(endRow+1)
-                        .beginColumn(beginCol).endColumn(endCol+1)));
+                .range(r -> r.beginRow(beginRow).endRow(endRow)
+                        .beginColumn(beginCol).endColumn(endCol)));
     }
 
     public String findValueAt(int rowIndex) {

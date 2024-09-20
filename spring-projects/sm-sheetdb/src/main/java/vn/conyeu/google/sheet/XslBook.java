@@ -320,7 +320,7 @@ public final class XslBook {
 
     XslSheet newSheet(Sheet sheet) {
         XslSheet xslSheet = new XslSheet(service, this, sheet);
-        String sheetName = xslSheet.getTitle();
+        String sheetName = xslSheet.getName();
         sheetNames.put(sheetName, xslSheet);
         sheetIds.put(xslSheet.getSheetId(), sheetName);
         return xslSheet;

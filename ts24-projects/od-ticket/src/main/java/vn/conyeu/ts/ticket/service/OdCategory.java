@@ -1,18 +1,23 @@
 package vn.conyeu.ts.ticket.service;
 
-import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsCategory;
-import vn.conyeu.ts.ticket.domain.ClsFilterOption;
-
 import java.util.List;
 import java.util.function.Function;
 
 public class OdCategory extends OdTicketClient<ClsCategory> {
-    
+    protected final TicketApp app;
+
+    public OdCategory(TicketApp app) {
+        super(app.getClsCfg());
+        this.app = app;
+    }
+
+
     public OdCategory(ClsApiCfg apiConfig) {
         super(apiConfig);
+        this.app = null;
     }
 
     @Override
@@ -39,8 +44,6 @@ public class OdCategory extends OdTicketClient<ClsCategory> {
     public List<ClsCategory> nameSearch(String cateName) {
         return nameSearch(cateName, null);
     }
-
-
 
 
     public List<ClsCategory> getAll() {

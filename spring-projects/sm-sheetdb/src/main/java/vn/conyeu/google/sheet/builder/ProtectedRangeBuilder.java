@@ -3,6 +3,8 @@ package vn.conyeu.google.sheet.builder;
 import com.google.api.services.sheets.v4.model.ProtectedRange;
 import vn.conyeu.google.core.Utils;
 
+import java.util.List;
+
 public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
     private final ProtectedRange range;
     private final ProtectedPermission permission;
@@ -87,6 +89,15 @@ public class ProtectedRangeBuilder implements XmlBuilder<ProtectedRange> {
      * @param emailAddresses users or {@code null} for none
      */
     public ProtectedRangeBuilder users(String... emailAddresses) {
+        permission.users(emailAddresses);
+        return this;
+    }
+
+    /**
+     * The email addresses of users with edit access to the protected range.
+     * @param emailAddresses users or {@code null} for none
+     */
+    public ProtectedRangeBuilder users(List<String> emailAddresses) {
         permission.users(emailAddresses);
         return this;
     }

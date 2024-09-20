@@ -2,6 +2,7 @@ package vn.conyeu.google.sheet.builder;
 
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
+import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.core.Utils;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequest> {
     private final BatchUpdateSpreadsheetRequest bu = new BatchUpdateSpreadsheetRequest();
+    private String fields = "*";
 
     public static BatchUpdateBuilder create() {
         return new BatchUpdateBuilder();
@@ -21,11 +23,28 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
     }
 
     /**
+     * Returns the fields
+     */
+    public String getFields() {
+        return fields;
+    }
+
+    /**
+     * Set the fields
+     *
+     * @param fields the value
+     */
+    public BatchUpdateBuilder fields(String fields) {
+        this.fields = fields;
+        return this;
+    }
+
+    /**
      * Determines if the update response should include the spreadsheet resource.
      *
      * @param includeSpreadsheetInResponse includeSpreadsheetInResponse or {@code null} for none
      */
-    public BatchUpdateBuilder includeResponse(Boolean includeSpreadsheetInResponse) {
+    public BatchUpdateBuilder includeSpreadsheetInResponse(Boolean includeSpreadsheetInResponse) {
         bu.setIncludeSpreadsheetInResponse(includeSpreadsheetInResponse);
         return this;
     }
@@ -266,6 +285,21 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
         return this;
     }
 
+
+    /**
+     * Deletes columns in a sheet.
+     * The value may be {@code null}.
+     */
+    public BatchUpdateBuilder deleteColumn(Integer sheetId, Integer columnIndex) {
+        return deleteDimension(dim -> dim
+                .setDimension(Dimension.COLUMNS.name()).setSheetId(sheetId)
+                .setStartIndex(columnIndex).setEndIndex(columnIndex + 1)
+        );
+    }
+
+
+
+
     /**
      * Deletes a group over the specified range.
      * The value may be {@code null}.
@@ -424,6 +458,26 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
         return this;
     }
 
+    public BatchUpdateBuilder moveDimension(Dimension dimension, String fileId, int sheetId, int dimIndex, int destinationIndex) {
+        return moveDimensions(dimension, fileId, sheetId, dimIndex, dimIndex + 1, destinationIndex);
+    }
+
+    public BatchUpdateBuilder moveDimensions(Dimension dimension, String fileId, int sheetId, int beginIndex, int endIndex, int destinationIndex) {
+
+        if(beginIndex >= endIndex) {
+            String msg = "The index invalid -- beginIndex >= endIndex -- (%s >= %s)";
+            throw new GoogleException(msg, beginIndex, endIndex);
+        }
+
+        if(endIndex <= destinationIndex) {
+            destinationIndex = destinationIndex + 1;
+        }
+
+        final int dest = destinationIndex;
+        return moveDimension(dim -> dim.destinationIndex(dest)
+                .dimension(dimension).sheetId(sheetId).beginIndex(beginIndex).endIndex(endIndex));
+    }
+
     /**
      * Pastes data (HTML or delimited) into a sheet.
      * The value may be {@code null}.
@@ -449,10 +503,18 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * The value may be {@code null}.
      */
     public BatchUpdateBuilder repeatCell(ConsumerReturn<RepeatCellBuilder> consumer) {
-        RepeatCellBuilder builder = consumer.accept(new RepeatCellBuilder());
-        initRequest().setRepeatCell(builder.build());
+        return repeatCell( consumer.accept(new RepeatCellBuilder()));
+    }
+
+    /**
+     * Repeats a single cell across a range.
+     * The value may be {@code null}.
+     */
+    public BatchUpdateBuilder repeatCell(RepeatCellBuilder cellBuilder) {
+        initRequest().setRepeatCell(cellBuilder.build());
         return this;
     }
+
 
     /**
      * Sets the basic filter on a sheet.
@@ -539,8 +601,11 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
      * The value may be {@code null}.
      */
     public BatchUpdateBuilder updateCells(ConsumerReturn<UpdateCellsBuilder> consumer) {
-        UpdateCellsBuilder builder = consumer.accept(new UpdateCellsBuilder());
-        initRequest().setUpdateCells(builder.build());
+        return updateCells(consumer.accept(new UpdateCellsBuilder()));
+    }
+
+    public BatchUpdateBuilder updateCells(UpdateCellsBuilder cellsBuilder) {
+        initRequest().setUpdateCells(cellsBuilder.build());
         return this;
     }
 
@@ -682,7 +747,7 @@ public class BatchUpdateBuilder implements XmlBuilder<BatchUpdateSpreadsheetRequ
 
     public XslUpdateResponse execute(Sheets.Spreadsheets service, String spreadsheetId) throws IOException {
             BatchUpdateSpreadsheetRequest request = build().clone();
-            BatchUpdateSpreadsheetResponse response = service.batchUpdate(spreadsheetId, request).setFields("*").execute();
+            BatchUpdateSpreadsheetResponse response = service.batchUpdate(spreadsheetId, request).setFields(fields).execute();
             return XslUpdateResponse.from(response);
     }
 }

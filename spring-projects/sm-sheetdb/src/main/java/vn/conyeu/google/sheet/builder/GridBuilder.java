@@ -63,6 +63,9 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
         return rows.size();
     }
 
+    public Integer getSheetId() {
+        return getSheet().getSheetId();
+    }
 
 
     public boolean isRowEmpty() {
@@ -210,7 +213,7 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
      * @param row The row index of the cell to return; row indexing starts with 0.
      * @param column The column index of the cell to return; column indexing starts with 0.
      * */
-    public XlRange getRange(Integer row, Integer column) {
+    public XlRange getRange(int row, int column) {
         return getRange(row, column, 1, 1);
     }
 
@@ -220,7 +223,7 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
      * @param column The column index of the cell to return; column indexing starts with 0.
      * @param numRows     The number of rows to return.
      * */
-    public XlRange getRange(Integer row, Integer column, Integer numRows) {
+    public XlRange getRange(int row, int column, int numRows) {
         return getRange(row, column, numRows, 1);
     }
 
@@ -231,8 +234,8 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
      * @param numRows     The number of rows to return.
      * @param numColumns     The number of columns to return.
      * */
-    public XlRange getRange(Integer row, Integer column, Integer numRows, Integer numColumns) {
-        return new XlRange(this, row, column, row + numRows - 1, column + numColumns - 1);
+    public XlRange getRange(int row, int column, int numRows, int numColumns) {
+        return new XlRange(this, row, column, row + numRows, column + numColumns);
     }
 
     /**
@@ -263,5 +266,10 @@ public class GridBuilder implements XmlBuilder<GridData>, Iterable<RowBuilder> {
     public XlRange findColumn(int columnIndex) {
         Asserts.validateIndex(columnIndex, 0, getColumnSize());
         return getRange(0, columnIndex, getRowSize());
+    }
+
+    public GridBuilder protectRow(int beginRow, int numRows, List<String> editorUser, String description) {
+        sheet.protectAll(b -> b.forRow(getSheetId(), beginRow, beginRow + numRows).description(description).users(editorUser));
+        return this;
     }
 }

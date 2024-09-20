@@ -211,7 +211,7 @@ public abstract class OdClient {
         return sendBody(body, spec -> spec.uri(uriFunction));
     }
 
-    protected ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer) {
+    public ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer) {
         return sendBody(body, consumer, 0);
     }
 

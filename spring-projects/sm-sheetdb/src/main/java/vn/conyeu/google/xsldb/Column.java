@@ -1,49 +1,39 @@
 package vn.conyeu.google.xsldb;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.google.sheet.builder.SheetUtil;
 
 @Getter
-@ToString
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Column {
-    private String columnId;
-    private String columnName;
-    private ColumnType columnType = ColumnType.STRING;
+    private String name;
+    private ColumnType type = ColumnType.STRING;
+    private String pattern;
     private Integer length;
     private Integer decimal;
     private String comment;
     private Increment increment;
-    private String tableId;
     private Boolean nullable;
-    private Boolean primaryKey;
+    private Boolean key;
     private Boolean unique;
     private Boolean insertable;
     private Boolean updatable;
-    private String valueDefault;
-    private Integer position;
+    private String value;
+    private Integer index;
     private String letter;
 
-    public Column(String columnName, ColumnType columnType) {
-        this.columnName = columnName;
-        this.columnType = columnType;
+    public Column(String name, ColumnType type) {
+        this.name = name;
+        this.type = type;
     }
 
-    public Column position(Integer position) {
-        this.position = position;
+    public Column index(Integer position) {
+        this.index = position;
         this.letter = position == null ? null : SheetUtil.numberToLetter(position);
-        return this;
-    }
-
-    /**
-     * Set the columnId
-     *
-     * @param columnId the value
-     */
-    public Column columnId(String columnId) {
-        this.columnId = columnId;
         return this;
     }
 
@@ -52,8 +42,8 @@ public class Column {
      *
      * @param columnName the value
      */
-    public Column columnName(String columnName) {
-        this.columnName = columnName;
+    public Column name(String columnName) {
+        this.name = columnName;
         return this;
     }
 
@@ -62,8 +52,18 @@ public class Column {
      *
      * @param columnType the value
      */
-    public Column columnType(ColumnType columnType) {
-        this.columnType = columnType;
+    public Column type(ColumnType columnType) {
+        this.type = columnType;
+        return this;
+    }
+
+    /**
+     * Set the pattern
+     *
+     * @param pattern the value
+     */
+    public Column pattern(String pattern) {
+        this.pattern = pattern;
         return this;
     }
 
@@ -108,16 +108,6 @@ public class Column {
     }
 
     /**
-     * Set the tableId
-     *
-     * @param tableId the value
-     */
-    public Column tableId(String tableId) {
-        this.tableId = tableId;
-        return this;
-    }
-
-    /**
      * Set the nullable
      *
      * @param nullable the value
@@ -132,8 +122,8 @@ public class Column {
      *
      * @param primaryKey the value
      */
-    public Column primaryKey(Boolean primaryKey) {
-        this.primaryKey = primaryKey;
+    public Column key(Boolean primaryKey) {
+        this.key = primaryKey;
         return this;
     }
 
@@ -172,8 +162,19 @@ public class Column {
      *
      * @param valueDefault the value
      */
-    public Column valueDefault(String valueDefault) {
-        this.valueDefault = valueDefault;
+    public Column value(String valueDefault) {
+        this.value = valueDefault;
         return this;
+    }
+
+    /**
+     * Returns the pattern
+     */
+    public String getPattern() {
+        return pattern == null && type != null ? type.pattern : pattern;
+    }
+
+    public String toString() {
+       return MapperHelper.serializeToString(this, false);
     }
 }

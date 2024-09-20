@@ -26,6 +26,12 @@ public abstract class OdBaseService<T extends OdClient> {
         this.clsConfig.updateFrom(config);
     }
 
+    protected void updateConfig(ClsUser clsUser) {
+        clsConfig.setClsUser(clsUser);
+        clsConfig.setCookieValue(clsUser.getCookie());
+        clsConfig.setCsrfToken(clsUser.getCsrfToken());
+    }
+
     /**
      * Set the saveConfigDbConsumer
      *
@@ -82,9 +88,12 @@ public abstract class OdBaseService<T extends OdClient> {
 
     public final ClsUser login() {
         ClsUser clsUser = loginImpl();
+        updateConfig(clsUser);
+
         if(saveConfigDbConsumer != null) {
             saveConfigDbConsumer.accept(getUniqueId(), clsUser);
         }
+
         return clsUser;
     }
 

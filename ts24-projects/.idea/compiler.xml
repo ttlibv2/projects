@@ -10,6 +10,7 @@
         <module name="sm-identity" />
         <module name="sm-oauth2-login" />
         <module name="sm-cookie" />
+        <module name="od-salute" />
         <module name="od-ticket" />
         <module name="sm-i18n" />
         <module name="sm-common" />
@@ -46,6 +47,7 @@
       <module name="ebook" options="-parameters" />
       <module name="od-client" options="-parameters" />
       <module name="od-demo" options="-parameters" />
+      <module name="od-salute" options="-parameters" />
       <module name="od-ticket" options="-parameters" />
       <module name="sm-account" options="-parameters" />
       <module name="sm-address" options="-parameters" />
