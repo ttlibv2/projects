@@ -1,7 +1,6 @@
-import { ChangeDetectorRef, Component, Input, OnInit, signal, ViewChild, ViewEncapsulation, } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, } from "@angular/forms";
+import { ChangeDetectorRef, Component, Input, OnInit, signal, Type, ViewChild, ViewEncapsulation, } from "@angular/core";
+import { Validators, } from "@angular/forms";
 import { TemplateService } from "../../services/template.service";
-import { Template } from "../../models/template";
 import { ToastService } from "ts-ui/toast";
 import { LoggerService } from "ts-ui/logger";
 import { Objects } from "ts-ui/helper";
@@ -11,9 +10,14 @@ import { AgTable, TableColumn, TableOption } from "ts-ui/ag-table";
 import { AgCellColor } from "./renderer";
 import { GetRowIdParams } from "@ag-grid-community/core";
 import { TicketFormComponent } from "../ticket-form/ticket-form.component";
-import { Observable, Observer } from "rxjs";
 import { Router } from "@angular/router";
-import {ModalService} from "../../services/ui/model.service";
+import { ModalService } from "../../services/ui/model.service";
+import { Template } from "../../models/template";
+import { Alert } from "ts-ui/alert";
+import { RxjsUtil } from "../ticket-list/rxjs-util";
+import { FormBuilder } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
+import { EmailTemplateView } from "../email-template/email-template.view";
 
 const { isNull, notBlank, isBlank } = Objects;
 
@@ -32,9 +36,10 @@ interface State {
     visibleCopy?: boolean;
 }
 
+
 const defaultInfo: Partial<Template> = {
     text_color: '#475569',
-    'bg_color': '#f1f5f9'
+    bg_color: '#f1f5f9'
 };
 
 @Component({
@@ -46,8 +51,9 @@ const defaultInfo: Partial<Template> = {
 export class TemplateFormComponent implements OnInit {
 
     get template(): Partial<Template> {
-        const json = Objects.extractValueNotNull(this.formGroup?.getRawValue());
-        return { title: 'Hiển thị', ...json };
+        const rawJson = this.formGroup?.getRawValue();
+        rawJson.data = JSON.parse(rawJson.data || '{}');
+        return rawJson;
     }
 
     get btnPreviewStyle(): any {
@@ -69,38 +75,37 @@ export class TemplateFormComponent implements OnInit {
 
 
     formGroup: FormGroup;
+
     state: State = {};
     labelSave: string = "save";
-    rows: Template[] = [];
+    rows1: Template[] = [];
     lsSeverity: Severity[] = ['primary', 'secondary', 'success', 'info', 'danger', 'help', 'warning', 'contrast'];
-    lsColor: any[] = [{label: '', color: ''}];
-    lsEntity: string[] = ['form_ticket'];
+    lsColor: any[] = [{ label: '', color: '' }];
+    lsEntity: string[] = ['ticket_template', 'email_template'];
 
     columns: TableColumn[] = [
-        { field: 'entity_code', headerName: 'Mã Form', width: 131, rowDrag: false, headerCheckboxSelection: true, checkboxSelection: true },
-        { field: 'icon', headerName: 'Icon', width: 70 },
-        { field: 'title', headerName: 'Tiêu đề' },
+        { field: 'title', headerName: 'Tiêu đề' ,rowDrag: false, headerCheckboxSelection: true, checkboxSelection: true},
+        { field: 'summary', headerName: 'Diễn giải' },
+        { field: 'icon', headerName: 'Icon', width: 150 },
+        { field: 'thread', headerName: 'Mã Form', width: 131  },      
         { field: 'bg_color', headerName: 'Màu nền', width: 87, cellRenderer: AgCellColor },
         { field: 'text_color', headerName: 'Màu chữ', width: 87, cellRenderer: AgCellColor },
         { field: 'data', headerName: 'Dữ liệu', width: 117, cellRenderer: (data: any) => data.value ? 'Có dữ liệu' : '' },
-        { field: 'summary', headerName: 'Diễn giải' }
+       
     ];
 
     agOption: TableOption = {
-        defaultColDef: {
-            suppressHeaderMenuButton: true,
-        },
+        defaultColDef: { suppressHeaderMenuButton: true, },
         rowSelection: 'multiple',
         onRowSelected: () => this.state.visibleDelete = this.agTable.getSelectedRows().length > 0,
         getRowId: (params: GetRowIdParams<Template>) => `ROWID_${params.data?.template_id}`,
-        //onRowDragEnd: this.onChangeRowPosition.bind(this)
     };
 
     @ViewChild(AgTable)
     agTable: AgTable;
 
-    @Input({alias: 'entity'})
-    entityCode: string;
+    @Input({ alias: 'thread' })
+    thread: string;
 
     @Input()
     lastUrl: string;
@@ -108,183 +113,213 @@ export class TemplateFormComponent implements OnInit {
     constructor(
         private fb: FormBuilder,
         private toast: ToastService,
+        private alert: Alert,
         private config: StorageService,
         private logger: LoggerService,
         private router: Router,
         private def: ChangeDetectorRef,
         private modal: ModalService,
         private templateSrv: TemplateService) {
-        this.createFormGroup();
+        // this.createFormGroup();
     }
 
-    createFormGroup() {
+    private createFormGroup() {
+        const threadValue = { value: this.thread, disabled: notBlank(this.thread) };
+
         this.formGroup = this.fb.group({
-            icon: [null],
-            template_id: [null],
-            entity_code: [null, Validators.required],
+            icon: [null], template_id: [null],
+            thread: [threadValue, Validators.required],
             title: [null, Validators.required],
-            summary: [null],
-            bg_color: [null],
-            text_color: [null],
-            style: [null],
-            color: [null],
-            data: [null, Validators.required],
-            severity: [null],
-            edit_data: [true],
-            is_default: [false],
+            summary: [null], bg_color: [null],
+            text_color: [null], style: [null],
+            data: [{ value: null, disabled: true }, Validators.required],
+            severity: [null], edit_data: [true], is_default: [false],
             position: [null]
         });
 
         this.pathValue({ ...defaultInfo });
 
 
+
     }
 
     ngOnInit() {
-        this.pathValue({entity_code: this.entityCode});
+        this.createFormGroup();
+        this.pathValue({ thread: this.thread });
         this.loadTemplate();
-    }
-
-    validateTitle(): Observable<any> {
-        const { title, template_id } = this.template;
-        return new Observable((obs: Observer<boolean>) => {
-
-            this.agTable.tableApi.forEachNode(node => {
-                const nTitle = node.data?.title ?? '';
-                const nId = node.data?.template_id ?? '';
-                if (nTitle === title && nId !== template_id) {
-                    obs.error(title);
-                    obs.complete();
-                }
-            });
-
-            obs.complete();
-        });
-
     }
 
     createTemplate() {
         this.resetForm();
         this.state.visibleCopy = false;
         this.state.visibleDelete = false;
-        this.formGroup.get('entity_code').enable();
+        this.tryDisabledThreadControl();
     }
 
     copyTemplate(): void {
         this.state.visibleDelete = false;
-        this.resetForm({ ...this.template,
-            template_id: undefined, title: undefined
+        this.resetForm({
+            ...this.template,
+            data: JSON.stringify(this.template.data),
+            template_id: undefined,
+            title: undefined
         });
     }
-
 
     loadTemplate() {
         this.state.asyncTemplate = true;
         this.state.visibleDelete = false;
 
-        const entities = notBlank(this.entityCode) ? [this.entityCode] : [];
+        const loading = this.toast.loading(`Đang lấy dữ liệu ${this.thread ?? ''}.`);
+
+        const entities = notBlank(this.thread) ? [this.thread] : [];
         this.templateSrv.getAllByUser(...entities).subscribe({
             next: (page) => {
-                this.rows = page.data;
+               // this.rows = page.data;
                 this.state.asyncTemplate = false;
-                this.toast.success(this.config.i18n.loadTemplateOk );
+                this.agTable.setRows(...page.data);
+                this.toast.success(this.config.i18n.loadTemplateOk);
+                this.toast.close(loading);
             },
             error: (err) => {
                 this.state.asyncTemplate = false;
                 this.logger.error(`loadTemplate error: `, err);
+                this.toast.close(loading);
             },
         });
     }
 
+    /** Save template to server */
     saveTemplate() {
 
         if (this.formGroup.invalid) {
-            this.toast.warning( this.config.i18n.form_invalid );
+            this.toast.warning(this.config.i18n.form_invalid);
             return;
-        } 
+        }
         else {
-            this.validateTitle().subscribe({
-                error: title => {
-                    this.toast.warning( `Tiêu đề [${title}] đã tồn tại. Vui lòng nhập lại.` );
+            this.state.asyncSave = true;
+
+            const formValue = this.formGroup.getRawValue();
+            formValue.data = JSON.parse(formValue.data ?? '{}');
+
+            const isNew = isNull(formValue.template_id);
+
+            this.templateSrv.create(formValue).subscribe({
+                next: (template: Template) => {
+                    this.state.asyncSave = false;
+                    if (isNew) this.agTable.addRow(template);
+                    else this.agTable.updateRows(template);
+                    this.toast.success(this.config.i18n.saveTemplateOk);
+                    this.pathValue(template);
+                    this.def.detectChanges();
                 },
-                complete: () => {
-                    this.state.asyncSave = true;
+                error: (err) => {
+                    this.state.asyncSave = false;
+                    this.logger.error(`saveTemplate error: `, err);
+                    this.def.detectChanges();
+                },
+            });
 
-                    const formValue: Template = this.formGroup.getRawValue();
-                    formValue.data = JSON.parse(formValue.data ?? '{}');
 
-                    const isNew = isNull(formValue.template_id);
-
-                    this.templateSrv.create(formValue).subscribe({ 
-                        next: (template: Template) => {
-                            this.state.asyncSave = false;
-                            if(isNew) this.agTable.addRows(template );
-                            else this.agTable.updateRows(template);
-                            this.toast.success( this.config.i18n.saveTemplateOk );
-                            this.def.detectChanges();
-                        }, 
-                        error: (err) => {
-                            this.state.asyncSave = false;
-                            this.logger.error(`saveTemplate error: `, err);
-                            this.def.detectChanges();
-                        },
-                    });
-                }
-            })
         }
 
 
     }
 
+    /** Delete template has selected */
     deleteTemplate() {
         const rows: Template[] = this.agTable.getSelectedRows();
-        for(const row of rows) {
-            this.templateSrv.deleteById(row.template_id).subscribe({
-                next: res => this.agTable.removeRows(row),
-                error: err => this.toast.error(`Lỗi xóa mẫu ${row.title} => ${err}`)
+        if (rows.length > 0) {
+
+            const ref = this.alert.warning({
+                title: 'Thông báo !!',
+                summary: 'Bạn có muốn xóa dòng này hay không ?',
+                actions: [
+                    { label: 'Đồng ý xóa', severity: 'danger', onClick: e => e.dynamicRef.close('delete') },
+                    { label: 'Không xóa', severity: 'primary', onClick: e => e.dynamicRef.close('') }
+                ]
             });
+
+            ref.onClose.subscribe(action => {
+                if ("delete" === action) {
+                    const waitToast = this.toast.help(`Đang xóa dữ liệu. Vui lòng đợi....`);
+                    const lsObs = rows.map(row => this.templateSrv.deleteById(row.template_id));
+                    RxjsUtil.runConcatMap(lsObs, 1000, true, {
+                        error: msg => {
+                          this.toast.close(waitToast);
+                          this.logger.error(msg);
+                        },
+                        next: data => {
+                          this.logger.info(data);
+                          this.agTable.removeRows({ template_id: data['model_id'] })
+                        },
+                        complete: () => {
+                          this.toast.close(waitToast);
+                          this.logger.info('complete');
+                        }
+                      });
+                }
+            });
+
+
         }
+
+
     }
 
     selectTemplate(template: Template): void {
         this.pathValue(template);
         this.state.visibleCopy = true;
-        this.formGroup.get('entity_code').disable();
+        this.tryDisabledThreadControl(true);
         this.formGroup.get('data').disable();
 
-        if (!this.lsEntity.includes(template.entity_code)) {
-            this.toast.warning(`Mã mẫu ${template.entity_code} không tồn tại.` )
+        if (!this.lsEntity.includes(template.thread)) {
+            this.toast.warning(`Mã mẫu ${template.thread} không tồn tại.`)
         }
     }
-
-    selectColor(color: any) {}
 
     resetForm(data?: any): void {
         this.formGroup.reset({ ...defaultInfo, ...data });
     }
 
     settingData() {
-        const entity = this.template.entity_code;
-        if (isBlank(entity)) {
-            this.toast.warning('Vui lòng chọn <b>[Mã mẫu]</b>' );
+        const data = this.template, thread = data.thread;
+
+        if (isBlank(thread)) {
+            this.toast.warning('Vui lòng chọn <b>[Mã mẫu]</b>');
             return;
         }
 
-        const template = Template.from(this.template);
-        const openRef = this.modal.open(TicketFormComponent, {
-            header: 'Cấu hình dữ liệu mặc định',
-            closable: true, draggable: false, resizable: false,
-            data: { template: template }
-        });
+        const clsType: Type<any> = thread === 'ticket_template' ? TicketFormComponent
+            : thread === 'email_template' ? EmailTemplateView: null;
 
-        openRef.onClose.subscribe({
-            next: res => {
-                if (res && res.data) {
-                    this.pathValue({ data: res.data });
+        if(Objects.isNull(clsType)) {
+            this.alert.warning({
+                title: 'Thông báo !!', 
+                summary: `Ứng dụng chưa hỗ tạo thiết lập dữ liệu mẫu [${thread}]`
+            });
+        }
+        else {
+            const openRef = this.modal.open(clsType, {
+                header: `Cấu hình dữ liệu mặc định -- [${thread}]`,
+                closable: true, draggable: false, resizable: false,maximizable: true,
+                data: { template: data }
+            });
+    
+            openRef.onClose.subscribe({
+                next: res => {
+                    if (res && res.data) {
+                        this.pathValue({ data: res.data });
+                    }
                 }
-            }
-        });
+            });
+        }
 
+
+
+
+
+     
 
     }
 
@@ -293,7 +328,7 @@ export class TemplateFormComponent implements OnInit {
     }
 
     onChangeRowPosition(event: any): void {
-        console.log(this.rows)
+       // console.log(this.rows)
     }
 
     previousPage(): void {
@@ -304,4 +339,13 @@ export class TemplateFormComponent implements OnInit {
         const data = value.data ? JSON.stringify(value.data, null, 0) : undefined;
         this.formGroup.patchValue({ ...value, data });
     }
+
+
+    private tryDisabledThreadControl(disabled?: boolean) {
+        const func = disabled === true ? 'disable'
+            : notBlank(this.thread) ? 'disable' : 'enable';
+
+        this.formGroup.get('thread')[func]();
+    }
+
 }

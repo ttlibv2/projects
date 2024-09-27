@@ -1,14 +1,13 @@
-import { Objects } from "ts-ui/helper";
+import { Objects, AssignObject } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
 import { Chanel } from "./chanel";
-import { AssignObject, ImageObject } from "./common";
+import { ImageObject } from "./common";
 import { GroupHelp } from "./group-help";
 import { Question } from "./question";
 import { Software } from "./software";
-import { TicketDetail } from "./ticket-detail";
 import { TicketOption } from "./ticket-option";
 import * as cls from "./od-cls";
-import { Template } from "./template";
+import { EmailTemplate, TicketTemplate} from "./template";
 
 const {isNull, notNull} = Objects;
 
@@ -22,12 +21,10 @@ export enum TicketStatus {
 }
 
 
-
 export class OdTicketSend extends BaseModel {
   ticket_id: number;
   action: string;
 }
-
 
 
 export class Ticket extends BaseModel {
@@ -61,8 +58,8 @@ export class Ticket extends BaseModel {
   user_id?: number;
   chanel_ids?: number[];
   template_id?: number;
-  email_template?: Template;
-  email_templateid?: number;
+  email_template?: EmailTemplate;
+  ticket_template?: TicketTemplate;
   images: string;
   options?: TicketOption = TicketOption.createDef();
   od_image?: ImageObject;

@@ -15,7 +15,7 @@ import {InputIconModule} from "primeng/inputicon";
 import {IconFieldModule} from "primeng/iconfield";
 import {TranslateModule} from "@ngx-translate/core";
 import {ColorPipe} from "../../pipes/color.pipe";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+// import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TemplateRoutingModule } from './template-routing.module';
@@ -24,6 +24,9 @@ import { ChipModule } from 'primeng/chip';
 import { RippleModule } from 'primeng/ripple';
 import { AgCellColor } from './renderer';
 import { JsonPipe } from '../../pipes/json.pipe';
+import { FormsModule } from 'ts-ui/forms';
+import { EmailTemplateModule } from '../email-template/email-template.module';
+import { EditorModule } from 'primeng/editor';
 
 
 
@@ -38,6 +41,7 @@ import { JsonPipe } from '../../pipes/json.pipe';
   imports: [
     CommonModule,
     TemplateRoutingModule,
+    FormsModule,
     ChipModule,
     AgTableModule,
     CardModule,
@@ -54,10 +58,9 @@ import { JsonPipe } from '../../pipes/json.pipe';
     InputTextareaModule,
     TranslateModule,
     ColorPipe,
-    ReactiveFormsModule,
-    FormsModule,
     CheckboxModule,
-    RippleModule
+    RippleModule,
+    EditorModule,
   ],
   providers: [
     DialogService,

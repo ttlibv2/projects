@@ -1,19 +1,18 @@
+import { AssignObject } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
-import { JsonObject } from "./common";
 
 export class Software extends BaseModel {
+  id?: number;
+  code?: string;
+  soft_names?: string[];
+  value?: string;
 
-    id?: number;
-    code?: string;
-    soft_names?: string[];
-    value?: string;
-
-  static from(data: JsonObject): Software {
+  static from(data: AssignObject<Software>): Software {
     return new Software().update(data);
   }
 
+  static fromList(data: AssignObject<Software>[]): Software[] {
+    return data.flatMap(item => Software.from(item));
+  }
   
-  static fromList(value: any[] | Software[]): Software[] {
-    throw new Error("Method not implemented.");
-}
 }

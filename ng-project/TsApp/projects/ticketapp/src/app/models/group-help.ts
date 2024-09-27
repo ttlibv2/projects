@@ -1,5 +1,5 @@
+import { AssignObject } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
-import { JsonObject } from "./common";
 
 export class GroupHelp extends BaseModel {
   id: number;
@@ -7,8 +7,8 @@ export class GroupHelp extends BaseModel {
   title: string;
   value: string;
   
-  static from(data: JsonObject): GroupHelp {
-    return new GroupHelp().update(data);
+  static from(data: AssignObject<GroupHelp>): GroupHelp {
+    return BaseModel.fromJson(GroupHelp, data);
   }
 
 }

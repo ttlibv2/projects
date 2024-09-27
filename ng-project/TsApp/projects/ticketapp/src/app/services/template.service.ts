@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ModelApi } from "./model-api.service";
-import { Page, ResponseToModel } from "../models/common";
+import { ResponseToModel } from "../models/common";
+import { Observable, map } from 'rxjs';
 import { Template } from '../models/template';
-import { Observable, map, tap } from 'rxjs';
+import { Page } from 'ts-ui/helper';
 
 @Injectable({ providedIn: 'root' })
 export class TemplateService extends ModelApi<Template> {
@@ -12,20 +13,17 @@ export class TemplateService extends ModelApi<Template> {
   }
 
   override resToModel(): ResponseToModel<any> {
-    return json => Template.from(json);
+    return json => Template.fromAll(json);
   }
 
-  getByUserAndCode(code: string): Observable<Page<Template>> {
-    const url = this.callBasePath('/user/get-by-code');
-    return this.getPage(url, {code});
-  }
 
-  getAllByUser(...entities: string[]): Observable<Page<Template>> {
+  getAllByUser(...threads: string[]): Observable<Page<Template>> {
     const url = this.callBasePath('/user/get-all');
-    return this.getPage(url, {entities});
+    const models = threads.length == 0 ? {} : {threads: threads.join(',')};
+    return this.getPage(url, models);
   }
 
-  
+
   override create(data: any): Observable<Template> {
     const converterNew = this.resToModel();
     const url = this.callBasePath(`save`);

@@ -7,6 +7,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.exception.ConvertException;
 import vn.conyeu.commons.utils.Objects;
 
 import java.util.List;
@@ -262,9 +263,19 @@ public class ClientLogger {
          */
         public ResponseLog payload(Object payload) {
             if(contentTypeIsJson(getHeaders()) && Objects.nonNull(payload)) {
-                payload = ObjectMap.fromJson(payload);
+               try{
+                   this.payload = ObjectMap.fromJson(payload);
+               }
+               catch (ConvertException ignored) {
+                    if(payload instanceof String str) {
+                        if(this.payload == null) this.payload = str;
+                        else this.payload = this.payload + str;
+                    }
+               }
             }
-            this.payload = payload;
+            else {
+                this.payload = payload;
+            }
             return this;
         }
 

@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
-import {ModelApi} from "./model-api.service";
-import {ApiInfo, EMPTY_PWD, UserApiInfo} from "../models/api-info";
-import {ResponseToModel} from "../models/common";
-import {Observable, of, switchMap, tap} from "rxjs";
+import { ModelApi } from "./model-api.service";
+import { ApiInfo, UserApi } from "../models/api-info";
+import { JsonObject, ResponseToModel } from "../models/common";
+import { Observable } from "rxjs";
+import { Pageable, Page, Objects } from 'ts-ui/helper';
+import { ClsUser } from '../models/od-cls';
 
 
-
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class ApiInfoService extends ModelApi<ApiInfo> {
+  
 
   basePath(): string {
     return "/ts-api/api-info";
@@ -17,20 +19,69 @@ export class ApiInfoService extends ModelApi<ApiInfo> {
     return json => ApiInfo.from(json);
   }
 
-  getByCode(code: string, userid?: number): Observable<ApiInfo> {
-    const url = (`get-by-code/${code}`);
-    return this.getOne(url, {userid});//.pipe(tap(res => of(ApiInfo.from(res))));
+  /** 
+   * find all model without page
+   * @param data the object filter
+   * @param page  the page data
+   * */  
+  override search(query?: {suid?: string, sname?: string}, page?: Pageable): Observable<Page<ApiInfo>> {
+    query = Objects.extractValueNotNull(query);
+    return super.search(query, page);
   }
 
-  saveUserApi(apiCode: string, info: UserApiInfo): Observable<UserApiInfo> {
-    if(info.password === EMPTY_PWD) info.password = undefined;
-    const url = (`save-user/${apiCode}`);
-    const data =  {api_code: apiCode, ...info};
-    return this.savePost<UserApiInfo>(url, data, res => UserApiInfo.from(res));
+  /**
+   * Find api without service_name
+   * @param name the service name to find
+   * */
+  findByServiceName(name: string): Observable<ApiInfo> {
+    return this.getOne(`find-by-name/${name}`);
   }
 
-  checkLogin(): Observable<any> {
-    const url = `/od-api/user/login`;
-    return this.post(url, {}).pipe(switchMap(res => of(res['result'])));
+  /**
+   * Find api without service_uid
+   * @param uid the service uid to find
+   * */
+  findByServiceUID(uid: string): Observable<ApiInfo[]> {
+    return this.getArray(`find-by-uid/${uid}`);
   }
+
+  /** 
+   * Load user api by service_name 
+   * @param sname the service name
+   * */
+  loadUserBySName(sname: string): Observable<UserApi> {
+    const url = this.callBasePath(`user/find-by-name/${sname}`);
+    return this.getOne(url, {}, item => UserApi.from(item));
+  }
+
+  /**
+   * Check user api login by service_name
+   * @param sname the service name
+   * */
+  checkLoginApiBySName(sname: string): Observable<UserApi> {
+    const url = this.callBasePath(`user/check-api-login/${sname}`);
+    return this.sendPost(url, {}, item => UserApi.from(item));
+  }
+
+  /** 
+   * Update menu link for api 
+   * @param sname the service name
+   * */
+  getMenuLink(sname: string): Observable<any> {
+    const url = this.callBasePath(`user/get-menu-links/${sname}`);
+    return this.sendPost(url, {}, item => item);
+  }
+
+  saveAll(info: SaveDto): Observable<ApiInfo> {
+    const url = this.callBasePath('user/save-info')
+    return this.savePost(url, info);
+  }
+
+
+}
+
+export interface SaveDto {
+  api_id?: number;
+  api_info: Partial<ApiInfo>;
+  user_api: Partial<UserApi>;
 }

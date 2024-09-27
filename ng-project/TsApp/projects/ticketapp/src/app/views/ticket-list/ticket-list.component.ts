@@ -281,7 +281,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
               // view for current template
               if (notNull(this.currentTemplateCode)) {
-                const template = this.agTemplates.find(t => t.code === this.currentTemplateCode);
+                const template = this.agTemplates.find((t:any) => t.code === this.currentTemplateCode);
                 if (isNull(template)) this.currentTemplateCode = null;
                 else this.onSelectColumnView({ item: template });
               }
@@ -616,8 +616,9 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   saveTicket(event: SaveTicketEvent): void {
-    if (event.state === 'new') this.agTable.addRows(event.ticket);
-    else if (event.state === 'update') this.agTable.updateRows(event.ticket);
+    //if (event.state === 'new') this.agTable.addRows(event.ticket);
+    //else if (event.state === 'update') this.agTable.updateRows(event.ticket);
+    throw new Error(`saveTicket(event: SaveTicketEvent)`);
   }
 
   editAgTemple(event: any): void {

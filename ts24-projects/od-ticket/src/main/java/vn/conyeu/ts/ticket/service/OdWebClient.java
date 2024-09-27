@@ -1,6 +1,9 @@
 package vn.conyeu.ts.ticket.service;
 
+import org.springframework.http.MediaType;
+import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsMenu;
 
@@ -8,6 +11,11 @@ import java.util.function.Function;
 
 public class OdWebClient extends OdTicketClient<ClsMenu> {
     public static final String LOAD_MENU_ID = "load_menus";
+
+    // menu -> [ xmlid, urlModel ]
+    public static final ObjectMap menuConfig = ObjectMap
+            .setNew("contacts.menu_contacts", "od_partner")
+            .set("sh_all_in_one_helpdesk.helpdesk_tickets_menu", "od_ticket");
 
     public OdWebClient(ClsApiCfg apiConfig) {
         super(apiConfig);
@@ -33,59 +41,48 @@ public class OdWebClient extends OdTicketClient<ClsMenu> {
     }
 
     private String getLoadMenuId() {
-//        ClsUser clsUser = getUser().getOdooUser();
-//        if(clsUser == null) return null;
-//
-//        ObjectMap hashes = clsUser.getCache_hashes();
-//        if(hashes == null) return null;
-//
-//        else return hashes.getString(LOAD_MENU_ID);
-        throw new UnsupportedOperationException();
+        return cfg().getClsUser().getMenuId();
     }
 
     public ObjectMap loadMenuForUser() {
-//        Assert.notNull(settingSrv, "@setSettingSrv(SystemSettingSrv)");
-//
-//        ObjectMap setting = settingSrv.findByKey("load_od_menu").orElseThrow(()-> BaseException
-//                .e404("load_setting").withMsg("Không tìm thấy cấu hình field [load_od_menu]")).getAs();
-//
-//        String menuId = Assert.notNull(getLoadMenuId(), "OdUser not find loadMenus='%s'");
-//
-//        ObjectMap menus = loadMenus(menuId);
-//        String allMenuKey = String.join("|", menus.keySet());
-//
-//        ObjectMap mapNew = ObjectMap.create();
-//
-//        for(String key:setting.keySet()) {
-//            String menuKey = setting.getString(key);
-//            if(!menus.containsKey(menuKey)) {
-//                throw BaseException.e404("no_menu")
-//                        .withMsg("Không tìm thấy menu [%s] -> (%s)", menuKey, allMenuKey);
-//            }
-//
-//            mapNew.set(key, menus.getMap(menuKey).get("link"));
-//        }
-//
-//        return mapNew;
-        throw new UnsupportedOperationException();
+        ObjectMap menus = loadMenus();
+
+        ObjectMap links = ObjectMap.create();
+
+        for(String menuKey : menuConfig.keySet()) {
+            if(!menus.containsKey(menuKey)) {
+                throw BaseException.e404("no_menu")
+                        .message("Không tìm thấy menu [%s]", menuKey);
+            }
+
+            String model = menuConfig.getString(menuKey);
+            String link = menus.getMap(menuKey).getString("link");
+            links.set(model, link);
+        }
+
+        return links;
     }
 
-    private ObjectMap loadMenus(String menuId) {
-//        Assert.notNull(menuId, "@menuId");
-//        Assert.notNull(menuId, "clsUser.cache_hashes.load_menus is null");
-//        String loginUrl = joinApiUrl("webclient/load_menus/"+menuId);
-//        ProxyOption option = OdHelper.fixOption(getUser());
-//        ObjectMap map = restClient.get(loginUrl, option).getBody();
-//
-//        ObjectMap mapNew = ObjectMap.create();
-//        for(String key:map.keySet()) {
-//            ObjectMap mapObj = map.getMap(key);
-//            mapObj.put("link", buildLink(mapObj));
-//            mapNew.put(mapObj.getString("xmlid"), mapObj);
-//        }
-//
-//        return mapNew;
-        throw new UnsupportedOperationException();
+    private ObjectMap loadMenus() {
+        String menuId = cfg().getClsUser().getMenuId();
+        Asserts.notNull(menuId, "clsUser.cache_hashes.load_menus is null");
+
+        String menuUrl = "%s/%s/%s".formatted(getApiUrl(), "webclient/load_menus", menuId);
+        String data = createClient().mutate().defaultContentType(MediaType.ALL)
+                .build().get().uri(menuUrl).retrieve().bodyToMono(String.class)
+                .blockOptional().orElseThrow();
+
+        ObjectMap menus  = ObjectMap.fromJson(data);
+        ObjectMap newMap = new ObjectMap();
+        for(String key:menus.keySet()) {
+            ObjectMap object = menus.getMap(key);
+            object.set("link", buildLink(object));
+
+            String newKey = object.getString("xmlid");
+            newMap.set(newKey, object);
+        }
+
+        return newMap;
     }
 
     private String buildLink(ObjectMap obj) {

@@ -23,7 +23,9 @@ public class ClsUser extends ClsModel<ClsUser> {
     private Long partner_id;
     private Boolean selected;
     private ObjectMap cache_hashes;
-    private ObjectMap menus;
+
+    @JsonProperty("menu_links")
+    private ObjectMap menuLinks;
     private ClsUserContext context;
     private Object tsUser;
 
@@ -41,6 +43,13 @@ public class ClsUser extends ClsModel<ClsUser> {
      */
     public String getDisplay_name() {
         return display_name;
+    }
+
+    /**
+     * Returns the menuLinks
+     */
+    public ObjectMap getMenuLinks() {
+        return menuLinks;
     }
 
     /**
@@ -253,22 +262,18 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the menus
-     */
-    public ObjectMap getMenus() {
-        return menus;
-    }
-
-    /**
-     * Set the menus
+     * Set the menuLinks
      *
-     * @param menus the value
+     * @param menuLinks the value
      */
-    public ClsUser setMenus(ObjectMap menus) {
-        this.menus = menus;
-        return this;
+    public void setMenuLinks(ObjectMap menuLinks) {
+        this.menuLinks = menuLinks;
     }
 
+    public String getMenuId() {
+        ObjectMap cache = getCache_hashes();
+        return cache == null ? null : cache.getString("load_menus");
+    }
     /**
      * Returns the context
      */

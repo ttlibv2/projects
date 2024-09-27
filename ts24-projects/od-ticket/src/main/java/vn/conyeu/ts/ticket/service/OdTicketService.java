@@ -4,12 +4,16 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.odcore.service.OdBaseService;
+import vn.conyeu.ts.odcore.service.OdServiceUID;
 
+@OdServiceUID(OdTicketService.SERVICE_NAME)
 public class OdTicketService extends OdBaseService<OdTicketClient> {
-    public static final String SERVICE_NAME = determineServiceName(OdTicketService.class);
+    public static final String SERVICE_NAME = "od.ticket";
 
     public static final ClsApiCfg DEFAULT_INFO = new ClsApiCfg()
-            .setApiTitle("Ticket Api").setApiCode(SERVICE_NAME)
+            .setApiTitle("Ticket Api")
+            .setServiceName(SERVICE_NAME)
+            .setServiceUid(SERVICE_NAME)
             .setBaseUrl("https://web.ts24.com.vn/web")
             .setLoginPath("/login")
             .setHeaders(ObjectMap.create())
@@ -19,13 +23,19 @@ public class OdTicketService extends OdBaseService<OdTicketClient> {
         super(clsApiConfig);
     }
 
-    @Override
     public final String getUniqueId() {
         return SERVICE_NAME;
     }
 
-    public ClsUser loginImpl() {
-        return user().login();
+    protected ClsUser loginImpl() {
+        ClsUser clsUser = user().login();
+        clsUser.setMenuLinks(menus().loadMenuForUser());
+        return clsUser;
+    }
+
+    @Override
+    public ObjectMap loadMenus() {
+        return menus().loadMenuForUser();
     }
 
     /**
@@ -156,6 +166,10 @@ public class OdTicketService extends OdBaseService<OdTicketClient> {
      */
     public OdWkTeam wkTeam() {
         return service(OdWkTeam.class, () -> new OdWkTeam(clsConfig));
+    }
+
+    public OdWebClient menus() {
+        return service(OdWebClient.class, () -> new OdWebClient(clsConfig));
     }
 
 

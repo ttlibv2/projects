@@ -1,8 +1,7 @@
 import { TableColumn } from "ts-ui/ag-table";
 import { BaseModel } from "./base-model";
-import { AssignObject } from "./common";
 import { MenuItem } from "primeng/api";
-import { Objects } from "ts-ui/helper";
+import { AssignObject, Objects } from "ts-ui/helper";
 import { ValueGetterFunc } from "@ag-grid-community/core";
 
 export interface AgColumnState {

@@ -1,11 +1,14 @@
-import { AssignObject} from "./common";
-import {Objects} from "ts-ui/helper";
+import {Objects, AssignObject} from "ts-ui/helper";
 import { Type } from "@angular/core";
 
-export abstract class BaseModel {
+export abstract class BaseModel<E extends BaseModel = any> {
   [field: string]: any;
 
-  update(object: AssignObject<this>): this {
+  protected get modelType(): Type<E> {
+    return null;
+  }
+
+  update(object: AssignObject<E>): this {
     if(Objects.notEmpty(object)) {
       Objects.assign(this, object);
     }
@@ -17,6 +20,11 @@ export abstract class BaseModel {
     const self = this;
     fields.forEach(field => delete self[field]);
     return self;
+  }
+
+   clone(): E {
+    if(Objects.isNull(this.modelType)) throw new Error(`method clone not support`);
+    else return new this.modelType().update(this);
   }
 
   protected static fromJson<E extends BaseModel>(modelType: Type<E>, data: AssignObject<E>): E {

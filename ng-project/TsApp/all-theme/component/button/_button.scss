@@ -152,7 +152,7 @@ $prefix: ".p-button";
     }
   }
 
-  &-sm {
+  form.sm &, &-sm {
     //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleSM);
     @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleSM);
 
@@ -161,7 +161,7 @@ $prefix: ".p-button";
   //  }
   }
 
-  &-lg {
+  form.lg &, &-lg {
     //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleLG);
     @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleLG);
 

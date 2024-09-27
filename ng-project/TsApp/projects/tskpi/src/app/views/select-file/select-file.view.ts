@@ -164,7 +164,7 @@ export class SelectFileView implements OnInit {
     private async readXsl(file: File) {
         this.workbook = await file.arrayBuffer().then(buffer => new Workbook().xlsx.load(buffer));
         this.sheets = this.workbook?.worksheets?.map(ws => ws.name) || [];
-        this.selectSheet(this.workbook.worksheets[0].name);
+        this.selectSheet('data');
         this.fileBase64 = await Base64.encode(this.file);
     }
 }

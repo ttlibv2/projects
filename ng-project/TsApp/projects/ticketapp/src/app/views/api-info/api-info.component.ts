@@ -1,219 +1,433 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Asserts, Objects } from "ts-ui/helper";
-import { UserService } from "../../services/user.service";
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Validators } from "@angular/forms";
+import { Objects } from "ts-ui/helper";
 import { ToastService } from "ts-ui/toast";
-import { ApiInfo } from "../../models/api-info";
+import { ApiInfo, UserApi } from "../../models/api-info";
 import { ApiInfoService } from "../../services/api-info.service";
 import { StorageService } from "../../services/storage.service";
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { LoggerConfig, LoggerService } from 'ts-ui/logger';
-import { FormUtil } from '../../helper/form-util';
-import { User } from '../../models/user';
-import {ModalService} from "../../services/ui/model.service";
+import { LoggerService } from 'ts-ui/logger';
+import { ModalService } from "../../services/ui/model.service";
+import { FormGroup, FormsBuilder } from 'ts-ui/forms';
+import { delay } from 'rxjs';
+import { Alert } from 'ts-ui/alert';
 
-const { notBlank, isBlank, notNull } = Objects;
-
-
+const { isBlank, notNull, isNull, isFalse } = Objects;
 
 @Component({
   selector: 'ts-api-info',
+  encapsulation: ViewEncapsulation.None,
   templateUrl: './api-info.component.html',
   styleUrl: './api-info.component.scss'
 })
 export class ApiInfoComponent implements OnInit {
-
-  get disabledCheckApi(): boolean {
-    const { api_item, username, password } = this.formGroup.getRawValue();
-    return (Objects.isNull(api_item) || Objects.anyBlank(username, password));
-  }
-
-  get hasSetApiCode(): boolean {
-    return notBlank(this.apiCode);
-  }
-
-  hasChangeData: boolean = false;
   asyncSave: boolean = false;
   asyncLoad: boolean = false;
-  form: FormUtil = undefined;
-  user: User = undefined;
+  asyncUpdateMenu: boolean = false;
+  hasCopy: boolean = false;
   hasDialogRef: boolean = false;
+  visibleBtnCopy: boolean = false;
+  isSystem: boolean = false;
+
+  @Input({ alias: 'sname' })
+  service_name: string = undefined;
+
+  @Input({ alias: 'suid' })
+  service_uid: string = undefined;
+
   formGroup: FormGroup;
-
   lsApiCode: ApiInfo[];
+  fgApiInfo: FormGroup;
+  fgUserApi: FormGroup;
+  currentApiItem: ApiInfo;
 
-  @Input({alias: 'api'})
-  apiCode: string = undefined;
+  get hasNew(): boolean {
+    return isBlank(this.fgApiInfo.get_value('api_id'));
+  }
+
+  get editApiInfoForm(): boolean {
+    return this.hasCopy;
+  }
+
+  get visibleBtnSave(): boolean {
+    return Objects.anyTrue(this.hasCopy, this.fgUserApi.invalid, this.formDirty) 
+        && this.formGroup.get('api_item').valid;
+  }
+
+  get visibleUpdateLink(): boolean {
+    return !this.hasNew && this.fgUserApi.valid  && this.formNoChange;
+  }
+
+  get labelSave(): string {
+    return this.hasNew ? 'Tạo mới' : 'Cập nhật'
+  }
+
+  get formDirty(): boolean {
+    return this.fgApiInfo?.dirty || this.fgUserApi?.dirty;
+  }
+
+  
+  get formNoChange(): boolean {
+    return this.fgApiInfo?.pristine && this.fgUserApi?.pristine;
+  }
+
+  get enableReset(): boolean {
+    return this.formDirty || this.hasCopy;
+  }
 
   constructor(
-    private fb: FormBuilder,
+    private fb: FormsBuilder,
     private logger: LoggerService,
     private storage: StorageService,
     private config: StorageService,
     private apiSrv: ApiInfoService,
+    //private userApi: UserApiService,
     private toast: ToastService,
     private modal: ModalService,
+    private alert: Alert,
     private dialogRef: DynamicDialogRef) {
 
-    this.form = FormUtil.create(
+    this.fgApiInfo = this.fb.group({
+      api_id: [null],
+      title: [null, Validators.required],
+      summary: [null],
+      base_url: [null, Validators.required],
+      service_uid: [{ value: null, disabled: true }, Validators.required],
+      service_name: [null, Validators.required],
+      login_path: [null, Validators.required],
+      allow_copy: [false],
+      headers: [null],
+      queries: [null],
+      links: [null]
+    });
 
-      () => this.fb.group({
-        api_item: [null, Validators.required],
-        username: [null, Validators.required],
-        password: [null, Validators.required],
-        allow_edit: [false],
-        csrf_token: [{ value: null, disabled: true }],
-        cookie: [{ value: null, disabled: true }],
-        user_info: [{ value: null, disabled: true }],
-        auto_login: [true]
-      }),
+    this.fgUserApi = this.fb.group({
+      user_name: [null, Validators.required],
+      password: [null, Validators.required],
+      allow_edit: [false],
+      csrf_token: [{ value: null, disabled: true }],
+      cookie_value: [{ value: null, disabled: true }],
+      user_info: [{ value: null, disabled: true }],
+      auto_login: [true]
+    });
 
-      form => {
-        this.formGroup = form.fg;
-        form.formValueChange(_ => this.hasChangeData = true);
-        form.controlValueChange('api_item', val => this.onSelectApi(val));
-      }
+    this.formGroup = this.fb.group({
+      api_item: [null, Validators.required],
+      api_info: this.fgApiInfo,
+      user_api: this.fgUserApi
+    });
 
-    );
+    this.fgUserApi.controlValueChange('allow_edit', b => this.allowEdit(b));
+    this.setState(false);
+
   }
 
 
   ngOnInit() {
-    this.user = this.storage.loginUser;
+    //this.user = this.storage.loginUser;
 
-    const instanceRef = this.modal.getInstance(this.dialogRef);
-    this.hasDialogRef = notNull(instanceRef);
-
-    if(instanceRef && instanceRef.data) {
-      this.apiCode = instanceRef.data['apiCode'];
-      this.findApiByCode(this.apiCode);
+    const instanceData: any = this.modal.getData(this.dialogRef);
+    this.hasDialogRef = notNull(instanceData);
+    if (instanceData) {
+      const { suid, sname } = instanceData;
+      this.hasDialogRef = true;
+      this.service_name = sname;
+      this.service_uid = suid;
     }
+
+    this.loadApiInfo();
 
   }
 
+  private setState(enable: boolean): void {
+    if(isFalse(enable)) {
+      this.fgApiInfo.disable();
+      this.hasCopy = false;
+    }
+    else {
+      this.fgApiInfo.enable();
+      this.fgApiInfo.get('service_uid').disable();
+
+      const {is_system} = this.fgApiInfo.getRawValue();
+      if(is_system) this.fgApiInfo.get('service_name').disable();
+    }
+  }
+
+  /** Click checkbox allow_edit */
   allowEdit(checked: boolean): void {
-    const ck = this.formGroup.get('cookie');
-    const cs = this.formGroup.get('csrf_token');
-
-    checked ? ck.enable() : ck.disable();
-    checked ? cs.enable() : cs.disable();
-
+    this.fgUserApi.enableOrDisableControl('cookie_value', checked);
+    this.fgUserApi.enableOrDisableControl('csrf_token', checked);
   }
 
-  onSelectApi(value: ApiInfo): void {
-    if (Objects.isNull(value)) {
-      this.formGroup.reset({}, {emitEvent: false, onlySelf: true});
+  /** Click button copy */
+  onCopyApi(): void {
+    let apiItem: ApiInfo = this.formGroup.get('api_item').getRawValue();
+    if (notNull(apiItem)) {
+      const newItem = apiItem.clone();
+      newItem.update({
+        api_id: undefined,
+        service_name: undefined,
+        base_url: undefined,
+        is_system: false,
+        allow_copy: true,
+        links: undefined,
+        user_api: {
+          user_name: newItem.user_api?.user_name,
+          password: undefined,
+          auto_login: false,
+          allow_edit: false
+        }
+      });
+
+      newItem.user_api.password = undefined;
+      this.formPathValue(newItem, { emitEvent: true });
+      this.setState(true);
+      this.hasCopy = true;
     }
-    else if (Objects.notNull(value.user_api)) {
-      this.formGroup.patchValue(value.user_api);
-      this.hasChangeData = false;
+  }
+
+  /** Click `Lấy DS` */
+  loadApiInfo(): void {
+    this.asyncLoad = true;
+    this.apiSrv
+      .search({ sname: this.service_name, suid: this.service_uid })
+      .pipe(delay(1000)).subscribe({
+        error: err => {
+          this.logger.error('loadApiInfo', err);
+          this.asyncLoad = false;
+        },
+        next: page => {
+          this.asyncLoad = false;
+          this.lsApiCode = page.data || [];
+          this.toast.success(this.config.i18n.loadApiOk);
+
+          if(this.hasCopy === false && this.lsApiCode.length > 0) {
+            this.formGroup.pathControl('api_item', this.lsApiCode[0]);
+            this.onSelectApi(this.lsApiCode[0]);
+          }
+
+        }
+      })
+  }
+
+  onSelectApi(value: ApiInfo, hasCheck: boolean = true): void {
+
+    if(this.currentApiItem !== value) {
+      this.currentApiItem = value;
+      this.formGroup.pathControl('api_item', value);
+    }
+
+
+    this.visibleBtnCopy = value && value.allow_copy == true;
+
+    // data is new
+    if (hasCheck && this.hasCopy === true && this.formDirty) {
+      if (notNull(value)) {
+
+        const ref = this.alert.warning({
+          summary: `Bạn đang tạo mới thông tin API. Bạn có muốn thay đổi thông tin khác ?`,
+          title: 'Cảnh báo !!',
+          actions: [
+            { label: 'Thay đổi', onClick: e => e.dynamicRef.close('ok') },
+            { label: 'Hủy bỏ', onClick: e => e.dynamicRef.close('cancel') }
+          ]
+        });
+
+        ref.onClose.subscribe(act => {
+          if ("ok" == act) {
+            this.hasCopy = false;
+            this.onSelectApi(value);
+          }
+        })
+
+      }
+    }
+
+    // handle select api
+    else if (isNull(value)) {
+      this.formGroup.reset({}, { emitEvent: false, onlySelf: true });
+      this.onResetForm(false);
+    }
+    else if (notNull(value.user_api)) {
+      this.formPathValue(value);
     }
     else {
       this.asyncLoad = true;
-      this.apiSrv.getByCode(value.code).subscribe({
+      this.apiSrv.loadUserBySName(value.service_name).subscribe({
         error: _ => this.asyncLoad = false,
-        next: res => {
+        next: (user: UserApi) => {
+          value.user_api = user;
           this.asyncLoad = false;
-          value.user_api = res;
-          this.formGroup.patchValue(res);
-          this.hasChangeData = false;
+          this.formPathValue(value);
         }
       });
-    }
-  }
 
-  onSave() {
-
-    if (this.formGroup.invalid) {
-      this.toast.warning( this.config.i18n.form_invalid )
-      return;
     }
 
-    const value = this.form.rawValue();
-    const apiCode = value.api_item?.code;
 
-    ['api_item'].forEach(k => delete value[k]);
-
-    this.apiSrv.saveUserApi(apiCode, value).subscribe({
-      error: _ => this.asyncSave = false,
-      next: _ => {
-        this.asyncSave = false;
-        this.hasChangeData = false;
-        this.toast.success(this.config.i18n.saveOk);
-      }
-    });
   }
 
-  checkApi(close: boolean = false): void {
-    if (this.disabledCheckApi === false) {
-      this.asyncSave = false;
+  checkLoginApi(close: boolean = false): void {
+    if (this.validateActionWithoutSave()) { }
+    else {
+      this.asyncSave = true;
 
-      const loadingRef = this.toast.loading( this.config.i18n.awaitHandle)
+      const loadingRef = this.toast.loading(this.config.i18n.awaitHandle);
+      const { service_name } = this.formGroup.getRawValue()?.api_info;
 
-      this.apiSrv.checkLogin().subscribe({
-        error: _ => {
-          this.asyncSave = false;
+      this.apiSrv.checkLoginApiBySName(service_name).subscribe({
+        error: _ => {          
           this.toast.close(loadingRef);
+          this.asyncSave = false;
         },
-        next: res => {
-          this.asyncSave = false;
+        next: (cls: UserApi) => {       
           this.toast.close(loadingRef);
-          this.formGroup.get('cookie').patchValue(res.cookie);
-          this.formGroup.get('csrf_token').patchValue(res.csrf_token);
-          this.toast.success( this.config.i18n.checkApiOk);
+          this.toast.success(this.config.i18n.checkApiOk);
+          this.asyncSave = false;
+          this.formGroup.patchValue({
+            cookie_value: cls.cookie_value,
+            csrf_token: cls.csrf_token
+          });
 
-          if(close){
+          if (close) {
             this.closeDialogRef();
           }
         }
       });
     }
+
   }
 
-  loadApi(): void {
-    if (isBlank(this.apiCode)) this.loadAllApi();
-    else this.findApiByCode(this.apiCode);
+  clickUpdateMenuLink(): void {
+    if (this.validateActionWithoutSave()) { }
+    else {    
+      const loadingRef = this.toast.loading(this.config.i18n.awaitHandle);
+      const { service_name } = this.formGroup.getRawValue()?.api_info;
+
+      this.asyncUpdateMenu = true;
+
+      this.apiSrv.getMenuLink(service_name).subscribe({
+        error: _ => {
+          this.asyncUpdateMenu = false;
+          this.toast.close(loadingRef);
+          console.error(`clickUpdateMenuLink: `, _);
+        },
+        next: links => {
+          this.fgApiInfo.pathControl('links', JSON.stringify(links));
+          this.toast.close(loadingRef);
+          this.toast.success(this.config.i18n.updateMenuOk);
+          this.asyncUpdateMenu = false;
+        }
+      });
+    }
+
   }
 
-  private findApiByCode(code?: string): void {
-    code = Asserts.notEmpty(code || this.apiCode);
+  onResetForm(hasCheck: boolean = true): void {
+    const api_item = this.formGroup.get_value('api_item');
+    if(isFalse(hasCheck) || this.formNoChange)  {
+      this.onSelectApi(api_item);
+      this.setState(false);
+    }
+    else if(this.fgApiInfo.dirty || this.fgUserApi.dirty) {
+      const ref = this.alert.warning({
+        title: 'Cảnh báo !!', 
+        summary: 'Bạn có muốn lấy lại thông tin trước khi sửa không ?',
+        actions: [
+          {label: 'Lấy lại', onClick: e => e.dynamicRef.close('ok')},
+          {label: 'Bỏ qua', onClick: e => e.dynamicRef.close('cancel')}
+        ]
+      });
 
-    this.apiSrv.getByCode(code, this.user.user_id).subscribe({
-      error: err => this.logger.error('findApiCode', err),
+      ref.onClose.subscribe(act => {
+        if(act === "ok") {
+          const api_item = this.formGroup.get_value('api_item');
+          this.onSelectApi(api_item, false);
+          this.setState(false);
+        }
+      });
+    }
+
+  }
+
+  onSaveUserApi() {
+   
+    if (this.formGroup.invalid) {
+      this.toast.warning(this.config.i18n.form_invalid)
+      return;
+    }
+
+    const {api_info, user_api} = this.formGroup.getRawValue();
+
+    let apiInfo: Partial<ApiInfo> = undefined;
+    if(this.fgApiInfo.dirty) {
+      apiInfo = api_info;
+      apiInfo.headers = JSON.parse(api_info.headers || '{}');
+      apiInfo.queries = JSON.parse(api_info.queries || '{}');
+      apiInfo.links = JSON.parse(api_info.links || '{}');
+    }
+
+    const saveData = {
+      api_id: this.hasCopy ? null : apiInfo?.api_id,
+      api_info: Objects.extractValueNotNull(apiInfo), 
+      user_api: this.fgUserApi.dirty ? Objects.extractValueNotNull(user_api) : null
+    };
+
+    this.apiSrv.saveAll(saveData).subscribe({
+      error: _ => {
+        this.asyncSave = false;
+        console.error(`onSaveUserApi: `,_);
+      },
       next: data => {
-        this.lsApiCode = this.lsApiCode ?? [];
-
-        const api = this.lsApiCode.find(a => a.api_id === data.api_id);
-        if (Objects.isNull(api)) this.lsApiCode.push(data);
-        else api.update(data);
-
-        this.form.pathControl('api_item', data);
-
+        if(this.hasCopy) this.lsApiCode.push(data);
+        this.toast.success(this.config.i18n.saveApiOk);
+        this.onSelectApi(data, false);
+        this.setState(false);
+        this.hasCopy = false;
       }
     });
+
   }
 
-  private loadAllApi() {
-    //this.formGroup.disable();
-    this.apiSrv.findAll().subscribe({
-      error: err => this.logger.error('loadApiCode', err),
-      next: page => {
-        this.toast.success(this.config.i18n.loadApiOk );
-        this.lsApiCode = page.data || [];
-      }
-
-    })
+  private validateActionWithoutSave() {
+    if (this.visibleBtnSave) {
+      this.toast.warning({
+        message: `Bạn đã thay đổi dữ liệu. Vui lòng <b>[lưu]</b> trước khi thực hiện chức năng này`,
+        width: '400px'
+      });
+    }
+    return this.visibleBtnSave;
   }
+
+  private formPathValue(info: Partial<ApiInfo>, options?: any) {
+    this.fgApiInfo.enableOrDisableControl('service_name', info?.is_system === false);
+
+    if (info?.user_api) {
+      this.fgUserApi.reset({
+        ...info.user_api,
+        api_id: info?.api_id
+      }, options);
+    }
+
+    const upJson: any = { ...info };
+    if (info?.headers) upJson.headers = JSON.stringify(info?.headers);
+    if (info?.queries) upJson.queries = JSON.stringify(info?.queries);
+    if (info?.links) upJson.links = JSON.stringify(info?.links);
+    this.fgApiInfo.reset(upJson, options);
+    this.hasCopy = false;
+  }
+
+
 
   closeDialogRef(): void {
-    if(this.hasDialogRef){
+    if (this.hasDialogRef) {
       this.dialogRef.close();
     }
   }
 
   static showDialog(modal: ModalService, apiCode: string) {
     modal.open(ApiInfoComponent, {
-     header: 'Cấu hình thông tin xác thực',
+      header: 'Cấu hình thông tin xác thực',
       width: '500px',
       data: { apiCode }
     })

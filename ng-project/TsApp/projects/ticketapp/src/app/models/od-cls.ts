@@ -1,5 +1,6 @@
+import { AssignObject } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
-import { AssignObject, JsonObject } from "./common";
+import { JsonObject } from "./common";
 
 export type ClsOperator = 'like' | 'not_like' | 'equal' | 'not_equal' | 'is_set' | 'not_is_set';
 
@@ -154,6 +155,8 @@ export class ClsProduct extends ClsModel {
 
 export class ClsUser extends ClsModel {
   email: string;
+  cookie?: string;
+  csrf_token?: string;
   
   static from(json: AssignObject<ClsUser>): ClsUser {
     return BaseModel.fromJson(ClsUser, json);

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { ApiInfoRoutingModule } from './api-info-routing.module';
 import { ApiInfoComponent } from './api-info.component';
 import {CardModule} from "primeng/card";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MultiSelectModule} from "primeng/multiselect";
 import {DropdownModule} from "primeng/dropdown";
 import {ChipsModule} from "primeng/chips";
@@ -15,6 +14,9 @@ import {PasswordModule} from "primeng/password";
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DividerModule } from 'primeng/divider';
+import { FormsModule } from 'ts-ui/forms';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
     declarations: [
@@ -25,19 +27,20 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
     ],
     imports: [
         CommonModule,
+        FormsModule,
         ApiInfoRoutingModule,
         CardModule,
-        ReactiveFormsModule,
         MultiSelectModule,
         DropdownModule,
         ChipsModule,
         ButtonModule,
         TranslateModule,
         CheckboxModule,
-        FormsModule,
         PasswordModule,
         InputGroupModule,
-        InputGroupAddonModule
+        InputTextareaModule,
+        InputGroupAddonModule,
+        DividerModule
     ],
     providers: [DynamicDialogRef]
 })

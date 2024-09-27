@@ -3,10 +3,9 @@ import { Software } from "./software";
 import { GroupHelp } from "./group-help";
 import { Question } from "./question";
 import { BaseModel } from "./base-model";
-import { AssignObject, JsonObject } from "./common";
 import * as cls from "./od-cls";
-import { Template, Templates } from "./template";
-import {Objects} from "ts-ui/helper";
+import { EmailTemplateMap, TicketTemplateMap } from "./template";
+import { AssignObject } from "ts-ui/helper";
 
 
 export class Catalog extends BaseModel {
@@ -27,16 +26,21 @@ export class Catalog extends BaseModel {
    ls_ticket_type: cls.ClsTicketType[];// = [];
    ls_topic: cls.ClsTopic[];// = [];
    ls_team_head: cls.ClsTeamHead[];// = [];
-   ls_template: Templates = new Templates();
+   ls_email_template: EmailTemplateMap;
+   ls_ticket_template: TicketTemplateMap;
 
-   get_email(): Template[] {
-      return this.ls_template.get_email();
+   get_email() {
+      return this.ls_email_template?.list();
    }
+
+   get_ticket() {
+      return this.ls_ticket_template?.list();
+   }
+
 
    set_ls_chanel(data: AssignObject<Chanel>[]) {
       this.ls_chanel = (data || []).map(item => Chanel.from(item));
    }
-
 
    set_ls_software(data: AssignObject<Software>[]) {
       this.ls_software = (data || []).map(item => Software.from(item));
@@ -101,12 +105,19 @@ export class Catalog extends BaseModel {
       this.ls_team_head = (data || []).map(item => cls.ClsTeamHead.from(item));
    }
 
-   set_ls_template(data: any) {
-      this.ls_template = Templates.fromAny(data);
+   set_ls_ticket_template(data: any[] | TicketTemplateMap) {      
+      if(data instanceof TicketTemplateMap) this.ls_ticket_template = data;
+      else this.ls_ticket_template = new TicketTemplateMap().set_all(data);
    }
 
+   set_ls_email_template(data: any[] | EmailTemplateMap) {      
+      if(data instanceof EmailTemplateMap) this.ls_email_template = data;
+      else this.ls_email_template = new EmailTemplateMap().set_all(data);
+   }
+
+
    static from(json: AssignObject<Catalog>): Catalog {
-      return Objects.assign(Catalog, json);
+      return BaseModel.fromJson(Catalog, json);
    }
 
 }

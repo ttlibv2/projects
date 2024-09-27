@@ -1,5 +1,5 @@
+import { AssignObject } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
-import { JsonObject } from "./common";
 
 export class TicketDetail extends BaseModel {
     ticket_id?: number;
@@ -25,8 +25,8 @@ export class TicketDetail extends BaseModel {
     cancel_at?: string;
     mail_at?: string;
   
-    static from(o: JsonObject): TicketDetail {
-      return new TicketDetail().update(o);
+    static from(o: AssignObject<TicketDetail>): TicketDetail {
+      return BaseModel.fromJson(TicketDetail, o);
     }
   
   }

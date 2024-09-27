@@ -187,7 +187,7 @@ public class ClientBuilder implements WebClient.Builder {
     }
 
     public ClientBuilder defaultCsrfToken(String csrfToken) {
-       return defaultCsrfToken("CSRF_TOKEN", csrfToken);
+       return defaultCsrfToken("csrf_token", csrfToken);
     }
 
     public ClientBuilder defaultCsrfToken(String tokenKey, String csrfToken) {

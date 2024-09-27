@@ -1,10 +1,12 @@
 package vn.conyeu.ts.odcore.service;
 
 import lombok.extern.slf4j.Slf4j;
+import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -13,8 +15,8 @@ import java.util.function.Supplier;
 @Slf4j
 public abstract class OdBaseService<T extends OdClient> {
     protected final Map<Class, T> clsMap = new HashMap<>();
-    protected final String serviceName = determineServiceName(getClass());
-    protected BiConsumer<String, ClsUser> saveConfigDbConsumer;
+    //protected BiConsumer<String, ClsUser> saveConfigDbConsumer;
+    protected BiConsumer<ClsApiCfg, ClsUser> loginConsumer;
 
     protected final ClsApiCfg clsConfig;
 
@@ -33,17 +35,16 @@ public abstract class OdBaseService<T extends OdClient> {
     }
 
     /**
-     * Set the saveConfigDbConsumer
+     * Set the loginConsumer
      *
-     * @param consumer the value
+     * @param loginConsumer the value
      */
-    public final void setSaveConfigDbConsumer(BiConsumer<String, ClsUser> consumer) {
-        this.saveConfigDbConsumer = consumer;
+    public void setLoginConsumer(BiConsumer<ClsApiCfg, ClsUser> loginConsumer) {
+        this.loginConsumer = loginConsumer;
     }
 
-    public String getUniqueId() {
-        return serviceName;
-    }
+
+    public abstract String getUniqueId();
 
     /**
      * Returns the clsConfig
@@ -80,6 +81,9 @@ public abstract class OdBaseService<T extends OdClient> {
     }
 
     public static String determineServiceName(Class objectCls) {
+        Annotation serviceUID = objectCls.getAnnotation(OdServiceUID.class);
+        if(serviceUID instanceof OdServiceUID uid) return uid.value();
+
         return Objects.camelCaseToDot(objectCls
                 .getSimpleName().replace("Service", "")
                 .replace("Client", "").trim()).toLowerCase();
@@ -88,14 +92,18 @@ public abstract class OdBaseService<T extends OdClient> {
 
     public final ClsUser login() {
         ClsUser clsUser = loginImpl();
+
+        // update credential
         updateConfig(clsUser);
 
-        if(saveConfigDbConsumer != null) {
-            saveConfigDbConsumer.accept(getUniqueId(), clsUser);
+        if(loginConsumer != null) {
+            loginConsumer.accept(clsConfig, clsUser);
         }
 
         return clsUser;
     }
 
     protected abstract ClsUser loginImpl();
+
+    public abstract ObjectMap loadMenus();
 }

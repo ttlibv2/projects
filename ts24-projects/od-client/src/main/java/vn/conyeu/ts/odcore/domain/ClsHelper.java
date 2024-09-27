@@ -117,7 +117,7 @@ public final class ClsHelper {
         String msgPrefix = "Đã xảy ra lỗi từ hệ thống [%s]. ".formatted(cfg.getApiTitle());
 
         BaseException exp = BaseException.e500("ts_api")
-                .detail("ts_api", cfg.getApiCode())
+                .detail("ts_api", cfg.getServiceName())
                 .detail("ts_detail", detail);
 
         if (response instanceof String html) {

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ClientService } from './client.service';
 import { BaseModel } from '../models/base-model';
-import { ClientParams, JsonObject, Page, Pageable, ResponseToModel } from '../models/common';
+import { ClientParams, JsonObject,  ResponseToModel } from '../models/common';
 import { map, Observable } from 'rxjs';
 import { InjectService } from "./inject.service";
+import { Page, Pageable } from 'ts-ui/helper';
 
 export const defaultPage: Pageable = {};
 
@@ -19,26 +20,34 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
   abstract resToModel(): ResponseToModel<any>;
 
   protected callBasePath(path: string): string {
-    if(path.startsWith(this.basePath())) return path;
-    else{
-      if (!path.startsWith('/')) path = '/' + path;
-      return this.basePath() + path;
-    }
+    return this.joinUrls(this.basePath(), path);
   }
 
-  protected responseToPage(response: any): Page<E> {
+  //protected responseToPage(response: any): Page<E> {
+  //  const converter = this.resToModel();
+  //  return Page.from(response, item => converter(item));
+ // }
+
+
+  protected responseToArray(items: any[]): E[] {
     const converter = this.resToModel();
-    return Page.from(response, item => converter(item));
+    return items.map(item => converter(item));
   }
 
-  protected getOne(path: string, params?: ClientParams): Observable<E> {
-    const convert = this.resToModel(), url = this.callBasePath(path);
+  protected getOne(path: string, params?: ClientParams, callback?: ResponseToModel<any>): Observable<any> {
+    const convert = callback || this.resToModel(), url = this.callBasePath(path);
     return this.get(url, params).pipe(map((item: any) => convert(item)));
   }
 
-  protected getPage(url: string, params?: ClientParams, page?: Pageable): Observable<Page<E>> {
-    const newPage:Pageable = {...defaultPage, ...page};
-      return this.get(url, {...params, ...newPage}).pipe(map(res => this.responseToPage(res)));
+
+  protected getArray(url: string, params?: ClientParams): Observable<E[]> {
+      return this.get(url, {...params}).pipe(map((items: any[]) => this.responseToArray(items)));
+  }
+
+  protected getPage(url: string, params?: ClientParams, page?: Pageable): Observable<Page<E>> {    
+    //const newPage:Pageable = {...defaultPage, ...page};
+    //return this.get(url, {...params, ...newPage}).pipe(map(res => this.responseToPage(res)));
+    return this.sendGetPage(url, {params, page, cbItem: this.resToModel()});
   }
 
    /** 
@@ -48,7 +57,8 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
    * */
   search(data: JsonObject, page: Pageable): Observable<Page<E>> {
     const url = this.callBasePath('search');
-    return this.get(url, { ...data, ...page }).pipe(map(res => this.responseToPage(res)));
+    //return this.get(url, { ...data, ...page }).pipe(map(res => this.responseToPage(res)));
+    return this.sendGetPage(url, {page, params: data, cbItem: this.resToModel()});
   }
 
   /** 
@@ -57,7 +67,8 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
    * */
   findAll(page?: Pageable): Observable<Page<E>> {
     const url = this.callBasePath('get-all');
-    return this.get(url, page).pipe(map(res => this.responseToPage(res)));
+    //return this.get(url, page).pipe(map(res => this.responseToPage(res)));
+    return this.sendGetPage(url, {page, cbItem: this.resToModel()});
   }
 
   /** 
@@ -104,10 +115,17 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
     return this.post(url, data).pipe(map(data => converterNew(data)));
   }
 
-  protected savePost<R>(path: string, data: any, callbackResponse?:ResponseToModel<any>): Observable<R> {
+  protected savePost<R>(path: string, data: any, callbackResponse?:ResponseToModel<any>, params?: ClientParams): Observable<R> {
     const url = this.callBasePath(path);
     const converterNew = callbackResponse ?? this.resToModel();
-    return this.post(url, data).pipe(map(data => converterNew(data)));
+    return this.post(url, data, params).pipe(map(data => converterNew(data)));
+  }
+
+
+ protected sendPost<R>(path: string, data: any, callbackResponse?:ResponseToModel<any>, params?: ClientParams): Observable<R> {
+    const url = this.callBasePath(path);
+    const converterNew = callbackResponse ?? this.resToModel();
+    return this.post(url, data, params).pipe(map(data => converterNew(data)));
   }
 
 

@@ -1,179 +1,173 @@
-import {TsMap, Objects, JsonAny} from "ts-ui/helper";
-import {BaseModel} from "./base-model";
-import {AssignObject} from "./common";
-import { Severity } from "ts-ui/common";
+import { Asserts, AssignObject, Callback, TsMap } from "ts-ui/helper";
+import { BaseModel } from "./base-model";
+import { FormField } from "./form-field";
 
-export type TemplateThreadCode = 'form_ticket' | 'email_ticket';
+export type CallbackAssign<E> = Callback<AssignObject<E>, E>;
 
-
-export class Template extends BaseModel {
-    template_id?: number | null;
-    thread?: string;
-    code?: string;
+export class Template<D = any> extends BaseModel {
+    template_id?: number;
+    thread: string;
     title?: string;
     summary?: string;
-    user_id?: number;
+    shared?: boolean;
     position?: number;
     is_default?: boolean;
-    custom?: JsonAny;
-    data?: JsonAny;
+    user_id?: number;
+    data?: D;
 
-    set_data(data: JsonAny): this {
-        this.data = data;
-        return this;
+    static fromAll(data: AssignObject<Template>): Template {
+        const thread = Asserts.notNull(data.thread);
+        if(thread === 'ticket_template') return TicketTemplate.from(data);
+        else if(thread === 'email_template') return EmailTemplate.from(data);
+        else return BaseModel.fromJson(Template, data);
     }
 
-    set_thread(code: string): this {
-        this.thread = code;
-        return this;
-    }
-
-    static from(object: AssignObject<Template>): Template {
-        if(object instanceof Template) return object;
-        else {
-            const {thread} = object;
-            if('form_ticket' == thread) return TicketTemplate.from(object);
-            else if('email_ticket' == thread) return EmailTemplate.from(object);
-            else return BaseModel.fromJson(Template, object);
-        }
-    }
-
-    static fromList(data: AssignObject<Template>[]): Template[] {
-        return data.flatMap((item) => Template.from(item));
-    }
-    
 }
 
-export class TicketTemplate extends Template {
+export class TemplateMap<T extends Template = any> {
+    private readonly map = new TsMap<number, T>();
 
-    override data?: {
-        software_id?: number;
-        chanel_ids?: number[];
-        group_help_id?: number;
-        support_help_id?: number;
-        soft_name?: string;
-        team_id?: number;
-        assign_id?: number;
-        subject_type_id?: number;
-        category_id?: number;
-        category_sub_id?: number;
-        team_head_id?: number;
-        priority_id?: number;
-        tag_ids?: number[];
-        replied_id?: number;
-        ticket_type_id?: number;
-        options?: JsonAny;
+    protected get newFunc(): CallbackAssign<T> {
+        return object => <any>Template.fromAll(object);
     }
 
-    override custom?: {
-        icon?: string;
-        clear?: boolean;
-        bg_color?: string;
-        text_color?: string;
-        severity?: Severity;
+
+    /**
+     * Returns template without id
+     * @param {number} templateId 
+     * @returns T
+     * */
+    get(templateId: number): T {
+        return this.map.get(templateId);
     }
 
-    static fromObject(json: AssignObject<TicketTemplate>): TicketTemplate {
+    /**
+     * Set template 
+     * @param {T} template the template
+     * */
+     set(template: AssignObject<T>): this {
+        const newObj = this.newFunc(template);
+        Asserts.notNull(newObj?.template_id, "The template_id is null");
+        this.map.set(newObj.template_id, newObj);
+        return this;
+    }
+
+    /**
+     * Set list template 
+     * @param templates the list template
+     * */
+    set_all(templates: AssignObject<T>[]): this {
+        console.log(`templates: `, templates);
+        templates.forEach(template => this.set(template));
+        return this;
+    }
+    
+    /**
+     * Delete template by id
+     * @param templateId {number}
+     * */
+    delete(templateId: number): this {
+        this.map.delete(templateId);
+        return this;
+    }
+
+    /**
+     * Returns list template
+     * @returns T[] 
+     * */
+    list(): T[] {
+        return this.map.get_values();
+    }
+
+    get_default(): T {
+        return this.list().find(t => t.is_default);
+    }
+
+}
+
+//=======================================================
+//   EmailTemplate
+//=======================================================
+
+
+export class EmailTemplateMap extends TemplateMap<EmailTemplate> {
+
+    protected override get newFunc(): CallbackAssign<EmailTemplate> {
+        return object => EmailTemplate.from(object);
+    }
+}
+
+export class EmailTemplate extends Template<EmailTemplateData> {
+    override thread: 'email_template';
+
+    override update(object: AssignObject<this>): this {
+        return super.update(object);
+    }
+    
+    static from(data: AssignObject<EmailTemplate>):EmailTemplate {
+        return BaseModel.fromJson(EmailTemplate, data);
+    }
+
+}
+
+export interface EmailTemplateData {
+    html: string;
+    fields: FormField[];
+}
+
+
+//=======================================================
+//   EmailTemplate
+//=======================================================
+
+export class TicketTemplateMap extends TemplateMap<TicketTemplate> {
+
+    protected override get newFunc(): CallbackAssign<TicketTemplate> {
+        return object => TicketTemplate.from(object);
+    }
+
+}
+
+
+export class TicketTemplate extends Template<TicketTemplateData> {
+    override thread: 'form_template';
+
+    severity?: string;
+    text_color?: string;
+    bg_color?: string;
+    icon?: string;
+    clear?: boolean;
+
+
+    static from(json: AssignObject<TicketTemplate>): TicketTemplate {
         return BaseModel.fromJson(TicketTemplate, json);
     }
-}
-
-export class EmailTemplate extends Template {
-
-    override data?: {
-        html?: string;
-        fields?: EmailTemplateField[];
-    }
-
-    static fromObject(json: AssignObject<EmailTemplate>): EmailTemplate {
-        return BaseModel.fromJson(EmailTemplate, json);
-    }
-
-}
 
 
-
-export class Templates {
-
-    // TsMap<threadCode, Template[]>
-    readonly map = new TsMap<string, Template[]>();
-
-    static fromAny(ls: any): Templates {
-        if (ls instanceof Templates) {    return ls;  } 
-
-        // {[thread]: AssignObject<Template>[]}
-        else if (Objects.isObject(ls)) {
-            return new Templates().putObject(ls);
-        } 
-        // AssignObject<Template>[]
-        else if (Array.isArray(ls)) {
-            const templates = new Templates();
-            ls.forEach(js => templates.add(js));
-            return templates;
-        }//
-        else throw new Error(`The value ls_template [${ls}] not support Templates`);
-    }
-
-    get(thread: TemplateThreadCode): Template[] {
-        return this.map.computeIfAbsent(thread, _ => []);
-    }
-
-    add(object: AssignObject<Template>): void {
-        const template = Template.from(object);
-        this.get(<any>template.thread).push(template);
-    }
-
-    set(thread: string, objects: AssignObject<Template>[]): void {
-        const templates = objects.map(object => Template.from(object).set_thread(thread));
-        this.map.set(thread, templates);
-    }
-
-    putObject(object: {[thread: string]: AssignObject<Template>[]}): this {
-        Object.keys(object).forEach(key => this.add(object[key]));
-        return this;
-    }
-    
-    get_template(thread: string, keyword: string | number): Template {
-        const templates = this.map.computeIfAbsent(thread, ec => []);
-        if(typeof keyword === 'number') return templates.find(t => t.template_id === keyword);
-        else return templates.find(t => t.code === keyword);
-    }
-
-    get_email(): EmailTemplate[] {
-        return this.get('email_ticket');
-    }
-
-    get_ticket(): EmailTemplate[] {
-        return this.get('form_ticket');
-    }
-
-
-}
-
-export class EmailTemplateField {
-    name: string;
-    type?: string;
-    label: string;
-    required?: boolean;
-    defaultValue?: any;
 }
 
 export interface TicketTemplateData {
-    software_id?: number;
-    chanel_ids?: number[];
-    group_help_id?: number;
-    support_help_id?: number;
-    soft_name?: string;
+    tag_ids?: number[];
     team_id?: number;
     assign_id?: number;
-    subject_type_id?: number;
+    soft_name?: string;
+    chanel_ids?: number[];
+    replied_id?: number;
     category_id?: number;
     category_sub_id?: number;
-    team_head_id?: number;
     priority_id?: number;
-    tag_ids?: number[];
-    replied_id?: number;
+    software_id?: number;
+    team_head_id?: number;
+    group_help_id?: number;
     ticket_type_id?: number;
-    options?: JsonAny;
-  
-  }
+    subject_type_id?: number;
+    support_help_id?: number;
+
+    options?: {
+        viewAll?: boolean;
+        autoFill?: boolean;
+        viewTs24?: boolean;
+        autoCreate?: boolean;
+        emailTicket?: boolean;
+    }
+}

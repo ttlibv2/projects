@@ -1,13 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { DialogService, DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
-import { Objects } from 'ts-ui/helper';
+import { Objects, Page } from 'ts-ui/helper';
 import { ColDef } from "@ag-grid-community/core";
 import { ToastService } from 'ts-ui/toast';
 import { OdTicketService } from '../../services/od.service';
 import { ClsPartner, ClsSearch } from '../../models/od-cls';
 import { LoggerService } from 'ts-ui/logger';
-import { Page } from '../../models/common';
 import { AgTable, TableOption } from 'ts-ui/ag-table';
 import {StorageService} from "../../services/storage.service";
 

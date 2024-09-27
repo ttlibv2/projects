@@ -63,7 +63,7 @@ export class LocalTable<E = any, Id extends TableId = any> {
 
     findAll(pageable: Pageable): Observable<Page<E>> {
         const page = Page.from<E>(pageable);
-        const data = this.tb.limit(pageable.limit).offset(pageable.offset).sortBy(this.schema.keyPath);
+        const data = this.tb.limit(pageable.size).offset(pageable.offset).sortBy(this.schema.keyPath);
         return fromPromise(Promise.all([data, this.tb.count()]).then(array => {
             page.set_data(this.arrayToModels(array[0]));
             page.set_total(array[1]);

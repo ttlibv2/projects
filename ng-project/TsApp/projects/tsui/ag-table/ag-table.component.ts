@@ -11,7 +11,6 @@ import { Observable, Observer } from 'rxjs';
 const { notNull, mergeDeep } = Objects;
 
 
-
 @Component({
   selector: 'ts-ag-table',
   templateUrl: './ag-table.component.html',
@@ -110,7 +109,7 @@ export class AgTable<E = any> implements OnInit, OnChanges {
     this.tableApi.setGridOption('columnDefs', columns);
   }
 
-  setRows(data: E[]) {
+  setRows(...data: E[]) {
     this.tableApi.setGridOption('rowData', data);
   }
 

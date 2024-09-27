@@ -18,7 +18,7 @@ import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog"
 import { LoggerService } from "ts-ui/logger";
 import { Objects } from "ts-ui/helper";
 import { delay } from "rxjs";
-import {ModalService} from "../../services/ui/model.service";
+import { ModalService } from "../../services/ui/model.service";
 
 interface CateView {
   title: string;
@@ -60,7 +60,8 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     { action: "ls_priority", title: "Độ ưu tiên" },
     { action: "ls_ticket_tag", title: "Thẻ -- Tags" },
     { action: "ls_question", title: "Nội dung mẫu" },
-    { action: "ls_template", title: "Danh sách mẫu" },
+    { action: "ls_ticket_template", title: "DS Ticket" },
+    { action: "ls_email_template", title: "DS Email" },
   ];
 
   option: TableOption = {
@@ -108,7 +109,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
   loadCatalog() {
     const ls = this.agTable.getSelectedRows();
     if (ls.length == 0) {
-      this.toast.warning( "Vui lòng chọn ít nhất 1 dòng." );
+      this.toast.warning("Vui lòng chọn ít nhất 1 dòng.");
       return;
     }
 
@@ -120,7 +121,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     this.catalogSrv.getAll({ catalog, entities }).pipe(delay(1000)).subscribe({
       next: (res) => {
         this.asyncLoading = false;
-        this.toast.success("Lấy danh mục thành công." );
+        this.toast.success("Lấy danh mục thành công.");
         console.log('catalogSrv.getAll', res);
         this.ref.close(res);
         this.def.detectChanges();
@@ -128,7 +129,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
       error: (err) => {
         this.asyncLoading = false;
         if (err.code !== 'disconnect') {
-          this.toast.error( "Lấy danh mục bị lỗi");
+          this.toast.error("Lấy danh mục bị lỗi");
         }
         this.logger.error("Lấy danh mục bị lỗi: ", err);
         this.def.detectChanges();

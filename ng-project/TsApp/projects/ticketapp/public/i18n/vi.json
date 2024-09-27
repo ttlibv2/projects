@@ -187,24 +187,33 @@
       "zoomOut": "Thu nhỏ"
     }
   },
-
   "summary": "Diễn giải",
   "summary.holder": "Nhập diễn giải",
   "title": "Tiêu đề",
   "title.holder": "Nhập tiêu đề",
-
   "templates": "Danh sách mẫu",
-
   "forms": {
     "user_info.title": "Thông tin người dùng",
-    "api_info":{
+    "api_info": {
       "title": "Thông tin API",
       "list": "Danh sách"
-   }
+    }
   },
-
+  "api": {
+    "title": "Tiêu đề",
+    "summary": "Diễn giải",
+    "service_uid": "service_uid",
+    "service_name": "service_name",
+    "login_path": "login_path",
+    "headers": "client_header", 
+    "queries": "client_query",
+    "base_url": "base_url",
+    "api_info": "Thông tin API",
+    "user_info": "Thông tin kết nối",
+    "auto_login": "Tự động đăng nhập",
+    "allow_edit": "Cho phép sửa"
+  },
   "users": {
-
     "dob": "Ngày sinh",
     "room_code": "Mã phòng ban",
     "user_code": "Mã người dùng",
@@ -219,9 +228,7 @@
     "first_name": "Họ của bạn",
     "gender": "Giới tính",
     "phone": "Số điện thoại",
-    "unique_id": "Mã ID",
-    "auto_login": "Tự động đăng nhập",
-    "allow_edit": "Cho phép sửa"
+    "unique_id": "Mã ID"
   },
   "template": {
     "entity_code": "Mã mẫu",
@@ -236,14 +243,15 @@
     "update": "Cập nhật",
     "cancel": "Hủy bỏ",
     "delete": "Xóa",
-    "check_api": "Kiểm tra kết nối",
+    "check_api": "Kiểm tra",
     "close": "Đóng",
     "reset": "Nhập lại",
-    "copy": "Sao chép"
+    "copy": "Sao chép",
+    "get_all": "Lấy DS",
+    "update_link":"Cập nhật API link"
   },
   "style": {
     "text_color": "Màu chữ",
     "bg_color": "Màu nền"
   }
-
 }

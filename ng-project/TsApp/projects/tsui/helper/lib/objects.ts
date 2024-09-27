@@ -47,6 +47,14 @@ export class Objects {
     return values.some(value => Objects.isBlank(value));
   }
 
+  static anyTrue(...values: boolean[]): boolean {
+    return values.some(value => value === true);
+  }
+
+  static anyFalse(...values: boolean[]): boolean {
+    return values.some(value => value === false);
+  }
+
   /**
    * Returns true if object is null or undefined
    * @param obj the object validate
@@ -77,6 +85,10 @@ export class Objects {
 
   static notNull(object: any): boolean {
     return !Objects.isNull(object);
+  }
+
+  static isFalse(object: any): object is boolean {
+    return object === false;
   }
 
   static isArray(value: any): value is [] {

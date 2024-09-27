@@ -1,15 +1,16 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { Injectable, } from '@angular/core';
-import {ClientParams, ErrorResponse, Page } from '../models/common';
+import {ClientParams, ErrorResponse } from '../models/common';
 import {catchError, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
-import {Objects} from "ts-ui/helper";
+import {Callback, Objects, Pageable, Page} from "ts-ui/helper";
 import {InjectService} from "./inject.service";
 import {Router} from "@angular/router";
 import { StorageService } from './storage.service';
 import { ApiInfoComponent } from '../views/api-info/api-info.component';
 import {ToastMessage} from "ts-ui/toast";
-import {DBService} from "ts-ui/local-db";
 import {LoggerService} from "ts-ui/logger";
+
+export const defaultPage: Pageable = {};
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
@@ -31,6 +32,23 @@ export class ClientService {
   protected get logger(): LoggerService {
     return this.inject.get(LoggerService);
   }
+
+  protected joinUrls(rootPath: string, ...paths: string[]): string {
+    let lastPath = paths.map(p => p.endsWith('/') ? p.substring(0, p.length-1) : p).join('/');
+    return lastPath.startsWith(rootPath) ? lastPath : rootPath + '/' + lastPath;
+  }
+
+  protected sendGetPage<E>(url: string, options?: {params?: ClientParams, page?: Pageable, cbItem: Callback<any, E>}): Observable<Page<E>> {
+    const newPage:Pageable = {...defaultPage, ...options?.page};
+    const query = {...options?.params, ...newPage};
+    const newCbItem = (item:any) => options?.cbItem(item) || item;
+    const convert = (res:any) => Page.from(res, item => newCbItem(item));
+    return this.get(url, query).pipe(map(res => convert(res)));
+  }
+
+
+
+
 
   protected searchGet(url: string, params?: ClientParams): Observable<Page<any>> {
     return this.send('get', url, {params}).pipe(map(s => new Page().update(s)));

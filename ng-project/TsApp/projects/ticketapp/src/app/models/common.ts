@@ -1,9 +1,7 @@
 import { HttpParams } from "@angular/common/http";
 import { Type } from "@angular/core";
 import { BaseModel } from "./base-model";
-import { Callback, JsonAny } from 'ts-ui/helper';
-
-export type AssignObject<E = any> = JsonAny | E | Partial<E>;
+import { Callback } from 'ts-ui/helper';
 
 export type Severity = 'primary' | 'secondary' | 'success' | 'info' | 'danger' | 'help' | 'warning' | 'contrast';
 
@@ -21,21 +19,21 @@ export type ClientParams = HttpParams | {
 
 
 
-export class Page<E = any> extends BaseModel {
-  limit?: number;
-  total?: number;
-  total_page?: number;
-  current_page?: number;
-  is_first?: boolean;
-  is_last?: boolean;
-  data?: E[] = [];
+// export class Page<E = any> extends BaseModel {
+//   limit?: number;
+//   total?: number;
+//   total_page?: number;
+//   current_page?: number;
+//   is_first?: boolean;
+//   is_last?: boolean;
+//   data?: E[] = [];
 
-  static from<E>(json: JsonObject, callback: Callback<any, E>): Page<E> {
-    const data = (json['data'] ?? []).map((item: any) => callback(item));
-    return BaseModel.fromJson(Page<E>, { ...json, data });
-  }
+//   static from<E>(json: JsonObject, callback: Callback<any, E>): Page<E> {
+//     const data = (json['data'] ?? []).map((item: any) => callback(item));
+//     return BaseModel.fromJson(Page<E>, { ...json, data });
+//   }
 
-}
+// }
 
 // export interface MessageObj extends Message {
 //   severity?: Severity;
@@ -64,12 +62,12 @@ export interface ImageObject {
   };
 }
 
-export interface Pageable {
-  [field: string]: any;
-  size?: number;
-  offset?: number;
-  page?: number;
-}
+// export interface Pageable {
+//   [field: string]: any;
+//   size?: number;
+//   offset?: number;
+//   page?: number;
+// }
 
 export interface IStorage {
   /**

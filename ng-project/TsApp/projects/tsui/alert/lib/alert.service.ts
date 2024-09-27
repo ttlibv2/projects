@@ -32,7 +32,7 @@ export class Alert {
 
     create(config: AlertOption): DynamicDialogRef<AlertContent> {
         const clazz = [`p-alert`, `p-alert-${config?.severity}`];
-        const option:AlertOption = Objects.mergeDeep({ position: 'top'}, config);
+        const option:AlertOption = Objects.mergeDeep({ position: 'top'} as AlertOption, config);
 
         const hasButtonOk = config.okButton || config.okClick || config.okLabel;
         const hasButtonCancel = config.cancelButton || config.cancelLabel || config.cancelClick;
@@ -59,7 +59,8 @@ export class Alert {
             position: option.position,
             minY: 150,
             templates: { footer: AlertFooter},
-            data: option
+            data: option,
+            duplicate: true,
         });
 
     }

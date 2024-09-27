@@ -1,45 +1,102 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSave()">
+<form [formGroup]="formGroup" class="sm" [style]="{width: '650px'}">
     <div class="grid">
         <div class="p-fluid col-12">
-            <label for="api_info">{{ 'forms.api_info.list' | translate }}</label>
-            <p-dropdown id="api_info" [options]="lsApiCode" optionLabel="displayName"
-                        formControlName="api_item" (onChange)="onSelectApi($event.value)"
-                        [loading]="asyncLoad" class="flex-1" [showClear]="true"></p-dropdown>
-        </div>
-        <div class="p-fluid col-6">
-            <label for="user_name">{{ 'users.user_name'|translate }}</label>
-            <input id="user_name" pInputText formControlName="username"/>
-        </div>
-        <div class="p-fluid col-6">
-            <label for="password">{{ 'users.password' | translate }}</label>
-            <p-password id="password" formControlName="password" [toggleMask]="true"></p-password>
-        </div>
-        <div class="p-fluid col-6">
-            <label for="csrf_token">{{ 'users.csrf_token'|translate }}</label>
-            <input id="csrf_token" pInputText formControlName="csrf_token"/>
-        </div>
-        <div class="p-fluid col-6">
-            <label for="cookie">{{ 'users.cookie'|translate }}</label>
-            <input id="cookie" pInputText formControlName="cookie"/>
-        </div>
-        <div class="field col-12 flex gap-2">
-            <p-checkbox id="auto_login" [binary]="true" formControlName="auto_login"
-                        label="{{'users.auto_login'|translate}}"></p-checkbox>
-            <p-checkbox id="editOnly" [binary]="true" formControlName="allow_edit"
-                        label="{{'users.allow_edit'|translate}}" (onChange)="allowEdit($event.checked)"></p-checkbox>
-        </div>
-        <div class="col-12 flex gap-2">
-            <p-button label="{{'actions.save' | translate}}" type="submit" [disabled]="formGroup.invalid"
-                      [loading]="asyncSave"></p-button>
-            <p-button type="button" label="{{'actions.check_api' | translate}}" [disabled]="disabledCheckApi"
-                      [loading]="asyncSave" (click)="checkApi()"></p-button>
-            @if (!hasSetApiCode) {
-                <p-button type="button" label="Lấy DS API" (click)="loadApi()"></p-button>
-            }
+            <label for="api_info" class="flex gap-2">
+                <span>{{ 'forms.api_info.list' | translate }}</span>
+                <span class="text-danger" *ngIf="!lsApiCode?.length"> -- Không có dòng nào </span>
+            </label>
+            <div class="flex gap-2">
+                <p-dropdown id="api_info" [options]="lsApiCode" optionLabel="displayName" formControlName="api_item"
+                    (onChange)="onSelectApi($event.value)" [loading]="asyncLoad" class="flex-1"
+                    [showClear]="true"></p-dropdown>
 
-            @if (hasDialogRef) {
-                <p-button type="button" label="Đóng" (click)="closeDialogRef()"></p-button>
-            }
+                <p-button type="button" icon="pi pi-bars" label="{{'actions.get_all'|translate}}"
+                    (onClick)="loadApiInfo()"></p-button>
+                
+                    <p-button type="button" icon="pi pi-copy" label="{{'actions.copy' | translate}}" (onClick)="onCopyApi()"
+                    *ngIf="visibleBtnCopy"></p-button>
+            </div>
+        </div>
+
+        <ng-container formGroupName="api_info" *ngIf="true">
+            <p-divider class="col-12" layout="horizontal" align="left">{{'api.api_info' | translate}}</p-divider>
+            <div class="p-fluid col-6 xxl:col-6">
+                <label for="title">{{ 'api.title'|translate }}</label>
+                <input id="title" pInputText formControlName="title" />
+            </div>
+            <div class="p-fluid col-3 xxl:col-3" *ngIf="editApiInfoForm">
+                <label for="service_uid">{{ 'api.service_uid'|translate }}</label>
+                <input id="service_uid" pInputText formControlName="service_uid" />
+            </div>
+            <div class="p-fluid col-3 xxl:col-3" *ngIf="editApiInfoForm">
+                <label for="service_name">{{ 'api.service_name'|translate }}</label>
+                <input id="service_name" pInputText formControlName="service_name" />
+            </div>
+            <div class="p-fluid col-6 xxl:col-6">
+                <label for="base_url">{{ 'api.base_url'|translate }}</label>
+                <input id="base_url" pInputText formControlName="base_url" />
+            </div>
+            <div class="p-fluid col-6 xxl:col-6" *ngIf="editApiInfoForm">
+                <label for="login_path">{{ 'api.login_path'|translate }}</label>
+                <input id="login_path" pInputText formControlName="login_path" />
+            </div>
+            <div class="p-fluid col-6 xxl:col-6" *ngIf="editApiInfoForm">
+                <label for="headers">{{ 'api.headers'|translate }}</label>
+                <input id="headers" pInputText formControlName="headers" />
+            </div>
+            <div class="p-fluid col-6 xxl:col-6" *ngIf="editApiInfoForm">
+                <label for="queries">{{ 'api.queries'|translate }}</label>
+                <input id="queries" pInputText formControlName="queries" />
+            </div>
+            <div class="p-fluid col-6 xxl:col-6" *ngIf="editApiInfoForm">
+                <label for="summary">{{ 'api.summary'|translate }}</label>
+                <textarea id="summary" rows="2" autoResize="false" pInputTextarea formControlName="summary"></textarea>
+            </div>
+            <div class="p-fluid col-6 xxl:col-6" *ngIf="editApiInfoForm">
+                <label for="summary">{{ 'api.links'|translate }}</label>
+                <textarea id="links" rows="2" autoResize="false" pInputTextarea formControlName="links"></textarea>
+            </div>
+        </ng-container>
+        <p-divider class="col-12" layout="horizontal" align="left">{{'api.user_info' | translate}}</p-divider>
+        <ng-container formGroupName="user_api">
+            <div class="p-fluid col-6">
+                <label for="user_name">{{ 'users.user_name'|translate }} <span class="text-danger">*</span></label>
+                <input id="user_name" pInputText formControlName="user_name" />
+            </div>
+            <div class="p-fluid col-6">
+                <label for="password">{{ 'users.password' | translate }} <span class="text-danger">*</span></label>
+                <p-password id="password" formControlName="password" [toggleMask]="true"></p-password>
+            </div>
+            <div class="p-fluid col-6">
+                <label for="csrf_token">{{ 'users.csrf_token'|translate }}</label>
+                <input id="csrf_token" pInputText formControlName="csrf_token" />
+            </div>
+            <div class="p-fluid col-6">
+                <label for="cookie_value">{{ 'users.cookie'|translate }}</label>
+                <input id="cookie_value" pInputText formControlName="cookie_value" />
+            </div>
+            <div class="field col-12 flex gap-2">
+                <p-checkbox id="auto_login" [binary]="true" formControlName="auto_login"
+                    label="{{'api.auto_login'|translate}}"></p-checkbox>
+                <p-checkbox id="editOnly" [binary]="true" formControlName="allow_edit"
+                    label="{{'api.allow_edit'|translate}}" (onChange)="allowEdit($event.checked)"></p-checkbox>
+            </div>
+        </ng-container>
+        <div class="col-12 flex gap-2 mt-2">
+            <p-button type="submit" icon="pi pi-save" [label]="labelSave" severity="danger"
+                [disabled]="formGroup.invalid" (onClick)="onSaveUserApi()" *ngIf="visibleBtnSave"></p-button>
+
+            <p-button icon="pi pi-save" label="{{'actions.cancel'|translate}}" severity="help"
+                 (onClick)="onResetForm()" [disabled]="!enableReset" *ngIf="visibleBtnSave"></p-button>
+           
+                <p-button type="button" icon="pi pi-check" label="{{'actions.check_api' | translate}}"
+                (onClick)="checkLoginApi()" [loading]="asyncSave" *ngIf="visibleUpdateLink"></p-button>
+           
+                <p-button type="button" icon="pi pi-link" label="{{'actions.update_link' | translate}}"
+                (onClick)="clickUpdateMenuLink()" [loading]="asyncUpdateMenu" *ngIf="visibleUpdateLink"></p-button>
+           
+                <p-button type="button" icon="pi pi-times" label="{{'actions.close' | translate}}"
+                (click)="closeDialogRef()" *ngIf="hasDialogRef"></p-button>
         </div>
     </div>
 </form>

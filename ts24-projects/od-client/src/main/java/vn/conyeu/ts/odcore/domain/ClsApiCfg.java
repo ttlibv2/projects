@@ -3,10 +3,8 @@ package vn.conyeu.ts.odcore.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import vn.conyeu.common.exception.BaseException;
-import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
-import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.ts.odcore.service.OdClient;
@@ -19,7 +17,8 @@ import java.util.function.Consumer;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ClsApiCfg implements Serializable, Cloneable {
-    private String apiCode;
+    private String serviceName;
+    private String serviceUid;
     private String apiTitle;
     private String baseUrl;
     private String loginPath;
@@ -32,6 +31,7 @@ public class ClsApiCfg implements Serializable, Cloneable {
     private ClsUser clsUser;
     private boolean autoLogin = true;
     private int maxTryLogin = 1;
+
 
     private Consumer<ClientBuilder> customBuilderConsumer;
 
@@ -47,7 +47,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
     public boolean isLogin() {
         return cookieValue != null && clsUser != null;
     }
-
 
     /**
      * Set the baseUrl
@@ -190,10 +189,21 @@ public class ClsApiCfg implements Serializable, Cloneable {
     /**
      * Set the apiCode
      *
-     * @param apiCode the value
+     * @param serviceName the value
      */
-    public ClsApiCfg setApiCode(String apiCode) {
-        this.apiCode = apiCode;
+    public ClsApiCfg setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+        return this;
+    }
+
+    /**
+     * Set the serviceUid
+     *
+     * @param serviceUid the value
+     */
+    public ClsApiCfg setServiceUid(String serviceUid) {
+        this.serviceUid = serviceUid;
+        if(serviceName == null) serviceName = serviceUid;
         return this;
     }
 
@@ -258,7 +268,7 @@ public class ClsApiCfg implements Serializable, Cloneable {
 
     public void checkUserLogin() {
         if(clsUser == null) {
-           throw  OdClient.notLogin(apiCode);
+           throw  OdClient.notLogin(serviceName);
         }
     }
 }

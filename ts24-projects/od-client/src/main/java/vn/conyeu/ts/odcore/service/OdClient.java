@@ -2,6 +2,7 @@ package vn.conyeu.ts.odcore.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.Unauthorized;
@@ -12,6 +13,7 @@ import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.restclient.RestClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
+import org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec;
 import vn.conyeu.ts.odcore.domain.*;
 
 import java.net.URI;
@@ -231,7 +233,8 @@ public abstract class OdClient {
             return checkResponse(body, response);
         }//
         catch (BaseException exp) {
-            if(exp.getObject().getCode().equals("SessionExpired") && cfg.isAutoLogin() && tryLoginFnc != null && count == 0) {
+            if(exp.getObject().getCode().equals("SessionExpired")
+                    && cfg.isAutoLogin() && tryLoginFnc != null && count == 0) {
                 tryLoginFnc.get();
                 return sendBody(body, consumer, 1);
             }
@@ -239,6 +242,7 @@ public abstract class OdClient {
         }
 
     }
+
 
     protected ObjectMap checkResponse(Object requestBody, ObjectMap responseData) {
         ClsHelper.checkResponse(cfg, responseData);

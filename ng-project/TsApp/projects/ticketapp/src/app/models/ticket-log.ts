@@ -1,9 +1,10 @@
+import { AssignObject } from "ts-ui/helper";
 import {BaseModel} from "./base-model";
-import {JsonObject} from "./common";
 
 export class TicketLog extends BaseModel {
 
-  static from(json: JsonObject): TicketLog {
-    return new TicketLog().update(json);
+  static from(json: AssignObject<TicketLog>): TicketLog {
+    return BaseModel.fromJson(TicketLog, json);
   }
+  
 }

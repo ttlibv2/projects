@@ -31,6 +31,10 @@
         @include util.invalid-input();
     }
 
+    &.ng-invalid {
+        @include util.invalid-input();
+    }
+
     &.p-variant-filled {
         background-color: cfg.$inputFilledBg;
 
@@ -45,15 +49,17 @@
 
     }
 
-    &-sm {
-        @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
+    form.sm &, &-sm {
+        //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
         @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleSM);
     }
 
-    &-lg {
-        @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
+    form.lg &, &-lg {
+        //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
         @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleLG);
     }
+
+
 }
 
 .p-float-label > label {

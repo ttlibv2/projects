@@ -1,7 +1,7 @@
+import { UserApi } from "./api-info";
 import {BaseModel} from "./base-model";
 import {JsonObject} from "./common";
-import { ClsUser } from "./od-cls";
-import {Objects} from 'ts-ui/helper';
+import {AssignObject, Objects} from 'ts-ui/helper';
 
 export type ApiCode = 'od.ticket';
 
@@ -25,34 +25,26 @@ export interface SignUpDto {
 }
 
 export class User extends BaseModel {
-  
-  static from(data: JsonObject): User {
-    return BaseModel.fromJson(User, data);
-  }
+  user_id?: number;
+  full_name?: string;
+  user_code?: string;
+  room_code?: string;
+  required_update?: boolean;
+  config?: JsonObject;
+  ts24id?: number;
+  services: {[webName: string]: UserApi}
 
-  user_id: number;
-  full_name: string;
-  user_code: string;
-  room_code: string;
-  required_update: boolean;
-  config: JsonObject;
-  uts_id?: number;
 
-  user_api: Map<ApiCode, ClsUser> = new Map();
 
   set_config(config: any): this {
-    this.config = config;
-    return this;
+   this.config = config;
+   return this;
+ }
+
+
+  static from(data: AssignObject<User>): User {
+    return BaseModel.fromJson(User, data);
   }
-
-  set_user_api(users: any): this {
-    this.user_api = Objects.valueToMap(users, (item:any) => ClsUser.from(item));
-    return this;
-  }
-
-
-
-
 
 }
 

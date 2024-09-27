@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ModelApi } from "./model-api.service";
 import { Ticket } from "../models/ticket";
-import { JsonObject, Page, Pageable, ResponseToModel } from '../models/common';
+import { ResponseToModel } from '../models/common';
 import { Observable } from 'rxjs';
-import { JsonAny } from 'ts-ui/helper';
+import { JsonAny,Page, Pageable } from 'ts-ui/helper';
 
 export interface SearchOption {
     created_min?: string;

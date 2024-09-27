@@ -1,8 +1,7 @@
 import {BaseModel} from "./base-model";
-import {AssignObject, JsonObject} from "./common";
 import {AuthToken, RememberUser, User} from "./user";
 import {Translation} from "./translation";
-import {Objects, TsMap} from "ts-ui/helper";
+import {Objects, TsMap, AssignObject} from "ts-ui/helper";
 
 export class AppConfig extends BaseModel {
     currentLang: string;

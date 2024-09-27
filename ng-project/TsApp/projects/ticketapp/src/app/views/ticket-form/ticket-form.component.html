@@ -1,6 +1,6 @@
 <div class="grid ticket-form" [ngClass]="{template: viewTemplate}">
     <div class="col-12 col-ticket-form">
-        <form class="formgrid vertical" [formGroup]="forms?.formGroup" (ngSubmit)="saveTicket()">
+        <form class="formgrid vertical sm1" [formGroup]="forms?.formGroup" (ngSubmit)="saveTicket()" >
             <div class="grid">
                 <div class="col-7 col-left">
                     <div class="grid">
@@ -25,8 +25,9 @@
                                 </div>
                                 <div class="p-fluid col-6 lg:col-6">
                                     <label for="group-help">Nhóm hỗ trợ <span class="p-text-danger">(*)</span></label>
-                                    <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help" [showClear]="true"
-                                        optionLabel="value" dataKey="id" formControlName="group_help"></p-dropdown>
+                                    <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help"
+                                        [showClear]="true" optionLabel="value" dataKey="id"
+                                        formControlName="group_help"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-6" *ngIf="options.viewAll || viewTemplate">
                                     <label for="support_help">Hình thức hỗ trợ <span
@@ -48,14 +49,15 @@
                             <div class="grid">
                                 <div class="p-fluid col-3 md:col-6 lg:col-6 xl:col-6 xxl:col-3">
                                     <label for="od_team">Support Team <span class="p-text-danger">(*)</span></label>
-                                    <p-dropdown formControlName="od_team" id="od_team"[showClear]="true"
+                                    <p-dropdown formControlName="od_team" id="od_team" [showClear]="true"
                                         [options]="catalog.ls_helpdesk_team" optionLabel="display_name" [filter]="true"
-                                        dataKey="id" (onChange)="changeOdTeam($event.value)"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" dataKey="id"
+                                        (onChange)="changeOdTeam($event.value)"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
                                     <label for="od_assign">Phân công cho <span class="p-text-danger">(*)</span></label>
-                                    <p-dropdown id="od_assign" [options]="catalog.ls_assign"
-                                        optionLabel="display_name" [filter]="true" [loading]="state.assign"
+                                    <p-dropdown id="od_assign" [options]="catalog.ls_assign" optionLabel="display_name"
+                                        [filter]="true" [loading]="state.assign" [overlayOptions]="overlayOptions"
                                         (onFilter)="searchAssign($event.filter)" dataKey="id" [showClear]="true"
                                         formControlName="od_assign"></p-dropdown>
                                 </div>
@@ -63,54 +65,55 @@
                                     <label for="od_subject_type">Ticket Subject Type <span
                                             class="p-text-danger">(*)</span></label>
                                     <p-dropdown formControlName="od_subject_type" id="od_subject_type"
-                                        [options]="catalog.ls_subject_type" dataKey="id" [showClear]="true"
-                                        optionLabel="display_name"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" [options]="catalog.ls_subject_type"
+                                        dataKey="id" [showClear]="true" optionLabel="display_name"></p-dropdown>
                                 </div>
-                                <div class="p-fluid col-3 lg:col-6  xl:col-6 md:col-6 xxl:col-3">
+                                <div class="p-fluid col-3 lg:col-6  xl:col-6 md:col-6 xxl:col-3" *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_replied">Replied Status <span
                                             class="p-text-danger">(*)</span></label>
                                     <p-dropdown formControlName="od_replied" id="od_replied"
-                                                [options]="catalog.ls_replied_status" dataKey="id" [showClear]="true"
-                                                optionLabel="name"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" [options]="catalog.ls_replied_status"
+                                        dataKey="id" [showClear]="true" optionLabel="name"></p-dropdown>
                                 </div>
-                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
+                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3" *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_category">Danh mục <span class="p-text-danger">(*)</span></label>
                                     <p-dropdown formControlName="od_category" id="od_category"
-                                        [options]="catalog.ls_category" dataKey="id" [showClear]="true"
-                                        optionLabel="display_name"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" [options]="catalog.ls_category" dataKey="id"
+                                        [showClear]="true" optionLabel="display_name"></p-dropdown>
                                 </div>
-                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
+                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3" *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_category_sub">Danh mục phụ <span
                                             class="p-text-danger">(*)</span></label>
                                     <p-dropdown formControlName="od_category_sub" id="od_category_sub"
-                                        [options]="catalog.ls_category_sub" dataKey="id" [showClear]="true"
-                                        optionLabel="display_name"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" [options]="catalog.ls_category_sub"
+                                        dataKey="id" [showClear]="true" optionLabel="display_name"></p-dropdown>
                                 </div>
-                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
+                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3" *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_team_head">Team Head</label>
                                     <p-dropdown id="od_team_head" [options]="catalog.ls_team_head" [showClear]="true"
-                                        formControlName="od_team_head" dataKey="id" optionLabel="name"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" formControlName="od_team_head" dataKey="id"
+                                        optionLabel="name"></p-dropdown>
                                 </div>
-                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
-                                    *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
-                                    <label for="od_ticket_type">Loại yêu cầu hỗ trợ</label>
+                                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
+                                    <label for="od_ticket_type">Ticket type<span
+                                        class="p-text-danger">(*)</span></label>
                                     <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type"
-                                        optionLabel="display_name" dataKey="id" [showClear]="true"
-                                        formControlName="od_ticket_type"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" optionLabel="display_name" dataKey="id"
+                                        [showClear]="true" formControlName="od_ticket_type"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
                                     *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_priority">Độ ưu tiên</label>
                                     <p-dropdown formControlName="od_priority" id="od_priority"
-                                        [options]="catalog.ls_priority" dataKey="id" [showClear]="true"
-                                        optionLabel="display_name"></p-dropdown>
+                                        [overlayOptions]="overlayOptions" [options]="catalog.ls_priority" dataKey="id"
+                                        [showClear]="true" optionLabel="display_name"></p-dropdown>
                                 </div>
                                 <div class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
                                     *ngIf="options.viewAll || options.viewTs24 || viewTemplate">
                                     <label for="od_tags">Thẻ -- Tags</label>
                                     <p-multiSelect formControlName="od_tags" id="od_tags"
-                                        optionLabel="display_name" [showClear]="true" [showToggleAll]="false"
-                                        [showHeader]="false" [filter]="false" dataKey="id"
+                                        [overlayOptions]="overlayOptions" optionLabel="display_name" [showClear]="true"
+                                        [showToggleAll]="false" [showHeader]="false" [filter]="false" dataKey="id"
                                         [options]="catalog.ls_ticket_tag"></p-multiSelect>
                                 </div>
                             </div>
@@ -175,28 +178,49 @@
                                 </div>
                             </div>
                         </p-fieldset>
+
+                        <!-- BEGIN: email ticket info -->
+                        @if (options.emailTicket) {
+                        <p-fieldset class="col-12" legend="Thông tin email ticket">
+                            <div class="grid">
+                                <div class="p-fluid col-3" *ngIf="options.emailTicket">
+                                    <label for="emailTemplate">Danh sách E-mail mẫu</label>
+                                    <div class="flex gap-2">
+                                        <p-dropdown class="flex-1" [options]="emailTemplates" optionLabel="title"
+                                            dataKey="id" [showClear]="true"  formControlName="email_template"
+                                            (onChange)="changeEmailTemplate($event.value)"></p-dropdown>
+
+                                        <p-button icon="pi pi-eye" severity="help" size="small"
+                                            (onClick)="openEmailTemplate()" *ngIf="data.email_template"></p-button>
+
+                                            <p-divider layout="vertical"></p-divider>
+                                    </div>
+                                </div>
+                                
+
+                                <ng-container formGroupName="email_object">
+                                    @for (field of emailFields; track $index) {
+                                    <div class="p-fluid col-2">
+                                        <label>{{field.label}}</label>
+                                        <input pInputText [formControlName]="field.name" />
+                                    </div>
+                                    }
+                                </ng-container>
+                            </div>
+                        </p-fieldset>
+                        }
+                        <!-- END: email ticket info -->
+
                     </div>
                 </div>
                 <div class="col-5 col-right">
                     <div class="grid">
                         <p-fieldset class="col-12" legend0="Thông tin BC" *ngIf="!viewTemplate">
                             <div class="grid">
-                                <div class="p-fluid" [ngClass]="{'col-12': !options.emailTicket, 'col-6': options.emailTicket}">
+                                <div class="p-fluid col-12">
                                     <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
                                     <input pInputText id="subject" formControlName="subject"
                                         placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
-                                </div>
-                                <div class="p-fluid col-6" *ngIf="options.emailTicket">
-                                    <label for="emailTemplate">Danh sách E-mail mẫu</label>
-                                    <div class="flex gap-1" id="emailTemplate">
-                                        <p-dropdown class="flex-1" [options]="catalog.get_email()" optionLabel="title"
-                                         [filter]="true" dataKey="id" [showClear]="true" formControlName="email_template"
-                                        (onChange)="changeEmailTemplate($event.value)"></p-dropdown>
-                                        <p-button icon="pi pi-user-edit" [severity]="'help'" [style]="{padding: '.12rem'}" (onClick)="openEmailTemplate()"></p-button>
-                                    </div>
-                                </div>
-                                <div class="p-fluid col-12" *ngIf="options.emailTicket" formGroupName="email_object">
-
                                 </div>
                                 <div class="p-fluid col-12" *ngIf="options.viewAll">
                                     <label for="body">Hỗ trợ => Body</label>
@@ -211,63 +235,64 @@
                                 <div class="p-fluid col-12" *ngIf="!options.viewAll">
                                     <label for="content_copy">Hỗ trợ => Copy</label>
                                     <textarea pInputTextarea [autoResize]="true" id="content_copy"
-                                        formControlName="content_copy" [rows]="7" [style.max-height]="'135px'"></textarea>
+                                        formControlName="content_copy" [rows]="7"
+                                        [style.max-height]="'230px'"></textarea>
                                 </div>
                             </div>
-                            
+
                         </p-fieldset>
 
                         @if (!viewTemplate) {
-                            <p-fieldset class="col-12 col-option" legend="Tùy chọn">
-                                <div class="flex flex-wrap gap-3" formGroupName="options">
-                                    <ng-template ngFor let-item [ngForOf]="labelOptions">
-                                        <p-checkbox [label]="item.label" [binary]="true"
-                                            [formControlName]="item.formControl"
-                                            (onChange)="item.command($event.checked)"></p-checkbox>
-                                    </ng-template>
-                                </div>
-                            </p-fieldset>
-                       
-                            <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list">
-                                <div class="flex flex-wrap gap-2">
-                                    <ng-template ngFor let-item [ngForOf]="templates">
-                                        <ts-tag [value]="item" 
-                                            [label]="item.title" [icon]="item.icon" 
-                                            (click)="selectTemplate(item)"></ts-tag>
-                                    </ng-template>
-                                    @if(templates?.length == 0){
-                                        <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b class="text-danger">[Khác > Cập nhật mẫu mặc định]</b>).</span>
-                                        <span> Hoặc <a (click)="viewTemplateSetting()">Nhấn vào đây</a></span>
-                                    }
-                                </div> 
-                            </p-fieldset>
+                        <p-fieldset class="col-12 col-option" legend="Tùy chọn">
+                            <div class="flex flex-wrap gap-3" formGroupName="options">
+                                <ng-template ngFor let-item [ngForOf]="labelOptions">
+                                    <p-checkbox [label]="item.label" [binary]="true"
+                                        [formControlName]="item.formControl"
+                                        (onChange)="item.command($event.checked)"></p-checkbox>
+                                </ng-template>
+                            </div>
+                        </p-fieldset>
+
+                        <p-fieldset legend="Danh sách mẫu{{templateTitle}}" class="col-12 template_list">
+                            <div class="flex flex-wrap gap-2">
+                                @for (item of catalog.get_ticket(); track $index) {
+                                <ts-tag [value]="item" [label]="item.title" [icon]="item.icon"
+                                    (click)="selectTemplate(item)"></ts-tag>
+                                }
+                                @if(catalog.get_ticket()?.length == 0){
+                                <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b
+                                        class="text-danger">[Khác > Cập nhật mẫu mặc định]</b>).</span>
+                                <span> Hoặc <a (click)="viewTemplateSetting()">Nhấn vào đây</a></span>
+                                }
+                            </div>
+                        </p-fieldset>
                         }
                     </div>
-                </div> 
+                </div>
             </div>
             @if (!viewTemplate) {
-            <div class="grid toolbar border-end" [ngClass]="{'border-end': hasBorderEnd}">
+            <div class="grid toolbar border-end mt-1" [ngClass]="{'border-end': hasBorderEnd}">
                 <div class="flex col-12 gap-2 align-items-center">
                     <!-- <ts-icon icon="pi pi-file-excel" color="red" size="3rem" severity="danger" [spin]="true"></ts-icon> -->
                     <p-button type="submit" severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
                         loadingIcon="pi pi-cog" [label]="isEditTicket ? 'Cập nhật' : 'Lưu lại'"></p-button>
                     <p-button icon="pi pi-folder-plus" (onClick)="createNew()" label="Tạo mới"></p-button>
-                    <p-button icon="pi pi-search"(click)="searchUser()" label="Tìm khách hàng"></p-button>
+                    <p-button icon="pi pi-search" (click)="searchUser()" label="Tìm khách hàng"></p-button>
                     <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="Tải danh mục"></p-button>
 
                     @if(ticketIsSend){
-                        <p-button icon="pi pi-result" (click)="viewResultTicket()" label="Xem kết quả"></p-button>
+                    <p-button icon="pi pi-result" (click)="viewResultTicket()" label="Xem kết quả"></p-button>
                     }
 
                     <p-button icon="pi pi-clone" (click)="copyTicket()" label="Sao chép"></p-button>
-                    <ts-splitButton [icon]="'pi pi-wrench'" [label]="'Khác'" [severity]="'help'" [model]="toolActions" [size]="'small'"
-                        [visibleMenuButton]="false"></ts-splitButton>
+                    <ts-splitButton [icon]="'pi pi-wrench'" [label]="'Khác'" [severity]="'help'" [model]="toolActions"
+                        [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
 
                     <!-- tool -->
-                     <div class="flex gap-2">
+                    <div class="flex gap-2">
                         <p-divider [layout]="'vertical'"></p-divider>
-                     </div>
-                    
+                    </div>
+
 
 
 

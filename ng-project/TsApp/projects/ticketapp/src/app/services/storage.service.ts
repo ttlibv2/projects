@@ -9,12 +9,12 @@ import {GroupHelp} from "../models/group-help";
 import {Question} from "../models/question";
 import {Translation} from "../models/translation";
 import {AppConfig, DEFAULT_APP_CFG} from "../models/app-config";
-import { Template } from "../models/template";
 import {Ticket} from "../models/ticket";
 import {AgTable} from "../models/ag-table";
 import {ApiInfo} from "../models/api-info";
 import * as cls from "../models/od-cls";
 import {Catalog} from "../models/catalog";
+import { Template } from "../models/template";
 
 const {isNull, arrayToJson} = Objects;
 

@@ -1,3 +1,4 @@
+import { AssignObject } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
 import { JsonObject } from "./common";
 
@@ -18,7 +19,7 @@ export class TicketOption extends BaseModel {
     saveCache?: boolean = false;
     emailTicket?: boolean = false;
 
-    static from(data: JsonObject): TicketOption {
+    static from(data: AssignObject<TicketOption>): TicketOption {
       return BaseModel.fromJson(TicketOption, {...defaultOption, ...data});
     }
 
