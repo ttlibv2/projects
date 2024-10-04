@@ -1,8 +1,6 @@
 package vn.conyeu.ts.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.SmartValidator;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.helper.Validators;
@@ -27,30 +25,41 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
     }
 
     private void e400(String field, String value) {
-        if(Objects.isBlank(field)) throw BaseException.e400("%s")
-                .message("Thông tin [%s] không được rỗng", field, field);
+        if(Objects.isBlank(field)) throw BaseException.e400("%s").detail(field, value)
+                .message("Thông tin [%s] không được rỗng", field);
     }
 
     private void checkSNameExist(String sname) {
-        if(existsByServiceName(sname)) {
-            throw BaseException.e400("service_name")
-                    .message("Thông tin [service_name] tồn tại.");
+        if(existsByAppName(sname)) {
+            throw BaseException.e400("app_name")
+                    .detail("app_name", sname)
+                    .message("Thông tin [app_name] tồn tại.");
         }
     }
 
     private void checkBaseUrlExist(String suid, String baseUrl) {
-        if(existsByBaseUrl(suid, baseUrl)) {
+        if (existsByBaseUrl(suid, baseUrl)) {
             throw BaseException.e400("base_url")
+                    .detail("app_uid", suid).detail("base_url", baseUrl)
                     .message("Thông tin [base_url] tồn tại.");
         }
     }
 
-//    private void checkAllowCopy(String suid) {
-//        if(repo().existsBySUID(suid, suid)) {
-//            throw BaseException.e400("service_uid")
-//                    .message("service_uid [%s] không được tạo mới dòng tiếp theo");
-//        }
-//    }
+    public ApiInfo copy(Long copyId, ApiInfo info) {
+        ApiInfo source = getById(copyId);
+        boolean allowCopy = Objects.equals(source.getAllowCopy(), true);
+
+        if(!allowCopy) {
+            throw BaseException.e400("allow_copy")
+                    .detail("copy_id", copyId).detail("app_name", source.getAppName())
+                    .message("Ứng dụng [%s] không được phép thực hiện sao chép", source.getTitle());
+        }
+
+        info.setId(null);
+        info.setTargetId(copyId);
+        return createNew(info, true);
+    }
+
 
     @Override
     public ApiInfo createNew(ApiInfo info) {
@@ -62,10 +71,8 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
             Validators.throwValidate(validator, info);
         }
 
-        checkSNameExist(info.getServiceName());
-        checkBaseUrlExist(info.getServiceUid(), info.getBaseUrl());
-//        checkAllowCopy(info.getServiceUid());
-
+        checkSNameExist(info.getAppName());
+        checkBaseUrlExist(info.getAppUID(), info.getBaseUrl());
         return save(info);
     }
 
@@ -93,75 +100,77 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
         return Optional.of(save(infoOld));
     }
 
-    /**
-     * Find api without service_name
-     * @param name the service name to find
-     * */
-    public ApiInfo getByServiceName(String name) {
-        return findByServiceName(name).orElseThrow(() -> TsErrors.noServiceName(name));
+
+    public Optional<ApiInfo> findByUIDName(String uid, String name) {
+        return repo().findByUIDName(uid, name);
     }
 
     /**
-     * Find api without service_name
-     * @param name the service name to find
+     * Find api without app_name
+     * @param name the app name to find
      * */
-    public Optional<ApiInfo> findByServiceName(String name) {
-        return repo().findByServiceName(name);
+    public ApiInfo getByAppName(String name) {
+        return findByAppName(name).orElseThrow(() -> TsErrors.noAppName(name));
     }
 
     /**
-     * Find api without service_uid
-     * @param uid the service uid to find
+     * Find api without app_name
+     * @param name the app name to find
      * */
-    public List<ApiInfo> findByServiceUid(String uid) {
-        return repo().findByServiceUid(uid);
+    public Optional<ApiInfo> findByAppName(String name) {
+        return repo().findByAppName(name);
     }
 
     /**
-     * Returns true if service_name exist
+     * Find api without app_uid
+     * @param uid the app uid to find
+     * */
+    public List<ApiInfo> findByAppUID(String uid) {
+        return repo().findByAppUID(uid);
+    }
+
+    /**
+     * Returns true if app_name exist
      * @return {boolean}
      * */
-    public boolean existsByServiceName(String name) {
-        return repo().existsByServiceName(name);
+    public boolean existsByAppName(String name) {
+        return repo().existsByAppName(name);
     }
 
     /**
-     * Returns true if service_uid exist
+     * Returns true if app_uid exist
      * @return {boolean}
      * */
-    public boolean existsByServiceUid(String uid) {
-        return repo().existsByServiceUid(uid);
+    public boolean existsByAppUID(String uid) {
+        return repo().existsByAppUID(uid);
     }
 
     /**
-     * Returns true if [service_uid + base_url] exist
+     * Returns true if [app_uid + base_url] exist
      * @return {boolean}
      * */
-    public boolean existsByBaseUrl(String serviceUid, String baseUrl) {
-        return repo().existsByServiceUidAndBaseUrl(serviceUid, baseUrl);
+    public boolean existsByBaseUrl(String appUID, String baseUrl) {
+        return repo().existsByAppUIDAndBaseUrl(appUID, baseUrl);
     }
 
 
     /**
-     * If apiCode exist then not save
-     * @param serviceName the api code
+     * If app_name exist then not save
+     * @param appName the app name
      * @param consumer the consumer apply info
      * */
-    public void tryCreateApi(String serviceName, Consumer<ApiInfo> consumer) {
-        if(!existsByServiceName(serviceName)){
+    public void tryCreateApi(String appName, Consumer<ApiInfo> consumer) {
+        if(!existsByAppName(appName)){
             ApiInfo info = new ApiInfo();
             consumer.accept(info);
             createNew(info);
         }
     }
 
-    public final BaseException noServiceName(String name) {
-        return TsErrors.noServiceName(name);
-    }
-
-    public void updateMenuLink(String serviceName, ObjectMap links) {
-        ApiInfo apiInfo = getByServiceName(serviceName);
+    public void updateMenuLink(String appName, ObjectMap links) {
+        ApiInfo apiInfo = getByAppName(appName);
         apiInfo.setLinks(links);
         save(apiInfo);
     }
+
 }

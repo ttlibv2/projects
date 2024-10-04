@@ -2,7 +2,6 @@ package vn.conyeu.ts.odcore.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.Unauthorized;
@@ -11,9 +10,9 @@ import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Lists;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
+import vn.conyeu.restclient.LoggingFilter;
 import vn.conyeu.restclient.RestClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
-import org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec;
 import vn.conyeu.ts.odcore.domain.*;
 
 import java.net.URI;
@@ -23,20 +22,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Slf4j
 public abstract class OdClient {
     protected final ClsApiCfg cfg;
-    protected Supplier<ClsUser> tryLoginFnc;
+    protected Consumer<LoggingFilter> loggingFilterConsumer;
 
-    protected OdClient(ClsApiCfg apiConfig) {
+    public OdClient(ClsApiCfg apiConfig) {
         this.cfg = apiConfig;
     }
 
     public static BaseException notLogin(String apiCode) {
         return new Unauthorized("ts_api").detail("ts_api", apiCode)
                 .message("Bạn chưa cấu hình tài khoản kết nối hệ thống");
+    }
+
+    /**
+     * Set the loggingFilterConsumer
+     *
+     * @param loggingFilterConsumer the value
+     */
+    public void setLoggingFilterConsumer(Consumer<LoggingFilter> loggingFilterConsumer) {
+        this.loggingFilterConsumer = loggingFilterConsumer;
     }
 
     /**
@@ -66,26 +73,7 @@ public abstract class OdClient {
         return RestClient.builder().baseUrl(getApiUrl())
                 .defaultContentType(MediaType.APPLICATION_JSON)
                 .defaultHeader("tsModelName", getLogModel())
-                .defaultHeader("tsApiUserId", cfg.getUserId());
-    }
-
-    /**
-     * Set the tryLoginFnc
-     *
-     * @param tryLoginFnc the value
-     */
-    public void setTryLoginFnc(Supplier<ClsUser> tryLoginFnc) {
-        this.tryLoginFnc = tryLoginFnc;
-    }
-
-    /**
-     * Returns dataset uri
-     *
-     * @param path the path uri
-     */
-    protected String datasetUri2(String path) {
-        if (path.startsWith("/")) path = path.substring(1);
-        return "/web/dataset/" + path;
+                .defaultHeader("tsApiUserId", cfg.getAccountId());
     }
 
     /**
@@ -146,16 +134,8 @@ public abstract class OdClient {
         ClientBuilder clientBuilder = clientBuilder();
         clientBuilder.defaultQueries(cfg.getQueries());
         clientBuilder.defaultHeaders(cfg.getHeaders());
-        clientBuilder.defaultHeader("cookie", cfg.getCookieValue());
+        clientBuilder.defaultHeader("cookie", cfg.getCookie());
         clientBuilder.defaultCsrfToken(cfg.getCsrfToken());
-        //clientBuilder.filters(filters -> {
-        //    filters.add(ExchangeFilterFunction.ofRequestProcessor());
-        //    filters.add(ExchangeFilterFunction.ofResponseProcessor());
-        //});
-
-        if(cfg.getCustomBuilderConsumer() != null) {
-            cfg.getCustomBuilderConsumer().accept(clientBuilder);
-        }
 
         return clientBuilder.build();
     }
@@ -166,7 +146,7 @@ public abstract class OdClient {
      * @param body the data body
      * @param uri  the uri send
      */
-    public final ObjectMap sendPost(Object body, URI uri) {
+    public final ObjectMap post(Object body, URI uri) {
         return sendBody(body, spec -> spec.uri(uri));
     }
 
@@ -177,7 +157,7 @@ public abstract class OdClient {
      * @param uri  the URI for the request using a URI template and URI variables
      * @param uriVariables the variables
      */
-    public final ObjectMap sendPost(Object body, String uri, Object...uriVariables) {
+    public final ObjectMap post(Object body, String uri, Object...uriVariables) {
         return sendBody(body, spec -> spec.uri(uri, uriVariables));
     }
 
@@ -188,7 +168,7 @@ public abstract class OdClient {
      * @param uri  the URI for the request using a URI template and URI variables
      * @param uriVariables the variables
      */
-    public final ObjectMap sendPost(Object body, String uri, Map<String, ?> uriVariables) {
+    public final ObjectMap post(Object body, String uri, Map<String, ?> uriVariables) {
         return sendBody(body, spec -> spec.uri(uri, uriVariables));
     }
 
@@ -199,7 +179,7 @@ public abstract class OdClient {
      * @param uri  the URI starting with a URI template and finishing off with a {@link UriBuilder} created from the template.
      * @param uriFunction the function
      */
-    public final ObjectMap sendPost(Object body, String uri, Function<UriBuilder, URI> uriFunction) {
+    public final ObjectMap post(Object body, String uri, Function<UriBuilder, URI> uriFunction) {
         return sendBody(body, spec -> spec.uri(uri, uriFunction));
     }
 
@@ -209,7 +189,7 @@ public abstract class OdClient {
      * @param body the data body
      * @param uriFunction the function
      */
-    public final ObjectMap sendPost(Object body, Function<UriBuilder, URI> uriFunction) {
+    public final ObjectMap post(Object body, Function<UriBuilder, URI> uriFunction) {
         return sendBody(body, spec -> spec.uri(uriFunction));
     }
 
@@ -223,24 +203,11 @@ public abstract class OdClient {
         RequestBodyUriSpec uriSpec = createClient().post();
         consumer.accept(uriSpec);
 
-        ObjectMap response = uriSpec
+        //  log.info(response.toJson(false));
+        return checkResponse(body, uriSpec
                 .bodyValue(ClsRequest.fromObject(body))
                 .retrieve().bodyToMono(ObjectMap.class)
-                .blockOptional().orElseThrow();
-
-        try {
-          //  log.info(response.toJson(false));
-            return checkResponse(body, response);
-        }//
-        catch (BaseException exp) {
-            if(exp.getObject().getCode().equals("SessionExpired")
-                    && cfg.isAutoLogin() && tryLoginFnc != null && count == 0) {
-                tryLoginFnc.get();
-                return sendBody(body, consumer, 1);
-            }
-            else throw exp;
-        }
-
+                .blockOptional().orElseThrow());
     }
 
 

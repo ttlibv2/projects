@@ -11,9 +11,10 @@ export class AppConfig extends BaseModel {
     loginUser: User;
     currentI18N: Translation;
     currentTemplate: TsMap<string, string>;
+    tsAppUID: string;
 
     setNull(field: string): this {
-        delete this[field];
+        this.delete(field);
         return this;
     }
 
@@ -41,5 +42,6 @@ export const DEFAULT_APP_CFG: Partial<AppConfig> = {
     currentLang: 'vi',
     rememberUser: new RememberUser(),
     currentI18N: new Translation(),
-    currentTemplate: new TsMap()
+    currentTemplate: new TsMap(),
+    tsAppUID: 'TSApp'
 }

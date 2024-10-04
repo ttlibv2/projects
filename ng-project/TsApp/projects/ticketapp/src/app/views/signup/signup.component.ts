@@ -23,9 +23,10 @@ export class SignupComponent implements OnInit{
   i18n = I18N_KEY;
 
   socials: SocialLink[] = [
-    {label: 'Google', icon: 'fa-brands fa-google', link: '/auth/google'},
-    {label: 'Facebook', icon: 'fa-brands fa-facebook', link: '/auth/facebook'},
-    {label: 'Instagram', icon: 'fa-brands fa-instagram', link: '/auth/instagram'},
+    {label: 'Google', icon: 'pi pi-google google', link: '/auth/google'},
+    {label: 'Facebook', icon: 'pi pi-facebook facebook', link: '/auth/facebook'},
+    {label: 'Instagram', icon: 'pi pi-instagram instagram', link: '/auth/instagram'},
+    {label: 'Github', icon: 'pi pi-github github', link: '/auth/github'},
   ];
 
   constructor(private active: ActivatedRoute,

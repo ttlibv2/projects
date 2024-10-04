@@ -40,6 +40,8 @@
       <module name="sm-account" target="21" />
       <module name="sm-converter" target="21" />
       <module name="sm-security" target="21" />
+      <module name="ts-account" target="21" />
+      <module name="ts-web" target="21" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

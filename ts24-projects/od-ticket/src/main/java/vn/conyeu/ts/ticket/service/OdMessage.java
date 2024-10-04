@@ -3,14 +3,13 @@ package vn.conyeu.ts.ticket.service;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFile;
 import vn.conyeu.ts.ticket.domain.ClsFileMap;
 import vn.conyeu.ts.ticket.domain.ClsMessage;
 
 import java.util.List;
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 public class OdMessage extends OdTicketClient<ClsMessage> {
     private final OdFile odFile;
 
@@ -69,7 +68,7 @@ public class OdMessage extends OdTicketClient<ClsMessage> {
                 .set("thread_id", clsNote.getRes_id())
                 .set("thread_model", clsNote.getModel());
 
-        ObjectMap mapData = sendPost(argBody, "/mail/message/post").getMap("result");
+        ObjectMap mapData = post(argBody, "/mail/message/post").getMap("result");
         return clsNote.updateFromMap(mapData);
     }
 
@@ -100,7 +99,7 @@ public class OdMessage extends OdTicketClient<ClsMessage> {
         }
 
         String url = "/mail/message/update_content";
-        return sendPost( ObjectMap.create()
+        return post( ObjectMap.create()
                 .set("body", Objects.firstNotNull(cls.getBody(), ""))
                 .set("attachment_ids",  Objects.firstNotNull(cls.getAttachment_ids(), new Object[1]))
                 .set("message_id", noteID), url)

@@ -20,7 +20,7 @@ import vn.conyeu.ts.service.TicketService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.*;
 import vn.conyeu.ts.ticket.service.OdTicket;
-import vn.conyeu.ts.ticket.service.OdTicketService;
+import vn.conyeu.ts.ticket.service.TSApp;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -44,12 +44,12 @@ public class OdTicketRest extends OdBaseRest {
     @GetMapping("search")
     public List<ClsTicket> findTicket(@RequestParam Map<String, Object> mapQuery, Pageable pg) {
         ClsPage clsPage = new ClsPage().limit(pg.getPageSize());
-        return service().ticket().searchTicket(ObjectMap.clone(mapQuery), clsPage);
+        return tsApp().ticket().searchTicket(ObjectMap.clone(mapQuery), clsPage);
     }
 
     @GetMapping("get-by-uid/{ticketNumber}")
     public Ticket getTicketOnWeb(@PathVariable Long ticketNumber) {
-        OdTicketService service = service();
+        TSApp service = tsApp();
         ClsTicket cls = service.ticket().getByID(ticketNumber).orElseThrow(() -> TsErrors.noOdTicketId(ticketNumber));
         Ticket ticket = OdTRHelper.fromClsTicket(cls).set("get-by-api", cls);
 
@@ -68,7 +68,7 @@ public class OdTicketRest extends OdBaseRest {
 
     @GetMapping("delete-follow/{ticketNumber}")
     public List<Long> deleteFollowExcludeUser(@PathVariable Long ticketNumber) {
-        return service().ticket().deleteFollow(ticketNumber);
+        return tsApp().ticket().deleteFollow(ticketNumber);
     }
 
     @PostMapping("send")
@@ -79,6 +79,7 @@ public class OdTicketRest extends OdBaseRest {
         final boolean isAll = "all".equals(action);
 
         TicketDetail detail = ticket.getDetail();
+        TSApp tsApp = tsApp();
 
         final boolean
                 isSend = ticket.isSendTicket(),
@@ -89,29 +90,29 @@ public class OdTicketRest extends OdBaseRest {
                 isClose = detail.isClosed();
 
         if ((isAll && !isSend) || segments.contains("create_ticket")) {
-            createTicket(service(), ticket, dto.getTicketState());
+            createTicket(tsApp, ticket, dto.getTicketState());
         }
 
         if ((isAll && !isAddNote) || segments.contains("add_note")) {
-            createNote(service(), ticket, dto.getNoteState());
+            createNote(tsApp, ticket, dto.getNoteState());
         }
 
         if ((isAll && !isAttach) || segments.contains("attach_image")) {
-            attachFile(service(), ticket, dto.getImageBase64());
+            attachFile(tsApp, ticket, dto.getImageBase64());
         }
 
         if ((isAll && isTicketEmail && !isSendMail) || segments.contains("send_email")) {
-            sendEmail(service(), ticket);
+            sendEmail(tsApp, ticket);
         }
 
         if ((isAll && !isClose) || segments.contains("close_ticket")) {
-            closeTicket(service(), ticket);
+            closeTicket(tsApp, ticket);
         }
 
         return ticket;
     }
 
-    private Ticket createTicket(OdTicketService service, Ticket ticket, ExistState state) {
+    private Ticket createTicket(TSApp service, Ticket ticket, ExistState state) {
         if (!ticket.isSendTicket()) {
             OdTicket odTicket = service.ticket();
 
@@ -147,7 +148,7 @@ public class OdTicketRest extends OdBaseRest {
         }
     }
 
-    private Ticket updateTicket(OdTicketService service, Ticket ticket) {
+    private Ticket updateTicket(TSApp service, Ticket ticket) {
         validateTicketNoSend(ticket, "Không thể cập nhật");
 
         // nếu ticket lấy từ web thì ko cập nhật
@@ -163,19 +164,19 @@ public class OdTicketRest extends OdBaseRest {
         return saveTicket(ticket, clsNew, TicketAction.UPDATE_TICKET);
     }
 
-    private TicketDetail deleteTicket(OdTicketService service, Long ticketNumber, TicketDetail oldDetail) {
+    private TicketDetail deleteTicket(TSApp service, Long ticketNumber, TicketDetail oldDetail) {
         service.ticket().deleteTicket(ticketNumber);
         return oldDetail;
     }
 
-    private Ticket closeTicket(OdTicketService service, Ticket ticket) {
+    private Ticket closeTicket(TSApp service, Ticket ticket) {
         validateTicketNoSend(ticket, "Không thể đóng");
         Long ticketNum = ticket.getDetail().getTicketNumber();
         ClsTicket clsTicket = service.ticket().closeTicket(ticketNum);
         return saveTicket(ticket, clsTicket, TicketAction.CLOSE_TICKET);
     }
 
-    private Ticket createNote(OdTicketService service, Ticket ticket, ExistState state) {
+    private Ticket createNote(TSApp service, Ticket ticket, ExistState state) {
         validateTicketNoSend(ticket, "Không thể thêm ghi chú");
 
         Supplier<ClsMessage> messageSupplier = () -> {
@@ -221,7 +222,7 @@ public class OdTicketRest extends OdBaseRest {
         }
     }
 
-    private Ticket attachFile(OdTicketService service, Ticket ticket, ObjectMap base64Images) {
+    private Ticket attachFile(TSApp service, Ticket ticket, ObjectMap base64Images) {
         validateTicketNoSend(ticket, "Không thể đính kèm");
 
         String images = ticket.getImages();
@@ -247,7 +248,7 @@ public class OdTicketRest extends OdBaseRest {
         return saveTicket(ticket, clsNote, TicketAction.ATTACH_FILE);
     }
 
-    private Ticket sendEmail(OdTicketService service, Ticket ticket) {
+    private Ticket sendEmail(TSApp service, Ticket ticket) {
         validateTicketNoSend(ticket, "Không thể gửi email.");
 
         if (!ticket.isEmailTicket()) {

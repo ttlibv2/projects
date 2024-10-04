@@ -4,11 +4,10 @@ import org.springframework.http.MediaType;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsMenu;
 
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 public class OdWebClient extends OdTicketClient<ClsMenu> {
     public static final String LOAD_MENU_ID = "load_menus";
 
@@ -49,7 +48,10 @@ public class OdWebClient extends OdTicketClient<ClsMenu> {
 
         ObjectMap links = ObjectMap.create();
 
-        for(String menuKey : menuConfig.keySet()) {
+        ObjectMap mCfg = cfg().getCfgMenuLinks();
+        if(mCfg == null) mCfg = menuConfig;
+
+        for(String menuKey : mCfg.keySet()) {
             if(!menus.containsKey(menuKey)) {
                 throw BaseException.e404("no_menu")
                         .message("Không tìm thấy menu [%s]", menuKey);

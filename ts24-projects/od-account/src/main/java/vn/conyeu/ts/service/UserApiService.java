@@ -27,12 +27,12 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
     }
 
     /**
-     * Returns user api without service name
+     * Returns user api without app_name
      * @param userId the user id to get
-     * @param serviceName the service name to get
+     * @param appName the app name to get
      * */
-    public Optional<UserApi> findByServiceName(Long userId, String serviceName) {
-        return repo().findByServiceName(userId, serviceName);
+    public Optional<UserApi> findByAppName(Long userId, String appName) {
+        return repo().findByAppName(userId, appName);
     }
 
     /**
@@ -53,21 +53,21 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
     }
 
     /**
-     * Returns all user api without user_id + service_uid
+     * Returns all user api without user_id + app_uid
      * @param userId the user id to get
-     * @param serviceUid the service uid to get
+     * @param appUID the app_uid to get
      * */
-    public List<UserApi> findAllByServiceUid(Long userId, String serviceUid) {
-        return repo().findAllByServiceUid(userId, serviceUid);
+    public List<UserApi> findAllByAppUID(Long userId, String appUID) {
+        return repo().findAllByAppUID(userId, appUID);
     }
 
     public boolean existsByApiId(Long apiId, Long userId) {
         return repo().existsByApiId(apiId, userId);
     }
 
-    public UserApi updateConsumer(Long userId, String serviceName, Consumer<UserApi> consumer) {
-        Optional<UserApi> optional = findByServiceName(userId, serviceName);
-        if(optional.isEmpty()) throw TsErrors.noUserApiServiceName(serviceName);
+    public UserApi updateConsumer(Long userId, String appName, Consumer<UserApi> consumer) {
+        Optional<UserApi> optional = findByAppName(userId, appName);
+        if(optional.isEmpty()) throw TsErrors.noUserApi_AppName(appName);
 
         UserApi userApi = optional.get();
         consumer.accept(userApi);

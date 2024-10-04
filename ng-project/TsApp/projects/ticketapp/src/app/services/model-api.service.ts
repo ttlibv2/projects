@@ -15,9 +15,9 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
     super(inject);
   }
 
-  abstract basePath(): string;
+  protected abstract basePath(): string;
 
-  abstract resToModel(): ResponseToModel<any>;
+  protected abstract resToModel(): ResponseToModel<any>;
 
   protected callBasePath(path: string): string {
     return this.joinUrls(this.basePath(), path);
@@ -41,6 +41,7 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
 
 
   protected getArray(url: string, params?: ClientParams): Observable<E[]> {
+      url = this.callBasePath(url);
       return this.get(url, {...params}).pipe(map((items: any[]) => this.responseToArray(items)));
   }
 

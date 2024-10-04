@@ -14,16 +14,13 @@ import vn.conyeu.ts.domain.TsUser;
 import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.TsUserDto;
 import vn.conyeu.ts.dtocls.TsVar;
-import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.service.ApiInfoService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.service.UserService;
-import vn.conyeu.ts.ticket.service.OdTicketService;
+import vn.conyeu.ts.ticket.service.TSApp;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(TsVar.Rest.tsUser)
@@ -49,8 +46,8 @@ public class UserRest extends LongIdRest<TsUser, UserService> {
             user = service.createNew(user);
 
             // create api info
-            String apiCode = OdTicketService.SERVICE_NAME;
-            Optional<ApiInfo> optional = apiInfoService.findByServiceName(apiCode);
+            String apiCode = TSApp.APP_UID;
+            Optional<ApiInfo> optional = apiInfoService.findByAppName(apiCode);
             if (optional.isEmpty()) throw new NotFound("no_api").detail("api_code", apiCode)
                     .message("Khong tim thay cau hinh api [%s]", apiCode);
 
@@ -74,27 +71,31 @@ public class UserRest extends LongIdRest<TsUser, UserService> {
             String fullName = account.getInfo().getFullName();
             TsUser user = new TsUser();
             user.setId(account.getId());
-            user.setFullName(fullName);
+            user.setTsName(fullName);
             user.setUserCode("setUserCode");
             user.setRoomCode("setRoomCode");
-            user.setRequiredUpdate(true);
+            user.setReqUpdate(true);
             return service.createNew(user);
         }
         return service.findById(userId).orElseThrow(() -> service.noId(userId));
     }
 
     @GetMapping("get-config")
-    public ObjectMap getUserConfig(@PrincipalId Long userId) {
-        ObjectMap map = ObjectMap.fromJson(getProfile(userId));
-        List<UserApi> users = userApiService.findAll(userId);
-        Map<String, ClsUser> clsUserMap = users.stream().collect(Collectors.toMap(
-                UserApi::getServiceUid,
-                UserApi::getClsUserBasic
-        ));
+    public TsUser getUserConfig(@PrincipalId Long userId) {
+        TsUser tsUser = getProfile(userId);
 
-        map.set("user_api", clsUserMap);
-        return map;
+        Long tsAppId = tsUser.getTsApp();
+        if(tsAppId != null) {
+            ObjectMap links = apiInfoService.getById(tsAppId).getLinks();
+            tsUser.setTsLinks(links);
+        }
+
+        return tsUser;
     }
 
-
+    @PostMapping("update-profile")
+    public TsUser updateProfile(@PrincipalId Long userId, @RequestBody Map<String, Object> bodyMap) {
+        Optional<TsUser> optional = service.update(userId, ObjectMap.fromMap(bodyMap));
+        return optional.orElseThrow(() -> service.noId(userId));
+    }
 }

@@ -1,13 +1,10 @@
 package vn.conyeu.ts.ticket.service;
 
-import org.springframework.web.reactive.function.client.WebClient;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsFollow;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 public class OdFollow extends OdTicketClient<ClsFollow> {
 
     public OdFollow(ClsApiCfg apiConfig) {
@@ -39,7 +36,7 @@ public class OdFollow extends OdTicketClient<ClsFollow> {
 
         String url = cfg.getBaseUrl();
         String uri = url.endsWith("/web") ? url.substring(0, url.length()-4) : url;
-       return sendPost(map, uri+"/mail/read_followers")
+       return post(map, uri+"/mail/read_followers")
                 .getStream("result.followers")
                 .map(obj -> mapToObject().apply(obj))
                 .toList();

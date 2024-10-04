@@ -1,51 +1,112 @@
 package vn.conyeu.ts.odcore.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import org.springframework.validation.Errors;
+import org.springframework.validation.SmartValidator;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.commons.utils.Asserts;
+import vn.conyeu.commons.utils.MapperHelper;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.ts.odcore.service.OdClient;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 @Getter
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ClsApiCfg implements Serializable, Cloneable {
-    private String serviceName;
-    private String serviceUid;
-    private String apiTitle;
+public final class ClsApiCfg implements Serializable, Cloneable {
+    private String appUID;
+    private String appName;
+    private String title;
     private String baseUrl;
     private String loginPath;
     private ObjectMap headers;
     private ObjectMap queries;
+    private Long accountId;
+    private Boolean autoLogin;
+    private ObjectMap cfgMenuLinks;
+
+    //credential
     private String cookieValue;
     private String csrfToken;
-    private String userName;
+    private String username;
     private String password;
     private ClsUser clsUser;
-    private boolean autoLogin = true;
-    private int maxTryLogin = 1;
 
-
-    private Consumer<ClientBuilder> customBuilderConsumer;
-
-    public void validate() {
-        Map<String, String> params = new HashMap<>();
-        if(Objects.isBlank(baseUrl)) params.put("baseUrl", "");
-        if(Objects.isBlank(loginPath)) params.put("loginPath", "");
-        if(!params.isEmpty()) throw BaseException.e400("e400")
-                .message("Vui lòng điền đầy đủ thông tin.")
-                .arguments("fields", params);
+    /**
+     * Return true if info valid
+     */
+    public boolean hasLogin() {
+        return Objects.allNotNull(clsUser, getCookie(), getCsrfToken(), getContext());
     }
 
-    public boolean isLogin() {
-        return cookieValue != null && clsUser != null;
+    /**
+     * Returns cookie for user
+     */
+    public String getCookie() {
+        return clsUser == null ? cookieValue : clsUser.getCookie();
+    }
+
+    /**
+     * Returns csrf_token for user
+     */
+    public String getCsrfToken() {
+        return clsUser == null ? csrfToken : clsUser.getCsrfToken();
+    }
+
+    /**
+     * Returns context for user
+     */
+    public ClsUserContext getContext() {
+        return clsUser == null ? null : clsUser.getContext();
+    }
+
+    /**
+     * Returns the clsUser
+     */
+    public ClsUser getClsUser() {
+        checkUserLogin();
+        return clsUser;
+    }
+
+    /**
+     * Set the menuLinks
+     *
+     * @param cfgMenuLinks the value
+     */
+    public ClsApiCfg setCfgMenuLinks(ObjectMap cfgMenuLinks) {
+        this.cfgMenuLinks = cfgMenuLinks;
+        return this;
+    }
+
+    /**
+     * Set the appName
+     *
+     * @param appName the value
+     */
+    public ClsApiCfg setAppName(String appName) {
+        this.appName = appName;
+        return this;
+    }
+
+    /**
+     * Set the accountId
+     *
+     * @param accountId the value
+     */
+    public ClsApiCfg setAccountId(Long accountId) {
+        this.accountId = accountId;
+        return this;
+    }
+
+    /**
+     * Set the appName
+     *
+     * @param appUID the value
+     */
+    public ClsApiCfg setAppUID(String appUID) {
+        this.appUID = appUID;
+        return this;
     }
 
     /**
@@ -58,6 +119,15 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
+    /**
+     * Set the headers
+     *
+     * @param headers the value
+     */
+    public ClsApiCfg setHeaders(ObjectMap headers) {
+        this.headers = headers;
+        return this;
+    }
 
     /**
      * Set the loginPath
@@ -66,6 +136,46 @@ public class ClsApiCfg implements Serializable, Cloneable {
      */
     public ClsApiCfg setLoginPath(String loginPath) {
         this.loginPath = loginPath;
+        return this;
+    }
+
+    /**
+     * Set the queries
+     *
+     * @param queries the value
+     */
+    public ClsApiCfg setQueries(ObjectMap queries) {
+        this.queries = queries;
+        return this;
+    }
+
+    /**
+     * Set the title
+     *
+     * @param title the value
+     */
+    public ClsApiCfg setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    /**
+     * Set the autoLogin
+     *
+     * @param autoLogin the value
+     */
+    public ClsApiCfg setAutoLogin(Boolean autoLogin) {
+        this.autoLogin = autoLogin;
+        return this;
+    }
+
+    /**
+     * Set the clsUser
+     *
+     * @param clsUser the value
+     */
+    public ClsApiCfg setClsUser(ClsUser clsUser) {
+        this.clsUser = clsUser;
         return this;
     }
 
@@ -79,7 +189,6 @@ public class ClsApiCfg implements Serializable, Cloneable {
         return this;
     }
 
-
     /**
      * Set the csrfToken
      *
@@ -91,55 +200,7 @@ public class ClsApiCfg implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the requestHeader
-     */
-    public ObjectMap getHeaders() {
-        headers = ObjectMap.ifNull(headers);
-        return headers;
-    }
-
-    /**
-     * Set the requestHeader
-     *
-     * @param headers the value
-     */
-    public ClsApiCfg setHeaders(ObjectMap headers) {
-        this.headers = headers;
-        return this;
-    }
-
-    /**
-     * Returns the requestQuery
-     */
-    public ObjectMap getQueries() {
-       queries = ObjectMap.ifNull(headers);
-        return queries;
-    }
-
-    /**
-     * Set the requestQuery
-     *
-     * @param queries the value
-     */
-    public ClsApiCfg setQueries(ObjectMap queries) {
-        this.queries = queries;
-        return this;
-    }
-
-
-    /**
-     * Set the userName
-     *
-     * @param userName the value
-     */
-    public ClsApiCfg setUserName(String userName) {
-        this.userName = userName;
-        return this;
-    }
-
-
-    /**
-     * Set the secret
+     * Set the password
      *
      * @param password the value
      */
@@ -149,126 +210,69 @@ public class ClsApiCfg implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the userContext
-     */
-    public ClsUserContext getUserContext() {
-        Asserts.notNull(clsUser, "User not login");
-        return clsUser.getContext();
-    }
-
-    /**
-     * Returns the userId
-     */
-    public Long getUserId() {
-        //Asserts.notNull(clsUser, "User not login");
-        return clsUser == null ? null : clsUser.getId();
-    }
-
-    /**
-     * Set the clsUser
+     * Set the username
      *
-     * @param clsUser the value
+     * @param username the value
      */
-    public ClsApiCfg setClsUser(ClsUser clsUser) {
-        this.clsUser = clsUser;
-        //this.cookieValue = clsUser.getCookie();
-       // this.csrfToken = clsUser.getCsrfToken();
+    public ClsApiCfg setUsername(String username) {
+        this.username = username;
         return this;
-    }
-
-    /**
-     * Set the autoLogin
-     *
-     * @param autoLogin the value
-     */
-    public ClsApiCfg setAutoLogin(boolean autoLogin) {
-        this.autoLogin = autoLogin;
-        return this;
-    }
-
-    /**
-     * Set the apiCode
-     *
-     * @param serviceName the value
-     */
-    public ClsApiCfg setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-        return this;
-    }
-
-    /**
-     * Set the serviceUid
-     *
-     * @param serviceUid the value
-     */
-    public ClsApiCfg setServiceUid(String serviceUid) {
-        this.serviceUid = serviceUid;
-        if(serviceName == null) serviceName = serviceUid;
-        return this;
-    }
-
-    /**
-     * Set the apiTitle
-     *
-     * @param apiTitle the value
-     */
-    public ClsApiCfg setApiTitle(String apiTitle) {
-        this.apiTitle = apiTitle;
-        return this;
-    }
-
-
-    /**
-     * Set the customBuilderConsumer
-     *
-     * @param customBuilderConsumer the value
-     */
-    public ClsApiCfg setCustomBuilderConsumer(Consumer<ClientBuilder> customBuilderConsumer) {
-        this.customBuilderConsumer = customBuilderConsumer;
-        return this;
-    }
-
-    @Override
-    public ClsApiCfg clone()  {
-        return new ClsApiCfg()
-                .setBaseUrl(baseUrl)
-                .setLoginPath(loginPath)
-                .setClsUser(clsUser)
-                .setCookieValue(cookieValue)
-                .setCsrfToken(csrfToken)
-                .setApiTitle(apiTitle)
-                .setApiTitle(apiTitle)
-                .setHeaders(getHeaders().copy())
-                .setQueries(getQueries().copy())
-                .setCustomBuilderConsumer(customBuilderConsumer);
-    }
-
-    public void updateFrom(ClsApiCfg config) {
-        //MapperHelper.update(this, config);
-        ClsApiCfg self = this;
-        set(config.getBaseUrl(), self::setBaseUrl);
-        set(config.getLoginPath(), self::setLoginPath);
-        set(config.getClsUser(), self::setClsUser);
-        set(config.getCsrfToken(), self::setCsrfToken);
-        set(config.getApiTitle(), self::setApiTitle);
-        set(config.getHeaders(), self::setHeaders);
-        set(config.getQueries(), self::setQueries);
-        set(config.getCustomBuilderConsumer(), self::setCustomBuilderConsumer);
-    }
-
-    public <T> void set(T value, Consumer<T> consumer) {
-        if(value != null) consumer.accept(value);
-    }
-
-    void set(ObjectMap value, Consumer<ObjectMap> consumer) {
-        if(value != null && !value.isEmpty()) {
-            consumer.accept(value.copy());
-        }
     }
 
     public void checkUserLogin() {
-        if(clsUser == null) {
-           throw  OdClient.notLogin(serviceName);
+        if (!hasLogin()) {
+            throw OdClient.notLogin(appName);
         }
+    }
+
+    public Errors validate(SmartValidator validator) {
+        return validator.validateObject(this);
+    }
+
+    public void validateBaseUrl() {
+        Map<String, String> params = checkValidateBase();
+        throwParamsError(params);
+    }
+
+    public void validateLogin() {
+        Map<String, String> params = checkValidateBase();
+        if(Objects.isBlank(username)) params.put("user_name", "api.user-name.notBlank");
+        if(Objects.isBlank(password)) params.put("password", "api.password.notBlank");
+        throwParamsError(params);
+    }
+
+    @Override
+    protected ClsApiCfg clone() {
+        try {
+            ClsApiCfg cfg = (ClsApiCfg) super.clone();
+            cfg.headers = ObjectMap.clone(headers);
+            cfg.queries = ObjectMap.clone(queries);
+            cfg.clsUser = clsUser == null ? null : clsUser.clone();
+            return cfg;
+        } catch (CloneNotSupportedException exp) {
+            throw new InternalError(exp);
+        }
+    }
+
+    private Map<String, String> checkValidateBase() {
+        Map<String, String> params = new HashMap<>();
+        if (Objects.isBlank(baseUrl)) params.put("base_url", "api.base-url.notBlank");
+        if (Objects.isBlank(loginPath)) params.put("login_path", "api.login-path.notBlank");
+        if (Objects.isBlank(appUID)) params.put("app_name", "api.app-name.notBlank");
+        if (Objects.isBlank(title)) params.put("app_title", "api.app-title.notBlank");
+        if (Objects.isBlank(appName)) params.put("service_name", "api.service-name.notBlank");
+        if (Objects.isNull(accountId)) params.put("account_id", "api.account-id.notNull");
+        return params;
+    }
+
+    private void throwParamsError(Map<String, String> params) {
+        if (!params.isEmpty()) throw BaseException.e400("e400")
+                .message("Vui lòng điền đầy đủ thông tin.")
+                .arguments("fields", params);
+    }
+
+    public void update(ClsApiCfg config) {
+        MapperHelper.update(this, config);
+        validateBaseUrl();
     }
 }

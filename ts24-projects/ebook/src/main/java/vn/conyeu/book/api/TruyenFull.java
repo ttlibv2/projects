@@ -32,7 +32,7 @@ public class TruyenFull extends BookClient{
     }
 
     @Override
-    String getBaseRoot() {
+    public String getBaseRoot() {
         return urlRoot;
     }
 

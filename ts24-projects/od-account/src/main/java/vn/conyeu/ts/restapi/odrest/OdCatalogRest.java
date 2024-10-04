@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.dtocls.TsVar;
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.*;
-import vn.conyeu.ts.ticket.service.OdTicketService;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,7 +31,7 @@ public class OdCatalogRest extends OdBaseRest {
     public ObjectMap getAll(@RequestParam String catalog) {
         catalog = Objects.isBlank(catalog) ? "all" : catalog.toLowerCase().trim();
 
-        final OdTicketService service = service();
+        //final OdTicketService service = tsApp();
         final boolean isAll = catalog.equalsIgnoreCase("all");
         final List<String> segments = List.of(catalog.split(","));
 
@@ -100,8 +100,9 @@ public class OdCatalogRest extends OdBaseRest {
 //        }
 
         //
-        ClsUser cls = service.getConfig().getClsUser();
-        map.set(service.getUniqueId()+".user_api", new ClsUser().setId(cls.getId())
+        ClsApiCfg cfg = tsApp().config();
+        ClsUser cls = cfg.getClsUser();
+        map.set(cfg.getAppName(), new ClsUser().setId(cls.getId())
                 .setUser_name(cls.getUser_name())
                 .setDisplay_name(cls.getDisplay_name())
                 .setEmail(cls.getEmail())
@@ -115,34 +116,34 @@ public class OdCatalogRest extends OdBaseRest {
     @GetMapping("get-category")
     public List<ClsCategory> getAllCate() {
         ClsFilterOption filterOption = new ClsFilterOption().NotLike("name", "ceo");
-        return service().category().find(filterOption).getContent();
+        return tsApp().category().find(filterOption).getContent();
     }
 
     @GetMapping("get-category-sub")
     public List<ClsCategorySub> getAllCateSub() {
         ClsFilterOption filterOption = new ClsFilterOption().NotLike("parent_category_id", "ceo");
-        return service().categorySub().find(filterOption).getContent();
+        return tsApp().categorySub().find(filterOption).getContent();
     }
 
     @GetMapping("get-category-sub/{parentSub}")
     public List<ClsCategorySub> getAllCateSubByParent(@PathVariable String parentSub) {
-        return service().categorySub().search(parentSub).getContent();
+        return tsApp().categorySub().search(parentSub).getContent();
     }
 
     @GetMapping("get-team")
     public List<ClsWkTeam> getAllWkTeam() {
-        return service().wkTeam().getAll().getContent();
+        return tsApp().wkTeam().getAll().getContent();
     }
 
     @GetMapping("get-topic")
     public List<ClsTopic> getAllTopic() {
-        return service().topic().getAll();
+        return tsApp().topic().getAll();
     }
 
 
     @GetMapping("get-ticket-subject-type")
     public List<ClsSubjectType> getSubjecType() {
-        return service().ticketSubjectType().nameSearch();
+        return tsApp().ticketSubjectType().nameSearch();
     }
 
     @GetMapping("get-repiled-status")
@@ -152,40 +153,40 @@ public class OdCatalogRest extends OdBaseRest {
 
     @GetMapping("get-ticket-tags")
     public List<ClsTicketTag> getAllTicketTags() {
-        return service().ticketTags().findAll().getContent();
+        return tsApp().ticketTags().findAll().getContent();
     }
 
     @GetMapping("get-ticket-priority")
     public List<ClsTicketPriority> getAllTicketPriority() {
-        return service().priority().findAll().getContent();
+        return tsApp().priority().findAll().getContent();
     }
 
     @GetMapping("get-stage")
     public List<ClsStage> getAllStage() {
-        return service().stage().findAll().getContent();
+        return tsApp().stage().findAll().getContent();
     }
 
     @GetMapping("get-ticket-type")
     @Cacheable(key = "'get-ticket-type'")
     public List<ClsTicketType> getAllTicketType() {
-        return service().ticketType().getAll();
+        return tsApp().ticketType().getAll();
     }
 
     @GetMapping("get-helpdesk-team")
     public List<ClsHelpdeskTeam> getAllHelpdeskTeam() {
         ClsFilterOption filterOption = new ClsFilterOption();
         filterOption.NotLike("team_email", "CEO@ts24.com.vn");
-        return service().team().find(filterOption).getContent();
+        return tsApp().team().find(filterOption).getContent();
     }
 
     @GetMapping("get-product")
     public List<ClsProduct> getAllProduct(@RequestParam Integer size) {
-        return service().product().getAll(size);
+        return tsApp().product().getAll(size);
     }
 
-    // @GetMapping("get-user-by-ids")
-    private List<ClsUser> searchUsersByIds(OdTicketService service, List<Long> userIds) {
-        return service.user().search(userIds);
-    }
+//    // @GetMapping("get-user-by-ids")
+//    private List<ClsUser> searchUsersByIds0(OdTicketService service, List<Long> userIds) {
+//        return service.user().search(userIds);
+//    }
 
 }

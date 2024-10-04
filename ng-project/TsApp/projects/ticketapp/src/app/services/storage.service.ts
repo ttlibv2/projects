@@ -101,7 +101,7 @@ export class StorageService {
     }
 
     set_i18n(lang: string, data: Translation): Observable<Translation> {
-        return this.up_config(`i18n_${lang}`, data);
+        return this.up_config(<any>`i18n_${lang}`, data);
     }
 
     set_currentTemplate(entityCode: string, templateCode: string) {
@@ -219,7 +219,7 @@ export class ConfigTable extends LocalTable<any, string> {
     setData(cfg: AppConfig):Observable<AppConfig> {
         return this.deleteAll().pipe(switchMap(_ => {
             const keys = Object.keys(cfg);
-            const data = keys.map(k => cfg[k]);
+            const data = keys.map(k => (<any>cfg)[k]);
             return this.bulkPut(data, keys).pipe(map(_ => cfg));
         }));
     }

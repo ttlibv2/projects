@@ -7,12 +7,11 @@ import {Observable, map, tap} from "rxjs";
 @Injectable({providedIn: 'root'})
 export class UserService extends ModelApi<User> {
 
-
-  override basePath(): string {
+  protected override basePath(): string {
     return "/ts-api/user";
   }
 
-  override resToModel(): ResponseToModel<User> {
+  protected override resToModel(): ResponseToModel<User> {
     return json => User.from(json);
   }
 
@@ -24,7 +23,21 @@ export class UserService extends ModelApi<User> {
 
   override updateById(modelId: number, data: User): Observable<number> {
     return super.updateById(modelId, data);
-     // .pipe(tap(res => this.config.set_userInfo(data)));
   }
 
+  getProfile(): Observable<User> {
+    const url = this.callBasePath(`get-profile`);
+    return this.get(url).pipe(map(res => User.from(res)));
+  }
+
+  updateProfile(info: Partial<User>): Observable<User> {
+    const url = this.callBasePath(`update-profile`);
+    return this.savePost(url, info);
+  }
+
+  signout(): Observable<any> {
+    const url = this.callBasePath(`signout`);
+    return this.savePost(url, {});
+  }
+  
 }

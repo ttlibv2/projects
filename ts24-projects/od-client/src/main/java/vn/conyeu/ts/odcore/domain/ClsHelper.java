@@ -114,10 +114,10 @@ public final class ClsHelper {
 
     public static void checkResponse(ClsApiCfg cfg, Object response) {
         ObjectMap detail = ObjectMap.setNew("client_response", response);
-        String msgPrefix = "Đã xảy ra lỗi từ hệ thống [%s]. ".formatted(cfg.getApiTitle());
+        String msgPrefix = "Đã xảy ra lỗi từ hệ thống [%s]. ".formatted(cfg.getTitle());
 
         BaseException exp = BaseException.e500("ts_api")
-                .detail("ts_api", cfg.getServiceName())
+                .detail("ts_api", cfg.getAppName())
                 .detail("ts_detail", detail);
 
         if (response instanceof String html) {

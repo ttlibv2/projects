@@ -8,6 +8,7 @@ import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.service.OdService;
 import vn.conyeu.ts.service.UserApiService;
+import vn.conyeu.ts.service.UserService;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,38 +18,36 @@ import java.util.stream.Stream;
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(TsVar.Rest.odUser)
 public class OdUserRest extends OdBaseRest {
+    private final UserService userService;
 
-    public OdUserRest(OdService odService, UserApiService apiService) {
+    public OdUserRest(OdService odService, UserApiService apiService, UserService userService) {
         super(odService, apiService);
+        this.userService = userService;
     }
 
     @PostMapping("login")
     public ClsUser login(@PrincipalId Long userLogin) {
-        return service().login();
-//        return ObjectMap.setNew("alert_msg", "Kiểm tra thông tin kết nối thành công")
-//                .set("result", clsUser);
+        ClsUser clsUser = tsApp().login();
+        userService.update(userLogin, clsUser);
+        return clsUser;
     }
 
     @GetMapping("get-byid/{userId}")
     public ClsUser findUserById( @PathVariable Long userId) {
-        return service().user().findById(userId).orElseThrow(() -> TsErrors.noOdUserId(userId));
+        return tsApp().user().findById(userId).orElseThrow(() -> TsErrors.noOdUserId(userId));
     }
 
     @GetMapping(value = "search", params = "keyword")
     public List<ClsUser> findByKeyword(@RequestParam String keyword) {
-        return service().user().search(keyword);
+        return tsApp().user().search(keyword);
     }
 
     @GetMapping(value = "search", params = "ids")
     public List<ClsUser> findByUserIds(@RequestParam String ids) {
         if(ids == null) return new LinkedList<>();
         List<Long> list = Stream.of(ids.split(",")).map(Long::parseLong).toList();
-        return service().user().search(list);
+        return tsApp().user().search(list);
     }
 
-//    @GetMapping("load_menus")
-//    public ObjectMap loadMenus() {
-//        return service().webClient().loadMenuForUser();
-//    }
 
 }

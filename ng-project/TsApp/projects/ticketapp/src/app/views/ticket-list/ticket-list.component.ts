@@ -13,7 +13,6 @@ import { TagRemoveEvent } from 'ts-ui/tag';
 import {AgTable } from '../../models/ag-table';
 import { AgTableTemplate } from './ag-table-template';
 import { FormsUtil } from './form-util';
-import { Alert } from '../../services/ui/alert/alert.service';
 import { RxjsUtil } from './rxjs-util';
 import { SaveTicketEvent } from '../ticket-form/ticket-form.component';
 import {
@@ -34,10 +33,11 @@ import {Objects, Base64, TsMap, Consumer} from 'ts-ui/helper';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { StorageService } from '../../services/storage.service';
 import { AgTemplateCode } from '../../constant';
-import { ModalService } from "../../services/ui/model.service";
 import { IRowNode } from '@ag-grid-community/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TemplateFile } from '../shared/template-file';
+import { Alert } from 'ts-ui/alert';
+import { ModalService } from 'ts-ui/modal';
 
 const { isNull, notNull, notBlank, isBlank } = Objects;
 

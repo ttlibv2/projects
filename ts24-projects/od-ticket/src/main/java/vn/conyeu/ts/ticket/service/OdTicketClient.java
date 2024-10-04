@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class OdTicketClient<E> extends OdClient {
@@ -24,21 +23,34 @@ public abstract class OdTicketClient<E> extends OdClient {
         super(apiConfig);
     }
 
+    protected abstract Class<E> getDomainCls();
+    protected abstract Function<ObjectMap, E> mapToObject();
+
+    /**
+     * Find all data
+     * @see #searchRead()
+     * */
     public Page<E> findAll() {
         return searchRead();
     }
 
+    /**
+     * Find all data without option
+     * @param searchObj the option to search
+     * @see #searchRead(ClsSearch)
+     * */
     public Page<E> find(ClsSearch searchObj) {
         return searchRead(searchObj);
     }
 
+    /**
+     * Find all data without option
+     * @param filterOption the option to search
+     * @see #searchRead(ClsFilterOption)
+     * */
     public Page<E> find(ClsFilterOption filterOption) {
         return searchRead(filterOption);
     }
-
-    protected abstract Class<E> getDomainCls();
-    protected abstract Function<ObjectMap, E> mapToObject();
-
 
     protected Page<E> forPage(List<E> data) {
         return new PageImpl<>(data);
@@ -54,9 +66,8 @@ public abstract class OdTicketClient<E> extends OdClient {
      * @param args any
      */
     protected <T> List<E> read(List<T> args) {
-        //Object context = ObjectMap.setNew("context", createUserContext());
         String uriString = call_kwUri("read");
-        ObjectMap response = sendPost(ObjectMap.create()
+        ObjectMap response = post(ObjectMap.create()
                 .set("method", "read").set("model", getModel())
                 .set("args", args).set("kwargs", createContextMap()), uriString);
 
@@ -96,7 +107,7 @@ public abstract class OdTicketClient<E> extends OdClient {
                 .set("operator", "ilike")
                 .set("limit", option.getLimit());
 
-        return sendPost(ObjectMap.create()
+        return post(ObjectMap.create()
                 .set("args", new Object[0]).set("method", "name_search")
                 .set("model", getModel()).set("kwargs", kwargs), url)
                 .getStream("result", Object.class)
@@ -122,16 +133,12 @@ public abstract class OdTicketClient<E> extends OdClient {
     }
 
     protected Page<E> searchRead(ClsFilterOption filterOption) {
-        return searchRead(filterOption, null);
+        return searchRead(new ClsSearchReadOption(filterOption), null);
     }
 
     protected Page<E> searchRead(ClsFilterOption filterOption, Consumer<E> callbackItem) {
         return searchRead(new ClsSearchReadOption(filterOption), callbackItem);
     }
-
-//    protected Page<E> searchRead(ObjectMap data) {
-//        return searchRead(ClsSearch.forData(data));
-//    }
 
     protected Page<E> searchRead(ClsSearch searchObj) {
         return searchRead(searchObj, null);
@@ -173,7 +180,7 @@ public abstract class OdTicketClient<E> extends OdClient {
                 .set("fields", getFields("find", null))
                 .set(clsPage.cloneMap());
 
-        ObjectMap response = sendPost(body, datasetUri("search_read")).getMap("result");
+        ObjectMap response = post(body, datasetUri("search_read")).getMap("result");
 
         List<E> listItem = response.getStream("records")
                 .map(convertItem).collect(Collectors.toList());
@@ -194,9 +201,8 @@ public abstract class OdTicketClient<E> extends OdClient {
             .set("method", method).set("args", new Object[]{args})
             .set("kwargs", ObjectMap.setNew("context", context));
 
-        return sendPost(body, datasetUri("call_button"));
+        return post(body, datasetUri("call_button"));
     }
-
 
     protected ObjectMap createAndReturnMap(Object p) {
         Object context = createUserContext();
@@ -206,9 +212,8 @@ public abstract class OdTicketClient<E> extends OdClient {
                 .set("model", getModel())
                 .set("kwargs",ObjectMap.setNew("context", context));
 
-        return sendPost( body, call_kwUri("create"));
+        return post( body, call_kwUri("create"));
     }
-
 
     protected ObjectMap updateAndReturnMap(Long objectId, Object object) {
         Object argId = Collections.singletonList(objectId);
@@ -218,7 +223,7 @@ public abstract class OdTicketClient<E> extends OdClient {
                 .set("kwargs",context);
 
         String uri = call_kwUri("write");
-        return sendPost(body, call_kwUri("write"));
+        return post(body, call_kwUri("write"));
     }
 
 }

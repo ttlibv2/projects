@@ -3,10 +3,12 @@ package vn.conyeu.ts.odcore.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 
+@Getter
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ClsUser extends ClsModel<ClsUser> {
@@ -39,20 +41,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     private String company_name;
 
     /**
-     * Returns the display_name
-     */
-    public String getDisplay_name() {
-        return display_name;
-    }
-
-    /**
-     * Returns the menuLinks
-     */
-    public ObjectMap getMenuLinks() {
-        return menuLinks;
-    }
-
-    /**
      * Set the display_name
      *
      * @param display_name the value
@@ -63,13 +51,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the tz_offset
-     */
-    public String getTz_offset() {
-        return tz_offset;
-    }
-
-    /**
      * Set the tz_offset
      *
      * @param tz_offset the value
@@ -77,13 +58,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     public ClsUser setTz_offset(String tz_offset) {
         this.tz_offset = tz_offset;
         return this;
-    }
-
-    /**
-     * Returns the company_id
-     */
-    public Object getCompany_id() {
-        return company_id;
     }
 
     public Long getCompany_Uid() {
@@ -102,13 +76,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the parent_id
-     */
-    public Object[] getParent_id() {
-        return parent_id;
-    }
-
-    /**
      * Set the parent_id
      *
      * @param parent_id the value
@@ -116,13 +83,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     public ClsUser setParent_id(Object[] parent_id) {
         this.parent_id = parent_id;
         return this;
-    }
-
-    /**
-     * Returns the signature
-     */
-    public String getSignature() {
-        return signature;
     }
 
     /**
@@ -136,13 +96,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the user_name
-     */
-    public String getUser_name() {
-        return user_name;
-    }
-
-    /**
      * Set the user_name
      *
      * @param user_name the value
@@ -150,13 +103,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     public ClsUser setUser_name(String user_name) {
         this.user_name = user_name;
         return this;
-    }
-
-    /**
-     * Returns the passwd
-     */
-    public String getPasswd() {
-        return passwd;
     }
 
     /**
@@ -170,13 +116,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
      * Set the id
      *
      * @param id the value
@@ -184,20 +123,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     public ClsUser setId(Long id) {
         this.id = id;
         return this;
-    }
-
-    /**
-     * Returns the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns the email
-     */
-    public String getEmail() {
-        return email;
     }
 
     /**
@@ -211,13 +136,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the partner_id
-     */
-    public Long getPartner_id() {
-        return partner_id;
-    }
-
-    /**
      * Set the partner_id
      *
      * @param partner_id the value
@@ -228,13 +146,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the selected
-     */
-    public Boolean getSelected() {
-        return selected;
-    }
-
-    /**
      * Set the selected
      *
      * @param selected the value
@@ -242,13 +153,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     public ClsUser setSelected(Boolean selected) {
         this.selected = selected;
         return this;
-    }
-
-    /**
-     * Returns the cache_hashes
-     */
-    public ObjectMap getCache_hashes() {
-        return cache_hashes;
     }
 
     /**
@@ -266,19 +170,14 @@ public class ClsUser extends ClsModel<ClsUser> {
      *
      * @param menuLinks the value
      */
-    public void setMenuLinks(ObjectMap menuLinks) {
+    public ClsUser setMenuLinks(ObjectMap menuLinks) {
         this.menuLinks = menuLinks;
+        return this;
     }
 
     public String getMenuId() {
         ObjectMap cache = getCache_hashes();
         return cache == null ? null : cache.getString("load_menus");
-    }
-    /**
-     * Returns the context
-     */
-    public ClsUserContext getContext() {
-        return context;
     }
 
     /**
@@ -292,13 +191,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     }
 
     /**
-     * Returns the csrfToken
-     */
-    public String getCsrfToken() {
-        return csrfToken;
-    }
-
-    /**
      * Set the csrfToken
      *
      * @param csrfToken the value
@@ -306,13 +198,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     public ClsUser setCsrfToken(String csrfToken) {
         this.csrfToken = csrfToken;
         return this;
-    }
-
-    /**
-     * Returns the cookie
-     */
-    public String getCookie() {
-        return cookie;
     }
 
     /**
@@ -358,13 +243,6 @@ public class ClsUser extends ClsModel<ClsUser> {
     @Override
     public String toString() {
         return getDisplay_name();
-    }
-
-    /**
-     * Returns the tsUser
-     */
-    public Object getTsUser() {
-        return tsUser;
     }
 
     /**

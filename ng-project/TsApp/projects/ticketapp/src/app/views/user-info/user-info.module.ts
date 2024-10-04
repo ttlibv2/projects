@@ -10,6 +10,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {ButtonModule} from "primeng/button";
 import {ApiInfoModule} from "../api-info/api-info.module";
 import { DividerModule } from 'primeng/divider';
+import {DropdownModule} from "primeng/dropdown";
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { DividerModule } from 'primeng/divider';
     InputTextModule,
     TranslateModule,
     ButtonModule,
-    ApiInfoModule 
+    ApiInfoModule,
+    DropdownModule
   ]
 })
 export class UserInfoModule { }

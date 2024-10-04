@@ -2,12 +2,10 @@ package vn.conyeu.ts.ticket.service;
 
 import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsWkTeam;
 
-import java.util.List;
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 public class OdWkTeam extends OdTicketClient<ClsWkTeam> {
 
     public OdWkTeam(ClsApiCfg apiConfig) {

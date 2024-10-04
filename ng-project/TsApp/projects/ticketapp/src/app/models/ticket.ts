@@ -58,6 +58,7 @@ export class Ticket extends BaseModel {
   user_id?: number;
   chanel_ids?: number[];
   template_id?: number;
+  email_object?: any;
   email_template?: EmailTemplate;
   ticket_template?: TicketTemplate;
   images: string;
@@ -84,6 +85,7 @@ export class Ticket extends BaseModel {
   is_web?: boolean;
   is_delete?: boolean;
   is_report?: boolean;
+  save_question?: boolean;
 
   ticket_on?: string;
 

@@ -3,6 +3,7 @@ import { BaseModel } from "./base-model";
 import { FormField } from "./form-field";
 
 export type CallbackAssign<E> = Callback<AssignObject<E>, E>;
+export type TemplateThread = 'ticket_template' | 'email_template';
 
 export class Template<D = any> extends BaseModel {
     template_id?: number;

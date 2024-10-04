@@ -1,14 +1,13 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUserContext;
 import vn.conyeu.ts.ticket.domain.ClsMailComposeMsg;
 import vn.conyeu.ts.ticket.domain.ClsTicketActionReply;
 
 import java.util.List;
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 /**
  * model: mail.compose.message
  * */
@@ -47,7 +46,7 @@ public class OdMailComposeMsg extends OdTicketClient<ClsMailComposeMsg>{
                 .set("kwargs", ObjectMap.setNew("context", ctx));
 
         // create message
-        Long messageId = sendPost(body, call_kwUri("create")).getLong("result");
+        Long messageId = post(body, call_kwUri("create")).getLong("result");
 
         // callbutton send
         callButton("action_send_mail", List.of(messageId), context -> context.set(ctx.cloneMap()));

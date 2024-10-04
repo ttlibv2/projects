@@ -47,7 +47,7 @@ public class OdFile extends OdTicketClient<ClsFile> {
      */
     public boolean delete_file(Long fileID) {
         String url = "/mail/attachment/delete";
-        sendPost(ObjectMap.setNew("attachment_id", fileID), url);
+        post(ObjectMap.setNew("attachment_id", fileID), url);
         return true;
     }
 

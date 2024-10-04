@@ -1,11 +1,19 @@
 import { Injectable } from '@angular/core';
 import { ModelApi } from "./model-api.service";
 import { ApiInfo, UserApi } from "../models/api-info";
-import { JsonObject, ResponseToModel } from "../models/common";
+import { ResponseToModel } from "../models/common";
 import { Observable } from "rxjs";
 import { Pageable, Page, Objects } from 'ts-ui/helper';
-import { ClsUser } from '../models/od-cls';
+import {App_UID} from "../models/cls-var";
 
+export type SaveAction = 'copy_api' | 'edit_api' | 'edit_user'; 
+
+export interface SaveDto {
+  action: SaveAction;
+  source_id: number;
+  api_info?: Partial<ApiInfo>;
+  user_api?: Partial<UserApi>;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ApiInfoService extends ModelApi<ApiInfo> {
@@ -21,54 +29,57 @@ export class ApiInfoService extends ModelApi<ApiInfo> {
 
   /** 
    * find all model without page
-   * @param data the object filter
+   * @param query the object filter
    * @param page  the page data
    * */  
-  override search(query?: {suid?: string, sname?: string}, page?: Pageable): Observable<Page<ApiInfo>> {
+  override search(query?: {uid?: string, name?: string, api_id?: number}, page?: Pageable): Observable<Page<ApiInfo>> {
+    const url = this.callBasePath('get-in-one');
     query = Objects.extractValueNotNull(query);
-    return super.search(query, page);
+    return this.getPage(url, query, page);
   }
 
   /**
-   * Find api without service_name
-   * @param name the service name to find
+   * Find api without app_name
+   * @param name the app name to find
+   * @param credential if true then load user credential
    * */
-  findByServiceName(name: string): Observable<ApiInfo> {
-    return this.getOne(`find-by-name/${name}`);
+  findByAppName(name: string, credential: boolean = false): Observable<ApiInfo> {
+    return this.getOne(`find-by-name/${name}`, {credential});
   }
 
   /**
-   * Find api without service_uid
-   * @param uid the service uid to find
+   * Find api without app_uid
+   * @param uid the app uid to find
+   * @param credential if true then load user credential
    * */
-  findByServiceUID(uid: string): Observable<ApiInfo[]> {
-    return this.getArray(`find-by-uid/${uid}`);
+  findByAppUID(uid: App_UID, credential: boolean = false): Observable<ApiInfo[]> {
+    return this.getArray(`find-by-uid/${uid}`, {credential});
   }
 
   /** 
-   * Load user api by service_name 
-   * @param sname the service name
+   * Load user api by app_name
+   * @param appName the app name
    * */
-  loadUserBySName(sname: string): Observable<UserApi> {
-    const url = this.callBasePath(`user/find-by-name/${sname}`);
+  loadUserByAppName(appName: string): Observable<UserApi> {
+    const url = this.callBasePath(`user/find-by-name/${appName}`);
     return this.getOne(url, {}, item => UserApi.from(item));
   }
 
   /**
-   * Check user api login by service_name
-   * @param sname the service name
+   * Check user api login by app_name
+   * @param appName the app name
    * */
-  checkLoginApiBySName(sname: string): Observable<UserApi> {
-    const url = this.callBasePath(`user/check-api-login/${sname}`);
+  checkLoginByAppName(appName: string): Observable<UserApi> {
+    const url = this.callBasePath(`user/check-api-login/${appName}`);
     return this.sendPost(url, {}, item => UserApi.from(item));
   }
 
   /** 
    * Update menu link for api 
-   * @param sname the service name
+   * @param app_name the app name
    * */
-  getMenuLink(sname: string): Observable<any> {
-    const url = this.callBasePath(`user/get-menu-links/${sname}`);
+  updateMenuLink(app_name: string): Observable<any> {
+    const url = this.callBasePath(`user/get-menu-links/${app_name}`);
     return this.sendPost(url, {}, item => item);
   }
 
@@ -78,10 +89,4 @@ export class ApiInfoService extends ModelApi<ApiInfo> {
   }
 
 
-}
-
-export interface SaveDto {
-  api_id?: number;
-  api_info: Partial<ApiInfo>;
-  user_api: Partial<UserApi>;
 }

@@ -3,12 +3,12 @@ import { Component, Input, OnInit } from "@angular/core";
 import { ButtonModule } from "primeng/button";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { ListboxModule } from "primeng/listbox";
-import { ModalService } from "../../services/ui/model.service";
 import { DividerModule } from "primeng/divider";
 import { HttpClient } from "@angular/common/http";
 import { ToastService } from "ts-ui/toast";
 import { Objects } from "ts-ui/helper";
 import { LoggerService } from "ts-ui/logger";
+import { ModalService } from "ts-ui/modal";
 
 export interface NameItem {
     label: string;

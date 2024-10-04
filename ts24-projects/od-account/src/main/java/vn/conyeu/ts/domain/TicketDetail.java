@@ -123,6 +123,13 @@ public class TicketDetail extends LongUId<TicketDetail> {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime mailAt;
 
+    @JsonProperty("app_id")
+    @Column(nullable = false)
+    private Long appId;
+
+    @JsonProperty("app_name")
+    private String appName;
+
     public void setStage(ClsStage stage) {
         setStageId(stage == null ? null : stage.getId());
         setStageText(stage == null ? null : stage.getName());

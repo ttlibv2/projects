@@ -21,17 +21,17 @@ public class OdPartnerRest extends OdBaseRest {
 
     @PostMapping("search")
     public Page<ClsPartner> searchPartner(@RequestBody ClsSearch clsSearch) {
-        return service().partner().search(clsSearch);
+        return tsApp().partner().search(clsSearch);
     }
 
     @GetMapping("get-byid/{partnerId}")
     public ClsPartner getPartnerById( @PathVariable Long partnerId) {
-        return service().partner().findById(partnerId).orElseThrow(() -> TsErrors.notPartnerId(partnerId));
+        return tsApp().partner().findById(partnerId).orElseThrow(() -> TsErrors.notPartnerId(partnerId));
     }
 
     @PostMapping("create")
     public ClsPartner createPartner(@RequestBody ClsPartner cls) {
-        return service().partner().create( cls);
+        return tsApp().partner().create( cls);
     }
 
 

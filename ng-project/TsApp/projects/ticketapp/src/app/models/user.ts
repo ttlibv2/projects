@@ -1,7 +1,7 @@
 import { UserApi } from "./api-info";
 import {BaseModel} from "./base-model";
 import {JsonObject} from "./common";
-import {AssignObject, Objects} from 'ts-ui/helper';
+import {AssignObject, JsonAny, Objects} from 'ts-ui/helper';
 
 export type ApiCode = 'od.ticket';
 
@@ -25,15 +25,22 @@ export interface SignUpDto {
 }
 
 export class User extends BaseModel {
-  user_id?: number;
-  full_name?: string;
+  account_id?: number;
+  ts_name?: string;
+  ts_id?: number;
+  ts_email?: string;
+  ts_app?: number; // api_id
+  ts_links?: {
+    od_ticket?: string;
+    od_partner?: string;
+  }
+
   user_code?: string;
   room_code?: string;
   required_update?: boolean;
-  config?: JsonObject;
-  ts24id?: number;
-  services: {[webName: string]: UserApi}
+  services: {[webName: string]: UserApi};
 
+  config?: JsonObject;
 
 
   set_config(config: any): this {

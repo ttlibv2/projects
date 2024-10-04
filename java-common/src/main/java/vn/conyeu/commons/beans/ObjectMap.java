@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 public class ObjectMap extends LinkedHashMap<String, Object> {
     public static ObjectMap EMPTY = ObjectMap.create();
 
+
     public ObjectMap() {
     }
 
@@ -911,6 +912,11 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
 
     public static ObjectMap clone(Map<String, ?> map) {
         return map == null ? null : fromMap(map);
+    }
+
+    @Override
+    public ObjectMap clone() {
+        return (ObjectMap)super.clone();
     }
 
     public void removeIf(String field, Predicate<Object> predicate) {

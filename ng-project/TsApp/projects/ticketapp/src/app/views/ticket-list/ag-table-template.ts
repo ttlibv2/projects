@@ -13,7 +13,7 @@ import { RippleModule } from "primeng/ripple";
 import { AgTableModule, TableColumn, TableOption } from "ts-ui/ag-table";
 import { AgTable } from "../../models/ag-table";
 import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
-import {ModalService} from "../../services/ui/model.service";
+import { ModalService } from "ts-ui/modal";
 
 @Component({
     selector: '[ts-ag-table-template]',

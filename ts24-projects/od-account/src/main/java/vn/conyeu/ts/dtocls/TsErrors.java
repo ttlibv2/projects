@@ -3,16 +3,23 @@ package vn.conyeu.ts.dtocls;
 import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.NotFound;
+import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.ts.restapi.odrest.TicketAction;
 
 import java.util.Collection;
 
 public final class TsErrors {
 
-    public static BaseException noUserApiServiceName(String serviceName) {
-        return new BadRequest("service_name.404")
-                .message("Bạn chưa cấu hình tài khoản API 'service_name=%s'", serviceName)
-                .detail("service_name", serviceName);
+    public static BaseException noUserApi_AppName(String name) {
+        return new BadRequest("app_name.404")
+                .message("Bạn chưa cấu hình tài khoản API 'app_name=%s'", name)
+                .detail("app_name", name);
+    }
+
+    public static BaseException noApiUser(Long userId, String appName) {
+        return new Unauthorized("ts_api").detail("ts_api", appName)
+                .detail("app_name", appName).detail("user_id", userId)
+                .message("Bạn chưa cấu hình tài khoản kết nối hệ thống");
     }
 
     public static BaseException noUserApiByAPIID(Long apiId) {
@@ -22,10 +29,10 @@ public final class TsErrors {
     }
 
 
-    public static BaseException noServiceName(String name) {
-        return new NotFound().code("service_name.404")
-                .detail("service_name", name)
-                .message("Không tồn tại dữ liệu '%s'", name);
+    public static BaseException noAppName(String name) {
+        return new NotFound().code("app_name.404")
+                .detail("app_name", name)
+                .message("Thông tin ứng dụng '%s' không tồn tại", name);
     }
 
 
@@ -88,9 +95,7 @@ public final class TsErrors {
                 .message("[%s] Ticket này không phải là email ticket", ticketId);
     }
 
-    public static BaseException noApi(String apiCode) {
-        return new NotFound("api_info.code_404")
-                .message("Khong tim thay api [%s]", apiCode)
-                .detail("apiCode", apiCode);
-    }
+
+
+
 }

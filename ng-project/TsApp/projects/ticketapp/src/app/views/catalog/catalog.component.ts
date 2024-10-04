@@ -18,7 +18,7 @@ import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog"
 import { LoggerService } from "ts-ui/logger";
 import { Objects } from "ts-ui/helper";
 import { delay } from "rxjs";
-import { ModalService } from "../../services/ui/model.service";
+import { ModalService } from "ts-ui/modal";
 
 interface CateView {
   title: string;

@@ -163,7 +163,7 @@ export class ClientService {
     if(visible) this.inject.toast.error(object);
   }
 
-  private showUpdateApiToken(summary: string, apiCode: string) {
+  private showUpdateApiToken(summary: string, app_name: string) {
     this.inject.alert.danger({        
       title: 'Cảnh báo !!',
       okLabel: 'Kiểm tra',
@@ -171,7 +171,7 @@ export class ClientService {
       summary: summary,
       okClick: evt => {
         evt.dynamicRef.close();
-        ApiInfoComponent.showDialog(this.inject.modal, apiCode);
+        ApiInfoComponent.showDialog(this.inject.modal, {name: app_name});
       }
     })
   }

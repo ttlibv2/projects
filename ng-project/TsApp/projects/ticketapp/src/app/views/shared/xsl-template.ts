@@ -12,10 +12,10 @@ import { Forms, Objects , Files } from "ts-ui/helper";
 import { FileUpload, FileUploadModule } from "primeng/fileupload";
 import { ToastService } from "ts-ui/toast";
 import { OverlayOptions } from "primeng/api";
-import { ModalService } from "../../services/ui/model.service";
 import {Workbook} from "ts-ui/exceljs";
 import {NgForOf} from "@angular/common";
 import {Observable, Observer} from "rxjs";
+import { ModalService } from "ts-ui/modal";
 const { notNull, isNull, isBlank, notBlank } = Objects;
 
 export interface UrlFile {

@@ -1,12 +1,12 @@
-import {Injectable, InjectOptions, Injector, ProviderToken} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
-import {DialogService} from "primeng/dynamicdialog";
+import { Injectable, InjectOptions, Injector, ProviderToken } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { DialogService } from "primeng/dynamicdialog";
 import { StorageService } from "./storage.service";
-import { Alert } from "./ui/alert/alert.service";
-import  { ToastService } from 'ts-ui/toast';
-import {ModalService} from "./ui/model.service";
+import { ToastService } from 'ts-ui/toast';
+import { ModalService } from "ts-ui/modal";
+import { Alert } from "ts-ui/alert";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class InjectService {
 
   constructor(protected inject: Injector) {

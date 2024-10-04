@@ -13,10 +13,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.*;
 import org.springframework.web.util.UriBuilderFactory;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Classes;
 import vn.conyeu.commons.utils.Objects;
+import vn.conyeu.restclient.delegate.DelegateReactorClient;
 
 import java.nio.charset.Charset;
 import java.time.Duration;
@@ -33,6 +35,7 @@ public class ClientBuilder implements WebClient.Builder {
     private Map<String, Object> defaultUriVariables;
     private UriBuilderFactory uriBuilderFactory;
     private Consumer<SimpleUriFactory> uriBuilderFactoryConsumer;
+//    private ClientHttpConnector connector;
 
     private Boolean disableCookieManagement = true;
     private Boolean followRedirect = true;
@@ -60,6 +63,7 @@ public class ClientBuilder implements WebClient.Builder {
         maxRedirects = other.maxRedirects;
         trustAllCertificate = other.trustAllCertificate;
         uriBuilderFactoryConsumer = other.uriBuilderFactoryConsumer;
+//        connector = other.connector;
 
         if(other.defaultQueries != null) {
             defaultQueries = new LinkedMultiValueMap<>(other.defaultQueries);
@@ -191,7 +195,8 @@ public class ClientBuilder implements WebClient.Builder {
     }
 
     public ClientBuilder defaultCsrfToken(String tokenKey, String csrfToken) {
-        defaultHeader(tokenKey, csrfToken);
+        if(csrfToken == null) defaultHeaders(h -> h.remove(tokenKey));
+        else defaultHeader(tokenKey, csrfToken);
         return this;
     }
 
@@ -199,7 +204,8 @@ public class ClientBuilder implements WebClient.Builder {
      * {@inheritDoc}
      */
     public ClientBuilder defaultHeader(String header, String... values) {
-        delegate.defaultHeader(header, values);
+        if(values.length == 0 || values[0] == null) defaultHeaders(h -> h.remove(header));
+        else delegate.defaultHeader(header, values);
         return this;
     }
 
@@ -362,6 +368,7 @@ public class ClientBuilder implements WebClient.Builder {
      */
     public ClientBuilder clientConnector(ClientHttpConnector connector) {
         delegate.clientConnector(connector);
+//        this.connector = connector;
         return this;
     }
 
@@ -441,6 +448,13 @@ public class ClientBuilder implements WebClient.Builder {
 
     /**{@inheritDoc}*/
     public RestClient build() {
+
+//        if(connector instanceof ReactorClientHttpConnector rc) {
+//            DelegateReactorClient drc = new DelegateReactorClient(rc);
+//            delegate.clientConnector(drc);
+//        }
+
+
         delegate.uriBuilderFactory(initUriBuilderFactory());
         WebClient clientDelegate = delegate.build();
         return new RestClient(clientDelegate, clone());

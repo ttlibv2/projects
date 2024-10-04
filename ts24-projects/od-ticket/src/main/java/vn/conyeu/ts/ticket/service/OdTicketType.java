@@ -2,13 +2,11 @@ package vn.conyeu.ts.ticket.service;
 
 import org.springframework.data.domain.Page;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
-import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsTicketType;
 
 import java.util.List;
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 public class OdTicketType extends OdTicketClient<ClsTicketType> {
 
     public OdTicketType(ClsApiCfg apiConfig) {

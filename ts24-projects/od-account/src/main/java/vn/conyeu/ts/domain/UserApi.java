@@ -71,14 +71,14 @@ public class UserApi extends LongUId<UserApi> {
         return super.getId();
     }
 
-    @JsonProperty("service_uid")
+    @JsonProperty("app_uid")
     public String getServiceUid() {
-        return api == null ? null : api.getServiceUid();
+        return api == null ? null : api.getAppUID();
     }
 
-    @JsonProperty("service_name")
+    @JsonProperty("app_name")
     public String getServiceName() {
-        return api == null ? null : api.getServiceName();
+        return api == null ? null : api.getAppName();
     }
 
     public void setUniqueId(Long userId, ApiInfo api) {
@@ -114,6 +114,19 @@ public class UserApi extends LongUId<UserApi> {
     public ObjectMap getMenuLinks() {
         if(userInfo == null) return null;
         return userInfo.getMenuLinks();
+    }
+
+    /**
+     * Set the userInfo
+     *
+     * @param userInfo the value
+     */
+    public void setUserInfo(ClsUser userInfo) {
+        this.userInfo = userInfo;
+        if(userInfo != null) {
+            setCookie(userInfo.getCookie());
+            setCsrfToken(userInfo.getCsrfToken());
+        }
     }
 
     public UserApi reset() {

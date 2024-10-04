@@ -13,8 +13,8 @@ export class ApiInfo extends BaseModel<ApiInfo> {
   summary?: string;
   base_url?: string;
   login_path?: string;
-  service_name?: string;
-  service_uid?: string;
+  app_name?: string;
+  app_uid?: string;
   headers?: JsonAny;
   queries?: JsonAny;
   links?: JsonAny;
@@ -27,7 +27,7 @@ export class ApiInfo extends BaseModel<ApiInfo> {
   }
   
   get displayName(): string {
-    return `[${this.service_name}] ${this.title}`;
+    return `[${this.app_name}] ${this.title}`;
   }
 
   protected override get modelType(): Type<ApiInfo> {
@@ -42,18 +42,20 @@ export class ApiInfo extends BaseModel<ApiInfo> {
 
 
 export class UserApi extends BaseModel {
-  service_name?: string = null;
-  user_name?: string = null;
-  password?: string = null;
-  ua_id?: number = null;
-  user_id?: number = null;
-  csrf_token?: string = null;
-  cookie_value?: string = null;
-  auto_login?: boolean = null;
-  allow_edit?: boolean = null;
-  user_info?: ClsUser = null;
-  menu_links?: MenuLink = null;
-  api_item?: ApiInfo = null;
+  app_name?: string ;
+  user_name?: string;
+  password?: string;
+  ts_name?: string;
+  ts_email?: string;
+  ua_id?: number ;
+  user_id?: number ;
+  csrf_token?: string ;
+  cookie_value?: string ;
+  auto_login?: boolean;
+  allow_edit?: boolean;
+  user_info?: ClsUser;
+  menu_links?: MenuLink;
+  api_item?: ApiInfo ;
 
   set_user_info(info: AssignObject<ClsUser>) {
     this.user_info = ClsUser.from(info);

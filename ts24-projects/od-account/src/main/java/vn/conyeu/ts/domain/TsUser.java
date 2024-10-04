@@ -10,6 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.domain.LongIdDate;
+import vn.conyeu.commons.beans.ObjectMap;
 
 //@formatter:off
 @Entity @Table
@@ -20,9 +21,20 @@ import vn.conyeu.common.domain.LongIdDate;
 //@formatter:on
 public class TsUser extends LongIdDate<TsUser> {
 
-    @JsonProperty("full_name")
+    @JsonProperty("ts_app")
+    private Long tsApp;
+
+    @JsonProperty("ts_id")
+    @Column(unique = true)
+    private Long tsId;
+
+    @JsonProperty("ts_email")
+    @Column(unique = true)
+    private String tsEmail;
+
+    @JsonProperty("ts_name")
     @Column(length = 100)
-    private String fullName;
+    private String tsName;
 
     @JsonProperty("user_code")
     @Column(length = 50)
@@ -34,16 +46,16 @@ public class TsUser extends LongIdDate<TsUser> {
 
     @ColumnDefault("0")
     @JsonProperty("required_update")
-    private Boolean requiredUpdate;
+    private Boolean reqUpdate;
 
-    @JsonProperty("ts24_id")
-    private Long ts24Id;
+    @Transient
+    private ObjectMap tsLinks;
 
     public TsUser(Long entityId) {
         super(entityId);
     }
 
-    @JsonProperty("user_id")
+    @JsonProperty("account_id")
     public Long getId() {
         return super.getId();
     }

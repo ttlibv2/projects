@@ -40,29 +40,11 @@ public class LoggingFilter implements ExchangeFilterFunction {
                 .map(response -> response.mutate().body(transformer(logger, response)).build());
     }
 
-
     private Function<Flux<DataBuffer>, Flux<DataBuffer>> transformer(ClientLogger logger, ClientResponse response) {
         logger.forResponse(response);
 
         return transformer -> transformer
                 .doOnNext((dataBuffer) -> {
-//                    if(dataBuffer instanceof NettyDataBuffer ndb) {
-//                        ByteBuf byteBuf = ndb.getNativeBuffer();
-//                        ByteBuffer[] readable = byteBuf.nioBuffers(byteBuf.readerIndex(), byteBuf.readableBytes());
-//                        log.warn("NettyDataBuffer: {}", readable.length);
-//                    }
-
-//                    DataBuffer.ByteBufferIterator iterator = data.readableByteBuffers();
-//                    String str = "";
-//                    while (iterator.hasNext()) {
-//                        ByteBuffer buffer = iterator.next();
-//                        str += new String(buffer.array());
-//                    }
-//
-//                    logger.response().payload(str);
-//                    log.warn("transformer ==> {}", str);
-
-                    //log.warn("{}", data.capacity());
                     logger.response().payload(dataBufferToString(dataBuffer));
                 } )
                 .doOnError(error -> logger.response().error(error))
@@ -71,7 +53,6 @@ public class LoggingFilter implements ExchangeFilterFunction {
                     logger.submitAll();
                 });
     }
-
 
     private  static class CustomBodyInserter implements BodyInserter<Object, ClientHttpRequest> {
         final ClientRequest request;

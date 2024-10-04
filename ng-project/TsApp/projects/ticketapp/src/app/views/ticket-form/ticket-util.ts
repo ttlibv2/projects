@@ -21,7 +21,7 @@ export class TicketFormGroup {
   initialize(): Forms<Ticket> {
     Asserts.isNull(this.forms, "The ticket form has initialize");
 
-    return this.forms = Forms.builder<Ticket>(this.fb, {
+    return this.forms = Forms.builder<any>(this.fb, {
       ticket_id: [null],
       ticket_on: [null],
       full_name: [null],

@@ -25,13 +25,13 @@ import { Question } from "../../models/question";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { Router } from "@angular/router";
 import { TicketService } from "../../services/ticket.service";
-import { Alert } from "../../services/ui/alert/alert.service";
-import { ModalService } from "../../services/ui/model.service";
 import { routerUrl } from "../../constant";
 import { ViewHtml } from "./email-ticket";
 import {DefaultData, InputData, XslTemplate} from "../shared/xsl-template";
 import { EmailTemplate, TicketTemplate, TicketTemplateData } from "../../models/template";
 import {FormField} from '../../models/form-field';
+import { Alert } from "ts-ui/alert";
+import { ModalService } from "ts-ui/modal";
 
 const { notNull, notEmpty, isEmpty, isNull, notBlank } = Objects;
 
@@ -526,7 +526,7 @@ export class TicketFormComponent implements OnInit {
         complete_time: this.datePipe.transform(now, 'yyyyMMdd-HH:'),
 
         ticket_on: this.datePipe.transform(now, 'yyMMdd'),
-        full_name: this.userLogin.full_name
+        full_name: this.userLogin.ts_name
 
       };
     }))

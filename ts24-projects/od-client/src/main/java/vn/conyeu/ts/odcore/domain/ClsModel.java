@@ -15,7 +15,7 @@ import java.util.*;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ClsModel<T> implements Serializable {
+public class ClsModel<T> implements Serializable, Cloneable {
 
     public static ObjectMap NAME_FIELD = ObjectMap
             .setNew("id", 0).set("name", 1).set("display_name", 1);
@@ -112,14 +112,13 @@ public class ClsModel<T> implements Serializable {
         return obj;
     }
 
-    public ClsModel updateFromMap(ObjectMap mapData) {
+    public ClsModel<T> updateFromMap(ObjectMap mapData) {
         MapperHelper.updateToMap(this, mapData);
         return this;
     }
 
-
-
-
-
-
+    @Override
+    protected T clone() throws CloneNotSupportedException {
+        return (T)super.clone();
+    }
 }

@@ -11,12 +11,12 @@ import { AgCellColor } from "./renderer";
 import { GetRowIdParams } from "@ag-grid-community/core";
 import { TicketFormComponent } from "../ticket-form/ticket-form.component";
 import { Router } from "@angular/router";
-import { ModalService } from "../../services/ui/model.service";
-import { Template } from "../../models/template";
+import { Template, TemplateThread, TicketTemplate } from "../../models/template";
 import { Alert } from "ts-ui/alert";
 import { RxjsUtil } from "../ticket-list/rxjs-util";
 import { FormBuilder } from "@angular/forms";
 import { FormGroup } from "@angular/forms";
+import { ModalService } from "ts-ui/modal";
 import { EmailTemplateView } from "../email-template/email-template.view";
 
 const { isNull, notBlank, isBlank } = Objects;
@@ -37,7 +37,8 @@ interface State {
 }
 
 
-const defaultInfo: Partial<Template> = {
+//Partial<Template>
+const defaultInfo: any = {
     text_color: '#475569',
     bg_color: '#f1f5f9'
 };
@@ -50,7 +51,7 @@ const defaultInfo: Partial<Template> = {
 })
 export class TemplateFormComponent implements OnInit {
 
-    get template(): Partial<Template> {
+    get template(): Partial<TicketTemplate> {
         const rawJson = this.formGroup?.getRawValue();
         rawJson.data = JSON.parse(rawJson.data || '{}');
         return rawJson;
@@ -283,7 +284,8 @@ export class TemplateFormComponent implements OnInit {
     }
 
     settingData() {
-        const data = this.template, thread = data.thread;
+        const data = this.template;
+        const thread: TemplateThread = <any>data.thread;
 
         if (isBlank(thread)) {
             this.toast.warning('Vui lòng chọn <b>[Mã mẫu]</b>');

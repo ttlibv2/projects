@@ -77,6 +77,10 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
         return this.get(name).getRawValue();
     }
 
+    set_disable<K extends TKeyControl<TC>>(name: K) {
+        this.get(name).disable();
+    }
+
 
     /**
      * Patches the value of the control

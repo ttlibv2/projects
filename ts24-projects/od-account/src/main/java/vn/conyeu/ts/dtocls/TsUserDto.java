@@ -26,7 +26,7 @@ public class TsUserDto implements Serializable {
     private String roomCode;
 
     @JsonProperty("required_update")
-    private Boolean requiredUpdate;
+    private Boolean reqUpdate;
 
     @NotBlank
     @JsonProperty("ts_user")
@@ -48,7 +48,7 @@ public class TsUserDto implements Serializable {
     public TsUser createUser() {
         TsUser user = new TsUser();
         //user.setTsEmail(email);
-        user.setFullName(name);
+        user.setTsName(name);
         user.setRoomCode(roomCode);
         user.setUserCode(userCode);
         return user;

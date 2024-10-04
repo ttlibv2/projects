@@ -5,9 +5,7 @@ import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsPage;
-import vn.conyeu.ts.odcore.domain.ClsUserContext;
 import vn.conyeu.ts.ticket.domain.*;
 
 import java.util.Collections;
@@ -15,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 @Slf4j
 public class OdTicket extends OdTicketClient<ClsTicket> {
     public static final String MODEL = "helpdesk.ticket";
@@ -163,7 +161,7 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
     }
 
     public List<Long> deleteFollow(Long ticketId) {
-        Long odUserId = cfg.getUserId();
+        Long odUserId = cfg.getClsUser().getId();
         return deleteFollow(ticketId, odUserId);
     }
 
@@ -191,7 +189,7 @@ public class OdTicket extends OdTicketClient<ClsTicket> {
                         partnerId
                 });
 
-        sendPost(object, call_kwUri("message_unsubscribe"));
+        post(object, call_kwUri("message_unsubscribe"));
     }
 
     public ClsMailComposeMsg sendMail(Long ticketNumber, Long[] partnerIds, String subject, String body) {

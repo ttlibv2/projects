@@ -1,12 +1,11 @@
 package vn.conyeu.ts.ticket.service;
 
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.ticket.domain.ClsSubjectType;
 
 import java.util.List;
 import java.util.function.Function;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 /** Ticket Subject Type */
 public class OdTicketSubType extends OdTicketClient<ClsSubjectType> {
 

@@ -361,6 +361,7 @@ public final class Lists {
         return list;
     }
 
+    @SafeVarargs
     public static <E> List<E> newList(Collection<E> items, E...lastItems) {
         List<E> newList = newArrayList(items);
         newList.addAll(List.of(lastItems));
@@ -373,11 +374,18 @@ public final class Lists {
         return newList;
     }
 
+    @SafeVarargs
+    public static <E> List<E> newList(E first, E... items) {
+        return newList(first, Arrays.asList(items));
+    }
+
+    @SafeVarargs
     public static <E> List<E> newList(E... data) {
         return new ArrayList<>(Arrays.asList(data));
     }
 
 
+    @SafeVarargs
     public static <T> List<T> copyOf(Collection<T>... list) {
         return Stream.of(list).flatMap(Collection::stream)
                 .collect(Collectors.toList());

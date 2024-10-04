@@ -1,23 +1,17 @@
 package vn.conyeu.ts.ticket.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.util.StringUtils;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
-import vn.conyeu.ts.odcore.domain.ClsApiCfg;
-import vn.conyeu.ts.odcore.domain.ClsPage;
 import vn.conyeu.ts.odcore.domain.ClsSearch;
-import vn.conyeu.ts.ticket.domain.ClsFilterOption;
 import vn.conyeu.ts.ticket.domain.ClsPartner;
-import vn.conyeu.ts.ticket.domain.ClsSearchReadOption;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 public class OdPartner extends OdTicketClient<ClsPartner> {
 
     static class PartnerFilterOption {}

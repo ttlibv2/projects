@@ -25,6 +25,7 @@ import {databaseConfig, StorageService} from "./services/storage.service";
 import { AgTableModule } from 'ts-ui/ag-table';
 import { ToastModule } from 'ts-ui/toast';
 import {DBService, LocalDbModule} from "ts-ui/local-db";
+import { FormsModule } from 'ts-ui/forms';
 
 registerLocaleData(vi);
 
@@ -47,6 +48,7 @@ function LOAD_DB(service: DBService) {
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        FormsModule,
         CommonModule,
         RouterOutlet,
         AppRouting,

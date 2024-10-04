@@ -103,12 +103,4 @@ export class SigninComponent implements OnInit {
 
 
   }
-
-  clickDemo(): void {
-    this.signinForm.patchValue({
-      username: 'tuannq.ts24@gmail.com',
-      password: '123qweA@',
-      remember: true
-    })
-  }
 }

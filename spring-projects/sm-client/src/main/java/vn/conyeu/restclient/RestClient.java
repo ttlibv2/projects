@@ -1,7 +1,14 @@
 package vn.conyeu.restclient;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriBuilder;
+import vn.conyeu.commons.beans.ObjectMap;
+
+import java.net.URI;
+import java.util.Map;
+import java.util.function.Function;
 
 public class RestClient implements WebClient {
     private final WebClient delegate;
@@ -25,6 +32,48 @@ public class RestClient implements WebClient {
     /**{@inheritDoc}*/
     public RequestBodyUriSpec post() {
         return methodInternal(HttpMethod.POST);
+    }
+
+    /**
+     * Send post without the URI using an absolute
+     */
+    public RequestHeadersSpec post(Object bodyValue, URI uri) {
+        return postImpl(bodyValue, spec -> spec.uri(uri));
+    }
+
+    /**
+     * Send post without the URI for the request using a URI template and URI variables.
+     */
+    public RequestHeadersSpec post(Object bodyValue, String uri, Object... uriVariables) {
+        return postImpl(bodyValue, spec -> spec.uri(uri, uriVariables));
+    }
+
+    /**
+     * Send post without the URI for the request using a URI template and URI variables.
+     */
+    public RequestHeadersSpec post(Object bodyValue, String uri, Map<String, ?> uriVariables) {
+        return postImpl(bodyValue, spec -> spec.uri(uri, uriVariables));
+    }
+
+    /**
+     * Send post without the URI starting with a URI template and finishing off with a
+     * {@link UriBuilder} created from the template.
+     */
+    public RequestHeadersSpec post(Object bodyValue, String uri, Function<UriBuilder, URI> uriFunction) {
+        return postImpl(bodyValue, spec -> spec.uri(uri, uriFunction));
+    }
+
+    /**
+     * Send post without the URI by through a {@link UriBuilder}.
+     */
+    public RequestHeadersSpec post(Object bodyValue, Function<UriBuilder, URI> uri) {
+        return postImpl(bodyValue, spec -> spec.uri(uri));
+    }
+
+    private RequestHeadersSpec postImpl(Object body, Function<RequestBodyUriSpec, RequestBodySpec> function) {
+        RequestBodySpec uriSpec = function.apply(post());
+        if(body instanceof BodyInserter bi) return uriSpec.body(bi);
+        else return uriSpec.bodyValue(body);
     }
 
     /**{@inheritDoc}*/

@@ -20,7 +20,7 @@ public class TsFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() instanceof Principal principal) {
-//            OdAllService.ServiceForUser service = AppContext
+//            OdAllService.AppForUser service = AppContext
 //                    .getBean(OdAllService.class)
 //                    .loadService(principal.getUserId());
 

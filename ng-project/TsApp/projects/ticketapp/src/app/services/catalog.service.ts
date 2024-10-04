@@ -62,7 +62,7 @@ export class CatalogService extends ClientService {
 
 
 
-  private saveCatalogToDb(catalog: Catalog, hasSave: boolean = false): void {
+  private saveCatalogToDb(catalog: any, hasSave: boolean = false): void {
     if (hasSave === true) {
       for (const key of Object.keys(catalog)) {
         if (!(key in CATALOG_MAP)) continue;

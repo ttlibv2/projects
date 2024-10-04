@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
-import { ModalService } from "../../services/ui/model.service";
+import { ModalService } from "ts-ui/modal";
 
 @Component({
     standalone: true,

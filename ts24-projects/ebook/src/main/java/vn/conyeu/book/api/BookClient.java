@@ -1,21 +1,79 @@
 package vn.conyeu.book.api;
 
+import io.netty.channel.ChannelOption;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import org.ehcache.xml.model.TimeUnit;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.JettyClientHttpConnector;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.client.reactive.ReactorNetty2ClientHttpConnector;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
+import reactor.netty.transport.logging.AdvancedByteBufFormat;
 import vn.conyeu.common.exception.NotFound;
 import vn.conyeu.restclient.RestClient;
 
+import javax.net.ssl.SSLException;
+import java.time.Duration;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class BookClient {
 
-    abstract String getBaseRoot();
+    public abstract String getBaseRoot();
 
-    protected RestClient client() {
-        return  RestClient.builder().baseUrl(getBaseRoot())
-                .build();
+    protected RestClient client()  {
+        try {
+            SslContext sslContext = SslContextBuilder.forClient()
+                    .protocols("SSLv3","TLSv1","TLSv1.1","TLSv1.2")
+                    .ciphers( List.of("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384"))
+                    .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                    .build();
+
+            ConnectionProvider provider = ConnectionProvider.builder("fixed")
+                    .maxConnections(500)
+                    .maxIdleTime(Duration.ofSeconds(20))
+                    .maxLifeTime(Duration.ofSeconds(60))
+                    .pendingAcquireTimeout(Duration.ofSeconds(60))
+                    .evictInBackground(Duration.ofSeconds(120)).build();
+
+            HttpClient httpClient = HttpClient.create(provider)
+                    .wiretap(true).responseTimeout(Duration.ofMinutes(2))
+                    .followRedirect(true)//.option(ChannelOption.SO_TIMEOUT, 60_000*2)
+                    .secure(t ->
+                            t.sslContext(sslContext)
+                                    .handshakeTimeout(Duration.ofMillis(20000))
+
+                    )
+
+                  //  .wiretap("reactor.netty.http.client.HttpClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL)
+                  // .followRedirect(true)
+                    //.doOnConnected(connection -> connection.addHandlerLast(new ReadTimeoutHandler(60*5)))
+                  //  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000000)
+            ;
+
+            httpClient.warmup().block();
+
+            return  RestClient.builder()
+                    .baseUrl(getBaseRoot())
+                    .defaultHeader("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36")
+                    .clientConnector( new ReactorClientHttpConnector(httpClient))
+                    .defaultContentType(MediaType.TEXT_HTML)
+                    .build();
+
+        }
+        catch (SSLException exp) {
+            throw new RuntimeException("SslContext", exp);
+        }
     }
 
     protected Document getHtml(String htmlUrl) {
@@ -23,6 +81,10 @@ public abstract class BookClient {
                 .retrieve().bodyToMono(String.class)
                 .blockOptional().map(Jsoup::parse)
                 .orElseThrow();
+    }
+
+    protected Element first(Element parent, String css) {
+        return first(parent, css, false);
     }
 
     protected Element first(Element parent, String css, boolean error) {

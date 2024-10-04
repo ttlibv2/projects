@@ -25,10 +25,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
-public class OdUser extends OdTicketClient<ClsUser> implements IOdUserLogin {
+public class OdUser extends OdTicketClient<ClsUser> {
 
-    public OdUser(ClsApiCfg apiConfig) {
-        super(apiConfig);
+    public OdUser(ClsApiCfg config) {
+        super(config);
     }
 
     @Override
@@ -89,15 +89,11 @@ public class OdUser extends OdTicketClient<ClsUser> implements IOdUserLogin {
         return searchRead(searchObj);
     }
 
-    public ClsUser login() {
-        return login(cfg.getUserName(), cfg.getPassword());
-    }
-
-    @Override
-    public ClsUser login(ObjectMap info) {
-        return login(info.getString("username"),
-                info.getString("password"));
-    }
+//    @Override
+//    public ClsUser login(ObjectMap info) {
+//        return login(info.getString("username"),
+//                info.getString("password"));
+//    }
 
     /**
      * Login page

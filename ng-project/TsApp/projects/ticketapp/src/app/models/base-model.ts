@@ -2,7 +2,7 @@ import {Objects, AssignObject} from "ts-ui/helper";
 import { Type } from "@angular/core";
 
 export abstract class BaseModel<E extends BaseModel = any> {
-  [field: string]: any;
+  //[field: string]: any;
 
   protected get modelType(): Type<E> {
     return null;
@@ -17,7 +17,7 @@ export abstract class BaseModel<E extends BaseModel = any> {
   }
 
   delete(...fields: string[]): this {
-    const self = this;
+    const self: any = this;
     fields.forEach(field => delete self[field]);
     return self;
   }
