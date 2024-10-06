@@ -1,10 +1,6 @@
 <div class="pg-software">
-    <ts-mvc [agColumns]="columns" [form]="formBuild">
-        <ng-template pTemplate="formTemplate">
-            <div class="p-fluid col-12">
-                <label>Code: </label>
-                <input pInputText>
-            </div>
-        </ng-template>
+    <ts-mvc [agColumns]="columns" [form]="formBuild"
+            [fields]="formFields" [submitLabel]="'Save'">
+
     </ts-mvc>
 </div>

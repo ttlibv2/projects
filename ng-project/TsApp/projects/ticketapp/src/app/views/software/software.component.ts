@@ -4,6 +4,7 @@ import {FormGroup, FormsBuilder} from "ts-ui/forms";
 import {ToastService} from "ts-ui/toast";
 import {Callback} from "ts-ui/helper";
 import {Validators} from "@angular/forms";
+import {Field} from "../shared/mvc/mvc.component";
 
 const columns: TableColumn[] = [
     {field: 'software_id', headerName: 'ID'},
@@ -31,6 +32,14 @@ export class SoftwareComponent {
         value: [null, Validators.required],
         soft_names: [null, Validators.required]
     });
+
+    formFields: Field[] = [
+        {fieldId: 'code', label: 'Mã phần mềm', type: 'input', class: 'col-6'},
+        {fieldId: 'value', label: 'Tên phần mềm', type: 'input', class: 'col-6'},
+        {fieldId: 'soft_names', label: 'DS Tên', type: 'input', class: 'col-6'},
+
+    ];
+
 
 
 }

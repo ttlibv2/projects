@@ -9,6 +9,9 @@ import {InputTextModule} from "primeng/inputtext";
 import {CheckboxModule} from "primeng/checkbox";
 import {DividerModule} from "primeng/divider";
 import {CardModule} from "primeng/card";
+import {ReactiveFormsModule} from "@angular/forms";
+import {TranslateModule} from "@ngx-translate/core";
+import {InputTextareaModule} from "primeng/inputtextarea";
 
 
 @NgModule({
@@ -16,7 +19,9 @@ import {CardModule} from "primeng/card";
         MvcComponent
     ],
     exports: [
-        MvcComponent
+        MvcComponent,
+        // FormsModule,
+        // ReactiveFormsModule,
     ],
     imports: [
         CommonModule,
@@ -26,7 +31,9 @@ import {CardModule} from "primeng/card";
         InputTextModule,
         CheckboxModule,
         DividerModule,
-        CardModule
+        CardModule,
+        TranslateModule,
+        InputTextareaModule
     ]
 })
 export class MvcModule {

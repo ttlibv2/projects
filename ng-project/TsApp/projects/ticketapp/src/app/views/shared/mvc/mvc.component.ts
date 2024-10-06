@@ -12,8 +12,11 @@ import {TableColumn, TableOption} from "ts-ui/ag-table";
 import {FormGroup, FormsBuilder, FormsModule} from "ts-ui/forms";
 import {ToastService} from "ts-ui/toast";
 import {ModalService} from "ts-ui/modal";
-import {Callback} from "ts-ui/helper";
+import {Callback, Objects} from "ts-ui/helper";
 import {PrimeTemplate} from "primeng/api";
+import {TranslatePipe} from "@ngx-translate/core";
+
+const {notBlank} = Objects;
 
 const columns: TableColumn[] = [
     {field: 'software_id', headerName: 'ID'},
@@ -21,6 +24,15 @@ const columns: TableColumn[] = [
     {field: 'value', headerName: 'Value'},
     {field: 'soft_names', headerName: 'Names'}
 ];
+
+export interface Field {
+    fieldId: string;
+    label: string;
+    type: string;
+    class?: string;
+    placeholder?: string;
+    options?: any;
+}
 
 @Component({
     selector: 'ts-mvc',
@@ -39,11 +51,15 @@ export class MvcComponent implements AfterContentInit, OnInit, OnDestroy{
         this.formGroup = cb(this.fb);
     };
 
+    @Input() fields: Field[];
+    @Input() submitLabel: string = 'actions.save';
+
     @ContentChildren(PrimeTemplate)
     templates: QueryList<PrimeTemplate>;
 
     formGroup: FormGroup;
     formTemplate: TemplateRef<any> | null;
+
 
     constructor(private fb: FormsBuilder,
                 private toast: ToastService,
@@ -67,4 +83,8 @@ export class MvcComponent implements AfterContentInit, OnInit, OnDestroy{
     }
 
 
+    onSubmit(): void {
+        console.log(this.formGroup.getRawValue())
+
+    }
 }
