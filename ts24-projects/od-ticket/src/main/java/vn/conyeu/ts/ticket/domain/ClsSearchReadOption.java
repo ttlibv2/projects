@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter @Setter
 @EqualsAndHashCode(callSuper = false)
-public  class ClsSearchReadOption extends ClsModel {
+public  class ClsSearchReadOption extends ClsModel<ClsSearchReadOption> {
     private final ObjectMap context = ObjectMap.create();
     private final ClsFilterOption filterOption;
     private final ClsPage page;

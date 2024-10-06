@@ -10,6 +10,7 @@ export class ClsSearch<E = any> extends BaseModel {
   limit: number = 20;
   offset: number = 0;
   data: E;
+  filter: any[];
 
 
   static from<E>(json: AssignObject<ClsSearch>): ClsSearch<E> {

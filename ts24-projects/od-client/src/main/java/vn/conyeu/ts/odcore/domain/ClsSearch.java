@@ -4,9 +4,11 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ClsSearch implements Serializable {
     private ObjectMap data;
+    private List<List<Object>> filter;
     private ClsOperator operator = ClsOperator.like;
     private Integer limit = 20;
     private Integer offset = 0;
@@ -45,6 +47,15 @@ public class ClsSearch implements Serializable {
     public ClsSearch setOperator(ClsOperator operator) {
         this.operator = operator;
         return this;
+    }
+
+    public ClsSearch setFilter(List<List<Object>> filter) {
+        this.filter = filter;
+        return this;
+    }
+
+    public List<List<Object>> getFilter() {
+        return filter;
     }
 
     /**

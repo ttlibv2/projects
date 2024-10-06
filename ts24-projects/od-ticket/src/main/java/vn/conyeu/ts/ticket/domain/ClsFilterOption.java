@@ -1,5 +1,6 @@
 package vn.conyeu.ts.ticket.domain;
 
+import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.odcore.domain.ClsHelper;
 import vn.conyeu.ts.odcore.domain.ClsOperator;
@@ -16,7 +17,22 @@ public class ClsFilterOption {
     }
 
     public ClsFilterOption(ClsSearch cls) {
-        resetWith(cls.getOperator(), cls.getData());
+        resetWith(cls.getOperator(), cls);
+    }
+
+    public void resetWith(ClsOperator operator, ClsSearch cls) {
+        ClsFilterOption option = clearAll();
+
+        if(cls.getFilter() != null) {
+            cls.getFilter().forEach(this::add);
+        }
+
+        if(cls.getData() != null) {
+            ClsOperator operatorNew = operator == null ? ClsOperator.like : operator;
+
+            cls.getData().forEach((field, value) ->
+                    option.addField(field, value, operatorNew));
+        }
     }
 
     public ClsFilterOption IsSet(String key) {
@@ -41,6 +57,18 @@ public class ClsFilterOption {
 
     public ClsFilterOption NotEqual(String key, Object value) {
         return add(ClsOperator.not_equal, key, value);
+    }
+
+    public ClsFilterOption add(List<Object> objects) {
+        if(objects == null || objects.size() != 3) {
+            throw BaseException.e400("filter_invalid")
+                    .detail("objects", objects == null ? null : objects.size())
+                    .message("The filter data invalid (is null or size <> 3)");
+        }
+
+        list.add(objects);
+        if(list.size() > 1) operators.add("&");
+        return this;
     }
 
     public ClsFilterOption add(ClsOperator operator, String key, Object value) {
@@ -82,6 +110,8 @@ public class ClsFilterOption {
     }
 
     public List<Object> build() {
+
+
         List<Object> all = new LinkedList<>();
         if(!operators.isEmpty()) all.addAll(operators);
         if (!list.isEmpty()) all.addAll(list);

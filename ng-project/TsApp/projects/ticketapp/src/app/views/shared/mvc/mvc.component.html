@@ -1,0 +1,10 @@
+<div class="grid">
+    <p-card class="col-12">
+        <form [formGroup]="formGroup" class="grid">
+           <ng-container *ngTemplateOutlet="formTemplate"></ng-container>
+        </form>
+    </p-card>
+    <div class="col-12">
+        <ts-ag-table [columns]="agColumns" [option]="agOption" [tableHeight]="'350px'"></ts-ag-table>
+    </div>
+</div>

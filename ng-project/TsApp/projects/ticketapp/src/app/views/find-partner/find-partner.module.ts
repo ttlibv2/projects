@@ -17,6 +17,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { AgTableModule } from 'ts-ui/ag-table';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DividerModule } from 'primeng/divider';
+import {InputGroupAddonModule} from "primeng/inputgroupaddon";
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { DividerModule } from 'primeng/divider';
     ToolbarModule,
     AgTableModule,
     InputNumberModule,
-    DividerModule
+    DividerModule,
+    InputGroupAddonModule
   ],
   providers: [
     DialogService,

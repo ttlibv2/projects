@@ -36,11 +36,24 @@ export class Objects {
   }
 
 
-  static booleanValue(value: any, def: boolean = false, str: string = 'true', num: number = 1): boolean {
-    if (typeof value === 'boolean') return value;
-    else if (typeof value === 'string') return value === str;
-    else if (typeof value === 'number') return value === num;
-    else return def;
+  static booleanValue(value: any, defaultNull?: boolean): boolean {
+    if (Objects.isNull(value)) return defaultNull;
+    else if (typeof value === 'boolean') return value;
+    else if ([1, 0].includes(value)) return value === 1;
+    else if (["1", "0"].includes(value)) return value === "1";
+    else return undefined;
+  }
+
+
+  // static booleanValue(value: any, def: boolean = false, str: string = 'true', num: number = 1): boolean {
+  //   if (typeof value === 'boolean') return value;
+  //   else if (typeof value === 'string') return value === str;
+  //   else if (typeof value === 'number') return value === num;
+  //   else return def;
+  // }
+
+  static anyNotNull(...values: any[]): boolean {
+    return values.some(value => Objects.notNull(value));
   }
 
   static anyBlank(...values: string[]): boolean {

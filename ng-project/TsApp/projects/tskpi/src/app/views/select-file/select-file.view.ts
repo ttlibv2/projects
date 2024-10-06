@@ -23,7 +23,7 @@ interface FormVal {
 })
 export class SelectFileView implements OnInit {
    // fileMau: string = '/assets/reportkpi_mau.xlsx';
-    fileText: string = 'Chọn file dữ liệu excel xlsx hoặc xls.';
+    fileText: string = 'Chọn file dữ liệu excel xlsx.';
     mimeType: string = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
     formGroup: FormGroup;

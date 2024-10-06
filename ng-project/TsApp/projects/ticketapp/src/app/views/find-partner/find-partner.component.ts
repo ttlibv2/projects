@@ -1,4 +1,13 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit, booleanAttribute,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { DialogService, DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
 import { Objects, Page } from 'ts-ui/helper';
@@ -9,42 +18,55 @@ import { ClsPartner, ClsSearch } from '../../models/od-cls';
 import { LoggerService } from 'ts-ui/logger';
 import { AgTable, TableOption } from 'ts-ui/ag-table';
 import {StorageService} from "../../services/storage.service";
+import {ModalService} from "ts-ui/modal";
 
-const { isBlank, notBlank, notNull } = Objects;
+const { isBlank, notBlank, notNull, booleanValue } = Objects;
 
 export interface SearchItem {
   label: string;
   name: string;
   checked: boolean;
-
+  filter?: any[];
 }
 
 export interface SearchData {
   vat?: string;
   email?: string;
   mobile?: string;
-  company_name?: string;
-  person_name?: string;
-  company_id?: string;
-  person_id?: string;
-  address?: string;
+  chk?: {
+    vat?: string;
+    email?: string;
+    mobile?: string;
+    person?: boolean;
+    company?: boolean;
+  }
 }
 
+interface State {
+  asyncLoading?: boolean;
+  asyncSave?: boolean;
+  visiblePerson?: boolean;
+  visibleComp?: boolean;
+  allowNew?: boolean;
+  showToolbar?: boolean;
+}
 
 @Component({
   selector: 'ts-find-partner',
   templateUrl: './find-partner.component.html',
   styleUrl: './find-partner.component.scss',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FindPartnerComponent implements OnInit, AfterViewInit {
 
-  searchWhere: SearchItem[] = [
-    { label: 'MST', name: 'vat', checked: true },
-    { label: 'E-mail', name: 'email', checked: true },
-    { label: 'Cá nhân', name: 'is_person', checked: true }
-  ];
+  wheres: {[key: string]: SearchItem} = {
+    'vat': { label: 'Mã số thuế', name: 'vat', checked: true },
+    'email': { label: 'E-mail', name: 'email', checked: true, filter: ['email', '!=', false] },
+    'mobile': { label: 'Điện thoại', name: 'mobile', checked: true, filter: ['mobile','!=',false] },
+    'person': { label: 'Cá nhân', name: 'person', checked: true, filter: ['is_company','=',false] },
+    'company': { label: 'Công ty', name: 'company', checked: false, filter: ['is_company','=',true] },
+  };
 
   columns: ColDef[] = [
     {
@@ -60,30 +82,39 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
 
   ];
 
-
   tableOption: TableOption = {
     rowSelection: 'single',
+    domLayout: 'autoHeight'
   };
 
-
-  instance: DynamicDialogComponent | undefined;
-  formGroup: FormGroup;
+  form: FormGroup;
   searchData: SearchData;
-  asyncLoading: boolean = false;
-  asyncSave: boolean = false;
-  rowData: ClsPartner[] = [];
+  //rowData: ClsPartner[] = [];
+  page: Page<ClsPartner>;
   dataSelected: ClsPartner = undefined;
-  tableHeight: string = '250px';
+  tableHeight: string = undefined;
+  state: State = {allowNew: true};
 
-  visiblePerson: boolean = false;
-  visibleComp: boolean = false;
-  allowNew: boolean = false;
-  showToolbar: boolean = false;
 
-  @ViewChild(AgTable, { static: true }) 
+  @ViewChild(AgTable, { static: true })
   agTable: AgTable<ClsPartner>;
 
- // gridApi: GridApi = undefined;
+  @Input() vat: string;
+  @Input() email: string;
+  @Input() mobile: string;
+  @Input({transform: booleanAttribute}) email_chk: boolean;
+  @Input({transform: booleanAttribute}) mobile_chk: boolean;
+
+  get searchWhere(): SearchItem[] {
+    return Object.values(this.wheres);
+  }
+
+  get rowData(): ClsPartner[] {
+    return this.page?.data || [];
+  }
+
+
+  // gridApi: GridApi = undefined;
 
   constructor(
     private logger: LoggerService,
@@ -92,13 +123,13 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
     private alert: ToastService,
     private fb: FormBuilder,
     private ref: DynamicDialogRef,
-    private dialogSrv: DialogService,
+    private modal: ModalService,
     private odSrv: OdTicketService) {
     
   }
 
   get formValue() {
-    return this.formGroup.getRawValue();
+    return this.form.getRawValue();
   }
 
   ngOnInit() {
@@ -107,24 +138,27 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
   }
 
   private initializeToolBar() {
-    const refView = this.dialogSrv.dialogComponentRefMap.get(this.ref);
-    this.instance = refView && refView.instance;
-    this.showToolbar = notNull(this.instance);
-
-    if( this.showToolbar === false) {
-      this.tableHeight = undefined;
-      this.tableOption.domLayout = 'autoHeight';
+    const instance = this.modal.getInstance(this.ref);
+    if(instance && instance.data) {
+      this.state.showToolbar = true;
+      this.searchData = instance.data;
+      this.tableHeight = '250px';
+      this.tableOption.domLayout='normal';
+      this.form.reset((this.searchData));
+      this.clickSearch(false);
     }
 
-    if (this.instance && this.instance.data) {
-      this.searchData = this.instance.data;
-      this.formGroup.patchValue(this.searchData);
+    else if(Objects.anyNotNull(this.vat, this.email, this.mobile, this.mobile_chk, this.email_chk)){
+      this.wheres['mobile'].checked = this.mobile_chk;
+      this.wheres['email'].checked = this.email_chk;
+      this.searchData = {vat: this.vat, email: this.email, mobile: this.mobile};
+      this.form.reset(this.searchData);
       this.clickSearch(false);
     }
   }
 
   private createFormGroup() {
-    this.formGroup = this.fb.group({
+    this.form = this.fb.group({
       vat: [null],
       display_name: [{value: null, disabled: true}],
       company_name: [null],
@@ -138,11 +172,11 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
       operator: ['like']
     });
 
-    this.formGroup.valueChanges.subscribe({
+    this.form.valueChanges.subscribe({
       next: data => {
           const { customer_id, company_id } = data;
-          this.visibleComp = isBlank(company_id);
-          this.visiblePerson = notBlank(company_id) && isBlank(customer_id);
+          this.state.visibleComp = isBlank(company_id);
+          this.state.visiblePerson = notBlank(company_id) && isBlank(customer_id);
       }
     })
   }
@@ -152,35 +186,31 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
 
   clickSearch(showWarning: boolean = true) {
     const newKeys = this.searchWhere.filter(o => o.checked).map(k => k.name);
-    const formValue = this.formValue, searchData = this.formToObj(newKeys, formValue);
+    const formValue = this.formValue;
+    const searchData = this.formToObj(newKeys, formValue);
 
     if (Objects.isEmpty(searchData)) {
       if(showWarning) this.alert.warning(this.config.i18n.searchInvalid);
       return;
     }
 
-    
-    if (newKeys.includes('is_person')) {
-      searchData['is_company'] = false;
-    }
-
-
+    const filter = newKeys.map(k => this.wheres[k].filter).filter(v => notNull(v));
     const ref = this.alert.loading(this.config.i18n.searchAwait);
 
     const clsSearch: ClsSearch = ClsSearch.from({
-      data: searchData,
-      limit: searchData['pageSize'] ?? 20,
+      data: searchData, filter: filter,
+      limit: formValue['pageSize'] ?? 20,
       operator: formValue['operator']
     });
 
-    this.asyncLoading = true;
+    this.state.asyncLoading = true;
     this.dataSelected = undefined;
    
 
     this.odSrv.searchPartner(clsSearch).subscribe({
       next: (page: Page) => {
-        this.rowData = [...page?.data] ;
-        this.asyncLoading = false;
+        this.page = page;//[...page?.data] ;
+        this.state.asyncLoading = false;
         this.alert.close(ref);
         this.cdRef.detectChanges();
         this.alert.success(`Đã tìm được ${page?.total ?? 0} dòng.`);
@@ -188,9 +218,9 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
       },
       error: err => {
         this.logger.error('search partner error: ', err);
-        this.asyncLoading = false;
+        this.state.asyncLoading = false;
         this.alert.close(ref);
-        this.rowData = [];
+        this.page = undefined;
         this.cdRef.detectChanges();
       }
     });
@@ -200,11 +230,12 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
 
 
   private formToObj(keys: string[], formData?: any) {
-    if (this.formGroup.invalid) return undefined;
+    if (this.form.invalid) return undefined;
     else {
-      let obj = formData ?? this.formGroup.getRawValue();
-      const newKeys = (keys ?? Object.keys(obj)).filter(k => notBlank(obj[k]));
-      return Object.fromEntries(newKeys.map(k => [k, obj[k].trim()]));
+      let obj = formData ?? this.form.getRawValue();
+      keys = keys || Object.keys(obj);
+      keys = keys.filter(k => notBlank(obj[k]));
+      return Object.fromEntries(keys.map(k => [k, obj[k].trim()]));
     }
   }
 
@@ -212,7 +243,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
 
   /** Lấy dữ liệu mặc định */
   resetForm() {
-    this.formGroup.patchValue(this.searchData);
+    this.form.reset(this.searchData);
   }
 
   createContact(type: 'person' | 'company') {
@@ -236,7 +267,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
       //-- báo lỗi > chưa chọn công ty
       if (isBlank(value['company_id'])) {
         this.alert.warning(`<b>Vui lòng chọn công ty.</b>`);
-        this.asyncSave = false;
+        this.state.asyncSave = false;
         return;
       }
 
@@ -261,13 +292,13 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
      let name = type == 'company' ? 'Công ty' : 'Cá nhân';
      this.odSrv.createPartner(cls).subscribe({
       next: data => {
-        this.asyncSave = false;
+        this.state.asyncSave = false;
         this.agTable.setRows(data);
         this.cdRef.detectChanges();
         this.alert.success(`[${data.id}] Tạo <b>${name}</b> thành công`);
       },
       error: err => {
-        this.asyncSave = false;
+        this.state.asyncSave = false;
         this.agTable.setRows(...[]);
         this.cdRef.detectChanges();
         this.alert.error(`Xảy ra lỗi tạo <b>${name}</b> > ${err.message} !`);
@@ -287,7 +318,7 @@ export class FindPartnerComponent implements OnInit, AfterViewInit {
 
 
   rowClicked(data: ClsPartner) {
-    this.formGroup.patchValue(data);
+    this.form.patchValue(data);
     this.dataSelected = data;
   }
 

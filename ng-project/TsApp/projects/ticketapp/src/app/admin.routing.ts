@@ -69,7 +69,7 @@ const appRoutes: Route[] = [
             {
                 path: '**',
                 pathMatch: 'prefix',
-                redirectTo: 'ticket-form'
+                redirectTo: 'softwares'
             }
         ]
     }
