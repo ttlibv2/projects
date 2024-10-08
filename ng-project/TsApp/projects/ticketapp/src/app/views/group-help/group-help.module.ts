@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { GroupHelpRoutingModule } from './group-help-routing.module';
 import { GroupHelpComponent } from './group-help.component';
+import { MvcModule } from '../shared/mvc/mvc.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { GroupHelpComponent } from './group-help.component';
   ],
   imports: [
     CommonModule,
-    GroupHelpRoutingModule
+    GroupHelpRoutingModule,
+    MvcModule
   ]
 })
 export class GroupHelpModule { }

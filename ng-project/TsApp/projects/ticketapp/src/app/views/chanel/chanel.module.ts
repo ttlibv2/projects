@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ChanelRoutingModule } from './chanel-routing.module';
 import { ChanelComponent } from './chanel.component';
+import { MvcModule } from '../shared/mvc/mvc.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { ChanelComponent } from './chanel.component';
   ],
   imports: [
     CommonModule,
-    ChanelRoutingModule
+    ChanelRoutingModule,
+    MvcModule
   ]
 })
 export class ChanelModule { }

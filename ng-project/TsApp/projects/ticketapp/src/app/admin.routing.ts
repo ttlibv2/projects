@@ -30,7 +30,7 @@ const appRoutes: Route[] = [
                 loadChildren: () => import('./views/software/software.module').then(m => m.SoftwareModule)
             },
             {
-                path: 'group-helps',
+                path: 'ghelps',
                 loadChildren: () => import('./views/group-help/group-help.module').then(m => m.GroupHelpModule)
             },
             {

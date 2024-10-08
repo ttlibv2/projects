@@ -1,17 +1,10 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {TableColumn, TableOption} from "ts-ui/ag-table";
-import {FormGroup, FormsBuilder} from "ts-ui/forms";
-import {ToastService} from "ts-ui/toast";
-import {Callback} from "ts-ui/helper";
-import {Validators} from "@angular/forms";
-import {Field} from "../shared/mvc/mvc.component";
-
-const columns: TableColumn[] = [
-    {field: 'software_id', headerName: 'ID'},
-    {field: 'code', headerName: 'Code'},
-    {field: 'value', headerName: 'Value'},
-    {field: 'soft_names', headerName: 'Names'}
-];
+import { Component, OnInit } from '@angular/core';
+import { TableColumn } from "ts-ui/ag-table";
+import { FormsBuilder } from "ts-ui/forms";
+import { Validators } from "@angular/forms";
+import { Field, MvcOption } from "../shared/mvc/mvc.component";
+import { SoftwareService } from '../../services/software.service';
+import { Objects } from 'ts-ui/helper';
 
 @Component({
     selector: 'ts-software',
@@ -19,26 +12,42 @@ const columns: TableColumn[] = [
     styleUrl: './software.component.scss'
 })
 export class SoftwareComponent {
-    columns: TableColumn[] = [
-        {field: 'software_id', headerName: 'ID'},
-        {field: 'code', headerName: 'Code'},
-        {field: 'value', headerName: 'Value'},
-        {field: 'soft_names', headerName: 'Names'}
-    ];
 
-    formBuild = (fb: FormsBuilder) => fb.group({
-        software_id: [null],
+    constructor(private fb: FormsBuilder,
+        private softSrv: SoftwareService) { }
+
+
+    formGroup = this.fb.group({
+        id: [null],
         code: [null, Validators.required],
         value: [null, Validators.required],
         soft_names: [null, Validators.required]
     });
 
-    formFields: Field[] = [
-        {fieldId: 'code', label: 'Mã phần mềm', type: 'input', class: 'col-6'},
-        {fieldId: 'value', label: 'Tên phần mềm', type: 'input', class: 'col-6'},
-        {fieldId: 'soft_names', label: 'DS Tên', type: 'input', class: 'col-6'},
+    mvcOption: MvcOption<any> = {
+        visibleExport: true,
+        visibleImport: true,
+        autoLoadData: true,
+        rowNameId: 'id',
+        
+        formFields: [
+            { fieldId: 'code', label: 'Mã phần mềm', type: 'input', class: 'lg:col-4' },
+            { fieldId: 'value', label: 'Tên phần mềm', type: 'input', class: 'lg:col-4' },
+            { fieldId: 'soft_names', label: 'DS Tên', type: 'input', class: 'lg:col-4' },
+        ],
 
-    ];
+        resetDataFunc: () => { },
+        loadDataFunc: () => this.softSrv.findAll(),
+        editDataFunc: data => this.softSrv.updateById(data.id, data),
+        deleteDataFunc: data => this.softSrv.deleteById(data.id),
+        newDataFunc: data => {
+            const names: string = <any>data.soft_names;
+            if (Objects.notBlank(names)) data.soft_names = names.split(',');
+            return this.softSrv.createNew(data)
+        },
+
+    }
+
 
 
 

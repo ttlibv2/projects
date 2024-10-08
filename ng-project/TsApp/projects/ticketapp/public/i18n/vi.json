@@ -261,12 +261,15 @@
     "update": "Cập nhật",
     "cancel": "Hủy bỏ",
     "delete": "Xóa",
+    "delete_all": "Xóa tất cả",
     "check_api": "Kiểm tra kết nối",
     "close": "Đóng",
     "reset": "Nhập lại",
     "copy": "Sao chép",
     "get_all": "Lấy DS",
-    "update_link": "Cập nhật menu"
+    "update_link": "Cập nhật menu",
+    "import_xsl": "Nạp dữ liệu",
+    "export_xsl": "Xuất dữ liệu"
   },
   "style": {
     "text_color": "Màu chữ",

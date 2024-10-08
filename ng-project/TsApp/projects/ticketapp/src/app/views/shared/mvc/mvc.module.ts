@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 
 import {MvcComponent} from './mvc.component';
 import {AgTableModule} from "ts-ui/ag-table";
-import {FormsModule} from "ts-ui/forms";
+import {FormsBuilder, FormsModule} from "ts-ui/forms";
 import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
 import {CheckboxModule} from "primeng/checkbox";

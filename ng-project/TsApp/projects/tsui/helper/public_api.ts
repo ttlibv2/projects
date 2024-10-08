@@ -12,3 +12,4 @@ export * from './lib/base64';
 export * from './lib/forms';
 export * from './lib/files';
 export * from './lib/hashset';
+export * from './lib/ngx-core';

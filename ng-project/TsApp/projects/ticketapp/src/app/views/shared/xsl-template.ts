@@ -39,6 +39,11 @@ export interface InputData {
     defaults: DefaultData[];
 }
 
+export interface InputOption {
+    header?: string;
+    files: UrlFile[];
+}
+
 @Component({
     standalone: true,
     selector: 'ts-xsl-template',
@@ -66,6 +71,20 @@ export class XslTemplate implements OnInit {
     workbook: Workbook;
     sheetNames: string[] = [];
 
+    static openModal(modal: ModalService, input: InputOption) {
+        const ref = modal.open(XslTemplate, {
+            header: input?.header || 'Nạp dữ liệu',
+            width: '630px',
+            data: input
+          });
+          //
+          ref.onClose.subscribe({
+            next: (data: any) => {
+              console.log(data)
+            }
+          })
+    }
+
     constructor(private fb: FormBuilder,
         private modal: ModalService,
         private dialogRef: DynamicDialogRef,
@@ -79,7 +98,7 @@ export class XslTemplate implements OnInit {
     get chooseLabel(): string { return isNull(this.fileXsl) ? 'Chọn tệp đính kèm': `Đã chọn ${this.fileXsl.name}`;}
 
     ngOnInit(): void {
-        let instanceData: Partial<InputData> = this.modal.getData(this.dialogRef) ?? {};
+        let instanceData: InputOption = this.modal.getData(this.dialogRef);
         let currentDefault = null;
 
         if (instanceData) {
@@ -90,7 +109,7 @@ export class XslTemplate implements OnInit {
             });
 
             this.urlFile = this.files.find(f => f.selected) ?? this.files[0];
-            this.defaults = instanceData.defaults || [];
+            //this.defaults = instanceData.defaults || [];
 
             currentDefault = this.defaults.find(d => d.selected);
         }

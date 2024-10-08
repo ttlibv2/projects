@@ -86,8 +86,11 @@ public class UserRest extends LongIdRest<TsUser, UserService> {
 
         Long tsAppId = tsUser.getTsApp();
         if(tsAppId != null) {
-            ObjectMap links = apiInfoService.getById(tsAppId).getLinks();
-            tsUser.setTsLinks(links);
+            ApiInfo ai = apiInfoService.getById(tsAppId);
+            String baseUrl = ai.getBaseUrl();
+            ObjectMap map = ai.getLinks();
+            map.keySet().forEach(k -> map.set(k, baseUrl + map.getString(k)));
+            tsUser.setTsLinks(map);
         }
 
         return tsUser;

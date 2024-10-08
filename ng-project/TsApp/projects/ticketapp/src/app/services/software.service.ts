@@ -7,7 +7,7 @@ import { ResponseToModel } from '../models/common';
 export class SoftwareService extends ModelApi<Software> {
 
     override basePath(): string {
-        return '/ts-api/mvc';
+        return '/ts-api/software';
     }
 
     override resToModel(): ResponseToModel<any> {

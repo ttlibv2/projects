@@ -387,9 +387,11 @@ export class TicketFormComponent implements OnInit {
 
   searchUser() {
     const { tax_code, phone, email } = this.forms.formValue;
+    const data = { vat: tax_code, mobile: phone, email: email };
+    const option = {autoSelect: true, timeDelay: 500};
     const ref = this.modal.open(FindPartnerComponent, {
       header: "Tìm kiếm khách hàng",
-      data: { vat: tax_code, mobile: phone, email: email },
+      data: {data, option} ,
     });
 
     ref.onClose.subscribe({

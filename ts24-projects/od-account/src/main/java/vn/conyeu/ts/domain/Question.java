@@ -1,5 +1,7 @@
 package vn.conyeu.ts.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +16,7 @@ import vn.conyeu.common.domain.LongUId;
 @Getter @Setter @NoArgsConstructor
 @DynamicInsert @DynamicUpdate
 @AttributeOverride(name = "id", column = @Column(name = "questionId"))
+@JsonIgnoreProperties({"user"})
 //@formatter:on
 public class Question extends LongUId<Question> {
 
@@ -23,6 +26,7 @@ public class Question extends LongUId<Question> {
     @Column(length = 2000, nullable = false)
     private String reply;
 
+    @JsonProperty("soft_type")
     @Column(length = 50, nullable = false)
     private String softType;
 
@@ -33,5 +37,8 @@ public class Question extends LongUId<Question> {
     @JoinColumn(name = "userId", nullable = false)
     private TsUser user;
 
-
+    @JsonProperty("user_id")
+    public Long getUserId() {
+        return user == null ? null : user.getId();
+    }
 }

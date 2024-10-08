@@ -1,6 +1,10 @@
-<div class="search-user-form grid">
+<div class="search-user-form grid" [style]="{'max-width': '1024px'}">
     <p-card class="col-12">
         <form [formGroup]="form" (ngSubmit)="clickSearch()" class="sm grid">
+            <div class="p-fluid col-12">
+                <label for="display_name">Tên hiển thị</label>
+                <input pInputText id="display_name" formControlName="display_name"/>
+            </div>
             <div class="p-fluid col-6">
                 <label for="vat">Mã số thuế</label>
                 <input pInputText id="vat" formControlName="vat"/>
@@ -34,10 +38,12 @@
             <div class="col-12 flex gap-5  align-items-center">
                 <label for="search_where">Tìm theo: </label>
                 <div class="flex gap-3 align-items-center" id="search_where">
-                    <ng-template ngFor let-item [ngForOf]="searchWhere">
-                        <p-checkbox [label]="item.label" [value]="item.name" [(ngModel)]="item.checked"
-                                    [ngModelOptions]="{standalone: true}" [binary]="true"></p-checkbox>
-                    </ng-template>
+                    <ng-container formGroupName="options">
+                        @for (opt of formOption; track $index) {
+                            <p-checkbox label="{{opt.label | translate}}" [value]="opt.checked" 
+                                [binary]="true" [formControlName]="opt.name"></p-checkbox>
+                        }
+                    </ng-container>
                 </div>
             </div>
             <div class="col-12 flex flex-wrap gap-4 mb-2 align-items-center">
@@ -46,7 +52,7 @@
                 <p-radioButton label="Tìm chính xác" name="operator" value="equal" formControlName="operator"></p-radioButton>
                 <div class="inline-flex align-items-center gap-3">
                     <span class="font-weight-bold"> | Số dòng: </span>
-                    <p-inputNumber inputId="minmax" mode="decimal" [min]="1" [max]="80" [useGrouping]="false"
+                    <p-inputNumber [min]="1" [max]="80"
                                    formControlName="pageSize" [inputStyle]="{'max-width': '100px'}" showButtons="false"/>
                     <div class="flex gap-1" *ngIf="page?.data">
                         <p-divider layout="vertical"></p-divider>
@@ -57,29 +63,31 @@
                 </div>
             </div>
             <div class="col-12 flex gap-2">
-                <p-button label="Lấy mặc định" severity="warning" (click)="resetForm()"></p-button>
+                <p-button label="Lấy mặc định" severity="warning" (click)="clickResetForm()"></p-button>
                 <p-button label="Tìm kiếm" severity="primary" type="submit" [loading]="state.asyncLoading"></p-button>
-                <p-button label="+ Cá nhân" severity="success" (click)="createContact('person')"
-                          [loading]="state.asyncSave "
-                          *ngIf="state.visiblePerson && state.allowNew"></p-button>
-                <p-button label="+ Công ty" severity="info" (click)="createContact('company')"
-                          [loading]="state.asyncSave "
-                          *ngIf="state.visibleComp && state.allowNew"></p-button>
+
+                <p-button label="+ Cá nhân" severity="success" (click)="clickNewPerson()"
+                          [loading]="state.asyncSave" *ngIf="visiblePersonBtn"></p-button>
+
+                <p-button label="+ Công ty" severity="info" (click)="clickNewCompany()"
+                          [loading]="state.asyncSave" *ngIf="visibleCompBtn"></p-button>
+
                 <p-checkbox label="Tạo mới dữ liệu" [binary]="true"
                             (onChange)="state.allowNew = $event.checked"></p-checkbox>
             </div>
         </form>
     </p-card>
     <div class="col-12">
-        <ts-ag-table [option]="tableOption" [tableHeight]="tableHeight" [columns]="columns" [rows]="rowData"
-                     (rowClicked)="rowClicked($event.data)"></ts-ag-table>
+        <ts-ag-table #agTable [option]="tableOption" [columns]="columns" [rows]="rowData"
+                     (rowClicked)="clickRow($event.data)"></ts-ag-table>
     </div>
+
+    <div class="col-12 flex flex-row justify-content-end gap-2" *ngIf="state.showToolbar">
+        <p-button severity="help" label="Chọn và đóng" (onClick)="selectAndClose()" *ngIf="dataSelect"/>
+        <p-button severity="info" label="Đóng" (onClick)="closeDialog()"/>
+     </div>
 
 </div>
 
 
 
-<!--<div class="col-12 flex flex-row justify-content-end gap-2" *ngIf="state.showToolbar">-->
-<!--    <p-button label="Chọn" (onClick)="selectAndClose()" *ngIf="dataSelected"/>-->
-<!--    <p-button label="Đóng" (onClick)="closeDialog()"/>-->
-<!--</div>-->

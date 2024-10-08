@@ -41,7 +41,7 @@ export class Objects {
     else if (typeof value === 'boolean') return value;
     else if ([1, 0].includes(value)) return value === 1;
     else if (["1", "0"].includes(value)) return value === "1";
-    else return undefined;
+    else return null;
   }
 
 
@@ -54,6 +54,10 @@ export class Objects {
 
   static anyNotNull(...values: any[]): boolean {
     return values.some(value => Objects.notNull(value));
+  }
+
+  static anyNotBlank(...values: string[]): boolean {
+    return values.some(value => Objects.notBlank(value));
   }
 
   static anyBlank(...values: string[]): boolean {
@@ -101,7 +105,11 @@ export class Objects {
   }
 
   static isFalse(object: any): object is boolean {
-    return object === false;
+    return object === false ;
+  }
+
+  static isTrue(object: any): object is boolean {
+    return object === true;
   }
 
   static isArray(value: any): value is [] {
@@ -134,6 +142,10 @@ export class Objects {
 
   static isFunction(object: any): object is Function {
     return Objects.notNull(object) && typeof object === 'function'
+  }
+
+  static getNotBlank(...strings: string[]): string {
+    return strings.find(s => Objects.notBlank(s));
   }
 
   static equals(obj1: any, obj2: any, field?: Function | string): boolean {

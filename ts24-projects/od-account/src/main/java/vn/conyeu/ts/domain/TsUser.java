@@ -49,6 +49,7 @@ public class TsUser extends LongIdDate<TsUser> {
     private Boolean reqUpdate;
 
     @Transient
+    @JsonProperty("ts_links")
     private ObjectMap tsLinks;
 
     public TsUser(Long entityId) {

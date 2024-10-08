@@ -1,5 +1,5 @@
 <ag-grid-angular #agGridComp class="ag-theme-quartz"
-    [style.height]="tableHeight" 
+    [style.height]="tableHeight || gridOption?.height" 
     [domLayout]="gridOption?.domLayout"
     [columnDefs]="columns" [rowData]="rows"
     [components]="components"

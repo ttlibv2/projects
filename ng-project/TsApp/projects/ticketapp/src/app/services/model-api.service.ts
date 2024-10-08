@@ -88,7 +88,8 @@ export abstract class ModelApi<E extends BaseModel> extends ClientService {
    * */
   updateById(modelId: number, data: any): Observable<number> {
     const url = this.callBasePath(`update-by-id/${modelId}`);
-    return this.put(url, data).pipe(map(data => data.result));
+    const callback = this.resToModel();
+    return this.put(url, data).pipe(map(data => callback(data)));
   }
 
   /** 
