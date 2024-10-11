@@ -30,11 +30,11 @@ export class Catalog extends BaseModel {
    ls_ticket_template: TicketTemplateMap;
 
    get_email() {
-      return this.ls_email_template?.list();
+      return this.ls_email_template?.list() || [];
    }
 
    get_ticket() {
-      return this.ls_ticket_template?.list();
+      return this.ls_ticket_template?.list() || [];
    }
 
 

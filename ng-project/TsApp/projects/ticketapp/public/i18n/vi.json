@@ -254,6 +254,13 @@
     "setting": "Thiết lập nội dung",
     "severity": "Severity"
   },
+  "ticket":{
+    "chanels": "Kênh - Tình trạng",
+    "software": "Nhóm Phần mềm",
+    "ghelp": "Nhóm hỗ trợ",
+    "shelp": "Hình thức hỗ trợ",
+    "soft_name": "Tên phần mềm"
+  },
   "actions": {
     "save": "Lưu lại",
     "edit": "Sửa TT",

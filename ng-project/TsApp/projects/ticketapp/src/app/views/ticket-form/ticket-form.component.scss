@@ -3,33 +3,47 @@ ts-ticket-form {
 }
 
 .ticket-form {
+  .p-fieldset {
+    border-width: 0;
 
-  .template_list .p-chip {
-    cursor: pointer;
+    .p-fieldset-legend {
+      border-width: 0;
+
+      span:not(:empty) {
+        padding: 0rem;
+      }
+    }
+  }
+
+  .template-list {
+    .p-chip {
+      cursor: pointer;
+    }
+    a.here {
+      text-decoration: underline;
+      color: var(--info-color);
+    }
+  }
+
+  &.template {
+    // display: block;
+
+    .col-left {
+      width: 75% !important;
+    }
+
+    .col-right {
+      width: 25% !important;
+    }
   }
 
   &.grid {
     margin-top: 0px;
   }
 
-  &.template {
-    display: block;
-
-    .col-left {
-     width: 100%!important;
-    }
-
-    .col-right {
-     width: 100%!important;
-    }
-
-  }
-
   .toolbar.border-end {
     border-bottom: 5px solid var(--primary-color);
-    margin-bottom: .5rem;
-    padding-bottom: .5rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
   }
-
-
 }

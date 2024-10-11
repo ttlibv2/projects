@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { TicketFormRoutingModule } from './ticket-form-routing.module';
 import { TicketFormComponent } from './ticket-form.component';
 import {CardModule} from "primeng/card";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MultiSelectModule} from "primeng/multiselect";
 import {DropdownModule} from "primeng/dropdown";
 import {InputTextModule} from "primeng/inputtext";
@@ -29,6 +28,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { RippleModule } from 'primeng/ripple';
 import { TsIconModule } from 'ts-ui/icon';
 import { TsLoggerModule } from 'ts-ui/logger';
+import { FormsModule } from 'ts-ui/forms';
 
 
 @NgModule({
@@ -38,9 +38,9 @@ import { TsLoggerModule } from 'ts-ui/logger';
   exports: [TicketFormComponent],
     imports: [
     CommonModule,
+    FormsModule,
     TicketFormRoutingModule,
     CardModule,
-    ReactiveFormsModule,
     MultiSelectModule,
     DropdownModule,
     InputTextModule,
@@ -53,7 +53,6 @@ import { TsLoggerModule } from 'ts-ui/logger';
     ChipModule,
     ChipsModule,
     FieldsetModule,
-    FormsModule,
     DialogModule,
     ToolbarModule,
     CatalogModule,

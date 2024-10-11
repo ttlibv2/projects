@@ -1,6 +1,8 @@
-import { booleanAttribute, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, 
-  Input, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import {
+  booleanAttribute, ChangeDetectorRef, Component, EventEmitter,
+  Input, OnInit, Output, ViewEncapsulation
+} from "@angular/core";
+import { Validators } from "@angular/forms";
 import { MenuItem, OverlayOptions } from "primeng/api";
 import { Ticket } from "../../models/ticket";
 import { TicketOption } from "../../models/ticket-option";
@@ -20,20 +22,21 @@ import { CatalogComponent } from "../catalog/catalog.component";
 import { User } from "../../models/user";
 import { StorageService } from "../../services/storage.service";
 import { DatePipe } from "@angular/common";
-import { TicketFormGroup } from "./ticket-util";
 import { Question } from "../../models/question";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { Router } from "@angular/router";
 import { TicketService } from "../../services/ticket.service";
 import { routerUrl } from "../../constant";
 import { ViewHtml } from "./email-ticket";
-import {DefaultData, InputData, XslTemplate} from "../shared/xsl-template";
+import { DefaultData, InputData, XslTemplate } from "../shared/xsl-template";
 import { EmailTemplate, TicketTemplate, TicketTemplateData } from "../../models/template";
-import {FormField} from '../../models/form-field';
+import { FormField } from '../../models/form-field';
 import { Alert } from "ts-ui/alert";
 import { ModalService } from "ts-ui/modal";
+import { FormGroup, FormsBuilder } from "ts-ui/forms";
+import { Utils } from "./utils";
 
-const { notNull, notEmpty, isEmpty, isNull, notBlank } = Objects;
+const { notNull, notEmpty, isEmpty, isNull, notBlank, isTrue } = Objects;
 
 export type TicketState = 'new' | 'update' | 'delete';
 
@@ -67,8 +70,7 @@ export interface SetDataInput {
   selector: "ts-ticket-form",
   templateUrl: "./ticket-form.component.html",
   styleUrl: "./ticket-form.component.scss",
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  encapsulation: ViewEncapsulation.None
 })
 export class TicketFormComponent implements OnInit {
 
@@ -78,7 +80,7 @@ export class TicketFormComponent implements OnInit {
   }
 
   get data(): Partial<Ticket> {
-    return this.forms.formValue;
+    return this.form.getRawValue();
   }
 
 
@@ -86,18 +88,18 @@ export class TicketFormComponent implements OnInit {
     return false;
   }
 
-  get isSubjectReadOnly(): boolean {
-    const { emailTicket, autoFill } = this.options;
-    return (emailTicket === false || autoFill === true);
-  }
 
   get templateDefault(): TicketTemplate {
     if (notNull(this.currentTemplate)) return this.currentTemplate;
-    else  return this.catalog?.ls_ticket_template?.get_default();
+    else return this.catalog?.ls_ticket_template?.get_default();
   }
 
   get emailTemplates(): EmailTemplate[] {
     return this.catalog?.get_email() || [];
+  }
+
+  get form(): FormGroup {
+    return this.utils?.form;
   }
 
   readonly toolActions: MenuItem[] = [
@@ -122,22 +124,22 @@ export class TicketFormComponent implements OnInit {
     {
       label: "Tự động tạo > Copy",
       formControl: "autoCreate",
-      command: (checked) => (this.options.autoCreate = checked),
+      //command: (checked) => (this.options.autoCreate = checked),
     },
     {
       label: "[TS] Tự động điền",
       formControl: "autoFill",
-      command: (checked) => (this.options.autoFill = checked),
+      //command: (checked) => (this.options.autoFill = checked),
     },
     {
       label: "Hiển thị ALL",
       formControl: "viewAll",
-      command: (checked) => (this.options.viewAll = checked),
+      //command: (checked) => (this.options.viewAll = checked),
     },
     {
       label: "Hiển thị cột TS24",
       formControl: "viewTs24",
-      command: (checked) => (this.options.viewTs24 = checked),
+     // command: (checked) => (this.options.viewTs24 = checked),
     },
     // {
     //   label: "Lưu Cache",
@@ -148,10 +150,10 @@ export class TicketFormComponent implements OnInit {
       label: "E-mail ticket",
       formControl: "emailTicket",
       hidden: false,
-      command: (checked) => {
-        this.options.emailTicket = checked;
-        this.toast.closeAll();
-      },
+      //command: (checked) => {
+      //  this.options.emailTicket = checked;
+      //  this.toast.closeAll();
+      //},
     }
   ];
 
@@ -160,27 +162,25 @@ export class TicketFormComponent implements OnInit {
   hasBorderEnd: boolean = false;
 
   state: State = {};
-  //ticketForm: FormGroup;
   asyncLoadCate: boolean = false;
   catalog: Catalog = new Catalog();
   lsSoftName: string[] = [];
   currentTemplate: TicketTemplate;
   userLogin: User;
   viewTemplate: boolean = false
-  //emailTemplate: EMailTe
 
-  options: TicketOption = TicketOption.createDef();
+  //options: TicketOption = TicketOption.createDef();
   ticketIsSend: boolean = false;
-  forms: TicketFormGroup;
+  utils: Utils;
 
   // use for dialogRef
   overlayOptions: OverlayOptions;
 
 
   @Input()
-  set data(input: Ticket) { 
+  set data(input: Ticket) {
     if (notNull(input)) {
-      this.forms.resetForm(input);
+      this.utils.reset(input, {});
       this.ticketIsSend = input.hasSend();
     }
   }
@@ -188,7 +188,7 @@ export class TicketFormComponent implements OnInit {
   @Output() onSave = new EventEmitter<SaveTicketEvent>();
 
   constructor(
-    private fb: FormBuilder,
+    public readonly fb: FormsBuilder,
     private alert: Alert,
     private modal: ModalService,
     private toast: ToastService,
@@ -200,29 +200,22 @@ export class TicketFormComponent implements OnInit {
     private router: Router,
     private datePipe: DatePipe,
     private dialogRef: DynamicDialogRef) {
-      this.initFormGroup();
+    //this.initFormGroup();
 
-  }
-
-  private initFormGroup() {
-    this.forms = new TicketFormGroup(this, this.fb);
-    this.forms.initialize();
-    this.forms.registerListener();
   }
 
   ngOnInit() {
-
-
     const dialogInstance = this.modal.getInstance(this.dialogRef);
     if (dialogInstance && dialogInstance.data?.template) {
       this.viewTemplate = true;
       this.currentTemplate = TicketTemplate.from(dialogInstance.data.template);
-      this.overlayOptions = {mode: 'modal'};
+      this.overlayOptions = { mode: 'modal' };
     }
 
     this.userLogin = this.storage.loginUser;
+    this.utils = new Utils(this);
     this.loadCatalogs(true, true).subscribe({
-      next: _ =>  this.createNew(this.currentTemplate)
+     next: _ =>  this.createNew(this.currentTemplate)
     });
 
   }
@@ -277,18 +270,18 @@ export class TicketFormComponent implements OnInit {
   selectTemplate(template: TicketTemplate, checkData: boolean = true) {
 
     if (isNull(template) || (checkData === true && isEmpty(template.data))) {
-      // const ref = this.alert.warning({
-      //   title: 'Thông báo !!',
-      //   summary: 'Bạn chưa cấu hình dữ liệu mặc định cho Ticket. Bạn có muốn cấu hình luôn không ?',
-      //   actions: [
-      //     {label: 'Cấu hình', onClick: e => e.dynamicRef.close('ok')},
-      //     {label: 'Hủy', onClick: e => e.dynamicRef.close('cancel')}
-      //   ]
-      // });
+      const ref = this.alert.warning({
+        title: 'Thông báo !!',
+        summary: 'Bạn chưa cấu hình dữ liệu mặc định cho Ticket. Bạn có muốn cấu hình luôn không ?',
+        actions: [
+          {label: 'Cấu hình', onClick: e => e.dynamicRef.close('ok')},
+          {label: 'Hủy', onClick: e => e.dynamicRef.close('cancel')}
+        ]
+      });
 
-      // ref.onClose.subscribe(btn => {
-      //   if("ok" == btn) this.viewTemplateSetting();
-      // });
+      ref.onClose.subscribe(btn => {
+        if("ok" == btn) this.viewTemplateSetting();
+      });
 
     }
     else {
@@ -298,18 +291,18 @@ export class TicketFormComponent implements OnInit {
         this.templateToTicket(data).subscribe({
           error: err => console.error(err),
           next: json => {
-            this.options = json.options;
-            this.forms.resetForm(json, { onlySelf: false, emitEvent: true });
+            console.log(`1233: `, json);
+            this.utils.reset(json);
           }
         });
       }
     }
 
-   
+
   }
 
   saveTemplate() {
-    const formValue = this.forms.formValue;
+    const formValue = this.form.getRawValue();
     const data: Ticket = Objects.extractValueNotNull(formValue);
     const json: TicketTemplateData = {
       chanel_ids: data.chanels?.map(c => c.id),
@@ -346,11 +339,10 @@ export class TicketFormComponent implements OnInit {
     template = template ?? this.catalog?.ls_ticket_template?.get_default();
     this.logger.info('create new - use template ', template?.title);
     this.selectTemplate(template);
-
   }
 
   saveTicket() {
-    if (this.forms.invalid) {
+    if (this.form.invalid) {
       this.alert.warning({ title: 'Cảnh báo !!', summary: 'Vui lòng nhập đầy đủ thông tin' });
       return;
     }
@@ -359,7 +351,7 @@ export class TicketFormComponent implements OnInit {
     const waitRef = this.toast.loading('Đang lưu thông tin. Vui lòng đợi....');
 
 
-    const data: Partial<Ticket> = this.forms.formValue;
+    const data: Partial<Ticket> = this.form.getRawValue();
     data.chanel_ids = data.chanels?.map(c => c.id);
     data.company_name = data.od_partner?.company_name;
     data.template_id = this.currentTemplate?.template_id;
@@ -385,18 +377,18 @@ export class TicketFormComponent implements OnInit {
     });
   }
 
-  searchUser() {
-    const { tax_code, phone, email } = this.forms.formValue;
+  searchUser(option?: {autoSelect: boolean, timeDelay?: number}) {
+    const { tax_code, phone, email } = this.utils.formData;
     const data = { vat: tax_code, mobile: phone, email: email };
-    const option = {autoSelect: true, timeDelay: 500};
     const ref = this.modal.open(FindPartnerComponent, {
       header: "Tìm kiếm khách hàng",
-      data: {data, option} ,
+      maximizable: true,
+      data: { data, option },
     });
 
     ref.onClose.subscribe({
       next: (cls: cls.ClsPartner) => {
-        cls && this.forms.pathValue({
+        cls && this.form.patchValue({
           tax_code: cls.vat,
           email: cls.email,
           phone: cls.phone,
@@ -451,20 +443,20 @@ export class TicketFormComponent implements OnInit {
   }
 
   onSelectChanel(data: Chanel[] = []): void {
-    if(this.options.autoFill == true){
+    if (this.utils.auto_fill) {
       this.pathValue({ support_help: isEmpty(data) ? undefined : data[0] });
     }
   }
 
   onSelectQuestion(question: Question): void {
-    this.forms.pathValue({
+    this.form.patchValue({
       content_help: question.reply,
       content_required: question.title
     });
   }
 
   copyTicket(): void {
-    this.forms.copyValue();
+    this.utils.copyValue();
     this.saveTicket();
   }
 
@@ -473,7 +465,7 @@ export class TicketFormComponent implements OnInit {
 
     this.router.navigate([routerUrl.template], {
       queryParams: {
-        thread: 'ticket_template', 
+        thread: 'ticket_template',
         lastUrl: routerUrl.form_ticket
       }
     })
@@ -481,7 +473,7 @@ export class TicketFormComponent implements OnInit {
 
   private pathValue(data: Partial<Ticket>, options?: { onlySelf?: boolean, emitEvent?: boolean }) {
     console.log('pathValue', data, options)
-    this.forms.pathValue(data, options);
+    this.form.patchValue(data, options);
   }
 
   private loadMemberOfTeam(data: ClsTeam, stop: boolean = false): Observable<cls.ClsAssign[]> {
@@ -537,63 +529,34 @@ export class TicketFormComponent implements OnInit {
 
 
   //======================
-  emailFields: FormField[] = [];
-
-  changeEmailTemplate(template: EmailTemplate): void {
-    if(isNull(template)) {
-      this.setupFieldEmailTemplate([]);
-      this.emailFields = [];
-    }
-    else if(notBlank(template.data?.html)){
-      const {fields} = template.data;
-      this.emailFields = fields;
-      this.setupFieldEmailTemplate(fields);
-    }
-  }
-
-  get emailObject(): FormGroup {
-    return this.forms.formGroup.get('email_object') as FormGroup;
-  }
-
-  setupFieldEmailTemplate(fields: FormField[]) {
-    const emailGroup: FormGroup = this.emailObject;
-
-    // remove current field
-    Object.keys(emailGroup.controls).forEach(c => emailGroup.removeControl(c));
-
-    // add field to group
-    fields.forEach(field => {
-      const {name, value, required} = field;
-      const control = this.fb.control(value);
-      if(required == true) control.addValidators(Validators.required);
-      emailGroup.addControl(name, control);
-    });
-
-  }
 
   openEmailTemplate(): void {
-    const { email_template, email_object } = this.forms.formValue;
-    let html = email_template.data.html;
-
-    html = html.replace(/\{\{(\S+)\}\}/g, (sub, arg) => {
-      const value = email_object[arg];
-      return Objects.isBlank(value) ? `{{${arg}}}` : value;
-    });
-    
-    this.modal.open(ViewHtml, {
-      header: 'Hiển thị mẫu',
-      closable: true,
-      maximizable: true,
-      dismissableMask: true,
-      data: { html }
-    });
-
+    if(this.utils.cEmailObject.invalid) {
+      this.toast.warning(`Vui lòng nhập thông tin <b>[Email Ticket]</b>`);
+    }
+    else {
+      const { email_template, email_object } = this.utils.formData;
+      let html = email_template.data.html;
+  
+      html = html.replace(/\{\{(\S+)\}\}/g, (sub, arg) => {
+        const value = email_object[arg];
+        return Objects.isBlank(value) ? `{{${arg}}}` : value;
+      });
+  
+      this.modal.open(ViewHtml, {
+        header: 'Hiển thị mẫu',
+        closable: true,
+        maximizable: true,
+        dismissableMask: true,
+        data: { html }
+      });
+    }
   }
 
-  set_data(data: Partial<Ticket>, template: TicketTemplate, submit?:boolean) {
+  set_data(data: Partial<Ticket>, template: TicketTemplate, submit?: boolean) {
     const defaultData = this.templateToTicket(template.data);
     this.data = Objects.mergeDeep(defaultData, data);
-    if(submit == true) this.saveTicket();
+    if (submit == true) this.saveTicket();
   }
 
 
@@ -616,7 +579,7 @@ export class TicketFormComponent implements OnInit {
             selected: true, sheets: ['data', 'data2']
           },
         ],
-        defaults: this.catalog?.get_ticket().map(t=> ({label: t.title, item: t}) as DefaultData)
+        defaults: this.catalog?.get_ticket().map(t => ({ label: t.title, item: t }) as DefaultData)
       } as InputData
     });
     //

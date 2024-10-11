@@ -18,7 +18,7 @@ export class TemplateService extends ModelApi<Template> {
 
 
   getAllByUser(...threads: string[]): Observable<Page<Template>> {
-    const url = this.callBasePath('/user/get-all');
+    const url = this.callBasePath('user/get-all');
     const models = threads.length == 0 ? {} : {threads: threads.join(',')};
     return this.getPage(url, models);
   }

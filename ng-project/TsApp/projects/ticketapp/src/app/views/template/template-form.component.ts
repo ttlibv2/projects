@@ -304,6 +304,7 @@ export class TemplateFormComponent implements OnInit {
         else {
             const openRef = this.modal.open(clsType, {
                 header: `Cấu hình dữ liệu mặc định -- [${thread}]`,
+               // width: '1324px',
                 closable: true, draggable: false, resizable: false,maximizable: true,
                 data: { template: data }
             });

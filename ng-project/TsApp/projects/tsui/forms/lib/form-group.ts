@@ -1,6 +1,6 @@
 import { AbstractControl, FormGroup as NgxFormGroup, ɵFormGroupRawValue, ɵGetProperty, ɵTypedOrUntyped } from "@angular/forms";
 import { AsyncValidator, ValidatorOrOpts } from "./forms.common";
-import { Consumer } from "ts-ui/helper";
+import { BiConsumer, Consumer, Objects } from "ts-ui/helper";
 
 export type TControl<T> = { [K in keyof T]: AbstractControl<any, any> };
 export type TKeyControl<TC> = string & keyof TC;
@@ -46,6 +46,26 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
     controlValueChange<K extends TKeyControl<TC>>(control: K, valueCb: Consumer<TControlValue<TC, K>>): void {
         this.get(control).valueChanges.subscribe((value: any) => valueCb(value));
     }
+
+    controlsValueChange<K extends TKeyControl<TC>>(controls: K[], consumer: BiConsumer<FormGroup, TRawValue<TC>>): void {
+        const func =  () => <any>Objects.arrayToJson(controls, c => [c, this.get_value(c)]);
+        controls.forEach(c => this.get(c).valueChanges.subscribe(_ => consumer(this, func())));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     enableOrDisableControl<K extends TKeyControl<TC>>(control: K, enable: boolean):void {
         enable ? this.get(control)?.enable() : this.get(control)?.disable();

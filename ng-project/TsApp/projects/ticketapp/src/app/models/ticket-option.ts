@@ -14,7 +14,7 @@ export interface ITicketOption {
 export class TicketOption extends BaseModel {
     autoCreate?: boolean = true;
     autoFill?: boolean = true;
-    viewAll?: boolean = false;
+    viewAll?: boolean = true;
     viewTs24?: boolean = false;
     saveCache?: boolean = false;
     emailTicket?: boolean = false;
@@ -33,7 +33,7 @@ export class TicketOption extends BaseModel {
 export const defaultOption = TicketOption.from({
   autoCreate: true,
   autoFill: true,
-  viewAll: false,
+  viewAll: true,
   viewTs24: false,
   saveCache: false,
   emailTicket: false,
