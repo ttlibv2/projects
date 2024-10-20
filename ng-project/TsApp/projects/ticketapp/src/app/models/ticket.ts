@@ -7,9 +7,9 @@ import { Question } from "./question";
 import { Software } from "./software";
 import { TicketOption } from "./ticket-option";
 import * as cls from "./od-cls";
-import { EmailTemplate, TicketTemplate} from "./template";
+import { EmailTemplate, TicketTemplate } from "./template";
 
-const {isNull, notNull} = Objects;
+const { isNull, notNull } = Objects;
 
 export enum TicketStatus {
   NEW,
@@ -111,19 +111,100 @@ export class Ticket extends BaseModel {
   image_at?: string;
   cancel_at?: string;
   mail_at?: string;
+  app_id?: number;
+  app_name?: number;
 
 
   send_status?: 'loading' | 'success' | 'error' | undefined;
   view_chanel?: boolean = false;
 
-
-  constructor() {
-    super();
-  }
-
-
+  
   static from(data: AssignObject<Ticket>): Ticket {
     return BaseModel.fromJson(Ticket, data);
+  }
+
+  
+  set_options(t: AssignObject<TicketOption>): void {
+    this.options = TicketOption.from(t);
+  }
+
+  set_email_template(t: AssignObject<EmailTemplate>): void {
+    this.email_template = EmailTemplate.from(t);
+  }
+
+  set_ticket_template(t: AssignObject<TicketTemplate>): void {
+    this.ticket_template = TicketTemplate.from(t);
+  }
+
+  set_group_help(t: AssignObject<GroupHelp>): void {
+    this.group_help = GroupHelp.from(t);
+  }
+
+  set_question(t: AssignObject<Question>): void {
+    this.question = Question.from(t);
+  }
+
+  set_software(t: AssignObject<Software>): void {
+    this.software = Software.from(t);
+  }
+
+  set_chanels(t: AssignObject<Chanel>[]): void {
+    this.chanels = Chanel.fromList(t);
+  }
+
+  set_support_help(t: AssignObject<Chanel>): void {
+    this.support_help = Chanel.from(t);
+  }
+
+  set_od_assign(t: AssignObject<cls.ClsAssign>): void {
+    this.od_assign = cls.ClsAssign.from(t);
+  }
+
+  set_od_category_sub(t: AssignObject<cls.ClsCategorySub>): void {
+    this.od_category_sub = cls.ClsCategorySub.from(t);
+  }
+
+  set_od_category(t: AssignObject<cls.ClsCategory>): void { this.od_category = cls.ClsCategory.from(t); }
+
+
+  set_od_partner(t: AssignObject<cls.ClsPartner>): void {
+    this.od_partner = cls.ClsPartner.from(t);
+  }
+
+  set_od_priority(t: AssignObject<cls.ClsPriority>): void {
+    this.od_priority = cls.ClsPriority.from(t);
+  }
+
+  set_od_replied(t: AssignObject<cls.ClsReplied>): void {
+    this.od_replied = cls.ClsReplied.from(t);
+  }
+
+  set_od_subject_type(t: AssignObject<cls.ClsSubjectType>): void {
+    this.od_subject_type = cls.ClsSubjectType.from(t);
+  }
+
+  set_od_tags(t: AssignObject<cls.ClsTag>[]): void {
+    this.od_tags = cls.ClsTag.fromList(t);
+  }
+
+  set_od_team(t: AssignObject<cls.ClsTeam>): void {
+    this.od_team = cls.ClsTeam.from(t);
+  }
+
+  set_od_team_head(t: AssignObject<cls.ClsTeamHead>): void {
+    this.od_team_head = cls.ClsTeamHead.from(t);
+  }
+
+  set_od_ticket_type(t: AssignObject<cls.ClsTicketType>): void {
+    this.od_ticket_type = cls.ClsTicketType.from(t);
+  }
+
+  set_od_topic(t: AssignObject<cls.ClsTopic>): void {
+    this.od_topic = cls.ClsTopic.from(t);
+  }
+
+  override clone(): Ticket {
+    return new Ticket().update(this);
   }
 
   override update(object: AssignObject<Ticket>): this {
@@ -136,7 +217,7 @@ export class Ticket extends BaseModel {
     Objects.ifListNotEmpty(object['chanels'], val => ticket.chanels = Chanel.fromList(val));
 
 
-    if('od_partner' in object) {
+    if ('od_partner' in object) {
       this.od_partner_id = object.od_partner.id;
     }
 
@@ -145,15 +226,15 @@ export class Ticket extends BaseModel {
 
 
   get_options(): TicketOption {
-    if(Objects.isEmpty(this.options)) {
+    if (Objects.isEmpty(this.options)) {
       this.options = TicketOption.createDef();
     }
-    return  this.options;
+    return this.options;
   }
 
   cloneWithChanel(): Ticket[] {
     const object = Objects.assign({}, this);
-    return this.chanels.map(chanel => Ticket.from({...object, support_help: chanel, view_chanel: true}));
+    return this.chanels.map(chanel => Ticket.from({ ...object, support_help: chanel, view_chanel: true }));
   }
 
   hasSend(): boolean {

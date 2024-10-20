@@ -64,7 +64,8 @@
             </div>
             <div class="col-12 flex gap-2">
                 <p-button label="Lấy mặc định" severity="warning" (click)="clickResetForm()"></p-button>
-                <p-button label="Tìm kiếm" severity="primary" type="submit" [loading]="state.asyncLoading"></p-button>
+                <p-button label="Tìm kiếm" severity="primary" [loading]="state.asyncLoading" (onClick)="clickSearch(true, false)"></p-button>
+                <p-button label="Tìm theo MST" severity="info" [loading]="state.asyncLoading" (onClick)="clickSearchMST()"></p-button>
 
                 <p-button label="+ Cá nhân" severity="success" (click)="clickNewPerson()"
                           [loading]="state.asyncSave" *ngIf="visiblePersonBtn"></p-button>

@@ -117,11 +117,11 @@ export class UserInfoComponent implements OnInit {
       },
       next: user => {
         this.state.loadUser = false;
-        this.form.patchValue(user);
+        this.form.reset(user);
 
         if (notNull(user.ts_app) && this.lsApi?.length > 0) {
           const api = this.lsApi.find(l => l.api_id == user.ts_app);
-          this.form.setValue(api);
+          this.cApp.setValue(api);
         }
       }
     });

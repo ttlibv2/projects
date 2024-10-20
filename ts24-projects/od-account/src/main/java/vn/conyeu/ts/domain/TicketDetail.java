@@ -135,6 +135,11 @@ public class TicketDetail extends LongUId<TicketDetail> {
         setStageText(stage == null ? null : stage.getName());
     }
 
+    @JsonProperty("ticket_id")
+    public Long getId() {
+        return super.getId();
+    }
+
     /**
      * Returns the attach
      */

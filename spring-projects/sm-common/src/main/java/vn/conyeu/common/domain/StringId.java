@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class StringId<E extends StringId<E>> extends DomainId<E, String>{
 
     @Id
-    @Column(unique = true, updatable = false)
+    @Column(unique = true, updatable = false, length=36)
     @GeneratedValue(strategy = GenerationType.UUID)
     protected String id;
 

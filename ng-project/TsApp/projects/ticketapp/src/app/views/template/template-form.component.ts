@@ -13,7 +13,7 @@ import { TicketFormComponent } from "../ticket-form/ticket-form.component";
 import { Router } from "@angular/router";
 import { Template, TemplateThread, TicketTemplate } from "../../models/template";
 import { Alert } from "ts-ui/alert";
-import { RxjsUtil } from "../ticket-list/rxjs-util";
+import { RxjsUtil } from "../shared/rxjs-util";
 import { FormBuilder } from "@angular/forms";
 import { FormGroup } from "@angular/forms";
 import { ModalService } from "ts-ui/modal";
@@ -178,7 +178,7 @@ export class TemplateFormComponent implements OnInit {
             next: (page) => {
                // this.rows = page.data;
                 this.state.asyncTemplate = false;
-                this.agTable.setRows(...page.data);
+                this.agTable.setRows(page.data);
                 this.toast.success(this.config.i18n.loadTemplateOk);
                 this.toast.close(loading);
             },
@@ -209,7 +209,7 @@ export class TemplateFormComponent implements OnInit {
                 next: (template: Template) => {
                     this.state.asyncSave = false;
                     if (isNew) this.agTable.addRow(template);
-                    else this.agTable.updateRows(template);
+                    else this.agTable.updateRow(template);
                     this.toast.success(this.config.i18n.saveTemplateOk);
                     this.pathValue(template);
                     this.def.detectChanges();
@@ -252,7 +252,7 @@ export class TemplateFormComponent implements OnInit {
                         },
                         next: data => {
                           this.logger.info(data);
-                          this.agTable.removeRows({ template_id: data['model_id'] })
+                          this.agTable.removeRow({ template_id: data['model_id'] })
                         },
                         complete: () => {
                           this.toast.close(waitToast);

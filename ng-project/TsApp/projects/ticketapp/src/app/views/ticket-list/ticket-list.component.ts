@@ -1,8 +1,8 @@
-import { AfterContentInit, AfterViewInit, booleanAttribute, ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterContentInit, AfterViewInit, booleanAttribute, ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoggerService } from 'ts-ui/logger';
 import { AgTable as Table, TableOption } from 'ts-ui/ag-table';
 import { Ticket } from '../../models/ticket';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ToastService } from 'ts-ui/toast';
 import { AgTableService } from '../../services/ag-table.service';
@@ -10,10 +10,9 @@ import { TicketService } from '../../services/ticket.service';
 import { AgStatusRenderer, AgTicketCell, AgCheckRenderer } from './ag-ticket-cell';
 import { DatePipe, DOCUMENT } from '@angular/common';
 import { TagRemoveEvent } from 'ts-ui/tag';
-import {AgTable } from '../../models/ag-table';
+import { AgTable } from '../../models/ag-table';
 import { AgTableTemplate } from './ag-table-template';
-import { FormsUtil } from './form-util';
-import { RxjsUtil } from './rxjs-util';
+import { RxjsUtil } from '../shared/rxjs-util';
 import { SaveTicketEvent } from '../ticket-form/ticket-form.component';
 import {
   catchError,
@@ -29,7 +28,7 @@ import {
   throwError
 } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import {Objects, Base64, TsMap, Consumer} from 'ts-ui/helper';
+import { Objects, Base64, TsMap, Consumer } from 'ts-ui/helper';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { StorageService } from '../../services/storage.service';
 import { AgTemplateCode } from '../../constant';
@@ -38,8 +37,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TemplateFile } from '../shared/template-file';
 import { Alert } from 'ts-ui/alert';
 import { ModalService } from 'ts-ui/modal';
+import { FormGroup, FormsBuilder } from 'ts-ui/forms';
+import { DomHandler } from 'primeng/dom';
+import { ResizedEvent } from '../shared/d-resized';
 
-const { isNull, notNull, notBlank, isBlank } = Objects;
+const { isNull, notNull, notBlank, isBlank, isFalse } = Objects;
 
 export interface SearchOption {
   label: string;
@@ -63,33 +65,35 @@ export interface SendState {
   templateUrl: './ticket-list.component.html',
   styleUrl: './ticket-list.component.scss',
   encapsulation: ViewEncapsulation.None,
-  // changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('toggle', [
-      state('true', style({ opacity: 1 })),
-      state('void', style({ opacity: 0 })),
-      transition(':enter', animate('500ms ease-in-out')),
+     state('true', style({ opacity: 1 })),
+     state('void', style({ opacity: 0 })),
+     transition(':enter', animate('500ms ease-in-out')),
       transition(':leave', animate('500ms ease-in-out'))
     ])
-  ]
+  ],
+  host: {
+  }
 })
-export class TicketListComponent implements OnInit, AfterContentInit, AfterViewInit {
+export class TicketListComponent implements OnInit, AfterContentInit {
   agRows: Ticket[] = [];
   searchForm: FormGroup;
   agColumns: any[] = [];
   agTemplates: MenuItem[] | any[] = [];
   agTableModel: AgTable;
   dataModel: Ticket[] = [];
-  utils: FormsUtil;
   currentTicket: Ticket;
   currentTemplateCode: string; // templateCode
-  tableHeight: string = '370px';
+  tableHeight: string = '340px';
   sendState: SendState = { total: 0, success: 0, error: 0, stop: false };
   files: TsMap<string, File> = new TsMap();
   runSendTicket: Subscription;
+  asyncSearch: boolean = false;
 
   agOption: TableOption<Ticket> = {
     rowModelType: 'clientSide',
+    rowHeight: 25,
     components: {
       'sendStatus': AgStatusRenderer,
       'ticketCell': AgTicketCell,
@@ -147,7 +151,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
   @Input({ alias: 'visible', transform: booleanAttribute })
   set visibleForm(bool: boolean) {
-    this.utils.setPathControlValue('visibleForm', bool);
+    this.searchForm.patchControl('visibleForm', bool);
   }
 
   @Input({ alias: 'template' })
@@ -161,7 +165,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   get visibleForm(): boolean {
-    return this.utils.getControlValue('visibleForm');
+    return this.searchForm.get_value('visibleForm');
   }
 
   get visibleReportMenu(): boolean {
@@ -176,6 +180,10 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     return this.agTable.tableApi?.getSelectedRows()?.length ?? 0;
   }
 
+  get totalRow(): number {
+    return this.agTable?.getDisplayedRowCount() || 0;
+  }
+
   get uploadLabel(): string {
     const size = this.files.size;
     return size == 0 ? 'Chọn tệp đính kèm' : `Bạn đang chọn ${size} tệp`;
@@ -184,12 +192,9 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   constructor(
     @Inject(DOCUMENT)
     private document: Document,
-
     private router: Router,
     private activatedRoute: ActivatedRoute,
-
     private changeDetectorRef: ChangeDetectorRef,
-
     private alert: Alert,
     private toast: ToastService,
     private modal: ModalService,
@@ -198,7 +203,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     private datePipe: DatePipe,
     private storage: StorageService,
     private ticketService: TicketService,
-    private fb: FormBuilder) {
+    private fb: FormsBuilder) {
 
     this.searchForm = this.fb.group({
       dateOn: [null, Validators.required],
@@ -207,26 +212,33 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
       visibleForm: [true]
     });
 
-    this.utils = new FormsUtil(this.searchForm);
-    this.utils.subscribeControl('visibleChanel', val => {
+    this.searchForm.controlValueChange('visibleChanel', val => {
       this.chanelChecked(val);
     });
 
-    this.utils.subscribeControl('visibleForm', val => {
-      //this.tableHeight = this.calcHeight + 'px';
-      this.router.navigate([], { relativeTo: this.activatedRoute, queryParamsHandling: 'merge', queryParams: { visible: val } })
-
+    this.searchForm.controlValueChange('visibleForm', val => {
+      this.router.navigate([], { relativeTo: this.activatedRoute, queryParamsHandling: 'merge', queryParams: { visible: val } });
+      //if(isFalse(val)) this.computedHeightAgTable(`hide form`);
     });
 
   }
 
   @HostListener('window:resize', ['$event'])
   private changeWindowResize($event: any): void {
-    //this.tableHeight = this.calcHeight + 'px';
+    this.computedHeightAgTable();
+  }
+
+  resizeHeightFormTicket(event: ResizedEvent): void {
+    //this.logger.log(`resizeHeightFormTicket`, event);
+    //this.computedHeightAgTable(`resizeHeightFormTicket`);
+  }
+
+  endAnimationForm(): void {
+    this.computedHeightAgTable(`doneForm`);
   }
 
   ngOnInit(): void {
-    console.log(this.visibleForm)
+    this.logger.warn(`ngOnInit`);
 
     if (isBlank(this.currentTemplateCode)) {
       this.currentTemplateCode = this.storage.currentTemplate.get(AgTemplateCode.agTicket);
@@ -247,53 +259,52 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   }
 
   ngAfterContentInit(): void {
+    this.logger.warn(`ngAfterContentInit`);
+    this.computedHeightAgTable(`ngAfterContentInit`);
   }
 
-  ngAfterViewInit(): void {
-
-  }
 
   loadAgTable(event?: any, consumerAfter?: Consumer<any>): void {
 
-      const loadingRef = this.toast.loading({
-        title: 'Thông báo',
-        message: 'Đang xử lý dữ liệu....',
-        detail: 'Vui lòng chờ đến khi hoàn thành',
-        closeButton: true,
-      });
+    const loadingRef = this.toast.loading({
+      title: 'Thông báo',
+      message: 'Đang xử lý dữ liệu....',
+      detail: 'Vui lòng chờ đến khi hoàn thành',
+      closeButton: true,
+    });
 
-      this.agService.getByCode('ticket_list', true)
-          .pipe(tap(tb => this.agTableModel = tb))
-          .subscribe({
-            error: err => {
-              this.logger.error('loadAgTable', err);
-              this.toast.close(loadingRef);
-            },
-            next: (agTable: AgTable) => {
-              this.toast.close(loadingRef);
+    this.agService.getByCode('ticket_list', true)
+      .pipe(tap(tb => this.agTableModel = tb))
+      .subscribe({
+        error: err => {
+          this.logger.error('loadAgTable', err);
+          this.toast.close(loadingRef);
+        },
+        next: (agTable: AgTable) => {
+          this.toast.close(loadingRef);
 
-              // update command for menu item view ag-column
-              this.agColumns = agTable.columns.map(c => c.asColumn());
-              this.agTable.setColumns(this.agColumns);
+          // update command for menu item view ag-column
+          this.agColumns = agTable.columns.map(c => c.asColumn());
+          this.agTable.setColumns(this.agColumns);
 
-              this.agTemplates = agTable.menuItems || [];
-              this.agTemplates.forEach(item => item.command = this.onSelectColumnView.bind(this))
+          this.agTemplates = agTable.menuItems || [];
+          this.agTemplates.forEach(item => item.command = this.onSelectColumnView.bind(this))
 
-              // view for current template
-              if (notNull(this.currentTemplateCode)) {
-                const template = this.agTemplates.find((t:any) => t.code === this.currentTemplateCode);
-                if (isNull(template)) this.currentTemplateCode = null;
-                else this.onSelectColumnView({ item: template });
-              }
+          // view for current template
+          if (notNull(this.currentTemplateCode)) {
+            const template = this.agTemplates.find((t: any) => t.code === this.currentTemplateCode);
+            if (isNull(template)) this.currentTemplateCode = null;
+            else this.onSelectColumnView({ item: template });
+          }
 
-              // apply consumer
-              if(notNull(consumerAfter)) {
-                consumerAfter({});
-              }
+          // apply consumer
+          if (notNull(consumerAfter)) {
+            consumerAfter({});
+          }
 
 
-            }
-          })
+        }
+      })
 
   }
 
@@ -304,11 +315,11 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
       closable: true,
       data: {
         files: [
-          {icon: 'pi pi-user', name: 'ticket.xlsx', label: 'Nạp dữ liệu ticket', path: '/assets/files/ticket.xlsx'},
-          {icon: 'pi pi-home', name: 'ticket_loi.xlsx', label: 'Nạp mẫu báo cáo lỗi', path: '/assets/files/ticket_loi.xlsx'}
+          { icon: 'pi pi-user', name: 'ticket.xlsx', label: 'Nạp dữ liệu ticket', path: '/assets/files/ticket.xlsx' },
+          { icon: 'pi pi-home', name: 'ticket_loi.xlsx', label: 'Nạp mẫu báo cáo lỗi', path: '/assets/files/ticket_loi.xlsx' }
         ]
       }
-      
+
     })
   }
 
@@ -319,7 +330,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
       return;
     }
 
-    const fileName = (this.currentTemplateCode || 'file')+'.xlsx';
+    const fileName = (this.currentTemplateCode || 'file') + '.xlsx';
     this.agTable.exportXsl({ fileName }).subscribe({
       error: reason => console.log(reason),
       next: json => Objects.download(json.fileName, json.blob)
@@ -330,17 +341,15 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
   searchTicket(): void {
     const { dateOn, option } = this.searchForm.getRawValue();
-
     const created_min = this.datePipe.transform(dateOn[0], 'yyyy-MM-dd') + 'T00:00:00';
     const created_max = this.datePipe.transform(dateOn[1], 'yyyy-MM-dd') + 'T23:59:59';
-
     const label = option.label.substring(option.label.indexOf('.') + 2);
 
     const loading = this.toast.loading({
       width: '400px',
       disableTimeOut: true,
       messageClass: 'p-ticket-msg',
-      message: `Đang lấy dữ liệu - Vui lòng chờ <br/>
+      message: `>> Đang lấy dữ liệu - Vui lòng chờ <br/>
         - Tình trạng: <b>${label}</b><br/>
         - Từ ngày: <b>${created_min}</b> <br/> 
         - Đến ngày: <b>${created_max}</b>
@@ -352,15 +361,18 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
       [option.code]: option.value
     };
 
+    this.asyncSearch = true;
     this.ticketService.search(searchObject).subscribe({
       error: err => {
         this.logger.warn(err);
         this.toast.close(loading);
+        this.asyncSearch = false;
       },
       next: data => {
         this.dataModel = data.data;
         this.chanelChecked();
         this.toast.close(loading);
+        this.asyncSearch = false;
         this.toast.success(`Tìm được <b>[${data.data.length}]</b> dòng dữ liệu`);
 
       }
@@ -400,11 +412,11 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
       // view_kpi
       if ('view_kpi' === code) {
-        this.utils.setControlValue('visibleChanel', true);
+        this.searchForm.patchControl('visibleChanel', true);
         //this.chanelChecked();
       }
       else if ('send_ticket' === code) {
-        this.utils.setControlValue('visibleForm', false);
+        this.searchForm.patchControl('visibleForm', false);
       }
 
     }
@@ -510,8 +522,8 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
     return forkJoin(base64)
       .pipe(switchMap(images => this.ticketService.sendOd(action, ticket_id, { images }))//)
-      //.pipe(
-        ,catchError(error => throwError(() => ({ node, error, status: 'error' }))),
+        //.pipe(
+        , catchError(error => throwError(() => ({ node, error, status: 'error' }))),
         switchMap(data => of({ status: 'success', node, data }))
       );
 
@@ -547,6 +559,7 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
 
   deleteTicket(): void {
 
+    //this.agTable.tableApi.getSelectedNodes().sort((n1, n2) => n1.rowIndex - n2.rowIndex);
 
     const lsTicket = this.agTable.tableApi.getSelectedRows().map(t => t.ticket_id);
     if (lsTicket.length === 0) {
@@ -571,17 +584,16 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
     dynamicRef.onClose.subscribe({
       next: result => {
         if (result === "ok") {
-          const waitToast = this.toast.help(`Đang xóa ticket. Vui lòng đợi....`);
+          const waitToast = this.toast.loading(`Đang xóa ticket. Vui lòng đợi....`);
           const lsObs = lsTicket.map(id => this.ticketService.deleteById(id));
 
-          RxjsUtil.runConcatMap(lsObs, 1000, true, {
+          RxjsUtil.runConcatMap(lsObs, 100, true, {
             error: msg => {
               this.toast.close(waitToast);
               this.logger.error(msg);
             },
             next: data => {
-              this.logger.info(data);
-              this.agTable.removeRows({ ticket_id: data['model_id'] })
+              this.agTable.removeRow({ ticket_id: data['model_id'] })
             },
             complete: () => {
               this.toast.close(waitToast);
@@ -608,17 +620,23 @@ export class TicketListComponent implements OnInit, AfterContentInit, AfterViewI
   demo(): void {
     // this.agTable.tableApi.selectAll();
     //this.onSendHelpdesk({ item: { code: 'all' } });
-    this.loadAgTable();
+    //this.loadAgTable();
+    //this.tableHeight = '1200px';
   }
 
-  removeUser($event: TagRemoveEvent) {
-    console.log('remove user', $event.value);
+
+  private computedHeightAgTable(div?: string): void {
+    this.logger.log(div);
+
+    let r = this.document.getElementById('ticket-list-ag-div');
+    const style = getComputedStyle(r);
+    const clientHeight = this.document.documentElement.clientHeight;
+    const posAg = r.offsetTop + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+    this.tableHeight = (clientHeight - posAg) + 'px';
   }
 
   saveTicket(event: SaveTicketEvent): void {
-    //if (event.state === 'new') this.agTable.addRows(event.ticket);
-    //else if (event.state === 'update') this.agTable.updateRows(event.ticket);
-    throw new Error(`saveTicket(event: SaveTicketEvent)`);
+    this.agTable.saveRow(event.ticket, event.state);
   }
 
   editAgTemple(event: any): void {

@@ -3,14 +3,14 @@
 // .text-[blue,red..]
 @each $name, $value in clr.$colors {
    .text-#{$name} {
-        color: $value;
+        color: $value!important;
    }
 }
 
 // .text-[info,danger...]
 @each $name, $value in clr.$severityColors {
     .text-#{$name} {
-         color: $value;
+         color: $value!important;
     }
  }
 

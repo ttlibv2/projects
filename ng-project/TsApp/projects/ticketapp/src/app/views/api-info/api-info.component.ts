@@ -102,7 +102,7 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
   }
 
   get visibleCheckButton(): boolean {
-    return isNull(this.get_apiItem) ? false : (this.isEditApi ? !this.formDirty : !this.fgUser.dirty);
+    return isNull(this.get_apiItem) ? false : (this.isEditApi ? isFalse(this.formDirty) : isFalse(this.fgUser.dirty));
   }
 
   get visibleSaveButton(): boolean {
@@ -281,7 +281,7 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
         console.error(`clickUpdateMenuLink: `, _);
       },
       next: links => {
-        this.fgInfo.pathControl('links', JSON.stringify(links));
+        this.fgInfo.patchControl('links', JSON.stringify(links));
         this.toast.close(loadingRef);
         this.toast.success(this.cfg.i18n.updateMenuOk);
         //this.asyncUpdateMenu = false;
@@ -322,9 +322,13 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
       },
       next: data => {
         if (this.actionIsCopy) this.lsApi.push(data);
+        else this.lsApi.find(l => l.api_id === data.api_id).update(data);
         this.toast.success(this.cfg.i18n.saveApiOk);
         this.changeAction(null);
-        this.cApi.patchValue(data);
+        this.resetForm(data);
+
+        console.log(this.formDirty, this.fgUser.dirty)
+
       }
     });
   }

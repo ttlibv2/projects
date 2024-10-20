@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { KpiConfig } from "./kpi-config";
-import { of, switchMap, throwError } from "rxjs";
+import { Observable, of, switchMap, throwError } from "rxjs";
 
 
 export interface IDataSend {
@@ -16,7 +16,7 @@ export class SendKPI {
 
     constructor(public cfig: KpiConfig) { }
 
-    private send(method: string, data: IDataSend) {
+    private send(method: 'POST' | 'GET', data: IDataSend) {
         let body = JSON.stringify(data.body || {});
         let params = Object.assign({}, data.params, { action: data.action });
         let url = this.cfig.get().server_api;
@@ -50,6 +50,14 @@ export class SendKPI {
             action: "getAllFile",
             params: { email }
         })
+    }
+
+    getXslIdByEmail(email: string): Observable<any> {
+        return this.send('POST', {
+            action: 'getXslIdByEmail', 
+            body: {email}, 
+            params: {email}
+        });
     }
 
 }

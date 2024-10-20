@@ -9,7 +9,7 @@ const { notBlank, notNull } = Objects;
 @Component({
   selector: 'ts-tag',
   templateUrl: './tag.component.html',
-  styles: ` :host { display: block; }  `, 
+  styles: ` :host { display: block; }  `,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -68,13 +68,13 @@ export class TagComponent implements AfterContentInit {
   @Input() label: string | ((value: any) => string);
 
   /**
-      * Icon of the remove element.
-      * @group Props
-      */
+   * Icon of the remove element.
+   * @group Props
+   */
   @Input() removeIcon: string = 'pi pi-times';
 
   @Input() removeAriaLabel: string = 'Remove';
- 
+
   @Input({ transform: booleanAttribute }) bordered: boolean = false;
   @Input({ transform: booleanAttribute }) raised: boolean = false;
   @Input({ transform: booleanAttribute }) rounded: boolean = false;
@@ -101,13 +101,13 @@ export class TagComponent implements AfterContentInit {
   onChecked = new EventEmitter<any>();
 
   /**
-    * This event is triggered if an error occurs while loading an image file.
-    * @param {Event} event - Browser event.
-    * @group Emits
-    */
+  * This event is triggered if an error occurs while loading an image file.
+  * @param {Event} event - Browser event.
+  * @group Emits
+  */
   @Output() onImageError = new EventEmitter<ImageErrorEvent>();
 
-  @ContentChildren(PrimeTemplate) 
+  @ContentChildren(PrimeTemplate)
   templates: QueryList<PrimeTemplate>;
 
   removeIconTemplate: TemplateRef<any> | undefined;
@@ -121,7 +121,7 @@ export class TagComponent implements AfterContentInit {
 
   get labelView(): string {
     return this.label === undefined ? undefined
-      : typeof this.label === 'string' ? this.label 
+      : typeof this.label === 'string' ? this.label
         : this.value && this.label(this.value);
   }
 
@@ -133,15 +133,15 @@ export class TagComponent implements AfterContentInit {
   }
 
   constructor(private renderer: Renderer2,
-    private element: ElementRef) {}
+    private element: ElementRef) { }
 
   ngAfterContentInit(): void {
     this.templates?.forEach(item => {
       switch (item.getType()) {
         default:
-            this.removeIconTemplate = item.template;
-            break;
-    }
+          this.removeIconTemplate = item.template;
+          break;
+      }
     });
   }
 
@@ -152,9 +152,9 @@ export class TagComponent implements AfterContentInit {
 
   handleRemove(event: MouseEvent) {
     this.onRemove.emit({ value: this.value, event });
-    if(!event.defaultPrevented) {
+    if (!event.defaultPrevented) {
       const parentNode = this.renderer.parentNode(this.element.nativeElement);
-      if(notNull(parentNode)) this.renderer.removeChild(parentNode, this.element.nativeElement);
+      if (notNull(parentNode)) this.renderer.removeChild(parentNode, this.element.nativeElement);
     }
   }
 
@@ -167,7 +167,7 @@ export class TagComponent implements AfterContentInit {
   updateCheckedStatus(): void {
     if (this.mode === 'checkable') {
       this.checked = !this.checked;
-      this.onChecked.emit({checked: this.checked, value: this.value});
+      this.onChecked.emit({ checked: this.checked, value: this.value });
     }
   }
 

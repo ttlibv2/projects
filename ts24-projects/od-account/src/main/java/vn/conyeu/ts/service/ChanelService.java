@@ -19,4 +19,9 @@ public class ChanelService extends LongUIdService<Chanel, ChanelRepo> {
     public List<Chanel> findAll() {
         return super.findAll();
     }
+
+    @Cacheable(cacheNames = "findAllById", key = "#p0")
+    public List<Chanel> findAllById(Iterable<Long> longs) {
+        return super.findAllById(longs);
+    }
 }

@@ -40,7 +40,8 @@ public class TicketRest extends LongUIdRest<Ticket, TicketService> {
         Page<Ticket> ticketPage = super.getAll(params, pageable);
         for(Ticket ticket:ticketPage) {
             List<Long> chanelIds = ticket.getChanelIds();
-            if(Objects.notEmpty(chanelIds)) ticket.setChanels(chanelService.findAllById(chanelIds));
+            if(Objects.notEmpty(chanelIds))
+                ticket.setChanels(chanelService.findAllById(chanelIds));
         }
 
         return ticketPage;

@@ -7,17 +7,19 @@ import { TicketOption } from "../../models/ticket-option";
 import { Validators } from "@angular/forms";
 import { FormField } from "../../models/form-field";
 import { EmailTemplate } from "../../models/template";
-const { isTrue, isBlank, notNull, notBlank, isNull } = Objects;
+const { isTrue, isBlank, notNull, notBlank, isNull, notEmpty } = Objects;
 
 export class Utils {
 
     public readonly form: FormGroup;
     public emailFields: FormField[] = [];
     public options = TicketOption.createDef();
+    public emailTemplate: EmailTemplate;
 
     constructor(private comp: TicketFormComponent) {
         this.form = this.createFg();
         this.registerListener();
+        this.form.reset({options: this.options});
     }
 
     //-- get control...
@@ -36,10 +38,6 @@ export class Utils {
 
     //--data
     get user(): User { return this.comp.userLogin; }
-
-    //get options(): Partial<TicketOption> {
-    //    return this.cOption?.getRawValue() || {};
-    //}
 
     get formData(): Partial<Ticket> {
         return this.form.getRawValue();
@@ -61,6 +59,10 @@ export class Utils {
         return isTrue(this.options.emailTicket);
     }
 
+    get isPreviewEmailHtml(): boolean {
+        return this.is_email_ticket && notNull(this.formData?.email_template);
+    }
+
     get viewTs24(): boolean {
         return isTrue(this.options.viewTs24);
     }
@@ -76,39 +78,36 @@ export class Utils {
         });
     }
 
-    setupFieldEmailTemplate(fields: FormField[]) {
-
-        const emailGroup: FormGroup = this.cEmailObject;
-
-        // remove current field
-        Object.keys(emailGroup.controls).forEach(c => emailGroup.removeControl(c));
-
-        // add field to group
-        fields.forEach(field => {
-            const { name, value, required } = field;
-            const control = this.fb.control(value);
-            if (required == true) control.addValidators(Validators.required);
-            emailGroup.addControl(name, control);
-        });
-
-    }
-
     changeEmailTemplate(template: EmailTemplate): void {
-        if (isNull(template)) {
-            this.setupFieldEmailTemplate([]);
-            this.emailFields = [];
-        }
-        else if (notBlank(template.data?.html)) {
-            const { fields } = template.data;
-            this.emailFields = fields;
-            this.setupFieldEmailTemplate(fields);
+        if(isNull(this.emailTemplate) || !this.emailTemplate.equals(template)) {
+            console.log(`changeEmailTemplate: `, this.emailTemplate, template);
+
+            this.emailTemplate = template;
+
+            if (isNull(template)) {
+                this.setupFieldEmailTemplate([]);
+                this.emailFields = [];
+            }
+            else if (notBlank(template.data?.html)) {
+                const { fields } = template.data;
+                this.emailFields = fields;
+                this.setupFieldEmailTemplate(fields);
+
+               
+            }
         }
     }
 
-    reset(data: any, options?: { onlySelf?: boolean;emitEvent?: boolean;}): void {
+    
+
+    
+
+    reset(data: Partial<Ticket>, options?: { onlySelf?: boolean;emitEvent?: boolean; func?: string}): void {
         const opt = {onlySelf: false, emitEvent: true, ...options};
         this.options = this.options.update(data?.options);
         this.form.reset(data, opt);
+
+       
     }
 
     private createFg(): FormGroup {
@@ -128,7 +127,7 @@ export class Utils {
             complete_time: [null],
             content_copy: [null],
             email: [null],
-            subject: [null],
+            subject: [{value: null}],
             body: [null],
             note: [null],
             reply: [null],
@@ -145,7 +144,7 @@ export class Utils {
             od_category_sub: [null, Validators.required],
             od_category: [null, Validators.required],
             od_partner: [null],
-            od_partner_id: [{ value: null, disabled: true }],
+            od_partner_id: [{ value: null }],
             od_priority: [null],
             od_replied: [null, Validators.required],
             save_question: [false],
@@ -165,8 +164,10 @@ export class Utils {
             }),
             email_object: this.fb.group({}),
             edit_note: [true],
-            edit_ticket: [true]
+            edit_ticket: [true],
+            app_id: [null],
         });
+
     }
 
     private registerListener(): void {
@@ -175,35 +176,39 @@ export class Utils {
 
         //--subject event
         this.form.controlsValueChange(['tax_code', 'support_help', 'ticket_on'], (f, j) => {
-            if (this.auto_create) f.pathControl('subject', this.createSubject(j));
+            if (this.auto_create && !this.is_email_ticket) {
+                f.patchControl('subject', this.createSubject(j));
+            }
         });
 
         //--note
         this.form.controlsValueChange(['support_help', 'complete_time', 'group_help', 'content_help'], (f, j) => {
-            if (this.auto_create) f.pathControl('note', this.createNote(j));
+            if (this.auto_create) f.patchControl('note', this.createNote(j));
         });
 
         this.form.controlsValueChange(['phone', 'content_required', 'soft_name', 'support_help', 'reception_time'], (f, j) => {
-            if (this.auto_create) f.pathControl('body', this.createBody(j));
+            if (this.auto_create) f.patchControl('body', this.createBody(j));
         });
 
         this.form.controlsValueChange(['subject', 'body', 'note', 'email', 'tax_code', 'customer_name'], (f, j) => {
-            console.log(`content_copy`, this.auto_create);
-            if (this.auto_create) f.pathControl('content_copy', this.createContentCopy());
+            //console.log(`content_copy`, this.auto_create);
+            if (this.auto_create) f.patchControl('content_copy', this.createContentCopy());
         });
 
         this.form.controlsValueChange(['od_partner_id'], (forms, json) => {
-            if (isBlank(json['od_partner_id'])) forms.pathControl('od_partner', undefined);
+            if (isBlank(json['od_partner_id'])) forms.patchControl('od_partner', undefined);
         });
+
+         //--subject event
+        this.form.controlValueChange('email_template', v => this.changeEmailTemplate(v));
     }
 
     private createSubject(formData: Partial<Ticket>): string {
         const { tax_code, support_help, ticket_on } = formData;
         const { room_code, user_code } = this.user;
-        if (isBlank(tax_code)) return undefined;
-        else return `[${room_code}-${support_help.code}]-${user_code}-${tax_code}-${ticket_on}`;
+        if (isBlank(tax_code) || isNull(support_help)) return undefined;
+        else return `[${room_code}-${support_help?.code}]-${user_code}-${tax_code}-${ticket_on}`;
     }
-
 
     private createNote(formData: Partial<Ticket>): string {
         const { complete_time, group_help, support_help, content_help } = formData;
@@ -236,7 +241,6 @@ export class Utils {
 
         return lines.join('\n');
     }
-
 
     private createBody(formData: Partial<Ticket> = this.formData): string {
         const lines: string[] = [];
@@ -281,7 +285,7 @@ export class Utils {
         const notes: string[] = [];
         const { email, tax_code, customer_name, body, note } = formData;
 
-        console.log(`body: `, body);
+        //console.log(`body: `, body);
 
         // email
         if (notBlank(email)) notes.push(`${email}`);
@@ -310,5 +314,30 @@ export class Utils {
         notes.push(options.createIfExist ? noteFnc() : options.note || note || noteFnc());
 
         return notes.join(`\n`);
+    }
+
+    private setupFieldEmailTemplate(fields: FormField[]) {
+        //console.log(`setupFieldEmailTemplate`)
+
+        const emailGroup: FormGroup = this.cEmailObject;
+
+        // remove current field
+        Object.keys(emailGroup.controls).forEach(c => emailGroup.removeControl(c));
+
+        // add field to group
+        fields.forEach(field => {
+            const { name, value, required } = field;
+            const control = this.fb.control(value);
+            if (!this.comp.viewTemplate && isTrue(required) ) {
+                control.addValidators(Validators.required);
+            }
+
+            emailGroup.addControl(name, control);
+        });
+
+    }
+
+    dateTo(date: Date | number | string, format: string): string {
+        return this.comp.datePipe.transform(date, format);
     }
 }

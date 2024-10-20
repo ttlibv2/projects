@@ -102,7 +102,7 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
             }
 
             if(option.getIsAttach() != null) {
-                Path<LocalDateTime> ct = detail.get("attachAt");
+                Path<LocalDateTime> ct = detail.get("imageAt");
                 predicates.add(option.getIsAttach() ? ct.isNotNull() : ct.isNull());
             }
 

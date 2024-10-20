@@ -15,6 +15,10 @@ ts-ticket-form {
     }
   }
 
+  .ct_email .p-dropdown-label {
+    text-wrap: auto;
+  }
+
   .template-list {
     .p-chip {
       cursor: pointer;
@@ -45,5 +49,29 @@ ts-ticket-form {
     border-bottom: 5px solid var(--primary-color);
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
+  }
+
+  .r-import {
+    font-weight: bold;
+    .current {
+      color: var(--danger-color);
+    }
+
+    .total {
+      color: var(--help-color);
+    }
+
+    .sep {
+      color: var(--info-color);
+    }
+
+    .p-click .pi {
+      font-size: 1.5rem;
+    }
+
+    .p-abort {
+      text-decoration: underline;
+      color: var(--danger-color);
+    }
   }
 }

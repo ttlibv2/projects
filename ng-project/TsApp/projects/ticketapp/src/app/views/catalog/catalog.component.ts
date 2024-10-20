@@ -122,7 +122,6 @@ export class CatalogComponent implements OnInit, AfterViewInit {
       next: (res) => {
         this.asyncLoading = false;
         this.toast.success("Lấy danh mục thành công.");
-        console.log('catalogSrv.getAll', res);
         this.ref.close(res);
         this.def.detectChanges();
       },

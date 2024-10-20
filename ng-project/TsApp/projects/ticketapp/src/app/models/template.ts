@@ -1,9 +1,11 @@
-import { Asserts, AssignObject, Callback, TsMap } from "ts-ui/helper";
+import { Asserts, AssignObject, Callback, Objects, TsMap } from "ts-ui/helper";
 import { BaseModel } from "./base-model";
 import { FormField } from "./form-field";
 
 export type CallbackAssign<E> = Callback<AssignObject<E>, E>;
 export type TemplateThread = 'ticket_template' | 'email_template';
+
+const {isTrue} = Objects;
 
 export class Template<D = any> extends BaseModel {
     template_id?: number;
@@ -15,6 +17,11 @@ export class Template<D = any> extends BaseModel {
     is_default?: boolean;
     user_id?: number;
     data?: D;
+
+    equals(o: any): boolean {
+        if(o instanceof Template) return this === o || this.template_id === o.template_id;
+        else return false;
+    }
 
     static fromAll(data: AssignObject<Template>): Template {
         const thread = Asserts.notNull(data.thread);
@@ -58,7 +65,7 @@ export class TemplateMap<T extends Template = any> {
      * @param templates the list template
      * */
     set_all(templates: AssignObject<T>[]): this {
-        console.log(`templates: `, templates);
+        //console.log(`templates: `, templates);
         templates.forEach(template => this.set(template));
         return this;
     }
@@ -127,6 +134,11 @@ export class TicketTemplateMap extends TemplateMap<TicketTemplate> {
         return object => TicketTemplate.from(object);
     }
 
+    get_emailDefault(): TicketTemplate {
+        const all = this.list().filter(t => t.emailTicket);
+        return all.find(t => isTrue(t.is_default)) || all[0];
+    }
+
 }
 
 
@@ -138,6 +150,10 @@ export class TicketTemplate extends Template<TicketTemplateData> {
     bg_color?: string;
     icon?: string;
     clear?: boolean;
+
+    get emailTicket(): boolean {
+        return isTrue(this.data?.options?.emailTicket);
+    }
 
 
     static from(json: AssignObject<TicketTemplate>): TicketTemplate {
@@ -163,6 +179,7 @@ export interface TicketTemplateData {
     ticket_type_id?: number;
     subject_type_id?: number;
     support_help_id?: number;
+    email_template_id?: number;
 
     options?: {
         viewAll?: boolean;

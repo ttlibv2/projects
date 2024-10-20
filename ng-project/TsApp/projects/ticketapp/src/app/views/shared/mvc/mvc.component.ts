@@ -24,9 +24,9 @@ import { delay, map, Observable, of } from 'rxjs';
 import { StorageService } from '../../../services/storage.service';
 import { Alert } from 'ts-ui/alert';
 import { GetRowIdFunc } from '@ag-grid-community/core';
-import { RxjsUtil } from '../../ticket-list/rxjs-util';
+import { RxjsUtil } from '../rxjs-util';
 import { Workbook } from 'exceljs';
-import { XslTemplate } from '../xsl-template';
+import { XslTemplate } from '../select-file/xsl-template';
 
 const { notBlank, isNull } = Objects;
 
@@ -282,7 +282,7 @@ export class MvcComponent<E = any> implements AfterContentInit, OnInit, OnDestro
             next: data => {
                 this.state.save = false;
                 this.toast.success(this.config.i18n.msgSaveOk);
-                isNew ? this.agTable.addRow(data) : this.agTable.updateRows(data);
+                isNew ? this.agTable.addRow(data) : this.agTable.updateRow(data);
             },
         });
     }
@@ -326,12 +326,12 @@ export class MvcComponent<E = any> implements AfterContentInit, OnInit, OnDestro
     }
 
     clickImport(): void { 
-        XslTemplate.openModal(this.modal, {
-            header: 'Nạp dữ liệu từ excel',
-            files: [ 
-                {label: 'Dữ liệu mẫu', link: 'link', name: 'name',sheets: []},
-            ]
-        })
+        // XslTemplate.openModal(this.modal, {
+        //     header: 'Nạp dữ liệu từ excel',
+        //     files: [ 
+        //         {title: 'Dữ liệu mẫu', link: 'link', sheets: []},
+        //     ]
+        // })
       
     }
 

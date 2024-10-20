@@ -33,7 +33,7 @@ export class TicketOption extends BaseModel {
 export const defaultOption = TicketOption.from({
   autoCreate: true,
   autoFill: true,
-  viewAll: true,
+  viewAll: false,
   viewTs24: false,
   saveCache: false,
   emailTicket: false,

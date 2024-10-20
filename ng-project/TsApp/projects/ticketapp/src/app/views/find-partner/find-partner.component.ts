@@ -1,26 +1,23 @@
 import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
   ViewEncapsulation
 } from '@angular/core';
-import { Validators } from "@angular/forms";
-import { DialogService, DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
+import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { Objects, Page, booleanAttribute } from 'ts-ui/helper';
-import { ColDef } from "@ag-grid-community/core";
 import { ToastService } from 'ts-ui/toast';
-import { OdTicketService } from '../../services/od.service';
+import { OdPartnerService } from '../../services/od-partner.service';
 import { ClsPartner, ClsSearch } from '../../models/od-cls';
 import { LoggerService } from 'ts-ui/logger';
 import { AgTable, TableColumn, TableOption } from 'ts-ui/ag-table';
 import { StorageService } from "../../services/storage.service";
 import { ModalService } from "ts-ui/modal";
 import { FormGroup, FormsBuilder } from 'ts-ui/forms';
-import { delay, of } from 'rxjs';
+import { delay, EMPTY, of } from 'rxjs';
 
 
 const { isBlank, notBlank, notNull, isNull, isEmpty, isTrue } = Objects;
@@ -73,15 +70,17 @@ interface State {
   showToolbar?: boolean;
 }
 
-interface InputOption {
+export interface SearchPartnerOption {
   autoSelect?: boolean;
   timeDelay?: number;
+  trialMST?: boolean;
+  showToatResult?: boolean;
 }
 
 const searchOption: { [name: string]: SearchItem } = {
   'isvat': { label: 'Mã số thuế', name: 'isvat', field: 'vat', checked: true },
   'isemail': { label: 'E-mail', name: 'isemail', field: 'email', checked: true, filter: ['email', '!=', false] },
-  'ismobile': { label: 'Điện thoại', name: 'ismobile', field: 'mobile', checked: true, filter: ['mobile', '!=', false] },
+  'ismobile': { label: 'Điện thoại', name: 'ismobile', field: 'phone', checked: true, filter: ['mobile', '!=', false] },
   'isperson': { label: 'Cá nhân', name: 'isperson', checked: true, filter: ['is_company', '=', false] },
   'iscompany': { label: 'Công ty', name: 'iscompany', checked: false, filter: ['is_company', '=', true] },
 };
@@ -99,7 +98,7 @@ const defaultInputSearch: SearchData = {
 };
 
 function asBool(v: any, val: boolean): boolean {
-  if(isBlank(v)) return val;
+  if (isBlank(v)) return val;
   else return booleanAttribute(v);
 }
 
@@ -109,48 +108,49 @@ function asBool(v: any, val: boolean): boolean {
   styleUrl: './find-partner.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
-export class FindPartnerComponent implements OnInit {
+export class FindPartnerComponent implements OnInit, OnDestroy {
 
   @ViewChild('agTable', { static: true })
   private agTable: AgTable;
 
-  @Input({transform: (v:any) => asBool(v, true)}) 
+  @Input({ transform: (v: any) => asBool(v, true) })
   set isvat(b: boolean) { this.inputSearch.options.isvat = b; }
-  
-  @Input({transform: (v:any) => asBool(v, true)}) 
+
+  @Input({ transform: (v: any) => asBool(v, true) })
   set isemail(b: boolean) { this.inputSearch.options.isemail = b; }
 
-  @Input({transform: (v:any) => asBool(v, true)}) 
+  @Input({ transform: (v: any) => asBool(v, true) })
   set ismobile(b: boolean) { this.inputSearch.options.ismobile = b; }
 
-  @Input({transform: (v:any) => asBool(v, true)}) 
+  @Input({ transform: (v: any) => asBool(v, true) })
   set isperson(b: boolean) { this.inputSearch.options.isperson = b; }
 
-  @Input() 
+  @Input()
   set iscompany(b: boolean) { this.inputSearch.options.iscompany = b; }
 
-  @Input() 
+  @Input()
   set vat(s: string) { this.inputSearch.vat = s; }
 
-  @Input() 
+  @Input()
   set email(s: string) { this.inputSearch.email = s; }
 
-  @Input() 
+  @Input()
   set mobile(s: string) { this.inputSearch.mobile = s; }
 
 
   form: FormGroup;
-  inputOption: InputOption = {timeDelay: 1000};
-  page: Page<ClsPartner>;
+  inputOption: SearchPartnerOption = { timeDelay: 1000, showToatResult: true };
   inputSearch: SearchData = { ...defaultInputSearch };
   dataSelect: ClsPartner;
+  page: Page<ClsPartner>;
   state: State = {
     allowNew: false,
     showToolbar: true
   };
 
   tableOption: TableOption = {
-    height: '350px'
+    height: '250px',
+    onRowDoubleClicked: evt => this.selectAndClose(evt.data)
   };
 
   columns: TableColumn[] = [
@@ -188,33 +188,42 @@ export class FindPartnerComponent implements OnInit {
     private cdRef: ChangeDetectorRef,
     private alert: ToastService,
     private fb: FormsBuilder,
-    private ref: DynamicDialogRef,
+    private dialogRef: DynamicDialogRef,
     private toast: ToastService,
     private modal: ModalService,
-    private odSrv: OdTicketService) {
+    private odSrv: OdPartnerService) {
   }
 
   ngOnInit(): void {
     this.createFormGroup();
-
-
-    const instance = this.modal.getInstance(this.ref);
-    if(instance && instance.data) {
-      const {data, option} = instance.data;
+    const instance = this.modal.getInstance(this.dialogRef);
+    if (instance && instance.data) {
+      const { data, option } = instance.data;
       this.inputSearch = Objects.mergeDeep(this.inputSearch, data);
       this.inputOption = Objects.mergeDeep({}, option);
       this.form.reset(this.inputSearch);
-      this.clickSearch(false);
+      this.clickSearch(false, option?.trialMST);
     }
     else {
       this.form.reset(this.inputSearch);
       this.clickSearch(false);
     }
 
-   
+
   }
 
-  clickSearch(showWarning: boolean = true) {
+  clickSearchMST(showWarning: boolean = true): void {
+    this.form.patchControl('options.isemail', false);
+    this.clickSearch(showWarning, false);
+  }
+
+  /**
+   * Search customer
+   * @param showWarning if true & form.invalid => show warning
+   * @param trialMST if true & find data has empty
+   * @returns 
+   */
+  clickSearch(showWarning: boolean = true, trialMST: boolean = false) {
     const json = <SearchData>this.form.getRawValue();
     const keyCheck = Object.keys(json.options).filter(k => isTrue(json.options[k]));
 
@@ -236,17 +245,32 @@ export class FindPartnerComponent implements OnInit {
     this.dataSelect = undefined;
 
     const ref = this.alert.loading(this.config.i18n.searchAwait);
+
     this.odSrv.searchPartner(clsSearch).subscribe({
       next: (page: Page) => {
         this.page = page;//[...page?.data] ;
         this.state.asyncLoading = false;
         this.alert.close(ref);
-        this.alert.success(`Đã tìm được ${page?.total ?? 0} dòng.`);
+        
+        if(isTrue(this.inputOption.showToatResult)){
+          this.alert.success(`Đã tìm được ${page?.total ?? 0} dòng.`);
+        }
 
-        if(this.inputOption?.autoSelect && page.data.length > 0) {
-          of(111).pipe(delay(this.inputOption.timeDelay)).subscribe(_ => {
-            this.selectAndClose(page.data[0]);
-          });
+        if (this.inputOption?.autoSelect) {
+          const sizeRow = page.data.length;
+
+          // 0_row
+          if(sizeRow === 0 && isTrue(trialMST)) {
+            this.clickSearchMST(false);
+          }
+
+          // only 1 row
+          else if(sizeRow === 1) {
+            of(1).pipe(delay(this.inputOption.timeDelay)).subscribe(_ => {
+              this.selectAndClose(page.data[0]);
+            });
+          }
+
         }
 
       },
@@ -273,11 +297,11 @@ export class FindPartnerComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.ref.close();
+    this.dialogRef.close();
   }
 
   selectAndClose(data?: ClsPartner): void {
-    this.ref.close(data || this.dataSelect);
+    this.dialogRef.close(data || this.dataSelect);
   }
 
 
@@ -286,8 +310,6 @@ export class FindPartnerComponent implements OnInit {
     this.form.reset({ ...data, operator, options, pageSize });
     this.dataSelect = data;
   }
-
-
 
   private createFormGroup() {
     this.form = this.fb.group({
@@ -300,8 +322,10 @@ export class FindPartnerComponent implements OnInit {
 
       // form_option
       options: this.fb.group({
-        isvat: [true], isemail: [true],
-        ismobile: [true], isperson: [true],
+        isvat: [true], 
+        isemail: [true],
+        ismobile: [true], 
+        isperson: [true],
         iscompany: [false]
       })
     });
@@ -322,8 +346,8 @@ export class FindPartnerComponent implements OnInit {
   }
 
   private link(id: number): string {
-    const link = this.config.loginUser.ts_links['od_partner'];
-    return link.replace(`{id}`, `${id}`);
+    const link = this.config.loginUser?.ts_links['od_partner'];
+    return link?.replace(`{id}`, `${id}`);
   }
 
 
@@ -362,9 +386,9 @@ export class FindPartnerComponent implements OnInit {
 
     }//
 
-    else if(type === 'company'){
+    else if (type === 'company') {
       const hasOk = Objects.anyNotBlank(value.company_name, value.email);
-      if(hasOk) cls.update({
+      if (hasOk) cls.update({
         name: value['company_name'] ?? value['email'],
         vat: value['vat'],
         street: value['street'],
@@ -381,22 +405,26 @@ export class FindPartnerComponent implements OnInit {
     }
 
     // create
-    if(hasNext === true){
-    let name = type == 'company' ? 'Công ty' : 'Cá nhân';
-    this.state.asyncSave = true;
-    this.odSrv.createPartner(cls).subscribe({
-      next: (data: ClsPartner) => {
-        this.state.asyncSave = false;
-        this.alert.success(`[${data.id}] Tạo <b>${name}</b> thành công`);
-        this.agTable.addRow(data);
-        this.clickRow(data);
-      },
-      error: err => {
-        this.state.asyncSave = false;
-        this.alert.error(`Xảy ra lỗi tạo <b>${name}</b> > ${err.message} !`);
-      }
-    });
-}
+    if (hasNext === true) {
+      let name = type == 'company' ? 'Công ty' : 'Cá nhân';
+      this.state.asyncSave = true;
+      this.odSrv.createPartner(cls).subscribe({
+        next: (data: ClsPartner) => {
+          this.state.asyncSave = false;
+          this.alert.success(`[${data.id}] Tạo <b>${name}</b> thành công`);
+          this.agTable.addRow(data);
+          this.clickRow(data);
+        },
+        error: err => {
+          this.state.asyncSave = false;
+          this.alert.error(`Xảy ra lỗi tạo <b>${name}</b> > ${err.message} !`);
+        }
+      });
+    }
 
+  }
+
+  ngOnDestroy(): void {
+    this.dialogRef?.destroy();
   }
 }

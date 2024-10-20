@@ -3,14 +3,14 @@
 
 .p-icon-field-left{
     .p-input-icon:first-of-type {
-        left: cfg.$inputPadding;
+        left: cfg.$inputIconLeftPadding;
         color: cfg.$inputIconColor;
     }
 }
 
 .p-icon-field-right {
     .p-input-icon:last-of-type  {
-        right: cfg.$inputPadding;
+        right: cfg.$inputIconRightPadding;
         color: cfg.$inputIconColor;
     }
 }

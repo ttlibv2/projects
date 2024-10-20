@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -54,6 +55,12 @@ public final class MapperHelper {
         } catch (JsonMappingException ex) {
             throw new IllegalArgumentException(ex);
         }
+    }
+
+    public static <T> T updateToMap(T valueToUpdate, Object overrides, List<String> excludeField) {
+        ObjectMap mapOverride = overrides instanceof  ObjectMap map ? map : ObjectMap.fromJson(overrides);
+        if (Objects.notEmpty(excludeField)) mapOverride.deleteKeys(excludeField);
+        return update(valueToUpdate, mapOverride);
     }
 
     public static <T> T updateToMap(T valueToUpdate, Object overrides, String... excludeField) {

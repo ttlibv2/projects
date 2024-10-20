@@ -42,8 +42,18 @@ $errorColor: #f87171 !default;
 
 
 //scale
-$scaleSM: 0.475 !default; //0.875 !default;
-$scaleLG: 1.25 !default;
+$scaleXSM: .25!default;  // X-Small
+$scaleSM: 0.25 !default; //0.875 !default; Small
+$scaleMD: 1!default; // Medium
+$scaleLG: 1.5 !default; //  Large
+$scaleXL: 1.75 !default; //  Large
+$scaleXXL: 2!default; // Medium
+
+
+
+
+
+
 
 //focus
 $focusOutlineColor: var(--p-focus-ring-color) !default;
@@ -62,6 +72,10 @@ $actionIconHoverBg: clr.$shade100 !default;
 $actionIconHoverBorderColor: transparent !default;
 $actionIconHoverColor: clr.$shade600 !default;
 $actionIconBorderRadius: 50% !default;
+
+//input icon
+$inputIconLeftPadding: 0.4rem !default;
+$inputIconRightPadding: 0.4rem !default;
 
 //input field (e.g. inputtext, spinner, inputmask)
 $inputPadding: 0.4rem 0.5rem !default;

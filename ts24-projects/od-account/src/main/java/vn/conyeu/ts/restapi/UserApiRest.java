@@ -106,6 +106,9 @@ public class UserApiRest extends LongUIdRest<UserApi, UserApiService> {
             ObjectMap userNew = dto.getUser_api();
             Long apiId = dto.getSource_id();
 
+            if(infoNew == null && userNew == null) {
+                throw BaseException.e400("miss").message("api_info = null or user_api = null");
+            }
 
             if(infoNew != null) {
                 infoNew = aiService.update(apiId, infoNew)
@@ -117,6 +120,10 @@ public class UserApiRest extends LongUIdRest<UserApi, UserApiService> {
                 UserApi userApi = service.save(userId, infoNew, userNew);
                 infoNew.setUserApi(userApi);
             }
+
+            // update api_config
+            String appName = infoNew.getAppName();
+            odService.forUser(userId).loadConfig(appName, true);
 
             return infoNew;
         }

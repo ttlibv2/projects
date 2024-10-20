@@ -1,13 +1,11 @@
-@if(visibleForm){
-<div class="ticket-form" id="ticketListForm" [@toggle]="visibleForm == true">
-    <ts-ticket-form [data]="currentTicket" (onSave)="saveTicket($event)" [hasBorderEnd]="true"></ts-ticket-form>
+<div *ngIf="visibleForm" class="ticket-form" id="ticketListForm" [@toggle]="visibleForm == true" (@toggle.done)="endAnimationForm()">
+    <ts-ticket-form [formData]="currentTicket" (onSave)="saveTicket($event)" [hasBorderEnd]="true"></ts-ticket-form>
 </div>
-}
 
-
-<div class="ticket-list grid">
+<div class="ticket-list grid mt-1">
+    <p-divider id="r-divider" class="r-divider col-12" *ngIf="visibleForm"></p-divider>
     <div id="ticketListTool" class="tool-r1 col-12 flex flex-inline gap-2">
-        <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="flex align-items-center gap-2">
+        <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="flex align-items-center gap-2 sm">
             <p-calendar placeholder="Lấy dữ liệu từ ngày ?" selectionMode="range" showIcon="true" iconDisplay="input"
                 dateFormat="yy-mm-dd" [numberOfMonths]="2" formControlName="dateOn"
                 [style]="{width: '210px'}"></p-calendar>
@@ -16,34 +14,41 @@
                 filter="false">
             </p-dropdown>
 
-            <p-button icon="pi pi-sync" type="submit" label="Lấy dữ liệu" [styleClass]="'small'"></p-button>
+            <p-button severity="help" icon="pi pi-sync" [loading]="asyncSearch" loadingIcon="pi pi-sync" type="submit"
+                label="Lấy dữ liệu"></p-button>
+
+            <p-divider [layout]="'vertical'"></p-divider>
+
+
+            <ts-splitButton label="Nạp / Xuất DL" [model]="excelItems" [visibleMenuButton]="false"
+                [menuTrigger]="'hover'"  icon="pi pi-file-excel"
+                (onClick)="exportXsl()"></ts-splitButton>
+
+            <ts-splitButton label="Danh sách mẫu" [model]="agTemplates" [visibleMenuButton]="false"
+                [menuTrigger]="'hover'"  icon="pi pi-list"></ts-splitButton>
+
+            <ts-splitButton label="Báo cáo" [model]="reportItems" [visibleMenuButton]="false" [menuTrigger]="'hover'"
+                 icon="pi pi-flag" *ngIf="visibleReportMenu"></ts-splitButton>
+
+            <ts-splitButton label="Khác" [model]="toolOptions" [visibleMenuButton]="false" [menuTrigger]="'hover'"
+                 icon="pi pi-flag">
+            </ts-splitButton>
+
+            <p-button label="Demo"  (onClick)="demo()"></p-button>
 
             <p-divider [layout]="'vertical'"></p-divider>
             <p-checkbox [binary]="true" label="Hiển thị kênh" formControlName="visibleChanel"></p-checkbox>
             <p-checkbox [binary]="true" label="Hiển thị form" formControlName="visibleForm"></p-checkbox>
 
+            <p-divider [layout]="'vertical'"></p-divider>
+
+            <div class="flex gap-2 align-items-center font-bold">
+                <label>Tổng số: </label>
+                <label class="text-danger">{{totalRow}}</label>
+            </div>
         </form>
-
-        <p-divider [layout]="'vertical'"></p-divider>
-
-
-        <ts-splitButton label="Nạp / Xuất DL" [model]="excelItems" [visibleMenuButton]="false" [menuTrigger]="'hover'"
-            [styleClass]="'small'" icon="pi pi-file-excel" (onClick)="exportXsl()"></ts-splitButton>
-
-        <ts-splitButton label="Danh sách mẫu" [model]="agTemplates" [visibleMenuButton]="false" [menuTrigger]="'hover'"
-            [styleClass]="'small'" icon="pi pi-list"></ts-splitButton>
-
-        <ts-splitButton label="Báo cáo" [model]="reportItems" [visibleMenuButton]="false" [menuTrigger]="'hover'"
-            [styleClass]="'small'" icon="pi pi-flag" *ngIf="visibleReportMenu"></ts-splitButton>
-
-        <ts-splitButton label="Khác" [model]="toolOptions" [visibleMenuButton]="false" [menuTrigger]="'hover'"
-            [styleClass]="'small'" icon="pi pi-flag">
-        </ts-splitButton>
-
-        <p-button label="Demo" [styleClass]="'small'" (onClick)="demo()"></p-button>
-
     </div>
-    <div class="col-12 tool-r2" *ngIf="visibleReportMenu">
+    <div id="ticketListReportTool" class="col-12 tool-r2" *ngIf="visibleReportMenu">
         <div class="result ml-2">
 
             <div class="send">>> KQ Gửi:</div>
@@ -78,8 +83,7 @@
 
 
     </div>
-
-    <div class="col-12">
+    <div id="ticket-list-ag-div" class="col-12">
         <ts-ag-table [columns]="agColumns" id="agTable" [rows]="agRows" [option]="agOption" [tableHeight]="tableHeight"
             class="ag-table" (rowClicked)="selectTicket($event.data)"></ts-ag-table>
     </div>

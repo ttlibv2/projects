@@ -16,11 +16,13 @@ import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.ts.dtocls.Converters;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 
+import java.util.List;
+
 //@formatter:off
 @Getter @Setter @NoArgsConstructor @DynamicInsert @DynamicUpdate
 @Entity @Table(indexes = @Index(name = "USER_API_UID", columnList = "apiId,userId", unique = true))
 @AttributeOverride(name = "id", column = @Column(name = "uniqueId"))
-@JsonIgnoreProperties({"api", "user", "password", "userInfo", "apiId"})
+@JsonIgnoreProperties({"api", "user", "userInfo", "password", "apiId"})
 //@formatter:on
 public class UserApi extends LongUId<UserApi> {
 
@@ -137,5 +139,17 @@ public class UserApi extends LongUId<UserApi> {
         userInfo = null;
         allowEdit = true;
         return this;
+    }
+
+    @Override
+    public void assignFromMap(ObjectMap map, String... excludeFields) {
+        super.assignFromMap(map, excludeFields);
+
+        if(map.containsKey("password")) {
+            List<String> fields = List.of(excludeFields);
+            if(!fields.contains("password")) {
+                setPassword(map.getString("password"));
+            }
+        }
     }
 }

@@ -51,8 +51,8 @@ public abstract class DomainRest<E extends DomainId<E, Id>, Id extends Serializa
         if(!bool) throw noId(entityId);
 
         service.deleteById(entityId);
-        return ObjectMap.setNew("model_id", entityId)
-                .set("alert_msg", "Đã xóa thành công dữ liệu");
+        return ObjectMap.setNew("model_id", entityId);
+                //.set("alert_msg", "Đã xóa thành công dữ liệu");
     }
 
     @PostMapping("create-new")

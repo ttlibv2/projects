@@ -121,6 +121,7 @@ public class OdService {
                         ua -> ua.setUserInfo(user)
                 ));
                 apps.put(appName, odApp);
+                return (A) odApp;
             }
             return (A)apps.get(appName);
         }

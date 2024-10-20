@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup as NgxFormGroup, ɵFormGroupRawValue, ɵGetProperty, ɵTypedOrUntyped } from "@angular/forms";
+import { AbstractControl, FormGroup as NgxFormGroup, ValidationErrors, ɵFormGroupRawValue, ɵGetProperty, ɵTypedOrUntyped } from "@angular/forms";
 import { AsyncValidator, ValidatorOrOpts } from "./forms.common";
 import { BiConsumer, Consumer, Objects } from "ts-ui/helper";
 
@@ -93,14 +93,45 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
         return super.get(control);
     }
 
+    /**
+     * Sets errors on a form control when running validations manually, rather than automatically.
+     * @param opts Configuration options that determine how the control propagates
+     * changes and emits events after the control errors are set.
+     * * `emitEvent`: When true or not supplied (the default), the `statusChanges`
+     * observable emits an event after the errors are set.
+     */
+    set_error<K extends TKeyControl<TC>>(name: K, errors: ValidationErrors | null, opts?: { emitEvent?: boolean; }): void {
+        this.get(name).setErrors(errors, opts);
+    }
+
+    /**
+     * The raw value of this control. For most control implementations, the raw value will include
+     * disabled children.
+     */
     get_value<K extends TKeyControl<TC>>(name: K) {
         return this.get(name).getRawValue();
     }
 
-    set_disable<K extends TKeyControl<TC>>(name: K) {
-        this.get(name).disable();
+    /**
+     * Disables the control. This means the control is exempt from validation checks and
+     * excluded from the aggregate value of any parent. Its status is `DISABLED`.
+     *
+     * If the control has children, all children are also disabled.
+     *
+     * @see {@link AbstractControl.status}
+     *
+     * @param opts Configuration options that determine how the control propagates
+     * changes and emits events after the control is disabled.
+     * * `onlySelf`: When true, mark only this control. When false or not supplied,
+     * marks all direct ancestors. Default is false.
+     * * `emitEvent`: When true or not supplied (the default), the `statusChanges`,
+     * `valueChanges` and `events`
+     * observables emit events with the latest status and value when the control is disabled.
+     * When false, no events are emitted.
+     */
+    set_disable<K extends TKeyControl<TC>>(name: K,opts?: {onlySelf?: boolean; emitEvent?: boolean; }) {
+        this.get(name).disable(opts);
     }
-
 
     /**
      * Patches the value of the control
@@ -109,12 +140,9 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
      * @param options the option
      * 
      */
-    pathControl<K extends TKeyControl<TC>>(control: K, value: any, options?: Options): void {
+    patchControl<K extends TKeyControl<TC>>(control: K, value: any, options?: Options): void {
         this.get(control).patchValue(value, options);
     }
-
-
-
 
 
 }

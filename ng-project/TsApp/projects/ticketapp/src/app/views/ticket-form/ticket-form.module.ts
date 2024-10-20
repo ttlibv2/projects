@@ -29,6 +29,7 @@ import { RippleModule } from 'primeng/ripple';
 import { TsIconModule } from 'ts-ui/icon';
 import { TsLoggerModule } from 'ts-ui/logger';
 import { FormsModule } from 'ts-ui/forms';
+import { IconFieldModule } from 'primeng/iconfield';
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import { FormsModule } from 'ts-ui/forms';
     DropdownModule,
     InputTextModule,
     InputTextareaModule,
+    IconFieldModule,
     EditorModule,
     DividerModule,
     CheckboxModule,

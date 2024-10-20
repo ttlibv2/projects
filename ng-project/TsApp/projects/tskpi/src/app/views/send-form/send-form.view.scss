@@ -1,7 +1,11 @@
 .send-form {
 
+  .p-button {
+    width: max-content;
+  }
+
   input.email {
-    flex: .1 .1 auto;
+    //flex: .1 .1 auto;
   }
 
   .r-log {

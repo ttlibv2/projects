@@ -2,7 +2,7 @@ import {Objects, AssignObject} from "ts-ui/helper";
 import { Type } from "@angular/core";
 
 export abstract class BaseModel<E extends BaseModel = any> {
-  //[field: string]: any;
+  [field: string]: any;
 
   protected get modelType(): Type<E> {
     return null;

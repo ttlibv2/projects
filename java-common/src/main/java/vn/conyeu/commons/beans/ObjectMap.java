@@ -876,6 +876,10 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
         return this;
     }
 
+    public ObjectMap deleteKeys(List<String> fields) {
+        fields.stream().filter(Objects::nonNull).forEach(this::delete);
+        return this;
+    }
 
     public <T> T asObject(Class<T> objectClass) {
         return MapperHelper.convert(this, objectClass);

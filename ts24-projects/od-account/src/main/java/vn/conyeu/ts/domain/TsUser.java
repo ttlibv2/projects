@@ -12,6 +12,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import vn.conyeu.common.domain.LongIdDate;
 import vn.conyeu.commons.beans.ObjectMap;
 
+import java.util.List;
+
 //@formatter:off
 @Entity @Table
 @Getter @Setter @NoArgsConstructor
@@ -60,4 +62,6 @@ public class TsUser extends LongIdDate<TsUser> {
     public Long getId() {
         return super.getId();
     }
+
+
 }

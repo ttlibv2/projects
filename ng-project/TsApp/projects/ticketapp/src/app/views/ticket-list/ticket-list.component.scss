@@ -3,45 +3,46 @@
 }
 
 .ticket-list {
-
   .tool-r1 {
     .p-divider-vertical {
       padding: unset !important;
       margin: unset !important;
     }
 
-    .p-button {
-      padding: 0.3rem 0.5rem;
-    }
+    //.p-button {
+      //padding: 0.3rem 0.5rem;
+    //}
   }
 
   .tool-r2 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: .5rem;
+    gap: 0.5rem;
     align-items: center;
 
-    >div {
+    > div {
       display: flex;
       align-items: center;
-      gap: .5rem;
+      gap: 0.5rem;
     }
 
     .result {
-      .value { font-weight: bold;}
+      .value {
+        font-weight: bold;
+      }
 
-      .send { 
+      .send {
         font-weight: bold;
         color: var(--help-color);
       }
-      
+
       .ok {
-        color: var(--success-color);        
+        color: var(--success-color);
       }
 
       .error {
-        color: var(--danger-color)
+        color: var(--danger-color);
       }
 
       .total {
@@ -54,18 +55,12 @@
         background-color: transparent;
         color: #0ea5e9;
         border-color: transparent;
-  
       }
     }
-
- 
   }
 
- 
-
   .ag-table {
-
-    .ag-cell[col-id=send_status] {
+    .ag-cell[col-id="send_status"] {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -81,8 +76,9 @@
       align-items: center;
       justify-content: center;
 
-      >div:first-child { display: flex;}
-
+      > div:first-child {
+        display: flex;
+      }
     }
 
     .pi-icon {
@@ -99,9 +95,23 @@
       &-state-loading {
         color: rgb(221, 18, 194);
       }
-
     }
   }
+
+  .r-divider {
+    padding: 0 0.5rem;
+
+    .p-divider.p-divider-horizontal {
+      margin: 0 0 .5rem 0;
+      
+      &:before {
+        border-top: 5px solid var(--info-color);
+  
+      }
+    }
+    
+  }
+
 
 }
 
@@ -113,7 +123,7 @@
   justify-content: center;
 }
 
-@media(min-height: 500px) {
+@media (min-height: 500px) {
   .ag-table {
     border-color: red;
   }

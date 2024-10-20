@@ -259,7 +259,17 @@
     "software": "Nhóm Phần mềm",
     "ghelp": "Nhóm hỗ trợ",
     "shelp": "Hình thức hỗ trợ",
-    "soft_name": "Tên phần mềm"
+    "soft_name": "Tên phần mềm",
+    "search_user": "Tìm khách hàng",
+    "create_new": "Tạo mới",
+    "get_cate": "Tải danh mục",
+    "view_result": "Xem kết quả",
+    "copy":"Sao chép",
+    "other": "Khác",
+    "h1_option": "-- Tùy chọn --",
+    "h1_support": "-- Thông tin BC --",
+    "h1_email_ticket": "--Thông tin Email Ticket --",
+    "h1_customer": "-- Thông tin KH --"
   },
   "actions": {
     "save": "Lưu lại",
@@ -276,10 +286,22 @@
     "get_all": "Lấy DS",
     "update_link": "Cập nhật menu",
     "import_xsl": "Nạp dữ liệu",
-    "export_xsl": "Xuất dữ liệu"
+    "export_xsl": "Xuất dữ liệu",
+    "click_here": "Nhấn vào đây",
+    "start_import": "Bắt đầu nạp DL",
+    "stop_import": "Dừng nạp",
+    "abort_import": "Hủy nạp",
+    "import_all": "Nạp tất cả",
+    "delete_ticket": "Xóa Ticket"
   },
   "style": {
     "text_color": "Màu chữ",
     "bg_color": "Màu nền"
+  },
+  "upload": {
+    "invalidSizeDetail": "kích thước tệp tối đa là {0}",
+    "invalidSizeSummary": "Tệp [{0}] -- Sai kích thước",
+    "invalidTypeDetail": "Chỉ chấp nhận tệp excel xlsx",
+    "invalidTypeSummary": "Tệp [{0}] -- Sai loại"
   }
 }

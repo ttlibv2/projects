@@ -10,9 +10,9 @@
                         (onChange)="onSelectChanel($event.value)">
 
                         <ng-template pTemplate="footer">
-                           <div class="mt-4 pd-4">
-                            <p-button label="Đóng" (onClick)="ms.close(null)"></p-button>
-                           </div>
+                            <div class="mt-4 pd-4">
+                                <p-button label="Đóng" (onClick)="ms.close(null)"></p-button>
+                            </div>
                         </ng-template>
 
                     </p-multiSelect>
@@ -103,7 +103,7 @@
                 </div>
             </div>
         </p-fieldset>
-        <p-fieldset legend="-- Thông tin KH --" *ngIf="!viewTemplate">
+        <p-fieldset legend="{{'ticket.h1_customer'|translate}}" *ngIf="!viewTemplate">
             <div class="grid">
                 <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
                     <label for="tax_code">Mã số thuế <span class="p-text-danger">(*)</span></label>
@@ -117,9 +117,9 @@
                     <label for="email">Email <span class="p-text-danger">(*)</span></label>
                     <input id="email" class="required" pInputText formControlName="email" />
                 </div>
-                <div class="p-fluid xl:col-3 lg:col-6 md:col-6 xxl:col-3">
+                <div class="p-fluid xl:col-3 lg:col-6 md:col-6 xxl:col-1">
                     <label for="od_partner_id">KH_ID</label>
-                    <input id="od_partner_id" pInputText formControlName="od_partner_id" showClear="true" />
+                    <input id="od_partner_id" pInputText formControlName="od_partner_id" readonly showClear="true" class="font-bold text-danger">
                 </div>
                 <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
                     <label for="content_required">Nội dung hỗ trợ <span class="p-text-danger">(*)</span></label>
@@ -160,17 +160,16 @@
 
         <!-- BEGIN: email ticket info -->
         @if (utils.is_email_ticket) {
-        <p-fieldset legend="--Thông tin Email Ticket --">
-            <div class="grid">
+        <p-fieldset legend="{{'ticket.h1_email_ticket'|translate}}">
+            <div class="grid align-items-center">
                 <div class="p-fluid col-3">
                     <label for="emailTemplate">..</label>
                     <div class="flex gap-2">
-                        <p-dropdown class="flex-1" [options]="emailTemplates" optionLabel="title" dataKey="id"
-                            formControlName="email_template" showClear="true"
-                            (onChange)="utils.changeEmailTemplate($event.value)"></p-dropdown>
+                        <p-dropdown class="ct_email flex-1" [options]="emailTemplates" optionLabel="title" dataKey="id"
+                            formControlName="email_template" showClear="true"></p-dropdown>
 
                         <p-button icon="pi pi-eye" severity="help" size="small" (onClick)="openEmailTemplate()"
-                            *ngIf="data.email_template"></p-button>
+                            *ngIf="utils.isPreviewEmailHtml"></p-button>
 
                         <p-divider layout="vertical"></p-divider>
                     </div>
@@ -179,7 +178,7 @@
 
                 <ng-container formGroupName="email_object">
                     @for (field of utils.emailFields; track $index) {
-                    <div class="p-fluid col-2">
+                    <div class="p-fluid col-2 xxl:col-2">
                         <label>{{field.label}}</label>
                         <input pInputText [formControlName]="field.name" />
                     </div>
@@ -192,11 +191,11 @@
     </p-card>
     <p-card class="lg:col-5 col-right">
         @if (!viewTemplate) {
-        <p-fieldset legend="-- Thông tin BC --">
+        <p-fieldset legend="{{'ticket.h1_support'|translate}}">
             <div class="grid">
                 <div class="p-fluid col-12">
                     <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
-                    <input pInputText id="subject" formControlName="subject"
+                    <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
                         placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
                 </div>
                 <div class="p-fluid col-12" *ngIf="utils.is_view_all">
@@ -216,8 +215,8 @@
         </p-fieldset>
         }
 
-        
-        <p-fieldset class="col-option" legend="-- Tùy chọn --">
+
+        <p-fieldset class="col-option" legend="{{'ticket.h1_option'|translate}}">
             <div class="flex flex-wrap gap-3" formGroupName="options">
                 <ng-template ngFor let-item [ngForOf]="labelOptions">
                     <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
@@ -229,9 +228,8 @@
         <p-fieldset class="template-list mt-2" legend="-- Danh sách mẫu --">
             <div class="flex flex-wrap gap-2">
                 @for (item of catalog.get_ticket(); track $index) {
-                <ts-tag [value]="item" 
-                    [label]="item.title" [icon]="item.icon" (click)="selectTemplate(item)" 
-                    [checked]="currentTemplate?.template_id === item.template_id"></ts-tag>
+                <ts-tag [value]="item" [label]="item.title" [icon]="item.icon" (click)="selectTemplate(item)"
+                    [checked]="ticketTemplate?.template_id === item.template_id" mode="checkable"></ts-tag>
                 }
 
                 @if(catalog.get_ticket()?.length == 0){
@@ -239,7 +237,7 @@
                         nhật mẫu mặc định]</b>).</span>
 
                 <span> Hoặc <a class="here" [routerLink]="['/templates']" [queryParams]="{thread: 'ticket_template'}"
-                        (click)="viewTemplateSetting()">Nhấn vào đây</a></span>
+                        (click)="viewTemplateSetting('ticket_template')">{{'actions.click_here'|translate}}</a></span>
                 }
             </div>
         </p-fieldset>
@@ -247,27 +245,73 @@
         }
 
     </p-card>
-     <!-- BEGIN: form_tool -->
-     <div class="flex col-12 gap-2 align-items-center">
-        @if (!viewTemplate) {
-        <p-button type="submit" severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
-            loadingIcon="pi pi-cog" [label]="isEditTicket ? 'Cập nhật' : 'Lưu lại'" [disabled]="form.invalid"></p-button>
-        <p-button icon="pi pi-folder-plus" (onClick)="createNew()" label="Tạo mới"></p-button>
-        <p-button icon="pi pi-search" (click)="searchUser()" label="Tìm khách hàng"></p-button>
-        <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="Tải danh mục"></p-button>
 
-        @if(ticketIsSend){
-        <p-button icon="pi pi-result" (click)="viewResultTicket()" label="Xem kết quả"></p-button>
+    <!-- BEGIN: form_tool -->
+    <div class="flex col-12 gap-2 align-items-center">
+        @if (state.visibleToolImport && idata) {
+
+        <div class="r-import flex gap-2 align-items-center ">
+            <p-button icon="pi pi-save" severity="info" (onClick)="saveTicket()" [loading]="state?.asyncSaveTicket"
+                loadingIcon="pi pi-sync" label="{{newLabel|translate}}" [disabled]="form.invalid"></p-button>
+
+                <p-button icon="pi pi-search" severity="success" 
+                    (onClick)="searchUser()" label="{{'ticket.search_user' | translate}}"></p-button>
+
+            <p-divider [layout]="'vertical'"></p-divider>
+
+            <p-button severity="warning" icon="pi pi-circle-on" label="{{'actions.import_all' | translate}}"
+                (onClick)="idata.beginRunAll()" *ngIf="idata.isVisibleRunAll"></p-button>
+
+            <p-button severity="danger" icon="pi pi-spin pi-sync" label="{{'actions.stop_import' | translate}}"
+                (onClick)="idata.stopRunAll()" *ngIf="idata.isVisibleStopRunAll"></p-button>
+
+            <p-divider [layout]="'vertical'"></p-divider>
+
+            <p-button label="Lùi" iconPos="left" icon="pi pi-angle-double-left" severity="info" text="true"
+                styleClass="p-click" [disabled]="idata.disableClickPrev" (onClick)="idata.clickPrev()"></p-button>
+            <label class="flex gap-1">
+                <span class="current">{{idata?.current}}</span>
+                <span class="sep">/</span>
+                <span class="total">{{idata.size}}</span>
+            </label>
+            <p-button label="Tới" iconPos="right" icon="pi pi-angle-double-right" severity="info" text="true"
+                size="large" styleClass="p-click" [disabled]="idata.disableClickNext"
+                (onClick)="idata.clickNext()"></p-button>
+
+            @if (!idata.isRunning) {
+                <p-divider [layout]="'vertical'"></p-divider>
+
+                <p-button link="true" styleClass="p-abort" label="{{'actions.abort_import' | translate}}"
+                    (onClick)="idata.abortData()"></p-button>
+
+                <p-button link="true" styleClass="p-abort" label="Chọn tệp khác" (onClick)="idata.chooseFile()"></p-button>
+            }
+
+        </div>
         }
 
-        <p-button icon="pi pi-clone" (click)="copyTicket()" label="Sao chép"></p-button>
-        <ts-splitButton [icon]="'pi pi-wrench'" [label]="'Khác'" [severity]="'help'" [model]="toolActions"
-            [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
+        @else if (!viewTemplate) {
+        <p-button type="submit" severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
+            loadingIcon="pi pi-sync" label="{{newLabel|translate}}" [disabled]="form.invalid"></p-button>
 
-        <!-- tool -->
-        <div class="flex gap-2">
-            <p-divider [layout]="'vertical'"></p-divider>
-        </div>
+       
+        <p-button icon="pi pi-search" (click)="searchUser()" label="{{'ticket.search_user' | translate}}"></p-button>
+
+
+        <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="{{'ticket.get_cate' | translate}}"></p-button>
+       
+	   <p-button icon="pi pi-result" (click)="viewResultTicket()" label="{{'ticket.view_result' | translate}}"
+            *ngIf="ticketIsSend"></p-button>
+        
+		<p-button icon="pi pi-clone" (click)="copyTicket()" label="{{'ticket.copy' | translate}}"></p-button>
+				<p-divider [layout]="'vertical'"></p-divider>																				
+																								<p-button severity="danger" icon="pi pi-folder-plus" (onClick)="deleteTicket()"
+            label="{{'actions.delete_ticket' | translate}}" *ngIf="isEditTicket"></p-button>
+
+		<ts-splitButton [icon]="'pi pi-wrench'" label="{{'ticket.other' | translate}}" severity="info"
+            [model]="toolActions" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
+
+
         }
         @else {
         <p-button [disabled]="form.invalid" (onClick)="saveTemplate()"
@@ -278,5 +322,5 @@
         }
     </div>
     <!-- END: form_tool -->
-   
+
 </form>

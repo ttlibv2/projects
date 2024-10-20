@@ -4,7 +4,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { TicketListRoutingModule } from './ticket-list-routing.module';
 import { TicketListComponent } from './ticket-list.component';
 import { AgTableModule } from 'ts-ui/ag-table';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TsLoggerModule } from 'ts-ui/logger';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -21,6 +20,8 @@ import { TagModule } from 'ts-ui/tag';
 import { AgTableTemplate } from './ag-table-template';
 import { TicketFormModule } from '../ticket-form/ticket-form.module';
 import { FileUploadModule } from 'primeng/fileupload';
+import { FormsModule } from 'ts-ui/forms';
+import { ResizedDirective } from '../shared/d-resized';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,6 @@ import { FileUploadModule } from 'primeng/fileupload';
     CommonModule,
     FormsModule,
     TicketListRoutingModule,
-    ReactiveFormsModule,
     TsLoggerModule,
     AgTableModule,
     CardModule,
@@ -49,7 +49,8 @@ import { FileUploadModule } from 'primeng/fileupload';
     TagModule,
     AgTableTemplate,
     TicketFormModule,
-    FileUploadModule
+    FileUploadModule,
+    ResizedDirective
 
   ],
   providers: [

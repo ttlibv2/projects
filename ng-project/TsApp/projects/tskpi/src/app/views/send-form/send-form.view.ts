@@ -10,6 +10,7 @@ import { IRowNode } from '@ag-grid-community/core';
 import { AgStatusRenderer } from '../ag-status/ag-status';
 import { Alert } from 'ts-ui/alert';
 import { Row, Workbook, Worksheet } from 'exceljs';
+const { isBlank, isTrue, notBlank, isFalse, isNull } = Objects;
 
 const defaultColumns: TableColumn[] = [
   {
@@ -36,6 +37,22 @@ interface FileData {
   };
 }
 
+interface State {
+  isClickSend?: boolean;
+  isLoadData?: boolean;
+  isSendKPI?: boolean;
+  isClickStop?: boolean;
+  emailInvalid?: boolean;
+  loadEmail?: boolean;
+}
+
+interface LogNum {
+  ok?: number;
+  error?: number;
+  total?: number;
+  fileId?: string;
+}
+
 @Component({
   selector: 'ts-send-form',
   templateUrl: './send-form.view.html',
@@ -43,11 +60,9 @@ interface FileData {
   encapsulation: ViewEncapsulation.None
 })
 export class SendFormView implements OnInit {
-  logNum: any = { ok: 0, error: 0, total: 0, fileId: 'FILE_ID' };
-  isSendKPI: boolean = false;
-  isClickSend: boolean = false;
-  isLoadData: boolean = false;
-  isClickStop: boolean = false;
+  logNum: LogNum = { ok: 0, error: 0, total: 0 };
+  state: State = {emailInvalid: true};
+
   execSend: Subscription = undefined;
   agOption: TableOption = {
     rowSelection: 'multiple',
@@ -67,14 +82,43 @@ export class SendFormView implements OnInit {
   @ViewChild(AgTable, { static: true })
   private table: AgTable;
 
-  @Input({alias: 'email'})
+  @Input({ alias: 'email' })
   email: string;
 
 
   fileData: FileData;
 
   get isDisableAction(): boolean {
-    return this.isLoadData || this.isSendKPI;
+    return this.state.isLoadData || this.state.isSendKPI;
+  }
+
+  get emailText(): string {
+    const email = this.emailRef?.nativeElement?.value || this.email || '';
+    return email.trim().toLowerCase();
+  }
+
+  get emailIcon(): any {
+    return {
+      'pi': true,
+      'pi-at': !isTrue(this.state.loadEmail),
+      'pi-spinner pi-spin': isTrue(this.state.loadEmail),
+    };
+  }
+
+  get emailClass(): any {
+    return {
+      'ng-invalid ng-dirty': this.state.emailInvalid
+    };
+  }
+
+  get buttonSendIsDisabled(): boolean {
+    return this.state.emailInvalid;
+  }
+
+  get visibleSend(): boolean {
+    if(isNull(this.fileData)) return false;
+    else if(this.state.emailInvalid) return false;
+    else return !isTrue(this.state.isSendKPI);
   }
 
   constructor(public kpi: SendKPI,
@@ -86,11 +130,33 @@ export class SendFormView implements OnInit {
 
   ngOnInit(): void {
     this.emailRef.nativeElement.value = this.email || '';
+    if (notBlank(this.email)) this.changeEmail();
   }
 
   onRowClicked() {
     this.logNum.total = this.table.getSelectedNodes().length;
     this.def.detectChanges();
+  }
+
+  changeEmail(): void {
+    const email = this.emailText;
+    if (this.checkEmail(email)) {
+      this.state.loadEmail = true;
+      this.emailRef.nativeElement.value = email;
+      this.toast.closeAll();
+      this.kpi.getXslIdByEmail(email).subscribe({
+        error: msg => {
+          console.error(`changeEmail: `, msg);
+          this.state.loadEmail = false;
+          this.toast.error(`Đã xảy ra lỗi kiểm tra thông tin email -- ${msg}`);
+        },
+        next: data => {
+          this.state.loadEmail = false;
+          this.state.emailInvalid = false;
+          this.logNum.fileId = data?.file_id;
+        }
+      });
+    }
   }
 
   importFile() {
@@ -102,7 +168,7 @@ export class SendFormView implements OnInit {
     ref.onClose.subscribe({
       next: (data: FileData) => {
         if (Objects.notNull(data)) {
-        
+
           //update column grid
           this.columns = data.grid.columns || [];
           this.columns.splice(0, 0, ...defaultColumns);
@@ -114,18 +180,18 @@ export class SendFormView implements OnInit {
           let rows = data.grid.data;
           let num = 0;
 
-          let all = of(...rows).pipe(concatMap(row => of(row).pipe(delay(100))));
-          let exe = all.subscribe(item => {this.table.addRow(item); num++;});
+          let all = of(...rows).pipe(concatMap(row => of(row).pipe(delay(20))));
+          let exe = all.subscribe(item => { this.table.addRow(item); num++; });
 
           let checkRun = interval(300).subscribe(_ => {
-            if(num == rows.length && exe ) {
+            if (num == rows.length && exe) {
               exe.unsubscribe();
               checkRun.unsubscribe();
               //this.table.tableApi.selectAll();
             }
-            
+
           });
-         
+
 
         }
       }
@@ -133,7 +199,7 @@ export class SendFormView implements OnInit {
   }
 
   exportFile() {
-   
+
     const obse = new Observable((observer: Observer<any>) => {
       const wb = new Workbook();
       wb.creator = 'Nguyen Quoc Tuan';
@@ -142,13 +208,13 @@ export class SendFormView implements OnInit {
       const columnDefaultIds = defaultColumns.map((col: any) => col.field);
       const allColumn = this.table.tableApi.getAllGridColumns();
       const columns = allColumn.filter(col => !columnDefaultIds.includes(col.getColId())).map(col => col.getColId());
-      const ws = wb.addWorksheet('data', {views: [{state: 'frozen', ySplit: 2}] });
+      const ws = wb.addWorksheet('data', { views: [{ state: 'frozen', ySplit: 2 }] });
 
       // create columns
       columns.forEach((col, i) => {
-        const column = ws.getColumn(i+1);
+        const column = ws.getColumn(i + 1);
         column.header = col;
-        column.key = col; 
+        column.key = col;
       });
 
       // add row label
@@ -161,9 +227,9 @@ export class SendFormView implements OnInit {
       ws.getRow(1).hidden = true;
 
       this.getRow(ws, 2, row => {
-       // row.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: 'a9d08e'}};
-        row.font = {bold: true};
-        row.eachCell(cell => cell.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: 'a9d08e'}})
+        // row.fill = {type: 'pattern', pattern: 'solid', fgColor: {argb: 'a9d08e'}};
+        row.font = { bold: true };
+        row.eachCell(cell => cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'a9d08e' } })
 
       });
 
@@ -191,21 +257,19 @@ export class SendFormView implements OnInit {
   }
 
   stopSend() {
-    this.isClickStop = true;
+    this.state.isClickStop = true;
     this.toast.closeAll();
 
     if (Objects.notNull(this.execSend)) {
       this.execSend.unsubscribe();
       this.execSend = null;
-      this.isSendKPI = false;
+      this.state.isSendKPI = false;
     }
   }
 
 
   send() {
-    let email = this.emailRef.nativeElement.value;
-    if (Objects.isEmpty(email)) {
-      this.toast.error({ message: `Vui lòng nhập e-mail` });
+    if (!this.checkEmail()) {
       return;
     }
 
@@ -228,9 +292,9 @@ export class SendFormView implements OnInit {
 
 
     //========================
-    this.isClickStop = false;
-    this.isClickSend = true;
-    this.isSendKPI = true;
+    this.state.isClickStop = false;
+    this.state.isClickSend = true;
+    this.state.isSendKPI = true;
 
     this.logNum.ok = 0;
     this.logNum.error = 0;
@@ -238,10 +302,11 @@ export class SendFormView implements OnInit {
 
     this.toast.loading(`Đang xử lý dữ liệu. Vui lòng đợi...`);
 
+    let email = this.emailText;
     this.kpi.createFile(email, mime, base64, fileName, fileDrive).subscribe({
-      error: msg =>{ 
-        console.error(msg);
-        this.toast.error({title: 'Đã xảy ra lỗi tạo tệp gửi', message: msg});
+      error: msg => {
+        console.error(`createFile: `, msg);
+        this.toast.error({ title: 'Đã xảy ra lỗi tạo tệp gửi', message: msg });
         this.toast.closeAll();
       },
       next: data => {
@@ -287,15 +352,15 @@ export class SendFormView implements OnInit {
 
         // check + stop
         let abc = interval(1000).subscribe(_ => {
-          if (this.isClickStop || (this.logNum.total == runNum && this.execSend)) {
+          if (this.state.isClickStop || (this.logNum.total == runNum && this.execSend)) {
             abc.unsubscribe();
             this.execSend?.unsubscribe();
             this.execSend = null;
-            this.isSendKPI = false;
+            this.state.isSendKPI = false;
             this.toast.closeAll();
           }
         });
-        
+
       }
     })
 
@@ -322,7 +387,7 @@ export class SendFormView implements OnInit {
     this.stopSend();
   }
 
-  
+
   private buildFileNameDrive() {
     const { name, sheet, beginRow, endRow } = this.fileData.file;
     return `${name}_${sheet}_${beginRow}_${endRow}_${Date.now()}`;
@@ -338,6 +403,18 @@ export class SendFormView implements OnInit {
 
   private getRow(ws: Worksheet, rowIndex: number, cb: Consumer<Row>) {
     cb(ws.getRow(rowIndex));
+  }
+
+  private checkEmail(email: string = this.emailText): boolean {
+    if (isBlank(email) || !email.endsWith('@gmail.com')) {
+      this.toast.warning({ message: `Vui lòng nhập email là tài khoản <b>[Google]</b>`, timeOut: 20000 });
+      this.state.emailInvalid = true;
+      return false;
+    }
+    else {
+      this.state.emailInvalid = false;
+      return true;
+    }
   }
 
 }

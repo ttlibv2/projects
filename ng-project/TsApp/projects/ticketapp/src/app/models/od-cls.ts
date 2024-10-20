@@ -97,9 +97,15 @@ export class ClsSubjectType extends ClsModel {
 }
 
 export class ClsTag extends ClsModel {
+
   static from(json: AssignObject<ClsTag>): ClsTag {
     return BaseModel.fromJson(ClsTag, json);
   }
+
+  static fromList(list: AssignObject<ClsTag>[]): ClsTag[] {
+    return (list || []).map(t => ClsTag.from(t));
+  }
+
 }
 
 export class ClsTeam extends ClsModel {

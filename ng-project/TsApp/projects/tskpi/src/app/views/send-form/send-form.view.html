@@ -2,22 +2,25 @@
       <div class="grid gap-2">
         <div class="flex gap-2 align-items-center">
             <p-button severity="info" icon="pi pi-file-import" label="Chọn file" size="small" (onClick)="importFile()"
-                [disabled]="isSendKPI"></p-button>
+                [disabled]="state.isSendKPI"></p-button>
     
             <p-button label="Xuất file" icon="pi pi-file-export" severity="success" (onClick)="exportFile()" size="small"
                 [disabled]="isDisableAction" *ngIf="fileData"></p-button>
     
-            <p-button severity="danger" icon="pi pi-send" label="Gửi BC" size="small" (onClick)="send()"
-                *ngIf="!isSendKPI && fileData"></p-button>
+            <p-button severity="danger" icon="pi pi-send" label="Gửi BC" size="small" (onClick)="send()" *ngIf="visibleSend"></p-button>
     
             <p-button label="Dừng gửi" severity="danger" icon="pi pi-stop" size="small" (onClick)="stopSend()"
-                *ngIf="isSendKPI"></p-button>
+                *ngIf="state.isSendKPI"></p-button>
     
-            <input class="email" type="email" pInputText placeholder="Vui lòng nhập E-mail" #email
-                [disabled]="isDisableAction" />
+            <p-iconField iconPosition="right">                
+                <input class="email" type="email" pInputText placeholder="Vui lòng nhập E-mail" #email
+                    [disabled]="isDisableAction" (change)="changeEmail()" [ngClass]="emailClass" />
+                    <p-inputIcon [styleClass]="emailIcon"/>
+            </p-iconField>
         </div>
         <div class="flex gap-2 align-items-center">
             <div class="r-log flex gap-2">
+                <p-divider layout="vertical"></p-divider>
                 <label class="label"> ==> KPI Running: </label>
                 <label class="success">[OK]
                     <span class="num">{{logNum.ok}}</span>
@@ -30,16 +33,11 @@
                 <label class="total">[Total]
                     <span class="num">{{logNum.total}}</span>
                 </label>
-                <label class="fileId flex align-items-center gap-2">
-                    <p-divider layout="vertical"></p-divider>
-                    <span>File_Id: </span>
-                    <span class="num">{{logNum.fileId}}</span>
-                </label>
-                <label class="flex align-items-center gap-2">
-                    <p-divider layout="vertical"></p-divider>
-                    <a [attr.href]="kpi.cfig.excel_data" target="_blank">Open Link</a>
-                </label>
             </div>
+            <label class="flex align-items-center gap-2" *ngIf="logNum.fileId">
+                <p-divider layout="vertical"></p-divider>
+                <a [attr.href]="logNum.fileId" target="_blank">Xem tệp báo cáo</a>
+            </label>
         </div>
       </div>
       <div class="grid mt-2">

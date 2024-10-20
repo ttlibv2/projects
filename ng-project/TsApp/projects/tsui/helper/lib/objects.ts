@@ -151,7 +151,8 @@ export class Objects {
   static equals(obj1: any, obj2: any, field?: Function | string): boolean {
 
     if (Objects.notNull(field)) {
-      return Objects.resolveFieldData(obj1, field) === Objects.resolveFieldData(obj2, field);
+      return Objects.resolveFieldData(obj1, field) 
+        === Objects.resolveFieldData(obj2, field);
     }
     else if (obj1 === obj2) return true;
     else if (Objects.isNull(obj1) && Objects.notNull(obj2)) return false;

@@ -8,7 +8,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { SelectFileModule } from '../select-file/select-file.module';
 import { DividerModule } from 'primeng/divider';
-import { ToastModule } from 'ts-ui/toast';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 
 const router:Routes = [
@@ -21,7 +24,11 @@ const router:Routes = [
   imports: [
     CommonModule,
     ButtonModule,
+    IconFieldModule,
+    InputIconModule,
     InputTextModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     CardModule,
     SelectFileModule,
     DividerModule,

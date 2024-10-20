@@ -1,4 +1,4 @@
-<p-card  [style]="{width: '720px'}"  id="api-info-fr" [header]="headerLabel">
+<p-card [style]="{width: '720px'}" id="api-info-fr" [header]="headerLabel">
     <form [formGroup]="form" class="sm">
         <div class="grid">
             <div class="p-fluid col-12">
@@ -7,21 +7,22 @@
                     <span class="text-danger" *ngIf="!lsApi?.length"> -- Không có dòng nào </span>
                 </label>
                 <div class="flex gap-2">
-                    <p-dropdown id="api_info" class="flex-1" [options]="lsApi" optionLabel="displayName" dataKey="api_id"
-                        formControlName="api_item" (onChange)="onSelectApi($event.value)"></p-dropdown>
-    
+                    <p-dropdown id="api_info" class="flex-1" [options]="lsApi" optionLabel="displayName"
+                        dataKey="api_id" formControlName="api_item" (onChange)="onSelectApi($event.value)"></p-dropdown>
+
                     <p-button type="button" icon="pi pi-bars" label="{{'actions.get_all'|translate}}"
                         [disabled]="!!action" [loading]="state.loadDs" (onClick)="clickLoadApiInfo()"
                         *ngIf="state.visibleBtnLoadApi"></p-button>
-    
-                    <p-button type="button" icon="pi pi-copy" label="{{'actions.copy' | translate}}" 
-                        [disabled]="state.disableButton" (onClick)="clickCopyApi()" *ngIf="isAllowCopy && state.showAction"></p-button>
-    
-                    <p-button type="button" icon="pi pi-edit" label="{{'actions.edit' | translate}}" 
+
+                    <p-button type="button" icon="pi pi-copy" label="{{'actions.copy' | translate}}"
+                        [disabled]="state.disableButton" (onClick)="clickCopyApi()"
+                        *ngIf="isAllowCopy && state.showAction"></p-button>
+
+                    <p-button type="button" icon="pi pi-edit" label="{{'actions.edit' | translate}}"
                         (onClick)="clickEditApi()" *ngIf="isEditTT && state.showAction"></p-button>
                 </div>
             </div>
-    
+
             <ng-container formGroupName="api_info">
                 <p-divider class="col-12" layout="horizontal" align="left" *ngIf="divider">
                     <span>{{'api.api_info' | translate}}</span>
@@ -37,7 +38,7 @@
                 <div class="p-fluid col-3 xxl:col-3">
                     <label for="app_name">{{ 'api.app_name'|translate }}</label>
                     <input id="app_name" pInputText formControlName="app_name" />
-                </div>            
+                </div>
                 <ng-container *ngIf="!!action">
                     <div class="p-fluid col-6 xxl:col-6">
                         <label for="title">{{ 'api.title'|translate }}</label>
@@ -57,15 +58,18 @@
                     </div>
                     <div class="p-fluid col-6 xxl:col-6">
                         <label for="summary">{{ 'api.summary'|translate }}</label>
-                        <textarea id="summary" rows="2" autoResize="false" pInputTextarea formControlName="summary"></textarea>
+                        <textarea id="summary" rows="2" autoResize="false" pInputTextarea
+                            formControlName="summary"></textarea>
                     </div>
                     <div class="p-fluid col-6 xxl:col-6">
                         <label for="summary">{{ 'api.links'|translate }}</label>
-                        <textarea id="links" rows="2" autoResize="false" pInputTextarea formControlName="links"></textarea>
+                        <textarea id="links" rows="2" autoResize="false" pInputTextarea
+                            formControlName="links"></textarea>
                     </div>
                 </ng-container>
             </ng-container>
-            <p-divider class="col-12" layout="horizontal" align="left" *ngIf="!!action">{{'api.user_info' | translate}}</p-divider>
+            <p-divider class="col-12" layout="horizontal" align="left" *ngIf="!!action">{{'api.user_info' |
+                translate}}</p-divider>
             <ng-container formGroupName="user_api">
                 <div class="p-fluid col-6">
                     <label for="user_name">{{ 'users.user_name'|translate }} <span class="text-danger">*</span></label>
@@ -93,27 +97,32 @@
                 </div>
                 <div class="field col-12 flex gap-2">
                     <p-checkbox id="auto_login" [binary]="true" formControlName="auto_login"
-
                         label="{{'api.auto_login'|translate}}"></p-checkbox>
                     <p-checkbox id="editOnly" [binary]="true" formControlName="allow_edit"
                         label="{{'api.allow_edit'|translate}}"></p-checkbox>
                 </div>
             </ng-container>
-            <div class="col-12 flex gap-2 mt-2">
-                <p-button icon="pi pi-save" label="{{'actions.cancel'|translate}}" severity="help" 
-                    (onClick)="clickResetApi()" *ngIf="visibleResetButton"></p-button>
+            <div class="col-12 flex gap-2 mt-2 justify-content-between">
+                <div class="flex gap-2">
+                    <p-button type="submit" icon="pi pi-save" label="{{'actions.save'|translate}}" severity="danger"
+                        (onClick)="clickSaveApi()" [disabled]="!formDirty" *ngIf="visibleSaveButton"></p-button>
 
-                <p-button type="submit" icon="pi pi-save" label="{{'actions.save'|translate}}" severity="danger"
-                    (onClick)="clickSaveApi()" [disabled]="!formDirty" *ngIf="visibleSaveButton"></p-button>
-    
-                <p-button type="button" icon="pi pi-check" label="{{'actions.check_api' | translate}}"
-                    (onClick)="clickCheckLogin()" *ngIf="visibleCheckButton"></p-button>
-    
-                <p-button type="button" icon="pi pi-link" label="{{'actions.update_link' | translate}}"
-                    (onClick)="clickMenuApi()" *ngIf="visibleCheckButton"></p-button>
-    
-                <p-button type="button" icon="pi pi-times" label="{{'actions.close' | translate}}" 
-                    (onClick)="clickCloseModal()" *ngIf="state.hasModal"></p-button>
+                    <p-button icon="pi pi-save" label="{{'actions.cancel'|translate}}" severity="help"
+                        (onClick)="clickResetApi()" *ngIf="visibleResetButton"></p-button>
+
+                    <p-button type="button" icon="pi pi-check" label="{{'actions.check_api' | translate}}"
+                        (onClick)="clickCheckLogin()" *ngIf="visibleCheckButton"></p-button>
+
+                    <p-button type="button" icon="pi pi-link" label="{{'actions.update_link' | translate}}"
+                        (onClick)="clickMenuApi()" *ngIf="visibleCheckButton"></p-button>
+                </div>
+                <div class="flex gap-2">
+                    <p-button type="button" severity="info" icon="pi pi-times" label="{{'actions.close' | translate}}"
+                        (onClick)="clickCloseModal()" *ngIf="state.hasModal"></p-button>
+                </div>
+
+
+
             </div>
         </div>
     </form>
