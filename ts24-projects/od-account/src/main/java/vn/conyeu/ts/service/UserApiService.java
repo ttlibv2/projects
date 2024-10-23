@@ -1,5 +1,7 @@
 package vn.conyeu.ts.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.SmartValidator;
 import vn.conyeu.common.exception.BaseException;
@@ -31,6 +33,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * @param userId the user id to get
      * @param appName the app name to get
      * */
+    @Cacheable(value = "user_api", key = "{#methodName, #userId, #appName}")
     public Optional<UserApi> findByAppName(Long userId, String appName) {
         return repo().findByAppName(userId, appName);
     }
@@ -40,6 +43,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * @param userId the user id to get
      * @param apiId the api_id to get
      * */
+    @Cacheable(value = "user_api", key = "{#methodName, #userId, #apiId}")
     public Optional<UserApi> findByApiId(Long userId, Long apiId) {
         return repo().findByApiId(userId, apiId);
     }
@@ -48,6 +52,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * Returns all user api without user_id
      * @param userId the user id to get
      * */
+    @Cacheable(value = "user_api", key = "{#methodName, #userId}")
     public List<UserApi> findAll(Long userId) {
         return repo().findAll(userId);
     }
@@ -57,6 +62,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * @param userId the user id to get
      * @param appUID the app_uid to get
      * */
+    @Cacheable(value = "user_api", key = "{#methodName, #userId, #appUID}")
     public List<UserApi> findAllByAppUID(Long userId, String appUID) {
         return repo().findAllByAppUID(userId, appUID);
     }
@@ -72,7 +78,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
         UserApi userApi = optional.get();
         consumer.accept(userApi);
         userApi.getUserInfo().setTsUser(null);
-        return save(userApi);
+        return saveAndReturn(userApi);
     }
 
     @Override
@@ -93,7 +99,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
                     .message("Không thể tạo API [ID=%s] cho User [%s] -- APi này đã tồn tại", apiId, userId);
         }
 
-        return save(info);
+        return saveAndReturn(info);
     }
 
     @Override
@@ -115,8 +121,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
         }
     }
 
-
-    public UserApi save(UserApi info) {
+    public UserApi saveAndReturn(UserApi info) {
         return save(info, false);
     }
 
@@ -130,6 +135,11 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
             Validators.throwValidate(validator, info);
         }
 
-        return super.save(info);
+        clearCache(info.getUserId());
+        return super.saveAndReturn(info);
+    }
+
+    @CacheEvict(value = "user_api")
+    public void clearCache(Long userId) {
     }
 }

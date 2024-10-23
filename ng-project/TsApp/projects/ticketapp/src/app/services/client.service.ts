@@ -46,9 +46,7 @@ export class ClientService {
     return this.get(url, query).pipe(map(res => convert(res)));
   }
 
-
-
-
+  
 
   protected searchGet(url: string, params?: ClientParams): Observable<Page<any>> {
     return this.send('get', url, {params}).pipe(map(s => new Page().update(s)));
@@ -68,6 +66,10 @@ export class ClientService {
 
   protected put(url: string, body: any, params?: ClientParams): Observable<any> {
     return this.send('put', url, {body, params});
+  }
+
+  protected clientPost(url: string, body: any, options?: any): Observable<any> {
+    return this.send('post', url, {...options, body});
   }
 
   protected send(method: string, url: string, options?: any): Observable<any> {
@@ -92,6 +94,8 @@ export class ClientService {
     let errorCode: string = 'undefined';
 
     if(err instanceof HttpErrorResponse) {
+      console.error(`[handlerError] ${url}`, err.error);
+
       const error: ErrorResponse = err.error ?? {};
       const baseUrl = (text: string) => `<a href="${new URL(url).host}" target="_blank" rel="noopener noreferrer">${text}</a>`;
 

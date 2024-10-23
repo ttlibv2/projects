@@ -1,0 +1,12 @@
+<form class="grid" (ngSubmit)="handleConvert()" [formGroup]="form">
+    <div class="col-12">
+        <p-button type="submit" label="Convert" [loading]="hasSend" loadingIcon="pi pi-sync"></p-button>
+    </div>
+    <div class="p-fluid col-6">
+        <textarea pInputTextarea  [rows]="20" formControlName="source"></textarea>
+    </div>
+    <div class="p-fluid col-6">
+        <textarea pInputTextarea [rows]="20" formControlName="target"></textarea>
+    </div>
+    
+</form>

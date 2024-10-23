@@ -1,5 +1,6 @@
 import {Objects, AssignObject} from "ts-ui/helper";
 import { Type } from "@angular/core";
+const {isNull, isEmpty} = Objects;
 
 export abstract class BaseModel<E extends BaseModel = any> {
   [field: string]: any;
@@ -28,7 +29,7 @@ export abstract class BaseModel<E extends BaseModel = any> {
   }
 
   protected static fromJson<E extends BaseModel>(modelType: Type<E>, data: AssignObject<E>): E {
-    return data instanceof modelType ? data : new modelType().update(data);
+    return isNull(data) ? undefined : data instanceof modelType ? data : new modelType().update(data);
 
   }
 

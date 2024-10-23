@@ -5,7 +5,7 @@ import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -19,6 +19,7 @@ import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.NotFound;
 import vn.conyeu.common.repository.DomainRepo;
 import vn.conyeu.commons.beans.ObjectMap;
+import vn.conyeu.commons.utils.Objects;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -323,7 +324,7 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
      */
     @Transactional
     public S createNew(S entity) {
-        return save(entity);
+        return saveAndReturn(entity);
     }
 
     /**
@@ -356,8 +357,8 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
     }
 
     @Transactional
-    public S save(S entity) {
-        return entityRepo.save(entity);
+    public S saveAndReturn(S entity) {
+        return  entityRepo.save(entity);
     }
 
     public Optional<S> update(Id entityId, ObjectMap overrides) {
@@ -371,7 +372,7 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
         return optional.map(s -> {
             s.assignFromMap(overrides);
             if(customEntity != null) customEntity.accept(s);
-            return save(s);
+            return saveAndReturn(s);
         });
     }
 
@@ -381,7 +382,7 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
         if(optional.isEmpty()) return Optional.empty();
         else {
             optional.get().assignFromEntity(overrides);
-            S newUp = save(optional.get());
+            S newUp = saveAndReturn(optional.get());
             return Optional.of(newUp);
         }
     }
@@ -391,4 +392,6 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
                 .replace("Service", "")
                 .trim().toLowerCase()+"s";
     }
+
+    public void clearCache() {}
 }

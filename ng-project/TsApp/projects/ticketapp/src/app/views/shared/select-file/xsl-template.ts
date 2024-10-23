@@ -58,6 +58,7 @@ export interface InputOption {
     file: UrlFile;
     fields?: XslField[];
     maxFileSize?: number;
+    validateXsl?: (wb: Workbook) => Promise<boolean> | boolean;
 }
 
 export interface ReturnData {
@@ -131,6 +132,7 @@ export class XslTemplate implements OnInit, OnDestroy {
     maxFileSize: number = DEFAULT_SIZE;
     xslFields: XslField[] = [];
     msgs: Message[] = [];
+    option: InputOption;
 
     get formData(): any {
         return this.form?.getRawValue();
@@ -167,6 +169,7 @@ export class XslTemplate implements OnInit, OnDestroy {
 
         let isData: InputOption = this.modal.getData(this.dialogRef);
         if (isData && isData.file && isData.file.sheets?.length) {
+            this.option = isData;
             this.maxFileSize = isData.maxFileSize || DEFAULT_SIZE;
             this.xslFields = isData.fields || [];
             this.fileUrl = isData.file;
@@ -200,7 +203,12 @@ export class XslTemplate implements OnInit, OnDestroy {
             this.asyncLoading = true;
 
             const wbPromise = file.arrayBuffer()
-                .then((buffer: Buffer) => new Workbook().xlsx.load(buffer));
+                .then((buffer: Buffer) => new Workbook().xlsx.load(buffer))
+                .then(async wb => {
+                    let func = this.option?.validateXsl || this.warningSheetNameNotInclude;
+                    return { wb, validateXsl: await func(wb) };
+
+                });
 
             this.chooseFileSub = from(wbPromise).subscribe({
                 error: msg => {
@@ -213,29 +221,24 @@ export class XslTemplate implements OnInit, OnDestroy {
 
                     this.asyncLoading = false;
                 },
-                next: (wb: Workbook) => {
+                next: ({ wb, validateXsl }) => {
                     this.workbook = wb;
                     this.wbSheetNames = this.workbook.worksheets.map(ws => ws.name);
                     this.asyncLoading = false;
 
-                    if (this.fileUrl.sheets?.length > 0) {
-                        const names: string[] = this.fileUrl.sheets;
-                        const hasError = names.some(name => !this.wbSheetNames.includes(name));
-                        if (hasError) {
-                            this.msgs = [{
-                                severity: 'warn',
-                                summary: `Tệp đính kèm [${file.name}] đã chọn không đúng cấu trúc.`,
-                                detail: `Vui lòng tải mới tệp mẫu`
-                            }];
-                            return;
-                        }
+                    if (isFalse(validateXsl)) {
+                        this.msgs = [{
+                            severity: 'info',
+                            summary: `Tệp đính kèm [${file.name}] đã chọn không đúng cấu trúc.`,
+                            detail: `=> Vui lòng tải lại file mẫu mới để sử dụng tiếp !`
+                        }];
                     }
+                    else {
+                        this.fileSelect = file;
 
-
-                    this.fileSelect = file;
-
-                    for (let pos = 0; pos < this.cSheets.controls.length; pos++) {
-                        this.changeSheet(pos, this.fileUrl.sheets[pos]);
+                        for (let pos = 0; pos < this.cSheets.controls.length; pos++) {
+                            this.changeSheet(pos, this.fileUrl.sheets[pos]);
+                        }
                     }
 
                 }
@@ -245,6 +248,16 @@ export class XslTemplate implements OnInit, OnDestroy {
 
     }
 
+    private warningSheetNameNotInclude(): (wb: Workbook) => Promise<boolean> {
+        return wb => {
+            const wbSheetNames = wb.worksheets.map(ws => ws.name);
+            const names: string[] = this.fileUrl.sheets;
+            const hasError = names.some(name => !wbSheetNames.includes(name));
+            return Promise.resolve(hasError === false);
+        };
+
+
+    }
 
     changeSheet(index: number, sheetName: string): void {
         if (isNull(this.workbook) || isBlank(sheetName)) {
@@ -325,7 +338,7 @@ export class XslTemplate implements OnInit, OnDestroy {
                     rows: rows,
                     column_ids: cid,
                     name: sheetName,
-                    id_index: row_id ,
+                    id_index: row_id,
                     first_row: first_row,
                     last_row: last_row
                 };

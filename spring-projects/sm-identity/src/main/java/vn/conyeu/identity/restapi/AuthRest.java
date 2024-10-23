@@ -3,11 +3,16 @@ package vn.conyeu.identity.restapi;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
+import vn.conyeu.identity.annotation.PrincipalId;
 import vn.conyeu.identity.domain.*;
 import vn.conyeu.identity.dtocls.SignUpDto;
 import vn.conyeu.identity.service.AccountService;
@@ -76,6 +81,17 @@ public class AuthRest {
         account.setInfo(info);
 
         account = service.createNew(account);
-        return tokenService.buildToken(account);
+
+        AuthToken authToken = tokenService.buildToken(account);
+        return authToken;
+
     }
+
+    @PostMapping("signout")
+    public Object signout(@AuthenticationPrincipal Principal principal) {
+        tokenService.deleteById(principal.getToken().getId());
+        SecurityContextHolder.getContext().setAuthentication(null);
+        return ObjectMap.setNew("alert_msg", "Đăng xuất thành công");
+    }
+
 }

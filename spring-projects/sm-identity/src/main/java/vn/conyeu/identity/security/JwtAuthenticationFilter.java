@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import vn.conyeu.common.domain.LogDetail;
@@ -33,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 principalService.authenticationByToken(accessToken);
             }
             catch (JwtException exp) {
+                SecurityContextHolder.clearContext();
                 String code = IdentityHelper.extractCode(exp);
                 IdentityHelper.sendError(response, LogDetail.e401(code)
                         .message(exp.getMessage()).throwable(exp)

@@ -37,7 +37,7 @@ public class HttpLogService extends LongUIdService<HttpLog, HttpLogRepo> {
             HttpLog log = new HttpLog(requestId);
             applyRequestLog(log, logger.request());
             applyResponseLog(log, logger.response());
-            return save(log);
+            return saveAndReturn(log);
         }
 
         else {
@@ -51,14 +51,14 @@ public class HttpLogService extends LongUIdService<HttpLog, HttpLogRepo> {
         else {
             HttpLog log = new HttpLog(requestId);
             applyRequestLog(log, request);
-            return save(log);
+            return saveAndReturn(log);
         }
     }
 
     public HttpLog save(String requestId, ResponseLog responseLog) {
         HttpLog log = findByRequestId(requestId).orElseThrow(()-> noRequestId(requestId));
         applyResponseLog(log, responseLog);
-        return save(log);
+        return saveAndReturn(log);
     }
 
     public boolean existsByRequestId(String requestId) {

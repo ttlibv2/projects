@@ -66,10 +66,10 @@ public class IdentitySecurityConfigurer extends SecurityAdapter {
                 .deleteCookies("JSESSIONID"));
 
 
-        http.authorizeHttpRequests(cfg -> {
-           cfg.requestMatchers("/auth/**").permitAll();
-           cfg.requestMatchers("/accounts/**").authenticated();
-        });
+//        http.authorizeHttpRequests(cfg -> {
+//           cfg.requestMatchers("/auth/**").permitAll();
+//           cfg.requestMatchers("/accounts/**").authenticated();
+//        });
 
         //return super.filterChainImpl(http);
         return http.build();

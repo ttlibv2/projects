@@ -5,8 +5,9 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
-import org.springframework.security.core.parameters.P;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.service.LongUIdService;
 import vn.conyeu.commons.utils.Asserts;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Service
+@CacheConfig(cacheNames = "account_token")
 public class TokenService extends LongUIdService<AccountToken, AccountTokenRepo> {
     private final JwtConfig config;
 
@@ -132,7 +134,7 @@ public class TokenService extends LongUIdService<AccountToken, AccountTokenRepo>
         AccountToken accountToken = new AccountToken();
         accountToken.setAccount(new Account(accountId));
         accountToken.setToken(token);
-        return save(accountToken).getToken();
+        return saveAndReturn(accountToken).getToken();
     }
 
     public boolean isTokenValid(String token, Principal principal) {
@@ -142,7 +144,17 @@ public class TokenService extends LongUIdService<AccountToken, AccountTokenRepo>
     }
 
 
+    @Cacheable(key = "{#methodName, #token}")
     public Optional<AccountToken> findByToken(String token) {
         return repo().findByToken(token);
+    }
+
+    @CacheEvict()
+    public void deleteById(Long entityId) {
+        super.deleteById(entityId);
+    }
+
+    @CacheEvict()
+    public void clearCache() {
     }
 }

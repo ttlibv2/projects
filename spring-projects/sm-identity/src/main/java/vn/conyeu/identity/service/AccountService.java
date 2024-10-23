@@ -1,7 +1,6 @@
 package vn.conyeu.identity.service;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.service.LongUIdService;
 import vn.conyeu.identity.domain.Account;
@@ -22,11 +21,9 @@ public class AccountService extends LongUIdService<Account, AccountRepo> {
     }
 
     @CacheEvict(value = "principal")
-    public Account save(Account account) {
-        return super.save(account);
+    public Account saveAndReturn(Account account) {
+        return super.saveAndReturn(account);
     }
-
-
 
     public Optional<Account> findByEmail(String email) {
         return repo().findByEmail(email);

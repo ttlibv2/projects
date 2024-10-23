@@ -124,6 +124,7 @@ public class PrincipalService implements UserDetailsService, UserDetailsChecker,
 
         Account account = optional.get().getAccount();
         Principal principal = new Principal(account, subject);
+        principal.setToken(optional.get());
 
         // validate info + state user
         check(principal);

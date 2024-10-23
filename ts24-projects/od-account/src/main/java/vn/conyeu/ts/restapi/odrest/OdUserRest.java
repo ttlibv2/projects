@@ -27,7 +27,7 @@ public class OdUserRest extends OdBaseRest {
 
     @PostMapping("login")
     public ClsUser login(@PrincipalId Long userLogin) {
-        ClsUser clsUser = tsApp().login();
+        ClsUser clsUser = tsApp(userLogin).login();
         userService.update(userLogin, clsUser);
         return clsUser;
     }

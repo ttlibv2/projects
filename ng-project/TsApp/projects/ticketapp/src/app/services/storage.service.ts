@@ -20,7 +20,6 @@ const {isNull, arrayToJson} = Objects;
 
 
 
-
 export class StorageData {
     config: AppConfig;
     lsChanel: Chanel[];
@@ -39,22 +38,16 @@ export class StorageData {
     lsProduct: cls.ClsProduct[];
     lsReplied: cls.ClsReplied[];
     agTemplate: Template;
-    catalog:Catalog;
+
 
     set_config(data:AssignObject<AppConfig>): this{
-        //console.log(`set_config`, data);
         this.config = AppConfig.from(data);
         return this;
     }
 
     up_config(field: any, data: any): this {
-       // console.log(`set_${field}`, data);
         this.config.update({[field]: data});
         return this;
-    }
-
-
-    clear() {
     }
 
     static from(data: AssignObject<StorageData>):StorageData {
@@ -70,12 +63,14 @@ export class StorageData {
 
 }
 
+
 @Injectable({providedIn: 'root'})
 export class StorageService {
     private _cache = StorageData.getDefault();
 
 
-    constructor(private db: DBService) {}
+    constructor(private db: DBService) {
+    }
 
     private up_config<KEY extends keyof AppConfig, VAL extends AppConfig[KEY]>(field: KEY, data: VAL): Observable<any> {
         const local = () => this._cache.up_config(field, data);
@@ -98,6 +93,14 @@ export class StorageService {
 
     set_loginUser(user: User): Observable<User> {
         return this.up_config('loginUser', user);
+    }
+
+    set_catalog(catalog: AssignObject<Catalog>): Observable<Catalog> {
+        return this.up_config('catalog', <any>catalog);
+    }
+
+    set_catalogWithKey(key: string, catalog: any): Observable<{[key:string]: Catalog}> {
+        return this.set_catalog({[key]: catalog}).pipe(map(_ => ({[key]: catalog})));
     }
 
     set_i18n(lang: string, data: Translation): Observable<Translation> {
@@ -125,9 +128,10 @@ export class StorageService {
 
 
     clearCache() {
-        this.set_loginUser(undefined);
-        this.set_loginToken(undefined);
-        this._cache.clear();
+        //this.set_loginUser(undefined);
+       // this.set_loginToken(undefined);
+        this.set_catalog(undefined);
+        
     }
 
     //@formatter:off
@@ -171,7 +175,7 @@ export class StorageService {
     get lsTicketType(): cls.ClsTicketType[] { return this.cache.lsTicketType;}
     get lsProduct(): cls.ClsProduct[] { return this.cache.lsProduct;}
     get lsReplied(): cls.ClsReplied[] { return this.cache.lsReplied;}
-    get catalog(): Catalog { return this.cache.catalog;}
+    get catalog(): Catalog { return this.cache.config.catalog;}
     get config(): AppConfig { return this.cache.config;}
 
     //-------------table_list

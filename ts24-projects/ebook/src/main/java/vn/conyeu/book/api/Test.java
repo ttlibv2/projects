@@ -1,12 +1,10 @@
 package vn.conyeu.book.api;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,8 +16,6 @@ import vn.conyeu.book.service.BookDtoService;
 import vn.conyeu.book.service.ChapterDtoService;
 import vn.conyeu.commons.utils.Objects;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -68,7 +64,7 @@ public class Test {
         BookDto book = optional.get();
 
         // save info
-        bookService.save(book);
+        bookService.saveAndReturn(book);
 
         // find chapter -> save
         Long totalPage = book.getTotalPage();
@@ -81,7 +77,7 @@ public class Test {
 
             // save page
             book.setCurrentPage(page);
-            bookService.save(book);
+            bookService.saveAndReturn(book);
         }
 
 
@@ -110,7 +106,7 @@ public class Test {
             }
 
             dto.setGetHtml(true);
-            chapterService.save(dto);
+            chapterService.saveAndReturn(dto);
         }
 
         return chapterPage.getSize();
@@ -153,7 +149,7 @@ public class Test {
 
             // update chapter
             first.setSaveHtml(true);
-            chapterService.save(first);
+            chapterService.saveAndReturn(first);
         }
 
         return chapterPage.size();

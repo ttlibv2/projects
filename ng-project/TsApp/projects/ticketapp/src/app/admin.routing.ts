@@ -67,9 +67,17 @@ const appRoutes: Route[] = [
                 loadChildren: () => import('./views/user-config/user-config.module').then(m => m.UserConfigModule)
             },
             {
+                path: 'ag-field',
+                loadChildren: () => import('./views/ag-field/ag-field.module').then(m => m.AgFieldModule)
+            },
+            {
+                path: 'react-to-angular',
+                loadChildren: () => import('./views/react2ng/item-routing.module').then(m => m.Rect2NgRoutingModule)
+            },
+            {
                 path: '**',
                 pathMatch: 'prefix',
-                redirectTo: 'softwares'
+                redirectTo: 'ticket-list'
             }
         ]
     }

@@ -17,4 +17,5 @@ public class GroupHelpRest extends LongUIdRest<GroupHelp, GroupHelpService> {
         super(service);
     }
 
+
 }

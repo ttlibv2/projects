@@ -1,6 +1,8 @@
 package vn.conyeu.ts.service;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.conyeu.ts.domain.Software;
 import vn.conyeu.ts.repository.SoftwareRepo;
@@ -20,5 +22,8 @@ public class SoftwareService extends LongUIdService<Software, SoftwareRepo> {
         return super.findAll();
     }
 
-
+    @Cacheable(cacheNames = "softwares", key = "#pageable")
+    public Page<Software> findAll(Pageable pageable) {
+        return super.findAll(pageable);
+    }
 }

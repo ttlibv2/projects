@@ -159,11 +159,11 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
       cellRenderer: (p: any) => `<a href="${this.link(p.data.id)}" target="_blank" class="open_link">${p?.value}</i></a>`,
       cellStyle: { 'color': 'red', 'font-weight': 'bold' }
     },
-    { headerName: 'Tên hiển thị', field: 'display_name', colId: 'display_name', width: 400 },
+    { headerName: 'Tên hiển thị', field: 'display_name', colId: 'display_name', width: 400, wrapText:true },
     { headerName: 'E-mail', field: 'email', colId: 'email', width: 230 },
     { headerName: 'Số điện thoại', field: 'mobile', colId: 'mobile', width: 129 },
     { headerName: 'Người liên hệ', field: 'customer_name', colId: 'customer_name', width: 168 },
-    { headerName: 'Tên công ty', field: 'company_name', colId: 'company_name', width: 260 }
+    // { headerName: 'Tên công ty', field: 'company_name', colId: 'company_name', width: 260 }
   ];
 
   get visiblePersonBtn(): boolean {

@@ -35,7 +35,8 @@ import { FormGroup, FormsBuilder } from "ts-ui/forms";
 import { Utils } from "./utils";
 import { ImportData } from "./import-data";
 import { OdPartnerService } from "../../services/od-partner.service";
-const { notNull, notEmpty, isEmpty, isNull, isFalse, isTrue } = Objects;
+import { AuthService } from "../../services/auth.service";
+const { notNull, notEmpty, isEmpty, isNull, notBlank, isTrue, isFalse } = Objects;
 
 export type TicketState = 'add' | 'update' | 'delete';
 
@@ -129,11 +130,6 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   readonly toolActions: MenuItem[] = [
     {
-      label: "Xóa cache",
-      icon: "pi pi-home",
-      command: (event) => this.clearCache(),
-    },
-    {
       label: "Cập nhật DL mẫu",
       icon: "pi pi-home",
       command: _ => this.viewTemplateSetting('ticket_template'),
@@ -143,11 +139,23 @@ export class TicketFormComponent implements OnInit, OnDestroy {
       icon: "pi pi-at",
       command: _ => this.viewTemplateSetting('email_template'),
     },
+    { separator: true, label: '1111' },
     {
       label: "Nạp danh sách lỗi",
       icon: "pi pi-file-excel",
       command: _ => this.openDialogImportXsl(),
     },
+    { separator: true, label: '1111' },
+    {
+      label: "Xóa cache",
+      icon: "pi pi-trash",
+      command: _ => this.clearCache(),
+    },
+    {
+      label: "Đăng xuất",
+      icon: "pi pi-sign-out",
+      command: _ => this.signout(),
+    }
   ];
 
   readonly labelOptions: OptionLabel[] = [
@@ -184,9 +192,11 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   ticketTemplate: TicketTemplate;
   userLogin: User;
   viewTemplate: boolean = false
+  inputTicket: Ticket;
 
   //options: TicketOption = TicketOption.createDef();
-  ticketIsSend: boolean = false;
+  //ticketIsSend: boolean = false;
+  visibleResult: boolean = false;
   utils: Utils;
 
   // use for dialogRef
@@ -198,9 +208,12 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   @Input()
   set formData(input: Ticket) {
-    if (notNull(input)) {
-      this.utils.reset(input, {});
-      this.ticketIsSend = input.hasSend();
+    this.inputTicket = input;
+    this.visibleResult = notBlank(input?.ticket_number);
+    if (notNull(input) && notNull(this.utils)) {
+      this.utils?.reset(input, {});
+      this.inputTicket = undefined;
+      //this.ticketIsSend = input.hasSend();
     }
   }
 
@@ -223,6 +236,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     public readonly odSrv: OdPartnerService,
     public readonly storage: StorageService,
     public readonly datePipe: DatePipe,
+    private authSrv: AuthService,
 
     private cref: ChangeDetectorRef,
 
@@ -246,11 +260,17 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     this.userLogin = this.storage.loginUser;
     this.utils = new Utils(this);
 
-
-    this.loadCatalogs(true, true).subscribe({
+    this.loadCatalogs({autoLoad: true, useCache: true}).subscribe({
       next: _ => {
         this.createNew(this.templateDefault);
-        this.openDialogImportXsl();
+        //this.openDialogImportXsl();
+        if (notNull(this.inputTicket)) {
+          this.utils.reset(this.inputTicket);
+          this.inputTicket = undefined;
+        }
+
+
+        
       }
     });
 
@@ -270,10 +290,13 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     this.loadCatalogs().subscribe();
   }
 
-  loadCatalogs(autoLoad: boolean = false, useCache: boolean = false): Observable<any> {
+  loadCatalogs(options?: {autoLoad?: boolean, useCache?: boolean}): Observable<any> {
+    options = Object.assign({autoLoad: false, useCache: false}, options);
+
     return new Observable((observer: Observer<any>) => {
 
-      if (useCache === true && notNull(this.storage.catalog)) {
+      if (options.useCache === true && notNull(this.storage.catalog)) {
+        console.log(`loadCatalogs => from cache`);
         this.catalog = this.storage.catalog;
         observer.next(this.catalog);
         observer.complete();
@@ -283,7 +306,10 @@ export class TicketFormComponent implements OnInit, OnDestroy {
         const cateRef = this.modal.open(CatalogComponent, {
           header: 'Danh mục cần lấy ?',
           width: '700px',
-          data: { templateCode: ['ticket_template', 'email_template'], autoLoad }
+          data: { 
+            templateCode: ['ticket_template', 'email_template'], 
+            autoLoad: options.autoLoad 
+          }
         });
 
         cateRef.onClose.subscribe({
@@ -310,7 +336,8 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   selectTemplate(template: TicketTemplate, checkData: boolean = true) {
 
-    if (isNull(template) || (checkData === true && isEmpty(template.data))) {
+    const hasShow = isNull(template) || (checkData === true && isEmpty(template.data));
+    if (isFalse(this.viewTemplate) && hasShow) {
       const ref = this.alert.warning({
         title: 'Thông báo !!',
         summary: 'Bạn chưa cấu hình dữ liệu mặc định cho Ticket. Bạn có muốn cấu hình luôn không ?',
@@ -326,14 +353,33 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
     }
     else {
-      this.ticketTemplate = template;
-      const data = template.data;
-      if (notEmpty(data)) {
-        this.templateToTicket(data).subscribe({
-          error: err => console.error(err),
-          next: json => this.utils.reset(json, { func: `selectTemplate` })
-        });
-      }
+
+      const func = () => {
+        this.ticketTemplate = template;
+        const data = template.data;
+        if (notEmpty(data)) {
+          this.templateToTicket(data).subscribe({
+            error: err => console.error(err),
+            next: json => this.utils.reset(json, { func: `selectTemplate` })
+          });
+        }
+      };
+
+      // if (this.form.dirty) {
+      //   let ref = this.alert.warning({
+      //     title: 'Cảnh báo !!',
+      //     summary: `Dữ liệu trên [form] đã thay đổi. Bạn có muốn cập nhật lại dữ liệu không ?`,
+      //     actions: [
+      //       {label: 'Thay đổi', onClick: e => e.dynamicRef.close('ok')},
+      //       {label: 'Đóng', onClick: e => e.dynamicRef.close('cancel')}
+      //     ]
+      //   });
+      //   ref.onClose.subscribe(act => {
+      //     if (act === 'ok') func();
+      //   });
+      // }
+      // else 
+      func();
     }
 
 
@@ -399,7 +445,8 @@ export class TicketFormComponent implements OnInit, OnDestroy {
           this.ticketSrv.deleteById(ticket_id).subscribe({
             error: msg => this.toast.error(`[${ticket_id}] Không xóa được ticket này ==> ${msg}`),
             next: ok => {
-              this.onDelete.emit({state: 'delete', ticket: this.formData, result: ok});
+              this.onDelete.emit({ state: 'delete', ticket: this.formData, result: ok });
+              this.createNew();
             }
           });
         }
@@ -614,6 +661,15 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   }
 
+  signout(): void {
+    const signinUrl = routerUrl.signinUrl;
+    this.clearCache();
+    this.authSrv.signout().subscribe({
+      error: _ => this.router.navigate([signinUrl]),
+      next: _ => this.router.navigate([signinUrl])
+    })
+  }
+
 
   //======================
 
@@ -685,7 +741,9 @@ export class TicketFormComponent implements OnInit, OnDestroy {
           required: true, value: 10,
           options: { min: 2, max: 60 }
         }
-      ]
+      ],
+      validateXsl: wb => false
+
     });
 
     //

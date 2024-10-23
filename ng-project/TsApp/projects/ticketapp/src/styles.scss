@@ -44,3 +44,23 @@
 .ag-header-group-text {
   text-align: center;
 }
+
+
+.ql-snow .ql-color-picker .ql-picker-item {
+  height: 1.5rem!important;
+  width: 1.5rem!important;
+}
+
+.borderless {
+  .p-fieldset {
+    border-width: 0;
+
+    .p-fieldset-legend {
+      border-width: 0;
+
+      span:not(:empty) {
+        padding: 0rem;
+      }
+    }
+  }
+}

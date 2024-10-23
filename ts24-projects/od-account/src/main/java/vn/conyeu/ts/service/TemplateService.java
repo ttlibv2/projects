@@ -1,11 +1,11 @@
 package vn.conyeu.ts.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.common.service.LongUIdService;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.domain.Template;
@@ -14,7 +14,6 @@ import vn.conyeu.ts.repository.TemplateRepo;
 import java.util.List;
 
 @Service
-//@CacheConfig(cacheNames = "templates")
 public class TemplateService extends LongUIdService<Template, TemplateRepo> {
 
     @Autowired
@@ -27,27 +26,27 @@ public class TemplateService extends LongUIdService<Template, TemplateRepo> {
         return "templates";
     }
 
-//    @Cacheable()
     public List<Template> findAll(Long userId) {
         return repo().findTemplateByUser(userId);
     }
 
-//    @Cacheable()
+    @Cacheable(cacheNames = "templates", key = "{#methodName,#userId,#threads,#pageable}")
     public Page<Template> findAll(Long userId, List<String> threads, Pageable pageable) {
-        if(Objects.isEmpty(threads)) return findAll(userId, pageable);
+        if (Objects.isEmpty(threads)) return findAll(userId, pageable);
         else return repo().findTemplateByUser(userId, threads, pageable);
     }
 
-//    @Cacheable()
+    @Cacheable(cacheNames = "templates", key = "{#methodName,#userId,#pageable}")
     public Page<Template> findAll(Long userId, Pageable pageable) {
         return repo().findTemplateByUser(userId, pageable);
     }
 
-//    @Cacheable()
+    @Cacheable(cacheNames = "templates", key = "{#methodName,#userId,#thread,#pageable}")
     public Page<Template> findTemplate(String thread, Long userId, Pageable pageable) {
         return repo().findTemplateByUserAndCode(thread, userId, pageable);
     }
 
+    @Cacheable(cacheNames = "templates", key = "{#methodName,#userId,#thread}")
     public List<Template> findTemplate(String thread, Long userId) {
         return repo().findTemplateByUserAndCode(thread, userId);
     }
@@ -57,20 +56,19 @@ public class TemplateService extends LongUIdService<Template, TemplateRepo> {
         return super.createNew(entity);
     }
 
-    //@CacheEvict(allEntries = true)
-    public Template save(Template template) {
+    public Template saveAndReturn(Template template) {
         clearCache();
-        return super.save(template);
+        return super.saveAndReturn(template);
     }
 
-   // @CacheEvict(allEntries = true)
     public void deleteById(Long entityId) {
         super.deleteById(entityId);
         clearCache();
     }
 
-    //@CacheEvict(allEntries = true)
+    @CacheEvict(cacheNames = "templates")
     public void clearCache() {
         cacheService.clearAll();
     }
+
 }

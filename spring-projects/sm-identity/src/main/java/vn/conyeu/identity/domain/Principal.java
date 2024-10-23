@@ -20,6 +20,7 @@ public class Principal implements UserDetails {
     @Getter
     private final Account account;
     private String sessionId;
+    private AccountToken token;
 
 
     public Principal(Account account) {
@@ -34,6 +35,9 @@ public class Principal implements UserDetails {
     public void setSessionId(String sessionId) {
         Asserts.isNull(this.sessionId, "The sessionId has set");
         this.sessionId = sessionId;
+    }
+    public void setToken(AccountToken token) {
+        this.token = token;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

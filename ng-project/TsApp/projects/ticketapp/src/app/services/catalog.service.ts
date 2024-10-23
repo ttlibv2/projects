@@ -29,7 +29,6 @@ export const CATALOG_MAP: { [key: string]: (db: StorageService) => LocalTable } 
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService extends ClientService {
-  private cacheMap: Map<string, any> = new Map();
 
   read_db(lsName: string = 'all'): Observable<Catalog> {
     const allKey = lsName === 'all' ? Object.keys(CATALOG_MAP) : lsName.split(',');
@@ -44,7 +43,7 @@ export class CatalogService extends ClientService {
     const url = '/ts-api/catalog/get-all';
     return this.get(url, params).pipe(map(res => {
       const newData = Catalog.from(res);
-      this.saveCatalogToDb(newData);
+      this.saveCatalogToDb(newData, true);
       return newData;
     }));
   }
@@ -64,7 +63,11 @@ export class CatalogService extends ClientService {
 
   private saveCatalogToDb(catalog: any, hasSave: boolean = false): void {
     if (hasSave === true) {
+      this.storage.set_catalog(catalog);
+
       for (const key of Object.keys(catalog)) {
+       // this.storage.set_catalogWithKey(key, catalog[key]).subscribe();
+
         if (!(key in CATALOG_MAP)) continue;
         else {
           CATALOG_MAP[key](this.storage).bulkPut(catalog[key]).subscribe({
@@ -77,7 +80,6 @@ export class CatalogService extends ClientService {
 
   clearCache(): Observable<any> {
     const url = '/ts-api/catalog/clear-cache';
-    this.cacheMap.clear();
     return this.get(url);
   }
 

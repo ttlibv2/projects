@@ -90,7 +90,11 @@ export class SigninComponent implements OnInit {
     this.asyncLogin = true;
 
     this.auth.signin(obj).subscribe({
-      error: err => {this.asyncLogin = false; console.log(err)},
+      error: err => {
+        console.log(err);
+        this.asyncLogin = false; 
+        this.toast.error( 'error <=> console');
+      },
       next: (user: User) => {
         this.asyncLogin = false;
         this.toast.success( 'Đăng nhập thành công.');

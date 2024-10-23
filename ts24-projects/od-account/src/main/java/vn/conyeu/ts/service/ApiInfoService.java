@@ -73,7 +73,7 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
 
         checkSNameExist(info.getAppName());
         checkBaseUrlExist(info.getAppUID(), info.getBaseUrl());
-        return save(info);
+        return saveAndReturn(info);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
         infoOld.assignFromEntity(info);
 
         Validators.throwValidate(validator, infoOld);
-        return Optional.of(save(infoOld));
+        return Optional.of(saveAndReturn(infoOld));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
         infoOld.assignFromMap(overrides);
 
         Validators.throwValidate(validator, infoOld);
-        return Optional.of(save(infoOld));
+        return Optional.of(saveAndReturn(infoOld));
     }
 
 
@@ -170,7 +170,7 @@ public class ApiInfoService extends LongUIdService<ApiInfo, ApiInfoRepo> {
     public void updateMenuLink(String appName, ObjectMap links) {
         ApiInfo apiInfo = getByAppName(appName);
         apiInfo.setLinks(links);
-        save(apiInfo);
+        saveAndReturn(apiInfo);
     }
 
 }

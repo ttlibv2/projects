@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -925,5 +926,12 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
 
     public void removeIf(String field, Predicate<Object> predicate) {
         if(predicate.test(get(field))) remove(field);
+    }
+
+    public void addToHeader(BiConsumer<String, List<String>> consumer) {
+        for(String key: keySet()) {
+            List<String> values = getList(key, String.class);
+            consumer.accept(key, values);
+        }
     }
 }

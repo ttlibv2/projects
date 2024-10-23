@@ -1,5 +1,7 @@
 <div *ngIf="visibleForm" class="ticket-form" id="ticketListForm" [@toggle]="visibleForm == true" (@toggle.done)="endAnimationForm()">
-    <ts-ticket-form [formData]="currentTicket" (onSave)="saveTicket($event)" [hasBorderEnd]="true"></ts-ticket-form>
+    <ts-ticket-form [formData]="currentTicket" 
+        (onDelete)="saveTicket($event)"
+        (onSave)="saveTicket($event)"></ts-ticket-form>
 </div>
 
 <div class="ticket-list grid mt-1">
@@ -38,7 +40,7 @@
 
             <p-divider [layout]="'vertical'"></p-divider>
             <p-checkbox [binary]="true" label="Hiển thị kênh" formControlName="visibleChanel"></p-checkbox>
-            <p-checkbox [binary]="true" label="Hiển thị form" formControlName="visibleForm"></p-checkbox>
+            <p-checkbox [binary]="true" label="Hiển thị form" formControlName="visibleForm" (onChange)="changeVisibleForm($event.checked)"></p-checkbox>
 
             <p-divider [layout]="'vertical'"></p-divider>
 

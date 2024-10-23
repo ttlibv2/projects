@@ -1,44 +1,41 @@
 import {
     AfterContentInit,
     Component,
-    ContentChild,
     ContentChildren,
-    EventEmitter,
     Input,
     OnDestroy,
     OnInit,
-    Output,
     QueryList,
     TemplateRef,
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
 import { AgTable, ExportXslOption, TableColumn, TableOption } from "ts-ui/ag-table";
-import { FormGroup, FormsBuilder, FormsModule } from "ts-ui/forms";
+import { FormGroup, FormsBuilder } from "ts-ui/forms";
 import { ToastService } from "ts-ui/toast";
 import { ModalService } from "ts-ui/modal";
 import { Asserts, Callback, Objects, Page, Supplier } from "ts-ui/helper";
 import { PrimeTemplate } from "primeng/api";
-import { TranslatePipe } from "@ngx-translate/core";
-import { delay, map, Observable, of } from 'rxjs';
+import { delay, map, Observable } from 'rxjs';
 import { StorageService } from '../../../services/storage.service';
 import { Alert } from 'ts-ui/alert';
-import { GetRowIdFunc } from '@ag-grid-community/core';
 import { RxjsUtil } from '../rxjs-util';
-import { Workbook } from 'exceljs';
-import { XslTemplate } from '../select-file/xsl-template';
+import { AbstractColDef, ColDef, ColDefField, ColGroupDef, ColumnGroup } from '@ag-grid-community/core';
 
-const { notBlank, isNull } = Objects;
+const { notBlank, isNull, notNull, isFalse, notEmpty } = Objects;
 
 export interface Field {
     fieldId: string;
     label: string;
     type: string;
     class?: string;
+    view?: boolean;
     placeholder?: string;
     options?: any;
     tb_width?: number;
     tb_option?: TableColumn;
+    fieldType?: string | 'group' | 'control' | 'array';
+    children?: Field[];
 }
 
 interface State {
@@ -74,6 +71,9 @@ export interface MvcOption<E = any> {
 
     // export
     xsl_options?: Partial<ExportXslOption>;
+
+    // form
+    formGroup?: (fb: FormsBuilder) => FormGroup;
 
 
 
@@ -125,8 +125,9 @@ export class MvcComponent<E = any> implements AfterContentInit, OnInit, OnDestro
 
     @Input()
     set options(opt: MvcOption<E>) {
+        Asserts.notEmpty(opt.formFields, "@MvcOption.formFields");
 
-        if (Objects.isNull(opt.tbColumns)) {
+        if (isNull(opt.tbColumns)) {
 
             opt.tbColumns = [
                 {
@@ -137,12 +138,7 @@ export class MvcComponent<E = any> implements AfterContentInit, OnInit, OnDestro
                 }
             ];
 
-            const columns = opt.formFields.map(f => ({
-                ...f.tb_option, field: f.fieldId,
-                headerName: f.label, width: f.tb_width
-            }));
-
-            opt.tbColumns.push(...columns);
+            opt.tbColumns.push(...opt.formFields.map(f =>this.formFieldToColumn(f)));
 
         }
 
@@ -151,10 +147,19 @@ export class MvcComponent<E = any> implements AfterContentInit, OnInit, OnDestro
             opt.tbOption.getRowId = e => `RID_${e.data[opt.rowNameId]}`;
         }
 
+        if(notNull(opt.formGroup)) {
+            this.formGroup = opt.formGroup(this.fb);
+        }
+        else {
+
+            this.formGroup = this.fb.group({});
+            for(const field of opt.formFields) {
+                let c = this.fb.control({value: null});
+                this.formGroup.addControl(field.fieldId, c);
+            }
+        }
+
         this._mvcOption = Objects.mergeDeep({}, this._defaultOption, opt);
-
-
-
     }
 
     @Input() formGroup: FormGroup;
@@ -190,6 +195,23 @@ export class MvcComponent<E = any> implements AfterContentInit, OnInit, OnDestro
         private config: StorageService,
         private modal: ModalService,
         private alert: Alert) {
+    }
+
+    private formFieldToColumn(f: Field): any {
+        const column: AbstractColDef = {...f.tb_option};
+        column.headerName = column.headerName || f.label || f.fieldId;
+
+        if(notEmpty(f.children)) {
+            let col:ColGroupDef = <any>column;
+            col.groupId = f.fieldId;
+            col.children = f.children.map(c => this.formFieldToColumn(c));
+        }
+        else {
+            let col:ColDef = <any>column;
+            col.field = f.fieldId
+        }
+
+        return column;
     }
 
     ngAfterContentInit() {

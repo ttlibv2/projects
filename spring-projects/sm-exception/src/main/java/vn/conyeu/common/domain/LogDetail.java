@@ -230,10 +230,11 @@ public class LogDetail implements Serializable {
 
         return new LogDetail()
                 .status(objectMap.getInteger("status", 500))
-                .message(objectMap.getString("message"))
+                .message("Xảy ra lỗi từ máy chủ")
                 .exception(objectMap.getString("exception"))
                 .throwable(objectMap.get("throwable", Throwable.class))
-                .custom("trace", objectMap.get("trace"));
+                .custom("trace", objectMap.get("trace"))
+                .custom("msg_detail", objectMap.getString("message"));
     }
 
     public ObjectMap createMapResponse(ErrorAttributeOptions options) {

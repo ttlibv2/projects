@@ -2,6 +2,8 @@ import {BaseModel} from "./base-model";
 import {AuthToken, RememberUser, User} from "./user";
 import {Translation} from "./translation";
 import {Objects, TsMap, AssignObject} from "ts-ui/helper";
+import { Catalog } from "./catalog";
+const {isNull} = Objects;
 
 export class AppConfig extends BaseModel {
     currentLang: string;
@@ -12,6 +14,7 @@ export class AppConfig extends BaseModel {
     currentI18N: Translation;
     currentTemplate: TsMap<string, string>;
     tsAppUID: string;
+    catalog:Catalog;
 
     setNull(field: string): this {
         this.delete(field);
@@ -25,6 +28,11 @@ export class AppConfig extends BaseModel {
 
     set_loginToken(token: AuthToken) {
         this.loginToken = token;
+    }
+
+    set_catalog(catalog:AssignObject<Catalog>): void  {
+        if(isNull(this.catalog))this.catalog = Catalog.from(catalog);
+        else this.catalog.update(catalog);
     }
 
     static from(json: AssignObject<AppConfig>): AppConfig {

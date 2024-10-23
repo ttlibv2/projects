@@ -30,7 +30,7 @@ public class UserService extends LongIdService<TsUser, UserRepo> {
         else {
             TsUser tsUser = optional.get();
             tsUser.setTsId(clsUser.getId());
-            return Optional.ofNullable(save(tsUser));
+            return Optional.ofNullable(saveAndReturn(tsUser));
         }
     }
 }

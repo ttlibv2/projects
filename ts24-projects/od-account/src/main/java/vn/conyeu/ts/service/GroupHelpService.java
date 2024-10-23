@@ -15,7 +15,7 @@ public class GroupHelpService extends LongUIdService<GroupHelp, GHelpRepo> {
         super(domainRepo);
     }
 
-    @Cacheable(cacheNames = "groupHelps")
+    @Cacheable(cacheNames = "gHelps")
     public List<GroupHelp> findAll() {
         return super.findAll();
     }

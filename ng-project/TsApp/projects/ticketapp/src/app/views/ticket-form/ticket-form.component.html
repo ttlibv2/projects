@@ -119,7 +119,8 @@
                 </div>
                 <div class="p-fluid xl:col-3 lg:col-6 md:col-6 xxl:col-1">
                     <label for="od_partner_id">KH_ID</label>
-                    <input id="od_partner_id" pInputText formControlName="od_partner_id" readonly showClear="true" class="font-bold text-danger">
+                    <input id="od_partner_id" pInputText formControlName="od_partner_id" readonly showClear="true"
+                        class="font-bold text-danger">
                 </div>
                 <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
                     <label for="content_required">Nội dung hỗ trợ <span class="p-text-danger">(*)</span></label>
@@ -165,7 +166,7 @@
                 <div class="p-fluid col-3">
                     <label for="emailTemplate">..</label>
                     <div class="flex gap-2">
-                        <p-dropdown class="ct_email flex-1" [options]="emailTemplates" optionLabel="title" dataKey="id"
+                        <p-dropdown class="ct_email flex-1" [options]="emailTemplates" optionLabel="title" dataKey="template_id"
                             formControlName="email_template" showClear="true"></p-dropdown>
 
                         <p-button icon="pi pi-eye" severity="help" size="small" (onClick)="openEmailTemplate()"
@@ -254,8 +255,8 @@
             <p-button icon="pi pi-save" severity="info" (onClick)="saveTicket()" [loading]="state?.asyncSaveTicket"
                 loadingIcon="pi pi-sync" label="{{newLabel|translate}}" [disabled]="form.invalid"></p-button>
 
-                <p-button icon="pi pi-search" severity="success" 
-                    (onClick)="searchUser()" label="{{'ticket.search_user' | translate}}"></p-button>
+            <p-button icon="pi pi-search" severity="success" (onClick)="searchUser()"
+                label="{{'ticket.search_user' | translate}}"></p-button>
 
             <p-divider [layout]="'vertical'"></p-divider>
 
@@ -279,12 +280,12 @@
                 (onClick)="idata.clickNext()"></p-button>
 
             @if (!idata.isRunning) {
-                <p-divider [layout]="'vertical'"></p-divider>
+            <p-divider [layout]="'vertical'"></p-divider>
 
-                <p-button link="true" styleClass="p-abort" label="{{'actions.abort_import' | translate}}"
-                    (onClick)="idata.abortData()"></p-button>
+            <p-button link="true" styleClass="p-abort" label="{{'actions.abort_import' | translate}}"
+                (onClick)="idata.abortData()"></p-button>
 
-                <p-button link="true" styleClass="p-abort" label="Chọn tệp khác" (onClick)="idata.chooseFile()"></p-button>
+            <p-button link="true" styleClass="p-abort" label="Chọn tệp khác" (onClick)="idata.chooseFile()"></p-button>
             }
 
         </div>
@@ -294,21 +295,21 @@
         <p-button type="submit" severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
             loadingIcon="pi pi-sync" label="{{newLabel|translate}}" [disabled]="form.invalid"></p-button>
 
-       
+
         <p-button icon="pi pi-search" (click)="searchUser()" label="{{'ticket.search_user' | translate}}"></p-button>
 
 
         <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="{{'ticket.get_cate' | translate}}"></p-button>
-       
-	   <p-button icon="pi pi-result" (click)="viewResultTicket()" label="{{'ticket.view_result' | translate}}"
-            *ngIf="ticketIsSend"></p-button>
-        
-		<p-button icon="pi pi-clone" (click)="copyTicket()" label="{{'ticket.copy' | translate}}"></p-button>
-				<p-divider [layout]="'vertical'"></p-divider>																				
-																								<p-button severity="danger" icon="pi pi-folder-plus" (onClick)="deleteTicket()"
+
+        <p-button icon="pi pi-result" (click)="viewResultTicket()" label="{{'ticket.view_result' | translate}}"
+            *ngIf="visibleResult"></p-button>
+
+        <p-button icon="pi pi-clone" (click)="copyTicket()" label="{{'ticket.copy' | translate}}"></p-button>
+        <p-divider [layout]="'vertical'"></p-divider>
+        <p-button severity="danger" icon="pi pi-folder-plus" (onClick)="deleteTicket()"
             label="{{'actions.delete_ticket' | translate}}" *ngIf="isEditTicket"></p-button>
 
-		<ts-splitButton [icon]="'pi pi-wrench'" label="{{'ticket.other' | translate}}" severity="info"
+        <ts-splitButton [icon]="'pi pi-wrench'" label="{{'ticket.other' | translate}}" severity="info"
             [model]="toolActions" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
 
 

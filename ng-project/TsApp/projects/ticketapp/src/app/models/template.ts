@@ -5,7 +5,7 @@ import { FormField } from "./form-field";
 export type CallbackAssign<E> = Callback<AssignObject<E>, E>;
 export type TemplateThread = 'ticket_template' | 'email_template';
 
-const {isTrue} = Objects;
+const { isTrue, notNull } = Objects;
 
 export class Template<D = any> extends BaseModel {
     template_id?: number;
@@ -19,21 +19,21 @@ export class Template<D = any> extends BaseModel {
     data?: D;
 
     equals(o: any): boolean {
-        if(o instanceof Template) return this === o || this.template_id === o.template_id;
+        if (o instanceof Template) return this === o || this.template_id === o.template_id;
         else return false;
     }
 
     static fromAll(data: AssignObject<Template>): Template {
         const thread = Asserts.notNull(data.thread);
-        if(thread === 'ticket_template') return TicketTemplate.from(data);
-        else if(thread === 'email_template') return EmailTemplate.from(data);
+        if (thread === 'ticket_template') return TicketTemplate.from(data);
+        else if (thread === 'email_template') return EmailTemplate.from(data);
         else return BaseModel.fromJson(Template, data);
     }
 
 }
 
 export class TemplateMap<T extends Template = any> {
-    private readonly map = new TsMap<number, T>();
+    public readonly dataMap = new TsMap<number, T>();
 
     protected get newFunc(): CallbackAssign<T> {
         return object => <any>Template.fromAll(object);
@@ -46,17 +46,17 @@ export class TemplateMap<T extends Template = any> {
      * @returns T
      * */
     get(templateId: number): T {
-        return this.map.get(templateId);
+        return this.dataMap.get(templateId);
     }
 
     /**
      * Set template 
      * @param {T} template the template
      * */
-     set(template: AssignObject<T>): this {
+    set(template: AssignObject<T>): this {
         const newObj = this.newFunc(template);
         Asserts.notNull(newObj?.template_id, "The template_id is null");
-        this.map.set(newObj.template_id, newObj);
+        this.dataMap.set(newObj.template_id, newObj);
         return this;
     }
 
@@ -64,18 +64,21 @@ export class TemplateMap<T extends Template = any> {
      * Set list template 
      * @param templates the list template
      * */
-    set_all(templates: AssignObject<T>[]): this {
-        //console.log(`templates: `, templates);
-        templates.forEach(template => this.set(template));
+    set_all(templates: AssignObject<T>[] | Map<number, T>): this {
+        if (notNull(templates)) {
+            if (templates instanceof Map) this.dataMap.putAll(templates);
+            else if('dataMap' in templates) this.dataMap.putAll(<any>templates['dataMap']);
+            else templates.forEach(template => this.set(template));
+        }
         return this;
     }
-    
+
     /**
      * Delete template by id
      * @param templateId {number}
      * */
     delete(templateId: number): this {
-        this.map.delete(templateId);
+        this.dataMap.delete(templateId);
         return this;
     }
 
@@ -84,7 +87,7 @@ export class TemplateMap<T extends Template = any> {
      * @returns T[] 
      * */
     list(): T[] {
-        return this.map.get_values();
+        return this.dataMap.get_values();
     }
 
     get_default(): T {
@@ -111,8 +114,8 @@ export class EmailTemplate extends Template<EmailTemplateData> {
     override update(object: AssignObject<this>): this {
         return super.update(object);
     }
-    
-    static from(data: AssignObject<EmailTemplate>):EmailTemplate {
+
+    static from(data: AssignObject<EmailTemplate>): EmailTemplate {
         return BaseModel.fromJson(EmailTemplate, data);
     }
 

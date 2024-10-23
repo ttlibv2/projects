@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, booleanAttribute, ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoggerService } from 'ts-ui/logger';
 import { AgTable as Table, TableOption } from 'ts-ui/ag-table';
 import { Ticket } from '../../models/ticket';
@@ -28,7 +28,7 @@ import {
   throwError
 } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Objects, Base64, TsMap, Consumer } from 'ts-ui/helper';
+import { Objects, Base64, TsMap, Consumer, booleanAttribute } from 'ts-ui/helper';
 import { FileSelectEvent, FileUpload } from 'primeng/fileupload';
 import { StorageService } from '../../services/storage.service';
 import { AgTemplateCode } from '../../constant';
@@ -149,8 +149,10 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   @ViewChild(FileUpload)
   fileUpload: FileUpload;
 
-  @Input({ alias: 'visible', transform: booleanAttribute })
+  @Input({ alias: 'visible', transform: (v:any) => booleanAttribute(v, true) })
   set visibleForm(bool: boolean) {
+    console.log(`visibleForm`, bool)
+    this.initVisibleForm = bool;
     this.searchForm.patchControl('visibleForm', bool);
   }
 
@@ -158,7 +160,6 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   set agTemplate(templateCode: string) {
     this.currentTemplateCode = templateCode;
   }
-
 
   get isVisibleChanel(): boolean {
     return this.searchForm.get('visibleChanel').value;
@@ -189,6 +190,9 @@ export class TicketListComponent implements OnInit, AfterContentInit {
     return size == 0 ? 'Chọn tệp đính kèm' : `Bạn đang chọn ${size} tệp`;
   }
 
+
+  private initVisibleForm: boolean;
+
   constructor(
     @Inject(DOCUMENT)
     private document: Document,
@@ -208,17 +212,12 @@ export class TicketListComponent implements OnInit, AfterContentInit {
     this.searchForm = this.fb.group({
       dateOn: [null, Validators.required],
       option: [this.searchOptions[0], Validators.required],
-      visibleChanel: [false],
-      visibleForm: [true]
+      visibleForm: [this.initVisibleForm],
+      visibleChanel: [false]
     });
 
     this.searchForm.controlValueChange('visibleChanel', val => {
       this.chanelChecked(val);
-    });
-
-    this.searchForm.controlValueChange('visibleForm', val => {
-      this.router.navigate([], { relativeTo: this.activatedRoute, queryParamsHandling: 'merge', queryParams: { visible: val } });
-      //if(isFalse(val)) this.computedHeightAgTable(`hide form`);
     });
 
   }
@@ -238,7 +237,6 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit(): void {
-    this.logger.warn(`ngOnInit`);
 
     if (isBlank(this.currentTemplateCode)) {
       this.currentTemplateCode = this.storage.currentTemplate.get(AgTemplateCode.agTicket);
@@ -258,8 +256,16 @@ export class TicketListComponent implements OnInit, AfterContentInit {
     this.loadAgTable(null, () => this.searchTicket());
   }
 
+  changeVisibleForm(visible: boolean): void {
+    console.log(`changeVisibleForm`, visible)
+    this.router.navigate([], { 
+      relativeTo: this.activatedRoute, 
+      //queryParamsHandling: 'merge', 
+      queryParams: { visible: visible } 
+    });
+  }
+
   ngAfterContentInit(): void {
-    this.logger.warn(`ngAfterContentInit`);
     this.computedHeightAgTable(`ngAfterContentInit`);
   }
 
@@ -649,11 +655,4 @@ export class TicketListComponent implements OnInit, AfterContentInit {
     this.files.setAll(event.currentFiles, f => f.name);
   }
 
-  get calcHeight() {
-    const formEl = this.document.getElementById('ticketListForm')?.getBoundingClientRect();
-    const toolEl = this.document.getElementById('ticketListTool').getBoundingClientRect();
-    const formHeight = this.visibleForm && formEl ? (formEl.height + formEl.top) : 0;
-    const toolHeight = toolEl.height + toolEl.top;
-    return this.document.body.getBoundingClientRect().height - toolHeight - formHeight;
-  }
 }

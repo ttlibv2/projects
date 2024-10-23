@@ -372,7 +372,7 @@ public class OdTicketRest extends OdBaseRest {
             default -> throw TsErrors.invalidAction(action);
         }
 
-        return ticketService.save(ticket);
+        return ticketService.saveAndReturn(ticket);
 
 
     }

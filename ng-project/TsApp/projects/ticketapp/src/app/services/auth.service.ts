@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ClientService } from "./client.service";
-import { concatMap, EMPTY, Observable, of, tap } from "rxjs";
+import { concatMap, EMPTY, map, Observable, of, switchMap, tap } from "rxjs";
 import { Objects } from "ts-ui/helper";
 import { AuthToken, ChkUser, SignUpDto } from "../models/user";
 import { UserService } from "./user.service";
@@ -53,7 +53,7 @@ export class AuthService extends ClientService {
       concatMap((token) => this.storage.set_loginToken(token)),
       concatMap((_) => this.storage.set_rememberUser(user)),
       concatMap(() =>
-        this.user.getConfig().pipe(tap((_) => this.storage.set_loginUser(_)))
+        this.user.getConfig().pipe(switchMap(u => this.storage.set_loginUser(u)))
       )
     );
   }

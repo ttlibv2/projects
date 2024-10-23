@@ -1,0 +1,38 @@
+<div class="grid cag-field1">
+    <p-card class="col-12" header="Thông tin AgTable">
+        <form class="grid sm">
+            <div class="p-fluid col-6">
+                <label for="tb_title">Tiêu đề</label>
+                <input pInputText id="tb_title" />
+            </div>
+            <div class="p-fluid col-2">
+                <label for="tb_code">Mã</label>
+                <input pInputText id="tb_code" />
+            </div>
+            <div class="p-fluid col-2">
+                <label for="tb_icon">Svg Icon</label>
+                <input pInputText id="tb_icon" />
+            </div>
+            <div class="p-fluid col-2">
+                <label for="tb_pos">Vị trí</label>
+                <p-inputNumber id="tb_pos" />
+            </div>
+            <div class="p-fluid col-6">
+                <label for="tb_desc">Mô tả</label>
+                <textarea pInputTextarea id="tb_desc" [autoResize]="true" [rows]="2"></textarea>
+            </div>
+            <div class="p-fluid col-6">
+                <label for="tb_state">Column State</label>
+                <textarea pInputTextarea id="tb_state" [autoResize]="true" [rows]="2"></textarea>
+            </div>
+            <div class="col-12 flex gap-2">
+                <p-button severity="info" label="Lưu lại"/>
+                <p-button severity="help" label="Lấy DS"/>
+                <p-button severity="danger" label="Xóa dòng"/>
+                <p-divider layout="vertical"/>
+                <p-button severity="success" label="QL Field" (onClick)="viewDsField()"/>
+            </div>
+        </form>
+    </p-card>
+    <ts-ag-table class="col-12" [columns]="agColumns"></ts-ag-table>
+</div>

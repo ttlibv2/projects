@@ -108,6 +108,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
 
   loadCatalog() {
     const ls = this.agTable.getSelectedRows();
+    
     if (ls.length == 0) {
       this.toast.warning("Vui lòng chọn ít nhất 1 dòng.");
       return;

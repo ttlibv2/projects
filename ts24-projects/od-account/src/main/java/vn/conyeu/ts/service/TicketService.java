@@ -9,7 +9,6 @@ import vn.conyeu.common.exception.BadRequest;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.identity.helper.IdentityHelper;
-import vn.conyeu.ts.domain.Template;
 import vn.conyeu.ts.domain.Ticket;
 import vn.conyeu.ts.domain.TicketDetail;
 import vn.conyeu.ts.domain.TsUser;
@@ -22,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class TicketService extends LongUIdService<Ticket, TicketRepo> {
@@ -148,7 +146,7 @@ public class TicketService extends LongUIdService<Ticket, TicketRepo> {
           //      ticket.setOdImage(imagesToMap(images));
           //  }
 
-            return save(ticket);
+            return saveAndReturn(ticket);
         }
     }
 
