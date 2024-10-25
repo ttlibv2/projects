@@ -9,7 +9,7 @@ import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.restclient.ClientBuilder;
-import vn.conyeu.restclient.RestClient;
+import vn.conyeu.restclient.RClient;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsHelper;
 import vn.conyeu.ts.odcore.domain.ClsRequest;
@@ -33,10 +33,10 @@ public abstract class OdClient2 {
     }
 
     /**
-     * Create RestClient ClientBuilder
+     * Create RClient ClientBuilder
      */
     public ClientBuilder clientBuilder() {
-        return RestClient.builder().baseUrl(cfg.getBaseUrl())
+        return RClient.builder().baseUrl(cfg.getBaseUrl())
                 .defaultContentType(MediaType.APPLICATION_JSON)
                 .defaultQueries(cfg.getQueries())
                 .defaultHeaders(cfg.getHeaders())

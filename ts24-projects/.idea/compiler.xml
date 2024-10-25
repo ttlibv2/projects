@@ -17,9 +17,9 @@
         <module name="sm-address" />
         <module name="od-client" />
         <module name="od-account" />
-        <module name="sm-web" />
         <module name="ebook" />
         <module name="sm-sheetdb" />
+        <module name="sm-client2" />
         <module name="sm-client" />
         <module name="sm-exception" />
         <module name="od-demo" />
@@ -40,6 +40,7 @@
       <module name="sm-account" target="21" />
       <module name="sm-converter" target="21" />
       <module name="sm-security" target="21" />
+      <module name="sm-web" target="21" />
       <module name="ts-account" target="21" />
       <module name="ts-web" target="21" />
     </bytecodeTargetLevel>
@@ -56,6 +57,7 @@
       <module name="sm-account" options="-parameters" />
       <module name="sm-address" options="-parameters" />
       <module name="sm-client" options="-parameters" />
+      <module name="sm-client2" options="-parameters" />
       <module name="sm-common" options="-parameters" />
       <module name="sm-converter" options="-parameters" />
       <module name="sm-cookie" options="-parameters" />

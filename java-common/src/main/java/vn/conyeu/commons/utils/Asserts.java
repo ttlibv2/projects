@@ -21,6 +21,44 @@ public final class Asserts {
         throw new IllegalArgumentException(buildMessage(message, args));
     }
 
+
+    /**
+     * Assert a boolean expression, throwing an {@code IllegalStateException}
+     * if the expression evaluates to {@code false}.
+     * <p>Call {@link #isTrue} if you wish to throw an {@code IllegalArgumentException}
+     * on an assertion failure.
+     * <pre class="code">Assert.state(id == null, "The id property must not already be initialized");</pre>
+     * @param expression a boolean expression
+     * @param message the exception message to use if the assertion fails
+     * @throws IllegalStateException if {@code expression} is {@code false}
+     */
+    public static void state(boolean expression, String message) {
+        if (!expression) {
+            throw new IllegalStateException(message);
+        }
+    }
+
+    /**
+     * Assert a boolean expression, throwing an {@code IllegalStateException}
+     * if the expression evaluates to {@code false}.
+     * <p>Call {@link #isTrue} if you wish to throw an {@code IllegalArgumentException}
+     * on an assertion failure.
+     * <pre class="code">
+     * Assert.state(entity.getId() == null,
+     *     () -&gt; "ID for entity " + entity.getName() + " must not already be initialized");
+     * </pre>
+     * @param expression a boolean expression
+     * @param messageSupplier a supplier for the exception message to use if the
+     * assertion fails
+     * @throws IllegalStateException if {@code expression} is {@code false}
+     * @since 5.0
+     */
+    public static void state(boolean expression, Supplier<String> messageSupplier) {
+        if (!expression) {
+            throw new IllegalStateException(nullSafeGet(messageSupplier));
+        }
+    }
+
     /**
      * Checks that the specified object reference is not null.
      *

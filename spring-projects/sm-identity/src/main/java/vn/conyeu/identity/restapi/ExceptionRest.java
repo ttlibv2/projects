@@ -31,6 +31,7 @@ import java.util.Map;
 @Slf4j
 public class ExceptionRest extends ResponseEntityExceptionHandler implements ErrorController {
 
+    //DefaultHandlerExceptionResolver
 
     @RequestMapping("${server.error.path:${error.path:/error}}")
     public ResponseEntity<Object> handleError(HttpServletRequest request) {

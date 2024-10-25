@@ -14,7 +14,6 @@
     <version>0.0.1</version>
     <name>spring-projects</name>
     <modules>
-        <module>sm-web</module>
         <module>sm-common</module>
         <module>sm-client</module>
         <module>sm-dslquery</module>
@@ -25,6 +24,7 @@
         <module>sm-oauth2-login</module>
         <module>sm-i18n</module>
         <module>sm-sheetdb</module>
+        <module>sm-client2</module>
     </modules>
     <packaging>pom</packaging>
 

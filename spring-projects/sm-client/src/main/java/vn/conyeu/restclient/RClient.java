@@ -4,17 +4,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
-import vn.conyeu.commons.beans.ObjectMap;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.function.Function;
 
-public class RestClient implements WebClient {
+public class RClient implements WebClient {
     private final WebClient delegate;
     private final ClientBuilder builder;
 
-    public RestClient(WebClient delegate, ClientBuilder builder) {
+    public RClient(WebClient delegate, ClientBuilder builder) {
         this.delegate = delegate;
         this.builder = builder;
     }
@@ -111,11 +110,11 @@ public class RestClient implements WebClient {
     }
 
     /**
-     * Create a new {@code RestClient} with Reactor Netty by default.
+     * Create a new {@code RClient} with Reactor Netty by default.
      * @see #create(String)
      * @see #builder()
      */
-    public static RestClient create() {
+    public static RClient create() {
         return new ClientBuilder().build();
     }
 
@@ -125,12 +124,12 @@ public class RestClient implements WebClient {
      * @param baseUrl the base URI for all requests
      * @see #builder()
      */
-    public static RestClient create(String baseUrl) {
+    public static RClient create(String baseUrl) {
         return new ClientBuilder().baseUrl(baseUrl).build();
     }
 
     /**
-     * Obtain a {@code RestClient} builder.
+     * Obtain a {@code RClient} builder.
      */
     public static ClientBuilder builder() {
         return new ClientBuilder();

@@ -136,10 +136,9 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
       
       this.state.hasModal = true;
       this.state.visibleBtnLoadApi = hasLs ? false : [uid, name, api_id].some(i => notNull(i));
-
+	  this.showHeader = false;
       if(notNull(showAction))  this.state.showAction = showAction;
       if(notNull(divider)) this.divider = divider;
-      if(notNull(showHeader)) this.showHeader = showHeader;
 
       this.appUID = uid;
       this.appName = name;

@@ -9,19 +9,19 @@ import vn.conyeu.commons.utils.Objects;
 import java.net.URI;
 import java.util.*;
 
-public class SimpleUriFactory extends org.springframework.web.util.DefaultUriBuilderFactory {
+public class RUriFactory extends DefaultUriBuilderFactory {
     private final UriComponentsBuilder baseUri;
     private final MultiValueMap<String, String> defaultQuery;
 
-    public static SimpleUriFactory fromUriString(String baseUrl) {
-        return baseUrl == null ? new SimpleUriFactory() : new SimpleUriFactory(baseUrl);
+    public static RUriFactory fromUriString(String baseUrl) {
+        return baseUrl == null ? new RUriFactory() : new RUriFactory(baseUrl);
     }
 
     /**
      * Default constructor without a base URI.
      * <p>The target address must be specified on each UriBuilder.
      */
-    public SimpleUriFactory() {
+    public RUriFactory() {
         this(UriComponentsBuilder.newInstance());
     }
 
@@ -35,16 +35,16 @@ public class SimpleUriFactory extends org.springframework.web.util.DefaultUriBui
      *
      * @param baseUriTemplate the URI template to use a base URL
      */
-    public SimpleUriFactory(String baseUriTemplate) {
+    public RUriFactory(String baseUriTemplate) {
         this(UriComponentsBuilder.fromUriString(baseUriTemplate));
     }
 
     /**
-     * Variant of {@link #SimpleUriFactory(String)} with a
+     * Variant of {@link #RUriFactory(String)} with a
      * {@code UriComponentsBuilder}.
      * @param baseUri the UriComponentsBuilder
      */
-    public SimpleUriFactory(UriComponentsBuilder baseUri) {
+    public RUriFactory(UriComponentsBuilder baseUri) {
         super(Asserts.notNull(baseUri));
         this.defaultQuery = new LinkedMultiValueMap<>();
         this.baseUri = baseUri;

@@ -4,15 +4,18 @@ import io.micrometer.observation.ObservationRegistry;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ClientHttpConnector;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.http.codec.ClientCodecConfigurer;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestInitializer;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.observation.ClientRequestObservationConvention;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.Nullable;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.*;
+import org.springframework.web.client.ResponseErrorHandler;
+import org.springframework.web.client.RestClient.RequestHeadersSpec;
+import org.springframework.web.client.RestClient.ResponseSpec.ErrorHandler;
 import org.springframework.web.util.UriBuilderFactory;
-import reactor.core.publisher.Mono;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Classes;
@@ -22,17 +25,16 @@ import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-
-public class ClientBuilder implements WebClient.Builder {
-    private final WebClient.Builder delegate;
+public class ClientBuilder implements org.springframework.web.client.RestClient.Builder {
+    private final org.springframework.web.client.RestClient.Builder delegate;
     private MultiValueMap<String, String> defaultQueries;
-    private Map<String, Object> defaultUriVariables;
+    private Map<String, ?> defaultUriVariables;
     private UriBuilderFactory uriBuilderFactory;
-    private Consumer<SimpleUriFactory> uriBuilderFactoryConsumer;
+    private HttpHeaders defaultHeaders;
+    private Consumer<RUriFactory> uriBuilderFactoryConsumer;
+    private MultiValueMap<String, String> defaultCookies;
 
     private Boolean disableCookieManagement = true;
     private Boolean followRedirect = true;
@@ -44,12 +46,12 @@ public class ClientBuilder implements WebClient.Builder {
     private String baseUrl;
 
     public ClientBuilder() {
-        delegate = WebClient.builder();
+        delegate = org.springframework.web.client.RestClient.builder();
         setupDefaultConfig();
     }
 
     public ClientBuilder(ClientBuilder other) {
-        delegate = other.delegate.clone();
+        delegate = other.delegate.clone().defaultHeaders(HttpHeaders::clear);
         baseUrl = other.baseUrl;
         uriBuilderFactory = other.uriBuilderFactory;
         disableCookieManagement = other.disableCookieManagement;
@@ -60,24 +62,26 @@ public class ClientBuilder implements WebClient.Builder {
         maxRedirects = other.maxRedirects;
         trustAllCertificate = other.trustAllCertificate;
         uriBuilderFactoryConsumer = other.uriBuilderFactoryConsumer;
-//        connector = other.connector;
+        defaultCookies = other.defaultCookies;
+        defaultHeaders = other.defaultHeaders;
 
-        if(other.defaultQueries != null) {
+        if (other.defaultQueries != null) {
             defaultQueries = new LinkedMultiValueMap<>(other.defaultQueries);
         }
-        
-        if(other.defaultUriVariables != null) {
+
+        if (other.defaultUriVariables != null) {
             defaultUriVariables = new LinkedHashMap<>(other.defaultUriVariables);
         }
-        
+
     }
 
     public ClientBuilder setupDefaultConfig() {
-        clientConnector(new ReactorClientHttpConnector());
         return this;
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     public ClientBuilder baseUrl(String baseUrl) {
         this.baseUrl = baseUrl;
         return this;
@@ -113,13 +117,15 @@ public class ClientBuilder implements WebClient.Builder {
         return this;
     }
 
-    /**{@inheritDoc}*/
+    /**
+     * {@inheritDoc}
+     */
     public ClientBuilder uriBuilderFactory(UriBuilderFactory uriBuilderFactory) {
         this.uriBuilderFactory = uriBuilderFactory;
         return this;
     }
 
-    public ClientBuilder uriBuilderFactory(Consumer<SimpleUriFactory> uriBuilderFactoryConsumer) {
+    public ClientBuilder uriBuilderFactory(Consumer<RUriFactory> uriBuilderFactoryConsumer) {
         this.uriBuilderFactoryConsumer = uriBuilderFactoryConsumer;
         return this;
     }
@@ -128,7 +134,7 @@ public class ClientBuilder implements WebClient.Builder {
      * {@inheritDoc}
      */
     public ClientBuilder defaultUriVariables(Map<String, ?> defaultUriVariables) {
-        delegate.defaultUriVariables(defaultUriVariables);
+        this.defaultUriVariables = defaultUriVariables;
         return this;
     }
 
@@ -183,32 +189,31 @@ public class ClientBuilder implements WebClient.Builder {
     }
 
     public ClientBuilder defaultContentType(MediaType mediaType) {
-        delegate.defaultHeader(HttpHeaders.CONTENT_TYPE, mediaType.toString());
+        defaultHeader(HttpHeaders.CONTENT_TYPE, mediaType.toString());
         return this;
     }
 
     public ClientBuilder defaultCsrfToken(String csrfToken) {
-       return defaultCsrfToken("csrf_token", csrfToken);
+        return defaultCsrfToken("csrf_token", csrfToken);
     }
 
     public ClientBuilder defaultCsrfToken(String tokenKey, String csrfToken) {
-        if(csrfToken == null) defaultHeaders(h -> h.remove(tokenKey));
+        if (csrfToken == null) defaultHeaders(h -> h.remove(tokenKey));
         else defaultHeader(tokenKey, csrfToken);
         return this;
+    }
+
+    private HttpHeaders initHeaders() {
+        if(defaultHeaders == null) defaultHeaders = new HttpHeaders();
+        return defaultHeaders;
     }
 
     /**
      * {@inheritDoc}
      */
     public ClientBuilder defaultHeader(String header, String... values) {
-        if(values.length == 0 || values[0] == null) defaultHeaders(h -> h.remove(header));
-        else delegate.defaultHeader(header, values);
-        return this;
-    }
-
-    public ClientBuilder defaultHeader(String header, Object... values) {
-        List<String> list = Stream.of(values).filter(Objects::nonNull).map(Object::toString).toList();
-        delegate.defaultHeaders(headers -> headers.addAll(header, list));
+        if (values.length == 0 || values[0] == null) defaultHeaders(h -> h.remove(header));
+        else initHeaders().put(header, Arrays.asList(values));
         return this;
     }
 
@@ -216,7 +221,7 @@ public class ClientBuilder implements WebClient.Builder {
      * {@inheritDoc}
      */
     public ClientBuilder defaultHeaders(Consumer<HttpHeaders> headersConsumer) {
-        delegate.defaultHeaders(headersConsumer);
+       headersConsumer.accept(initHeaders());
         return this;
     }
 
@@ -227,7 +232,7 @@ public class ClientBuilder implements WebClient.Builder {
      */
     public ClientBuilder defaultHeaders(ObjectMap map) {
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        delegate.defaultHeaders(h -> h.putAll(ClientUtil.toMultiValueMap(map)));
+        defaultHeaders(h -> h.putAll(ClientUtil.toMultiValueMap(map)));
         return this;
     }
 
@@ -239,7 +244,7 @@ public class ClientBuilder implements WebClient.Builder {
      * @param values     the cookie values
      */
     public ClientBuilder defaultCookie(String cookieName, String... values) {
-       delegate.defaultCookie(cookieName, values);
+        initCookies().put(cookieName, Arrays.asList(values));
         return this;
     }
 
@@ -250,10 +255,15 @@ public class ClientBuilder implements WebClient.Builder {
      * @param cookiesConsumer a function that consumes the cookies map
      */
     public ClientBuilder defaultCookies(Consumer<MultiValueMap<String, String>> cookiesConsumer) {
-        delegate.defaultCookies(cookiesConsumer);
+        cookiesConsumer.accept(initCookies());
         return this;
     }
-    
+
+    private MultiValueMap<String, String> initCookies() {
+        if (defaultCookies == null) defaultCookies = new LinkedMultiValueMap<>();
+        return defaultCookies;
+    }
+
     /**
      * Custom query
      *
@@ -327,11 +337,10 @@ public class ClientBuilder implements WebClient.Builder {
         return defaultQueries;
     }
 
-
     /**
      * {@inheritDoc}
      */
-    public ClientBuilder defaultRequest(Consumer<WebClient.RequestHeadersSpec<?>> defaultRequest) {
+    public ClientBuilder defaultRequest(Consumer<RequestHeadersSpec<?>> defaultRequest) {
         delegate.defaultRequest(defaultRequest);
         return this;
     }
@@ -339,81 +348,73 @@ public class ClientBuilder implements WebClient.Builder {
     /**
      * {@inheritDoc}
      */
-    public ClientBuilder defaultStatusHandler(Predicate<HttpStatusCode> statusPredicate, Function<ClientResponse, Mono<? extends Throwable>> exceptionFunction) {
-        delegate.defaultStatusHandler(statusPredicate, exceptionFunction);
+    public ClientBuilder defaultStatusHandler(Predicate<HttpStatusCode> statusPredicate, ErrorHandler errorHandler) {
+        delegate.defaultStatusHandler(statusPredicate, errorHandler);
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ClientBuilder filter(ExchangeFilterFunction filter) {
-        delegate.filter(filter);
+    public ClientBuilder defaultStatusHandler(ResponseErrorHandler errorHandler) {
+        delegate.defaultStatusHandler(errorHandler);
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ClientBuilder filters(Consumer<List<ExchangeFilterFunction>> filtersConsumer) {
-        delegate.filters(filtersConsumer);
+    public ClientBuilder requestInterceptor(ClientHttpRequestInterceptor interceptor) {
+        delegate.requestInterceptor(interceptor);
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ClientBuilder clientConnector(ClientHttpConnector connector) {
-        delegate.clientConnector(connector);
-//        this.connector = connector;
+    public ClientBuilder requestInterceptors(Consumer<List<ClientHttpRequestInterceptor>> interceptorsConsumer) {
+        delegate.requestInterceptors(interceptorsConsumer);
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
-    public ClientBuilder codecs(Consumer<ClientCodecConfigurer> configurer) {
-        delegate.codecs(configurer);
+    public ClientBuilder requestInitializer(ClientHttpRequestInitializer initializer) {
+        delegate.requestInitializer(initializer);
         return this;
     }
 
     /**
-     * Configure a limit on the number of bytes that can be buffered whenever
-     * the input stream needs to be aggregated.All codecs are limited to 256K by default.
+     * {@inheritDoc}
+     */
+    public ClientBuilder requestInitializers(Consumer<List<ClientHttpRequestInitializer>> initializersConsumer) {
+        delegate.requestInitializers(initializersConsumer);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ClientBuilder requestFactory(ClientHttpRequestFactory requestFactory) {
+        delegate.requestFactory(requestFactory);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ClientBuilder messageConverters(Consumer<List<HttpMessageConverter<?>>> configurer) {
+        delegate.messageConverters(configurer);
+        return this;
+    }
+
+    /**
+     * Configure the {@link io.micrometer.observation.ObservationRegistry} to use
+     * for recording HTTP client observations.
      *
-     * @param byteCount the max number of bytes to buffer, or -1 for unlimited
-     */
-    public ClientBuilder maxInMemorySize(int byteCount) {
-        return codecs(config -> config.defaultCodecs()
-                .maxInMemorySize(byteCount));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ClientBuilder exchangeStrategies(ExchangeStrategies strategies) {
-        delegate.exchangeStrategies(strategies);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Deprecated
-    public ClientBuilder exchangeStrategies(Consumer<ExchangeStrategies.Builder> configurer) {
-        throw new UnsupportedOperationException("@Deprecated");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public ClientBuilder exchangeFunction(ExchangeFunction exchangeFunction) {
-        delegate.exchangeFunction(exchangeFunction);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
+     * @param observationRegistry the observation registry to use
+     * @return this builder
      */
     public ClientBuilder observationRegistry(ObservationRegistry observationRegistry) {
         delegate.observationRegistry(observationRegistry);
@@ -431,7 +432,7 @@ public class ClientBuilder implements WebClient.Builder {
     /**
      * {@inheritDoc}
      */
-    public ClientBuilder apply(Consumer<WebClient.Builder> builderConsumer) {
+    public ClientBuilder apply(Consumer<org.springframework.web.client.RestClient.Builder> builderConsumer) {
         delegate.apply(builderConsumer);
         return this;
     }
@@ -443,35 +444,48 @@ public class ClientBuilder implements WebClient.Builder {
         return new ClientBuilder(this);
     }
 
-    /**{@inheritDoc}*/
-    public RClient build() {
-
-//        if(connector instanceof ReactorClientHttpConnector rc) {
-//            DelegateReactorClient drc = new DelegateReactorClient(rc);
-//            delegate.clientConnector(drc);
-//        }
-
-
-        delegate.uriBuilderFactory(initUriBuilderFactory());
-        WebClient clientDelegate = delegate.build();
-        return new RClient(clientDelegate, clone());
+    /**
+     * Build the {@link RestClient} instance.
+     */
+    public RestClient build() {
+        applyUriBuilderFactory();
+        applyDefaultHeaders();
+        org.springframework.web.client.RestClient client = delegate.build();
+        return new RestClient(client, clone());
     }
 
-    protected UriBuilderFactory initUriBuilderFactory() {
 
-        if(uriBuilderFactory != null) {
-            return uriBuilderFactory;
+    @Nullable
+    private void applyDefaultHeaders() {
+        delegate.defaultHeaders(HttpHeaders::clear);
+
+        if(Objects.notEmpty(defaultHeaders)) {
+            delegate.defaultHeaders(h -> h.putAll(defaultHeaders));
         }
 
-        SimpleUriFactory factory = SimpleUriFactory.fromUriString(baseUrl);
-
-        if(uriBuilderFactoryConsumer != null) {
-            uriBuilderFactoryConsumer.accept(factory);
+        if(Objects.notEmpty(defaultCookies)) {
+            throw new UnsupportedOperationException("applyDefaultHeaders");
+            //delegate.defaultHeaders(h -> h.addAll(defaultCookies));
         }
-
-        factory.setDefaultUriVariables(defaultUriVariables);
-        factory.setDefaultQuery(defaultQueries);
-        return factory;
     }
+
+    private void applyUriBuilderFactory() {
+
+        if (uriBuilderFactory != null) {
+           delegate.uriBuilderFactory(uriBuilderFactory);
+        }
+        else {
+            RUriFactory factory = RUriFactory.fromUriString(baseUrl);
+
+            if (uriBuilderFactoryConsumer != null) {
+                uriBuilderFactoryConsumer.accept(factory);
+            }
+
+            factory.setDefaultUriVariables(defaultUriVariables);
+            factory.setDefaultQuery(defaultQueries);
+            delegate.uriBuilderFactory(factory);
+        }
+    }
+
 
 }

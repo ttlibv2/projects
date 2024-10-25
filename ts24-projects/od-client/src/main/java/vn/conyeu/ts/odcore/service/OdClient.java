@@ -11,7 +11,7 @@ import vn.conyeu.commons.utils.Lists;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.restclient.LoggingFilter;
-import vn.conyeu.restclient.RestClient;
+import vn.conyeu.restclient.RClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import vn.conyeu.ts.odcore.domain.*;
 
@@ -67,10 +67,10 @@ public abstract class OdClient {
     }
 
     /**
-     * Create RestClient ClientBuilder
+     * Create RClient ClientBuilder
      */
     protected ClientBuilder clientBuilder() {
-        return RestClient.builder().baseUrl(getApiUrl())
+        return RClient.builder().baseUrl(getApiUrl())
                 .defaultContentType(MediaType.APPLICATION_JSON)
                 .defaultHeader("tsModelName", getLogModel())
                 .defaultHeader("tsApiUserId", cfg.getAccountId());
@@ -130,7 +130,7 @@ public abstract class OdClient {
         else return str;
     }
 
-    protected RestClient createClient() {
+    protected RClient createClient() {
         ClientBuilder clientBuilder = clientBuilder();
         clientBuilder.defaultQueries(cfg.getQueries());
         clientBuilder.defaultHeaders(cfg.getHeaders());

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.restclient.RestClient;
+import vn.conyeu.restclient.RClient;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -17,7 +17,7 @@ public class React2AngularRest {
     public String convert(@RequestBody ObjectMap body) {
         String apiUrl = body.getString("apiUrl");
         ObjectMap headers = body.getMap("headers", new ObjectMap());
-        return RestClient.builder().baseUrl(apiUrl).build().post()
+        return RClient.builder().baseUrl(apiUrl).build().post()
                 .headers(h -> headers.addToHeader(h::put))
                 .bodyValue(body.get("payload"))
                 .retrieve().bodyToMono(String.class)
