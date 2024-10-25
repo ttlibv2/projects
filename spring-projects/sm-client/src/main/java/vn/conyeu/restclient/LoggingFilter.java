@@ -1,11 +1,9 @@
 package vn.conyeu.restclient;
 
-import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.NettyDataBuffer;
 import org.springframework.http.client.reactive.ClientHttpRequest;
 import org.springframework.http.client.reactive.ClientHttpRequestDecorator;
 import org.springframework.web.reactive.function.BodyInserter;
@@ -16,13 +14,14 @@ import org.springframework.web.reactive.function.client.ExchangeFunction;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Function;
 
 @Slf4j
 @AllArgsConstructor
 public class LoggingFilter implements ExchangeFilterFunction {
+
+    /** Function&lt;logPrefix, ClientLogger&gt;*/
     private final Function<String, ClientLogger> loggerSupplier;
 
     @Override
@@ -68,7 +67,6 @@ public class LoggingFilter implements ExchangeFilterFunction {
             return request.body().insert(new RequestDecorator(outputMessage, request, logger), context);
         }
     }
-
 
     private static class RequestDecorator extends ClientHttpRequestDecorator {
         final ClientRequest request;

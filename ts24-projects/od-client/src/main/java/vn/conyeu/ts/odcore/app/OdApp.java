@@ -11,12 +11,14 @@ import vn.conyeu.ts.odcore.service.OdClient;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class OdApp<C extends OdClient> {
     private final ClsApiCfg cfg;
     private final Map<Class<? extends C>, C> clsMap = new HashMap<>();
     private BiConsumer<ClsApiCfg, ClsUser> loginConsumer;
+
 
     public OdApp(ClsApiCfg config) {
         this.cfg = Asserts.notNull(config);
@@ -117,15 +119,19 @@ public abstract class OdApp<C extends OdClient> {
      * @param supplierCreate the function create service if not exist
      * @return service
      */
-    protected <E extends C> E service(Class<E> clsService, Supplier<E> supplierCreate) {
+    protected final <E extends C> E service(Class<E> clsService, Supplier<E> supplierCreate) {
         if (!clsMap.containsKey(clsService)) {
-            E service = supplierCreate.get();
+            E service = getNewService(supplierCreate);
             clsMap.put(clsService, service);
             return service;
         } else {
             Object object = clsMap.get(clsService);
             return clsService.cast(object);
         }
+    }
+
+    protected <E extends C> E getNewService(Supplier<E> supplierCreate) {
+       return supplierCreate.get();
     }
 
 

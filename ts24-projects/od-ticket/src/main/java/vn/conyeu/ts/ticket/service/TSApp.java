@@ -6,6 +6,8 @@ import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.odcore.service.ServiceUID;
 
+import java.util.function.Supplier;
+
 @ServiceUID(TSApp.APP_UID)
 public class TSApp extends OdApp<OdTicketClient> {
     public static final String APP_UID = "TSApp";

@@ -2,6 +2,7 @@ package vn.conyeu.ts.odcore.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import org.springframework.web.util.UriBuilder;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.Unauthorized;
@@ -10,10 +11,8 @@ import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Lists;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.restclient.ClientBuilder;
-import vn.conyeu.restclient.ClientLogger;
 import vn.conyeu.restclient.LoggingFilter;
 import vn.conyeu.restclient.RClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import vn.conyeu.ts.odcore.domain.*;
 
 import java.net.URI;
@@ -25,11 +24,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Slf4j
-public abstract class OdClient {
+public abstract class OdClient2 {
     protected final ClsApiCfg cfg;
     protected Consumer<LoggingFilter> loggingFilterConsumer;
 
-    public OdClient(ClsApiCfg apiConfig) {
+    public OdClient2(ClsApiCfg apiConfig) {
         this.cfg = apiConfig;
     }
 
@@ -71,16 +70,10 @@ public abstract class OdClient {
      * Create RClient ClientBuilder
      */
     protected ClientBuilder clientBuilder() {
-        ClientBuilder cb = RClient.builder().baseUrl(getApiUrl())
+        return RClient.builder().baseUrl(getApiUrl())
                 .defaultContentType(MediaType.APPLICATION_JSON)
                 .defaultHeader("tsModelName", getLogModel())
                 .defaultHeader("tsApiUserId", cfg.getAccountId());
-
-        if(loggingFilterConsumer != null) {
-            cb.filter(new LoggingFilter(ClientLogger::new));
-        }
-
-        return cb;
     }
 
     /**
