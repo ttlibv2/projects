@@ -97,17 +97,16 @@
                     (onClick)="clickSearch()" [model]="searchMenu"/>
 
                 <ts-splitButton visibleMenuButton="false" severity="warning" label="Tạo mới" icon="pi pi-user-plus"
-                    [loading]="state.asyncSave" loadingIcon="pi pi-sync"
-                    ></ts-splitButton>    
+                    [loading]="state.asyncSave" loadingIcon="pi pi-sync" [model]="newMenu"/> 
 
-                <p-button label="+ [E-mail] Cá nhân" severity="success" (click)="clickNewPersonEmail()"
+                <!-- <p-button label="+ [E-mail] Cá nhân" severity="success" (click)="clickNewPersonEmail()"
                     [loading]="state.asyncSave"></p-button>
 
                 <p-button label="+ Cá nhân" severity="success" (click)="clickNewPerson()" [loading]="state.asyncSave"
                     *ngIf="visiblePersonBtn"></p-button>
 
                 <p-button label="+ Công ty" severity="info" (click)="clickNewCompany()" [loading]="state.asyncSave"
-                    *ngIf="visibleCompBtn"></p-button>
+                    *ngIf="visibleCompBtn"></p-button> -->
 
                 <p-checkbox label="Tạo mới dữ liệu" [binary]="true"
                     (onChange)="state.allowNew = $event.checked"></p-checkbox>

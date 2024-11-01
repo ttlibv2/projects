@@ -98,6 +98,12 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
     { label: 'Tìm theo MST', icon: 'pi pi-code', command: evt => this.clickSearchMST(true)},
   ];
 
+  newMenu: MenuItem[] = [
+    { label: 'Tạo công ty', icon: 'pi pi-users', command: _ => this.clickNewCompany(), visible: this.visibleCompBtn },
+    { label: 'Tạo cá nhân', icon: 'pi pi-user', command: _ => this.clickNewPerson(), visible: this.visiblePersonBtn },
+    { label: 'Tạo theo e-mail', icon: 'pi pi-envelope', command: _ => this.clickNewPersonEmail() },
+  ];
+
   get visiblePersonBtn(): boolean {
     return this.state.visiblePerson && this.state.allowNew;
   }
@@ -297,6 +303,7 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
     this.form.valueChanges.subscribe({
       next: data => {
         const { customer_id, company_id, pageSize } = data;
+        console.log(`company_id`, company_id)
         this.state.visibleComp = isBlank(company_id);
         this.state.visiblePerson = notBlank(company_id) && isBlank(customer_id);
       }
@@ -321,6 +328,16 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
     if (!['person', 'company'].includes(type)) {
       return;
     }
+
+    if (type === 'company' && !isTrue(this.visibleCompBtn)) {
+      this.alert.warning(`Bạn không thế tạo công ty.`)
+      return;
+    }
+
+
+
+
+
 
     const value: SearchData = this.form.getRawValue();
     const phone = value['phone'] ?? value['mobile'];
