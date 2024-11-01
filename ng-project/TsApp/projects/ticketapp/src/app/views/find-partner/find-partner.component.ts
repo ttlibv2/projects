@@ -262,7 +262,7 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
 
   clickRow(data: ClsPartner, upType?: 'person' | 'company') {
     const { operator, options, pageSize } = <SearchData>this.form.getRawValue();
-    this.form.reset({ ...data, operator, options, pageSize });
+    this.form.reset({ ...data, operator, options, pageSize }, {onlySelf: false, emitEvent: true});
     this.dataSelect = data;
   }
 
@@ -303,7 +303,7 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
     this.form.valueChanges.subscribe({
       next: data => {
         const { customer_id, company_id, pageSize } = data;
-        console.log(`company_id`, company_id)
+        console.log(`company_id`, data)
         this.state.visibleComp = isBlank(company_id);
         this.state.visiblePerson = notBlank(company_id) && isBlank(customer_id);
       }
