@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormGroup, FormsBuilder, FormsModule } from 'ts-ui/forms';
-import { ClientService } from '../../services/client.service';
 import { CorsService } from '../../services/cors.service';
+import { InputGroup } from './prefix';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown';
 
 const apiUrl: string = 'https://syntha.ai/api/ai-public/converter';
 
@@ -15,7 +16,7 @@ const apiUrl: string = 'https://syntha.ai/api/ai-public/converter';
   standalone: true,
   encapsulation: ViewEncapsulation.None,
   templateUrl: './item.component.html',
-  imports: [CommonModule, InputTextareaModule, ButtonModule, FormsModule],
+  imports: [CommonModule, InputTextareaModule, ButtonModule, FormsModule,InputGroup, DropdownModule],
   providers: [
   ]
 })

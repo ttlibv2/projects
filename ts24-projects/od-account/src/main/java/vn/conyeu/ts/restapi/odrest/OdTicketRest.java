@@ -15,7 +15,7 @@ import vn.conyeu.ts.dtocls.SendTicketDto;
 import vn.conyeu.ts.dtocls.SendTicketDto.ExistState;
 import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.odcore.domain.ClsPage;
-import vn.conyeu.ts.service.OdService;
+import vn.conyeu.ts.service.Ts24Service;
 import vn.conyeu.ts.service.TicketService;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.*;
@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 public class OdTicketRest extends OdBaseRest {
     private final TicketService ticketService;
 
-    public OdTicketRest(OdService odService, UserApiService apiService, TicketService ticketService) {
+    public OdTicketRest(Ts24Service odService, UserApiService apiService, TicketService ticketService) {
         super(odService, apiService);
         this.ticketService = ticketService;
     }

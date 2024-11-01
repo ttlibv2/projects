@@ -32,6 +32,7 @@ public final class ClsApiCfg implements Serializable, Cloneable {
     private String username;
     private String password;
     private ClsUser clsUser;
+    private boolean saveLog;
 
     /**
      * Return true if info valid
@@ -61,12 +62,26 @@ public final class ClsApiCfg implements Serializable, Cloneable {
         return clsUser == null ? null : clsUser.getContext();
     }
 
+    /** Returns the saveLog */
+    public boolean isSaveLog() {
+        return saveLog;
+    }
+
     /**
      * Returns the clsUser
      */
     public ClsUser getClsUser() {
         checkUserLogin();
         return clsUser;
+    }
+
+    /**
+     * Set the saveLog
+     * @param saveLog the value
+     */
+    public ClsApiCfg setSaveLog(boolean saveLog) {
+        this.saveLog = saveLog;
+        return this;
     }
 
     /**

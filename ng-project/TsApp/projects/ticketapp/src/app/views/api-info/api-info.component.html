@@ -98,23 +98,28 @@
                 <div class="field col-12 flex gap-2">
                     <p-checkbox id="auto_login" [binary]="true" formControlName="auto_login"
                         label="{{'api.auto_login'|translate}}"></p-checkbox>
+
                     <p-checkbox id="editOnly" [binary]="true" formControlName="allow_edit"
                         label="{{'api.allow_edit'|translate}}"></p-checkbox>
+
+                    <p-checkbox id="saveLog" [binary]="true" formControlName="save_log"
+                        label="{{'api.save_log'|translate}}"></p-checkbox>
                 </div>
             </ng-container>
             <div class="col-12 flex gap-2 mt-2 justify-content-between">
                 <div class="flex gap-2">
                     <p-button type="submit" icon="pi pi-save" label="{{'actions.save'|translate}}" severity="danger"
-                        (onClick)="clickSaveApi()" [disabled]="!formDirty" *ngIf="visibleSaveButton"></p-button>
+                        (onClick)="clickSaveApi()" [disabled]="!formDirty" [loading]="state.asyncSave" loadingIcon="pi pi-sync" 
+                        *ngIf="visibleSaveButton"></p-button>
 
                     <p-button icon="pi pi-save" label="{{'actions.cancel'|translate}}" severity="help"
                         (onClick)="clickResetApi()" *ngIf="visibleResetButton"></p-button>
 
                     <p-button type="button" icon="pi pi-check" label="{{'actions.check_api' | translate}}"
-                        (onClick)="clickCheckLogin()" *ngIf="visibleCheckButton"></p-button>
+                        (onClick)="clickCheckLogin()" [loading]="state.asyncCheck" loadingIcon="pi pi-sync" *ngIf="visibleCheckButton"></p-button>
 
                     <p-button type="button" icon="pi pi-link" label="{{'actions.update_link' | translate}}"
-                        (onClick)="clickMenuApi()" *ngIf="visibleCheckButton"></p-button>
+                        (onClick)="clickMenuApi()" [loading]="state.asyncMenu" loadingIcon="pi pi-sync" *ngIf="visibleCheckButton"></p-button>
                 </div>
                 <div class="flex gap-2">
                     <p-button type="button" severity="info" icon="pi pi-times" label="{{'actions.close' | translate}}"

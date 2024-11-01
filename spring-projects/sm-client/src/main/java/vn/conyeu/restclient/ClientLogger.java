@@ -24,13 +24,19 @@ public class ClientLogger {
     private Consumer<RequestLog> submitRequestConsumer;
     private Consumer<ResponseLog> submitResponseConsumer;
     private Consumer<ClientLogger> submitLoggerConsumer;
+
     private Function<ClientLogger, String> modelNameFnc;
     private Function<ClientLogger, String> modelIdFnc;
 
-    private Long userLogin;
+    private final Long userLogin;
 
     public ClientLogger(final String loggerId) {
+        this(loggerId, null);
+    }
+
+    public ClientLogger(final String loggerId, final Long userLogin) {
         this.loggerId = loggerId.replace("]", "").replace("[", "").trim();
+        this.userLogin = userLogin;
         this.request = new RequestLog();
         this.response = new ResponseLog();
     }
@@ -50,16 +56,6 @@ public class ClientLogger {
      */
     public void submitLoggerConsumer(Consumer<ClientLogger> submitLoggerConsumer) {
         this.submitLoggerConsumer = submitLoggerConsumer;
-    }
-
-    /**
-     * Set the userLogin
-     *
-     * @param userLogin the value
-     */
-    public ClientLogger userLogin(Long userLogin) {
-        this.userLogin = userLogin;
-        return this;
     }
 
     /**

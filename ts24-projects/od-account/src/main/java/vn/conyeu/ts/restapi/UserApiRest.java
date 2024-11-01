@@ -13,21 +13,20 @@ import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.SaveUserApiDto;
 import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.service.ApiInfoService;
-import vn.conyeu.ts.service.OdService;
+import vn.conyeu.ts.service.Ts24Service;
 import vn.conyeu.ts.service.UserApiService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(TsVar.Rest.tsUserApi)
 public class UserApiRest extends LongUIdRest<UserApi, UserApiService> {
     private final ApiInfoService aiService;
-    private final OdService odService;
+    private final Ts24Service odService;
 
     @Autowired
-    public UserApiRest(UserApiService service, ApiInfoService aiService, OdService odService) {
+    public UserApiRest(UserApiService service, ApiInfoService aiService, Ts24Service odService) {
         super(service);
         this.aiService = aiService;
         this.odService = odService;

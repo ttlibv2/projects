@@ -75,9 +75,13 @@ const appRoutes: Route[] = [
                 loadChildren: () => import('./views/react2ng/item-routing.module').then(m => m.Rect2NgRoutingModule)
             },
             {
+                path: 'catalog',
+                loadChildren: () => import('./views/catalog/catalog.module').then(m => m.CatalogModule)
+            },
+            {
                 path: '**',
                 pathMatch: 'prefix',
-                redirectTo: 'ticket-list'
+                redirectTo: 'dashboard'
             }
         ]
     }

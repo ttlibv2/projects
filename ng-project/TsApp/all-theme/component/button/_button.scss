@@ -14,7 +14,7 @@ $prefix: ".p-button";
   outline-color: transparent;
 
   &:not(:disabled) {
-    &:hover {
+    &:hover { 
       background: cfg.$buttonHoverBg;
       color: cfg.$buttonTextHoverColor;
       border-color: cfg.$buttonHoverBorderColor;

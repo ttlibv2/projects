@@ -6,7 +6,7 @@ import vn.conyeu.identity.annotation.PrincipalId;
 import vn.conyeu.ts.dtocls.TsErrors;
 import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.odcore.domain.ClsUser;
-import vn.conyeu.ts.service.OdService;
+import vn.conyeu.ts.service.Ts24Service;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.service.UserService;
 
@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class OdUserRest extends OdBaseRest {
     private final UserService userService;
 
-    public OdUserRest(OdService odService, UserApiService apiService, UserService userService) {
+    public OdUserRest(Ts24Service odService, UserApiService apiService, UserService userService) {
         super(odService, apiService);
         this.userService = userService;
     }

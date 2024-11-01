@@ -59,6 +59,10 @@ public class UserApi extends LongUId<UserApi> {
     @JsonProperty("allow_edit")
     private Boolean allowEdit;
 
+    @ColumnDefault("0")
+    @JsonProperty("save_log")
+    private Boolean saveLog;
+
     @Convert(converter = Converters.ClsUserConvert.class)
     @Column(columnDefinition = "json")
     private ClsUser userInfo;
@@ -151,5 +155,9 @@ public class UserApi extends LongUId<UserApi> {
                 setPassword(map.getString("password"));
             }
         }
+    }
+
+    public boolean isSaveLog() {
+        return saveLog != null && saveLog;
     }
 }

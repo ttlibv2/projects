@@ -3,25 +3,22 @@
     <form [formGroup]="signinForm" class="grid">
 
       <div class="p-fluid col-12">
-        <p-inputGroup>
-          <p-inputGroupAddon><i class="pi pi-user"></i></p-inputGroupAddon>
+        <ts-inputgroup [prefixIcons]="['pi pi-user']">
           <p-autoComplete [suggestions]="searchUser" (completeMethod)="onSearchUser($event)"
             (onSelect)="selectUser($event.value)" [dropdownIcon]="'pi pi-user'" [showEmptyMessage]="false"
             formControlName="username" placeholder="Tên đăng nhập"></p-autoComplete>
-        </p-inputGroup>
+        </ts-inputgroup>
       </div>
       <div class="p-fluid col-12 ">
-        <p-inputGroup>
-          <p-inputGroupAddon><i class="pi pi-lock"></i></p-inputGroupAddon>
+        <ts-inputgroup [prefixIcons]="['pi pi-lock']">
           <p-password placeholder="Mật khẩu" formControlName="password" [toggleMask]="true"></p-password>
-        </p-inputGroup>
+        </ts-inputgroup>
       </div>
       @if (isDev) {
       <div class="col-12 ">
-        <p-inputGroup>
-          <p-inputGroupAddon><i class="pi pi-code"></i></p-inputGroupAddon>
+        <ts-inputgroup [prefixIcons]="['pi pi-code']">
           <input pInputText placeholder="URL Dev" formControlName="url_dev" />
-        </p-inputGroup>
+        </ts-inputgroup>
       </div>
       }
 

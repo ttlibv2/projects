@@ -4,14 +4,8 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-  ViewChild,
   ViewEncapsulation,
 } from "@angular/core";
-import {
-  AgTable,
-  TableColumn,
-  TableOption,
-} from "ts-ui/ag-table";
 import { ToastService } from "ts-ui/toast";
 import { CatalogService } from "../../services/catalog.service";
 import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -19,12 +13,11 @@ import { LoggerService } from "ts-ui/logger";
 import { Objects } from "ts-ui/helper";
 import { delay } from "rxjs";
 import { ModalService } from "ts-ui/modal";
+import { FormGroup, FormsBuilder } from "ts-ui/forms";
 
-interface CateView {
-  title: string;
-  action: string;
-  checked?: boolean;
-}
+const { isTrue, notNull, arrayToJson } = Objects;
+
+
 
 @Component({
   selector: "ts-catalog",
@@ -34,72 +27,72 @@ interface CateView {
   styleUrls: [`./catalog.component.scss`],
 })
 export class CatalogComponent implements OnInit, AfterViewInit {
-  columns: TableColumn[] = [
-    {
-      field: "title",
-      headerName: "Tiêu đề",
-      headerCheckboxSelection: true,
-      checkboxSelection: true,
-    },
-    { field: "action", headerName: "Mã" },
-    { field: "version", headerName: "Phiên bản" },
+  checkboxes: any[] = [
+    { field: "ls_chanel", title: "Kênh - Tình trạng" },
+    { field: "ls_software", title: "Nhóm Phần mềm" },
+    { field: "ls_group_help", title: "Nhóm Phần mềm" },
+    { field: "ls_helpdesk_team", title: "Support Team" },
+    { field: "ls_assign", title: "Người dùng" },
+    { field: "ls_subject_type", title: "Ticket Subject Type" },
+    { field: "ls_replied_status", title: "Replied Status" },
+    { field: "ls_category", title: "Danh mục" },
+    { field: "ls_category_sub", title: "Danh mục phụ" },
+    { field: "ls_team_head", title: "Team Head" },
+    { field: "ls_ticket_type", title: "Loại yêu cầu hỗ trợ" },
+    { field: "ls_priority", title: "Độ ưu tiên" },
+    { field: "ls_ticket_tag", title: "Thẻ -- Tags" },
+    { field: "ls_question", title: "Nội dung mẫu" },
+    { field: "ls_ticket_template", title: "DS Ticket" },
+    { field: "ls_email_template", title: "DS Email" },
   ];
 
-  rows: CateView[] = [
-    { action: "ls_chanel", title: "Kênh - Tình trạng" },
-    { action: "ls_software", title: "Nhóm Phần mềm" },
-    { action: "ls_group_help", title: "Nhóm Phần mềm" },
-    { action: "ls_helpdesk_team", title: "Support Team" },
-    { action: "ls_assign", title: "Người dùng" },
-    { action: "ls_subject_type", title: "Ticket Subject Type" },
-    { action: "ls_replied_status", title: "Replied Status" },
-    { action: "ls_category", title: "Danh mục" },
-    { action: "ls_category_sub", title: "Danh mục phụ" },
-    { action: "ls_team_head", title: "Team Head" },
-    { action: "ls_ticket_type", title: "Loại yêu cầu hỗ trợ" },
-    { action: "ls_priority", title: "Độ ưu tiên" },
-    { action: "ls_ticket_tag", title: "Thẻ -- Tags" },
-    { action: "ls_question", title: "Nội dung mẫu" },
-    { action: "ls_ticket_template", title: "DS Ticket" },
-    { action: "ls_email_template", title: "DS Email" },
-  ];
 
-  option: TableOption = {
-    rowSelection: "multiple",
-    domLayout: "normal",
-  };
-
-  @ViewChild(AgTable, { static: true })
-  agTable: AgTable<CateView>;
-
-  instance: DynamicDialogComponent;
 
   asyncLoading: boolean = false;
   autoLoad: boolean = false;
+  hasDialog: boolean = false;
   templateCode: string[] = [];
+  form: FormGroup;
+
+  get cChecked(): FormGroup {
+    return this.form?.get('all') as any;
+  }
 
   constructor(
     private def: ChangeDetectorRef,
     private logger: LoggerService,
     private toast: ToastService,
+    private fb: FormsBuilder,
     private modal: ModalService,
     private catalogSrv: CatalogService,
     private ref: DynamicDialogRef) { }
 
   ngOnInit(): void {
-    this.instance = this.modal.getInstance(this.ref);
-    if (Objects.notNull(this.instance) && this.instance.data) {
-      const { templateCode, autoLoad } = this.instance.data;
+
+    this.form = this.fb.group({
+      selectAll: [false],
+      all: this.fb.group({})
+    });
+
+    this.checkboxes.forEach(item => this.cChecked
+      .addControl(item.field, this.fb.control(item.check ?? false)));
+
+    this.form.controlValueChange('selectAll', b => this.handleSelectAll(b));  
+
+
+    this.hasDialog = notNull(this.modal.getInstance(this.ref));
+
+    const dialogData: any = this.modal.getData(this.ref);
+    if (notNull(dialogData)) {
+      const { templateCode, autoLoad } = dialogData;
       this.autoLoad = autoLoad;
       this.templateCode = templateCode;
     }
   }
 
   ngAfterViewInit(): void {
-    this.agTable.tableApi.selectAll();
-    if (this.autoLoad) {
-      this.loadCatalog();
-    }
+    this.form.patchControl('selectAll', true);
+    if (this.autoLoad)this.loadCatalog();
   }
 
   closeDialog() {
@@ -107,16 +100,17 @@ export class CatalogComponent implements OnInit, AfterViewInit {
   }
 
   loadCatalog() {
-    const ls = this.agTable.getSelectedRows();
-    
-    if (ls.length == 0) {
-      this.toast.warning("Vui lòng chọn ít nhất 1 dòng.");
+    const all = this.cChecked.getRawValue();
+    const data = Object.keys(all).filter(k => isTrue(all[k]));
+
+    if (data.length == 0) {
+      this.toast.warning("Vui lòng chọn ít nhất 1 danh mục để tải.");
       return;
     }
 
     this.asyncLoading = true;
 
-    const catalog = ls.map((i) => i.action).join(",");
+    const catalog = data.join(",");
     const entities = this.templateCode.join(',');
 
     this.catalogSrv.getAll({ catalog, entities }).pipe(delay(1000)).subscribe({
@@ -136,4 +130,17 @@ export class CatalogComponent implements OnInit, AfterViewInit {
       },
     });
   }
+
+  handleSelectAll(checked: boolean): void {
+    const controls = this.cChecked.controls;
+    Object.values(controls).forEach(c => c.setValue(checked));
+  }
+
+
+
+
+
+
+
+
 }

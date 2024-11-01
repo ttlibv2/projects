@@ -104,6 +104,14 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
         this.get(name).setErrors(errors, opts);
     }
 
+    set_value<K extends TKeyControl<TC>>(name: K, value: any) {
+        this.get(name).setValue(value);
+    }
+
+    reset_value<K extends TKeyControl<TC>>(name: K, value: any) {
+        this.get(name).reset(value);
+    }
+
     /**
      * The raw value of this control. For most control implementations, the raw value will include
      * disabled children.

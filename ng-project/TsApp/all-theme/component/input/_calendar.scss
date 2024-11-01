@@ -1,11 +1,11 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 
-p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
+p-calendar.ng-dirty.ng-invalid>.p-calendar>.p-inputtext {
     @include util.invalid-input();
 }
 
-.p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+.p-calendar:not(.p-calendar-disabled).p-focus>.p-inputtext {
     @include util.focused-input();
 }
 
@@ -69,7 +69,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
         th {
             padding: cfg.$calendarHeaderCellPadding;
 
-            > span {
+            >span {
                 width: cfg.$calendarCellDateWidth;
                 height: cfg.$calendarCellDateHeight;
             }
@@ -78,7 +78,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
         td {
             padding: cfg.$calendarCellDatePadding;
 
-            > span {
+            >span {
                 width: cfg.$calendarCellDateWidth;
                 height: cfg.$calendarCellDateHeight;
                 border-radius: cfg.$calendarCellDateBorderRadius;
@@ -96,7 +96,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
             }
 
             &.p-datepicker-today {
-                > span {
+                >span {
                     background: cfg.$calendarCellDateTodayBg;
                     color: cfg.$calendarCellDateTodayTextColor;
                     border-color: cfg.$calendarCellDateTodayBorderColor;
@@ -135,7 +135,7 @@ p-calendar.ng-dirty.ng-invalid > .p-calendar > .p-inputtext {
             font-size: cfg.$calendarTimePickerTimeFontSize;
         }
 
-        > div {
+        >div {
             padding: cfg.$calendarTimePickerElementPadding;
         }
     }
@@ -245,7 +245,7 @@ p-calendar.p-calendar-clearable {
     .p-inputtext {
         padding-right: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
     }
-    
+
     .p-calendar-clear-icon {
         color: cfg.$inputIconColor;
         right: nth(cfg.$inputPadding, 2);
@@ -262,7 +262,9 @@ p-calendar.p-calendar-clearable .p-calendar-w-btn {
 @media screen and (max-width: cfg.$calendarBreakpoint) {
     .p-datepicker {
         table {
-            th, td {
+
+            th,
+            td {
                 padding: cfg.$calendarCellDatePaddingSM;
             }
         }

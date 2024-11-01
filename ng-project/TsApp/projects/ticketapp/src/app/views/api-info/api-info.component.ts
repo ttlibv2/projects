@@ -11,18 +11,16 @@ import { FormsBuilder, FormGroup } from 'ts-ui/forms';
 import { ModalService } from 'ts-ui/modal';
 import { delay } from 'rxjs';
 import { Alert } from 'ts-ui/alert';
-import { ClsUser } from '../../models/od-cls';
 
-const { isBlank, notNull, isNull, notBlank, isEmpty, isFalse, booleanValue } = Objects;
+const { notNull, isNull, isFalse } = Objects;
 
-interface FormValue {
-  api_item?: ApiInfo;
-  api_info?: Partial<ApiInfo>;
-  user_api?: Partial<UserApi>;
-}
 
 interface StateObject {
   loadDs?: boolean;
+  asyncSave?: boolean;
+  asyncCheck?: boolean;
+  asyncMenu?: boolean;
+
   disableButton?: boolean;
   hasModal?: boolean;
   visibleBtnLoadApi?: boolean;
@@ -102,7 +100,8 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
   }
 
   get visibleCheckButton(): boolean {
-    return isNull(this.get_apiItem) ? false : (this.isEditApi ? isFalse(this.formDirty) : isFalse(this.fgUser.dirty));
+    if(this.visibleResetButton == true) return false;
+    else return isNull(this.get_apiItem) ? false : (this.isEditApi ? isFalse(this.formDirty) : isFalse(this.fgUser.dirty));
   }
 
   get visibleSaveButton(): boolean {
@@ -131,7 +130,7 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
 
     const instance = this.modal.getInstance(this.dialogRef);
     if (instance && instance.data) {
-      const { uid, name, api_id, lsApi, showAction, divider, showHeader } = <ApiInfoInput>instance.data;
+      const { uid, name, api_id, lsApi, showAction, divider } = <ApiInfoInput>instance.data;
       const hasLs = (lsApi?.length || 0) > 0;
       
       this.state.hasModal = true;
@@ -254,12 +253,15 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
     const loadingRef = this.toast.loading(this.cfg.i18n.awaitHandle);
 
     const app_name = info.app_name;
+    this.state.asyncCheck = true;
     this.apiSrv.checkLoginByAppName(app_name).subscribe({
       error: _ => {
         this.toast.close(loadingRef);
+        this.state.asyncCheck = false;
       },
       next: (cls: UserApi) => {
         info.set_user_api(cls);
+        this.state.asyncCheck = false;
         this.toast.close(loadingRef);
         this.toast.success(this.cfg.i18n.checkApiOk);
         this.resetForm(info);
@@ -273,17 +275,19 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
   clickMenuApi(): void {
     const { app_name } = this.get_apiItem;
     const loadingRef = this.toast.loading(this.cfg.i18n.awaitHandle);
+
+    this.state.asyncMenu = true;
     this.apiSrv.updateMenuLink(app_name).subscribe({
       error: _ => {
         //this.asyncUpdateMenu = false;
         this.toast.close(loadingRef);
-        console.error(`clickUpdateMenuLink: `, _);
+        this.state.asyncMenu = false;
       },
       next: links => {
         this.fgInfo.patchControl('links', JSON.stringify(links));
         this.toast.close(loadingRef);
         this.toast.success(this.cfg.i18n.updateMenuOk);
-        //this.asyncUpdateMenu = false;
+        this.state.asyncMenu = false;
       }
     });
   }
@@ -314,19 +318,21 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
       api_info: apiInfo
     };
 
+    this.state.asyncSave = true;
+
     this.apiSrv.saveAll(saveDto).subscribe({
       error: _ => {
         //this.asyncSave = false;
+        this.state.asyncSave = false;
         console.error(`onSaveUserApi: `, _);
       },
       next: data => {
         if (this.actionIsCopy) this.lsApi.push(data);
         else this.lsApi.find(l => l.api_id === data.api_id).update(data);
+        this.state.asyncSave = false;
         this.toast.success(this.cfg.i18n.saveApiOk);
         this.changeAction(null);
         this.resetForm(data);
-
-        console.log(this.formDirty, this.fgUser.dirty)
 
       }
     });
@@ -426,7 +432,8 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
         cookie_value: [{ value: null, disabled: true }],
         user_info: [{ value: null, disabled: true }],
         ts_name: [null], ts_email: [null],
-        auto_login: [true]
+        auto_login: [true],
+        save_log: [false]
       })
     });
   }

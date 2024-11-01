@@ -5,7 +5,7 @@ import { FormField } from "./form-field";
 export type CallbackAssign<E> = Callback<AssignObject<E>, E>;
 export type TemplateThread = 'ticket_template' | 'email_template';
 
-const { isTrue, notNull } = Objects;
+const { isTrue, notNull, isArray } = Objects;
 
 export class Template<D = any> extends BaseModel {
     template_id?: number;
@@ -62,13 +62,15 @@ export class TemplateMap<T extends Template = any> {
 
     /**
      * Set list template 
-     * @param templates the list template
+     * @param data the list template
      * */
-    set_all(templates: AssignObject<T>[] | Map<number, T>): this {
-        if (notNull(templates)) {
-            if (templates instanceof Map) this.dataMap.putAll(templates);
-            else if('dataMap' in templates) this.dataMap.putAll(<any>templates['dataMap']);
-            else templates.forEach(template => this.set(template));
+    set_all(data: AssignObject<T>[] | Map<number, T>): this {
+        if (notNull(data)) {
+            if(isArray(data)) data.forEach(template => this.set(template));
+            else if(data instanceof Map || 'dataMap' in data) {
+                const map: Map<any, any> = data instanceof Map ? data : <any>data['dataMap'];
+                map.forEach((v, k) => this.set(v))
+            }
         }
         return this;
     }

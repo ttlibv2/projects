@@ -230,7 +230,7 @@
             <div class="flex flex-wrap gap-2">
                 @for (item of catalog.get_ticket(); track $index) {
                 <ts-tag [value]="item" [label]="item.title" [icon]="item.icon" (click)="selectTemplate(item)"
-                    [checked]="ticketTemplate?.template_id === item.template_id" mode="checkable"></ts-tag>
+                    [styleClass]="tagSelectClass(item)"></ts-tag>
                 }
 
                 @if(catalog.get_ticket()?.length == 0){

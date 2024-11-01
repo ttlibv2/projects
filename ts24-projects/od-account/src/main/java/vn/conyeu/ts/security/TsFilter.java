@@ -31,10 +31,10 @@ public class TsFilter extends OncePerRequestFilter {
 
 
 
-//            OdService service = OdService.forUser(principal.getUserId());
+//            Ts24Service service = Ts24Service.forUser(principal.getUserId());
 //            service.setApiService(AppContext.getBean(UserApiService.class));
 //            service.loadApi(OdTicketService.SERVICE_NAME);
-//            principal.set(OdService.class.getName(), service);
+//            principal.set(Ts24Service.class.getName(), service);
         }
         filterChain.doFilter(request, response);
     }

@@ -1,0 +1,79 @@
+<div [ngClass]="containerCls()" [ngStyle]="containerStyleCls()">
+
+    @if(hasAddonBefore){
+    <div class="ts-inputgroup-addon ts-inputgroup-addon-before" [ngStyle]="styleAddonCls()">
+
+        @if (addonBeforeIcons?.length) {
+        @for (icon of addonBeforeIcons; track $index) {
+        <p-button [icon]="ngIconClass(icon)" (onClick)="iconClick(icon)" />
+        }
+        }
+
+        @if (addonBeforeTemplate) {
+        <ng-container *ngTemplateOutlet="addonBeforeTemplate"></ng-container>
+        }
+
+    </div>
+    }
+
+    <div class="ts-inputgroup-input" [ngStyle]="styleInputCls()">
+        @if(hasPrefix){
+        <div class="ts-inputgroup-affix ts-inputgroup-prefix" [ngStyle]="styleInputCls()">
+
+            @if(prefixIcons?.length) {
+            @for(icon of prefixIcons; track $index) {
+            <span class="icon" [ngClass]="ngIconClass(icon)" (click)="iconClick(icon)"></span>
+            }
+            }
+
+            @if (prefixTemplate) {
+            <ng-container *ngTemplateOutlet="prefixTemplate"></ng-container>
+            }
+
+        </div>
+        }
+
+        <div class="ts-inputgroup-field" [ngStyle]="styleInputCls()">
+            @if (fieldTemplate) {
+            <ng-container *ngTemplateOutlet="fieldTemplate"></ng-container>
+            }
+            @else {
+            <!-- <input pInputText [placeholder]="placeholder"/> -->
+            <ng-content select="input"></ng-content>
+            }
+        </div>
+
+        @if(hasSuffix){
+        <div class="ts-inputgroup-affix ts-inputgroup-suffix" [ngStyle]="styleInputCls()">
+
+            @if(suffixIcons?.length){
+            @for(icon of suffixIcons; track $index) {
+            <span class="icon" [ngClass]="ngIconClass(icon)" (click)="iconClick(icon)"></span>
+            }
+            }
+
+            @if (suffixTemplate) {
+            <ng-container *ngTemplateOutlet="suffixTemplate"></ng-container>
+            }
+        </div>
+        }
+    </div>
+
+    @if(hasAddonAfter){
+    <div class="ts-inputgroup-addon ts-inputgroup-addon-after" [ngStyle]="styleAddonCls()">
+        @if (addonAfterIcons?.length) {
+        @for (icon of addonAfterIcons; track $index) {
+        <p-button [icon]="ngIconClass(icon)" (onClick)="iconClick(icon)" />
+        }
+        }
+
+        @if (addonAfterTemplate) {
+        <ng-container *ngTemplateOutlet="addonAfterTemplate"></ng-container>
+        }
+    </div>
+    }
+
+
+
+
+</div>

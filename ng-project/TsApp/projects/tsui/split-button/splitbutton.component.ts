@@ -4,6 +4,8 @@ import { TieredMenu } from 'primeng/tieredmenu';
 import { UniqueComponentId } from 'primeng/utils';
 import { ButtonProps, MenuButtonProps } from './splitbutton.interface';
 import {Severity} from "ts-ui/common";
+import { Objects } from 'ts-ui/helper';
+const {notBlank, notNull, anyTrue} = Objects;
 
 type SplitButtonIconPosition = 'left' | 'right';
 
@@ -63,11 +65,25 @@ export class SplitButton {
      * @group Props
      */
     @Input() icon: string | undefined;
+
     /**
      * Position of the icon.
      * @group Props
      */
     @Input() iconPos: SplitButtonIconPosition = 'left';
+
+    /**
+     * Uses to pass attributes to the loading icon's DOM element.
+     * @group Props
+     */
+    @Input() loadingIcon: string | undefined;
+
+    /**
+     * Whether the button is in loading state.
+     * @group Props
+     */
+    @Input() loading: boolean | undefined;
+    
     /**
      * Text of the button.
      * @group Props
@@ -174,7 +190,7 @@ export class SplitButton {
         } else this._menuButtonDisabled = v;
     }
     public get menuButtonDisabled(): boolean | undefined {
-        return this._menuButtonDisabled;
+        return anyTrue(this._menuButtonDisabled, this.disabled, this.loading);
     }
     /**
      * When present, it specifies that the button element should be disabled.
@@ -253,6 +269,10 @@ export class SplitButton {
         });
     }
 
+    get buttonLabel(): string {
+        return !!this.contentTemplate ? undefined : this.label;
+    }
+
     get containerClass() {
         return {
             'p-splitbutton p-component': true,
@@ -261,7 +281,8 @@ export class SplitButton {
             'p-button-outlined': this.outlined,
             'p-button-text': this.text, 
             'p-not-menu-button': this.visibleMenuButton === false,
-            [`p-splitbutton-${this.size === 'small' ? 'sm' : 'lg'}`]: this.size
+            [`p-splitbutton-${this.size === 'small' ? 'sm' : 'lg'}`]: this.size,
+            [this.styleClass]: Objects.notBlank(this.styleClass)
         };
     }
 

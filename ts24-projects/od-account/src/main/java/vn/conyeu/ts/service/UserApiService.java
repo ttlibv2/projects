@@ -1,5 +1,7 @@
 package vn.conyeu.ts.service;
 
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Service
+@CacheConfig(cacheNames = UserApiService.CacheName)
 public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
     static final String EMPTY_PWD = "*".repeat(8);
     private final SmartValidator validator;
@@ -33,7 +36,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * @param userId the user id to get
      * @param appName the app name to get
      * */
-    @Cacheable(value = "user_api", key = "{#methodName, #userId, #appName}")
+    @Cacheable(key = "{#methodName, #userId, #appName}")
     public Optional<UserApi> findByAppName(Long userId, String appName) {
         return repo().findByAppName(userId, appName);
     }
@@ -43,7 +46,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * @param userId the user id to get
      * @param apiId the api_id to get
      * */
-    @Cacheable(value = "user_api", key = "{#methodName, #userId, #apiId}")
+    @Cacheable(key = "{#methodName, #userId, #apiId}")
     public Optional<UserApi> findByApiId(Long userId, Long apiId) {
         return repo().findByApiId(userId, apiId);
     }
@@ -52,7 +55,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * Returns all user api without user_id
      * @param userId the user id to get
      * */
-    @Cacheable(value = "user_api", key = "{#methodName, #userId}")
+    @Cacheable(key = "{#methodName, #userId}")
     public List<UserApi> findAll(Long userId) {
         return repo().findAll(userId);
     }
@@ -62,7 +65,7 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
      * @param userId the user id to get
      * @param appUID the app_uid to get
      * */
-    @Cacheable(value = "user_api", key = "{#methodName, #userId, #appUID}")
+    @Cacheable(key = "{#methodName, #userId, #appUID}")
     public List<UserApi> findAllByAppUID(Long userId, String appUID) {
         return repo().findAllByAppUID(userId, appUID);
     }
@@ -109,6 +112,11 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
 
     public UserApi save(Long userId, ApiInfo apiInfo, ObjectMap info) {
         Optional<UserApi> optional = findByApiId(userId, apiInfo.getId());
+
+        if(Objects.equals(info.get("password"), EMPTY_PWD)) {
+            info.remove("password");
+        }
+
         if(optional.isEmpty()) {
             UserApi userApi = info.asObject(UserApi.class);
             userApi.setUniqueId(userId, apiInfo);
@@ -127,19 +135,18 @@ public class UserApiService extends LongUIdService<UserApi, UserApiRepo> {
 
     private UserApi save(UserApi info, boolean hasValidate) {
 
-        if(Objects.equals(info.getPassword(), EMPTY_PWD)) {
-            info.setPassword(null);
-        }
-
         if(hasValidate) {
             Validators.throwValidate(validator, info);
         }
 
-        clearCache(info.getUserId());
+        clearCache();
         return super.saveAndReturn(info);
     }
 
-    @CacheEvict(value = "user_api")
-    public void clearCache(Long userId) {
+    @Override
+    public String getCacheName() {
+        return CacheName;
     }
+
+    static final String CacheName = "user_api";
 }

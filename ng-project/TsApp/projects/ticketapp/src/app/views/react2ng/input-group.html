@@ -1,0 +1,17 @@
+<div class="input-group" [ngClass]="containerClass">
+    <div class="addon addon-before" [ngClass]="addonClass">
+        <ng-content select="[addOnBefore]"></ng-content>
+    </div>
+    <div class="flex-1 p-input">
+        <div class="prefix">
+            <ng-content select="[prefix]"></ng-content>
+        </div>
+        <input class="field w-full" />
+        <div class="suffix">
+            <ng-content select="[suffix]"></ng-content>
+        </div>
+    </div>
+    <div class="addon addon-after" [ngClass]="addonClass">
+        <ng-content select="[addOnAfter]"></ng-content>
+    </div>
+</div>

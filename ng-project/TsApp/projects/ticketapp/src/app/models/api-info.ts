@@ -53,6 +53,7 @@ export class UserApi extends BaseModel {
   cookie_value?: string ;
   auto_login?: boolean;
   allow_edit?: boolean;
+  save_log?: boolean;
   user_info?: ClsUser;
   menu_links?: MenuLink;
   api_item?: ApiInfo ;

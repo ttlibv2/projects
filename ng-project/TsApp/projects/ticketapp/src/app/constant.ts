@@ -1,8 +1,8 @@
-import {LayoutConfig} from "ts-ui/app-layout";
-import {TranslateLoader, TranslateModuleConfig} from "@ngx-translate/core";
-import {HttpClient} from "@angular/common/http";
-import {TranslateHttpLoader} from "@ngx-translate/http-loader";
-import {ToastConfig} from "ts-ui/toast";
+import { LayoutConfig } from "ts-ui/app-layout";
+import { TranslateLoader, TranslateModuleConfig } from "@ngx-translate/core";
+import { HttpClient } from "@angular/common/http";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { ToastConfig } from "ts-ui/toast";
 
 export const routerUrl = {
     signinUrl: '/auth/signin',
@@ -47,16 +47,16 @@ export const layoutConfig: LayoutConfig = {
             label: 'Aura Light',
             name: 'aura-light',
             colorSchemes: [
-                {name: 'amber', color: '#f59e0b', url: 'aura-light-amber'},
-                {name: 'blue', color: '#3B82F6', url: 'aura-light-blue'},
-                {name: 'cyan', color: '#06b6d4', url: 'aura-light-cyan'},
-                {name: 'green', color: '#10b981', url: 'aura-light-green'},
-                {name: 'indigo', color: '#6366F1', url: 'aura-light-indigo'},
-                {name: 'lime', color: '#84cc16', url: 'aura-light-lime'},
-                {name: 'noir', color: '#020617', url: 'aura-light-noir'},
-                {name: 'pink', color: '#ec4899', url: 'aura-light-pink'},
-                {name: 'purple', color: '#8B5CF6', url: 'aura-light-purple'},
-                {name: 'teal', color: '#14b8a6', url: 'aura-light-teal'},
+                { name: 'amber', color: '#f59e0b', url: 'aura-light-amber' },
+                { name: 'blue', color: '#3B82F6', url: 'aura-light-blue' },
+                { name: 'cyan', color: '#06b6d4', url: 'aura-light-cyan' },
+                { name: 'green', color: '#10b981', url: 'aura-light-green' },
+                { name: 'indigo', color: '#6366F1', url: 'aura-light-indigo' },
+                { name: 'lime', color: '#84cc16', url: 'aura-light-lime' },
+                { name: 'noir', color: '#020617', url: 'aura-light-noir' },
+                { name: 'pink', color: '#ec4899', url: 'aura-light-pink' },
+                { name: 'purple', color: '#8B5CF6', url: 'aura-light-purple' },
+                { name: 'teal', color: '#14b8a6', url: 'aura-light-teal' },
 
             ]
         }

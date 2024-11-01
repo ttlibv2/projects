@@ -3,9 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CatalogComponent } from './catalog.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
-import { AgTableModule } from 'ts-ui/ag-table';
 import { TranslateModule } from '@ngx-translate/core';
-import { ToastModule } from 'ts-ui/toast';
+import { CatalogRoutingModule } from './catalog.routing';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { CardModule } from 'primeng/card';
+import { FieldsetModule } from 'primeng/fieldset';
+import { FormsModule } from 'ts-ui/forms';
 
 @NgModule({
   declarations: [
@@ -13,13 +16,19 @@ import { ToastModule } from 'ts-ui/toast';
   ],
   imports: [
     CommonModule,
+    CatalogRoutingModule,
+    FormsModule,
+    CardModule,
+    FieldsetModule,
     CheckboxModule,
     ButtonModule,
-    AgTableModule,
     TranslateModule
   ],
-  exports: [ 
+  exports: [
     CatalogComponent
+  ],
+  providers: [
+    DynamicDialogRef
   ]
 })
 export class CatalogModule { }

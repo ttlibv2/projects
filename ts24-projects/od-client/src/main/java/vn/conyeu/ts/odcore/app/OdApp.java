@@ -4,6 +4,8 @@ import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.Objects;
+import vn.conyeu.restclient.ClientLogger;
+import vn.conyeu.restclient.LoggingFilter;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
 import vn.conyeu.ts.odcore.service.OdClient;
@@ -12,13 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class OdApp<C extends OdClient> {
     private final ClsApiCfg cfg;
     private final Map<Class<? extends C>, C> clsMap = new HashMap<>();
     private BiConsumer<ClsApiCfg, ClsUser> loginConsumer;
-
+    private Function<String, ClientLogger> loggerFunc;
 
     public OdApp(ClsApiCfg config) {
         this.cfg = Asserts.notNull(config);
@@ -47,6 +50,16 @@ public abstract class OdApp<C extends OdClient> {
     public OdApp loginConsumer(BiConsumer<ClsApiCfg, ClsUser> consumer) {
         if (loginConsumer == null) loginConsumer = consumer;
         else loginConsumer = loginConsumer.andThen(consumer);
+        return this;
+    }
+
+    /**
+     * Set the loggerFunc
+     * @param loggerFunc the value
+     */
+    public OdApp<C> loggerFunc(Function<String, ClientLogger> loggerFunc) {
+        this.loggerFunc = loggerFunc;
+        this.clsMap.values().forEach(c -> c.loggerFunc(loggerFunc));
         return this;
     }
 
@@ -121,7 +134,8 @@ public abstract class OdApp<C extends OdClient> {
      */
     protected final <E extends C> E service(Class<E> clsService, Supplier<E> supplierCreate) {
         if (!clsMap.containsKey(clsService)) {
-            E service = getNewService(supplierCreate);
+            E service = supplierCreate.get();
+            service.loggerFunc(loggerFunc);
             clsMap.put(clsService, service);
             return service;
         } else {
@@ -129,11 +143,6 @@ public abstract class OdApp<C extends OdClient> {
             return clsService.cast(object);
         }
     }
-
-    protected <E extends C> E getNewService(Supplier<E> supplierCreate) {
-       return supplierCreate.get();
-    }
-
 
     public static void throwSiteNameInvalid(String inputSiteName, String siteName2) {
         throw BaseException.e500("site_name")

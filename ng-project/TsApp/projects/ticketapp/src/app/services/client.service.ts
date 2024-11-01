@@ -9,6 +9,8 @@ import { StorageService } from './storage.service';
 import { ApiInfoComponent } from '../views/api-info/api-info.component';
 import {ToastMessage} from "ts-ui/toast";
 import {LoggerService} from "ts-ui/logger";
+import { UserService } from './user.service';
+import { Alert } from 'ts-ui/alert';
 
 export const defaultPage: Pageable = {};
 
@@ -106,16 +108,14 @@ export class ClientService {
       if(err.status === 0) {
         errorCode = 'disconnect';
         object.message = 'Lỗi không kết nối được tới máy chủ';
-        object.detail = `Vui lòng kiểm tra kết nối: ${baseUrl('Kiểm tra')}`;
+        object.detail = `Vui lòng kiểm tra kết nối: ${baseUrl(' Tại đây ')}`;
         object.timeOut = 10 * 1000;
       }
 
       else if(err.status === 500) {
         errorCode = error.code === 'e_500' ? 'e_server' : error.code;
-        object.message = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')} <br>-> (${object.message})`;
-        object.timeOut = 10 * 1000;
-       // this.inject.toast.error(object);
-       // showError = false;
+        object.message = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')}`;
+        object.timeOut = 10 * 1000;        
       }
 
       else if(err.status === 401 && errorCode === 'ts_api') {
@@ -130,17 +130,32 @@ export class ClientService {
 
     }
 
+     // logout if session expired
+     if(errorCode.startsWith('jwt.')) {
+      this.inject.get(Alert).warning({
+        title: 'Thông báo đăng xuất',
+        summary: 'Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại !!',
+        okClick: _ => this.storage.set_loginToken(null).pipe(
+          tap(_ => this.router.navigate(['/']))
+        ).subscribe()
+      })
+
+      // this.inject.get(UserService).signout().pipe(
+      //   tap(_ => this.router.navigate(['/']))
+      // ).subscribe();
+
+      // this.storage.set_loginToken(null).pipe(
+      //   tap(_ => this.router.navigate(['/']))
+      // ).subscribe();
+      
+    }
+
     // view alert error
-    if(showError === true){
+    else if(showError === true){
       this.showError(object, true, alertType);
     }
 
-    // logout if session expired
-    if(errorCode.startsWith('jwt.')) {
-      this.storage.set_loginToken(null).pipe(
-        tap(_ => this.router.navigate(['/']))
-      ).subscribe();
-    }
+   
 
     return throwError(() => object);
   }

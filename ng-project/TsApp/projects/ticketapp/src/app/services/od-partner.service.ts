@@ -2,7 +2,8 @@ import { Injectable } from "@angular/core";
 import { ClientService } from "./client.service";
 import { Observable, map } from "rxjs";
 import { ClsPartner, ClsSearch } from "../models/od-cls";
-import { Page } from "ts-ui/helper";
+import { Objects, Page } from "ts-ui/helper";
+const {isTrue} = Objects;
 
 // 'isvat': { label: 'Mã số thuế', name: 'isvat', field: 'vat', checked: true },
 // 'isemail': { label: 'E-mail', name: 'isemail', field: 'email', checked: true, filter: ['email', '!=', false] },
@@ -11,7 +12,7 @@ import { Page } from "ts-ui/helper";
 // 'iscompany': { label: 'Công ty', name: 'iscompany', checked: false, filter: ['is_company', '=', true] },
 
 
-export interface SearchUserOption {
+export interface SearchUserOption1 {
     vat?: string;
     email?: string;
     mobile?: string;
@@ -25,10 +26,43 @@ export interface SearchUserOption {
 }
 
 
+export interface SearchData {
+    [key: string]: any;
+  
+    vat?: string;
+    email?: string;
+    mobile?: string;
+    phone?: string;
+  
+    // create_new
+    street?: string;
+    company_name?: string;
+    customer_name?: string;
+  
+    //form_option
+    options?: {
+      [key: string]: boolean;
+      isperson?: boolean;
+      iscompany?: boolean;
+      isvat?: boolean;
+      isemail?: boolean;
+      ismobile?: boolean;
+    },
+
+    page?: {
+        pageSize?: number;
+        operator?: 'like' | 'equal';
+      
+    }
+  
+  
+  }
+
 
 @Injectable({  providedIn: 'root' })
 export class OdPartnerService extends ClientService {
 
+   
     searchPartner(search: ClsSearch<ClsPartner>): Observable<Page<ClsPartner>> {
         const url = `/od-api/partner/search`;
         return this.post(url, search).pipe(map((res: any) => {

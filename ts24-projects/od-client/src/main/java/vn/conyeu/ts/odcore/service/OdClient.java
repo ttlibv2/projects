@@ -2,7 +2,7 @@ package vn.conyeu.ts.odcore.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.util.UriBuilder;
+import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.common.exception.Unauthorized;
 import vn.conyeu.commons.beans.ObjectMap;
@@ -13,24 +13,30 @@ import vn.conyeu.restclient.ClientBuilder;
 import vn.conyeu.restclient.ClientLogger;
 import vn.conyeu.restclient.LoggingFilter;
 import vn.conyeu.restclient.RClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodyUriSpec;
 import vn.conyeu.ts.odcore.domain.*;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Slf4j
 public abstract class OdClient {
     protected final ClsApiCfg cfg;
-    protected Consumer<LoggingFilter> loggingFilterConsumer;
+    protected Function<String, ClientLogger> loggerFunc;
+
+    //protected Consumer<LoggingFilter> loggingFilterConsumer;
 
     public OdClient(ClsApiCfg apiConfig) {
         this.cfg = apiConfig;
+    }
+
+    /**
+     * Returns the cfg
+     */
+    public final ClsApiCfg cfg() {
+        return cfg;
     }
 
     public static BaseException notLogin(String apiCode) {
@@ -39,19 +45,12 @@ public abstract class OdClient {
     }
 
     /**
-     * Set the loggingFilterConsumer
-     *
-     * @param loggingFilterConsumer the value
+     * Set the loggerFunc
+     * @param loggerFunc the value
      */
-    public void setLoggingFilterConsumer(Consumer<LoggingFilter> loggingFilterConsumer) {
-        this.loggingFilterConsumer = loggingFilterConsumer;
-    }
-
-    /**
-     * Returns the cfg
-     */
-    public ClsApiCfg cfg() {
-        return cfg;
+    public OdClient loggerFunc(Function<String, ClientLogger> loggerFunc) {
+        this.loggerFunc = loggerFunc;
+        return this;
     }
 
     /**
@@ -76,13 +75,21 @@ public abstract class OdClient {
                 .defaultHeader("tsModelName", getLogModel())
                 .defaultHeader("tsApiUserId", cfg.getAccountId());
 
-        if(loggingFilterConsumer != null) {
-            cb.filter(new LoggingFilter(ClientLogger::new));
+        if(loggerFunc != null) {
+            cb.filter(new LoggingFilter(loggerFunc));
         }
 
         return cb;
     }
 
+    protected RClient createClient() {
+        ClientBuilder clientBuilder = clientBuilder();
+        clientBuilder.defaultQueries(cfg.getQueries());
+        clientBuilder.defaultHeaders(cfg.getHeaders());
+        clientBuilder.defaultHeader("cookie", cfg.getCookie());
+        clientBuilder.defaultCsrfToken(cfg.getCsrfToken());
+        return clientBuilder.build();
+    }
     /**
      * Returns basePath -> /dataset/[URL]
      *
@@ -137,25 +144,16 @@ public abstract class OdClient {
         else return str;
     }
 
-    protected RClient createClient() {
-        ClientBuilder clientBuilder = clientBuilder();
-        clientBuilder.defaultQueries(cfg.getQueries());
-        clientBuilder.defaultHeaders(cfg.getHeaders());
-        clientBuilder.defaultHeader("cookie", cfg.getCookie());
-        clientBuilder.defaultCsrfToken(cfg.getCsrfToken());
 
-        return clientBuilder.build();
-    }
-
-    /**
-     * Execute send data with POST
-     *
-     * @param body the data body
-     * @param uri  the uri send
-     */
-    public final ObjectMap post(Object body, URI uri) {
-        return sendBody(body, spec -> spec.uri(uri));
-    }
+//    /**
+//     * Execute send data with POST
+//     *
+//     * @param body the data body
+//     * @param uri  the uri send
+//     */
+//    public final ObjectMap post(Object body, URI uri) {
+//        return sendBody(body, spec -> spec.uri(uri));
+//    }
 
     /**
      * Execute send data with POST
@@ -165,52 +163,49 @@ public abstract class OdClient {
      * @param uriVariables the variables
      */
     public final ObjectMap post(Object body, String uri, Object...uriVariables) {
-        return sendBody(body, spec -> spec.uri(uri, uriVariables));
+        return sendBody(body, spec -> spec.uri(uri, uriVariables), 0);
     }
 
-    /**
-     * Execute send data with POST
-     *
-     * @param body the data body
-     * @param uri  the URI for the request using a URI template and URI variables
-     * @param uriVariables the variables
-     */
-    public final ObjectMap post(Object body, String uri, Map<String, ?> uriVariables) {
-        return sendBody(body, spec -> spec.uri(uri, uriVariables));
-    }
-
-    /**
-     * Execute send data with POST
-     *
-     * @param body the data body
-     * @param uri  the URI starting with a URI template and finishing off with a {@link UriBuilder} created from the template.
-     * @param uriFunction the function
-     */
-    public final ObjectMap post(Object body, String uri, Function<UriBuilder, URI> uriFunction) {
-        return sendBody(body, spec -> spec.uri(uri, uriFunction));
-    }
-
-    /**
-     * Execute send data with POST
-     *
-     * @param body the data body
-     * @param uriFunction the function
-     */
-    public final ObjectMap post(Object body, Function<UriBuilder, URI> uriFunction) {
-        return sendBody(body, spec -> spec.uri(uriFunction));
-    }
-
-    public ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer) {
-        return sendBody(body, consumer, 0);
-    }
+    //    /**
+//     * Execute send data with POST
+//     *
+//     * @param body the data body
+//     * @param uri  the URI for the request using a URI template and URI variables
+//     * @param uriVariables the variables
+//     */
+//    public final ObjectMap post(Object body, String uri, Map<String, ?> uriVariables) {
+//        return sendBody(body, spec -> spec.uri(uri, uriVariables));
+//    }
+//
+//    /**
+//     * Execute send data with POST
+//     *
+//     * @param body the data body
+//     * @param uri  the URI starting with a URI template and finishing off with a {@link UriBuilder} created from the template.
+//     * @param uriFunction the function
+//     */
+//    public final ObjectMap post(Object body, String uri, Function<UriBuilder, URI> uriFunction) {
+//        return sendBody(body, spec -> spec.uri(uri, uriFunction));
+//    }
+//
+//    /**
+//     * Execute send data with POST
+//     *
+//     * @param body the data body
+//     * @param uriFunction the function
+//     */
+//    public final ObjectMap post(Object body, Function<UriBuilder, URI> uriFunction) {
+//        return sendBody(body, spec -> spec.uri(uriFunction));
+//    }
+//
+//    public ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer) {
+//        return sendBody(body, consumer, 0);
+//    }
 
     private ObjectMap sendBody(Object body, Consumer<RequestBodyUriSpec> consumer, int count) {
         Asserts.notNull(consumer, "Consumer<RequestBodyUriSpec>");
-
         RequestBodyUriSpec uriSpec = createClient().post();
         consumer.accept(uriSpec);
-
-        //  log.info(response.toJson(false));
         return checkResponse(body, uriSpec
                 .bodyValue(ClsRequest.fromObject(body))
                 .retrieve().bodyToMono(ObjectMap.class)

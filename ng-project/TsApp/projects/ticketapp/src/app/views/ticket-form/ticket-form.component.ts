@@ -5,12 +5,12 @@ import {
 import { MenuItem, OverlayOptions } from "primeng/api";
 import { Ticket } from "../../models/ticket";
 import { TicketOption } from "../../models/ticket-option";
-import { FindPartnerComponent, SearchPartnerOption } from "../find-partner/find-partner.component";
+import { FindPartnerComponent, openDialog } from "../find-partner/find-partner.component";
 import { CatalogService } from "../../services/catalog.service";
 
 import { Catalog } from "../../models/catalog";
 import { ToastService } from "ts-ui/toast";
-import { Objects, Asserts, AssignObject } from "ts-ui/helper";
+import { Objects, Asserts, AssignObject, Page } from "ts-ui/helper";
 import { Software } from "../../models/software";
 import { ClsTeam } from "../../models/od-cls";
 import { LoggerService } from "ts-ui/logger";
@@ -36,7 +36,8 @@ import { Utils } from "./utils";
 import { ImportData } from "./import-data";
 import { OdPartnerService } from "../../services/od-partner.service";
 import { AuthService } from "../../services/auth.service";
-const { notNull, notEmpty, isEmpty, isNull, notBlank, isTrue, isFalse } = Objects;
+import { InputOption, SearchData as SearchUserData } from "../find-partner/partner.interface";
+const { notNull, notEmpty, isEmpty, isBlank, isNull, notBlank, isTrue, isFalse } = Objects;
 
 export type TicketState = 'add' | 'update' | 'delete';
 
@@ -89,8 +90,8 @@ export interface DsLoiItem {
   motaloigiaodich: string;
 }
 
-export interface SearchUserOption extends SearchPartnerOption {
-  autoSave?: boolean;
+export interface SearchUserOption extends InputOption {
+    autoSave?: boolean;
 }
 
 @Component({
@@ -494,16 +495,15 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  searchUser(option?: SearchUserOption) {
+  searchUser(option?: SearchUserOption, customData?: SearchUserData) {
     const { tax_code, phone, email } = this.utils.formData;
-    const data = { vat: tax_code, mobile: phone, email: email };
-    const ref = this.modal.open(FindPartnerComponent, {
-      header: "Tìm kiếm khách hàng",
-      maximizable: true,
-      //draggable: true,
-      //position: 'top-right',
-      data: { data, option },
-    });
+
+    const data: SearchUserData = {
+       operator: 'equal', ...customData, 
+      vat: tax_code, mobile: phone, email: email 
+    };
+
+    const ref = openDialog(this.modal, data, option);
 
     ref.onClose.subscribe({
       next: (cls: cls.ClsPartner) => {
@@ -511,8 +511,8 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
           this.form.patchValue({
             tax_code: cls.vat,
-            email: cls.email,
-            phone: cls.phone,
+            email: isBlank(email) ? cls.email : email,
+            phone: isBlank(phone) ? cls.phone : phone,
             customer_name: cls.customer_name,
             od_partner_id: cls.customer_id,
             od_partner: cls
@@ -525,6 +525,10 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
       }
     });
+  }
+
+  private handleAfterSearch(dialogRef: DynamicDialogRef, page: Page<cls.ClsPartner>): void {
+    console.log(`handleAfterSearch: `, page);
   }
 
   onSelectSoftware(data: Software) {
@@ -742,7 +746,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
           options: { min: 2, max: 60 }
         }
       ],
-      validateXsl: wb => false
+      //validateXsl: wb => false
 
     });
 
@@ -792,6 +796,11 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     });
 
 
+  }
+
+  tagSelectClass(item: any): string {
+    let hasChecked = this.ticketTemplate?.template_id === item.template_id;
+    return hasChecked ? 'select' : undefined;
   }
 
 

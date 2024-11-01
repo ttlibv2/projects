@@ -1,9 +1,18 @@
 {
-    "editor.fontSize": 14,
-    "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
-    "editor.fontLigatures": true,
-    "editor.smoothScrolling": true,
-    "files.autoSave": "off",
-    "prettier.endOfLine": "auto",
-    "html.autoClosingTags": false
+  "editor.fontSize": 14,
+  "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.smoothScrolling": true,
+  "files.autoSave": "off",
+  "prettier.endOfLine": "auto",
+  "html.autoClosingTags": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": false,
+  "prettier.bracketSameLine": true,
+  "prettier.requireConfig": true,
+  "prettier.tabWidth": 4,
+  "angular.forceStrictTemplates": true,
+  "html.format.indentHandlebars": true,
+  "html.format.indentInnerHtml": true,
+  "html.format.templating": true
 }

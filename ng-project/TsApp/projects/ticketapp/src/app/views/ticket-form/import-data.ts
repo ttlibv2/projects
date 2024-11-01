@@ -146,8 +146,10 @@ export class ImportData {
             this.comp.searchUser({
                 autoSelect: true, timeDelay: 1000,
                 autoSave: this.isClickRunAll,
-                trialMST: true, showToatResult: false
-            });
+                trialMST: false, showToatResult: false,
+                newEmail: true
+            }, 
+            {operator: 'equal'});
         }
 
         // destroy save subscribe

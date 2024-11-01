@@ -26,7 +26,6 @@ import { TagModule } from 'ts-ui/tag';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { RippleModule } from 'primeng/ripple';
-import { TsIconModule } from 'ts-ui/icon';
 import { TsLoggerModule } from 'ts-ui/logger';
 import { FormsModule } from 'ts-ui/forms';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -64,8 +63,8 @@ import { IconFieldModule } from 'primeng/iconfield';
     InputGroupAddonModule,
     TsLoggerModule.forChild(),
     RippleModule,
-    TagModule,
-    TsIconModule
+    TagModule
+    
 ], 
   providers: [
     DialogService,

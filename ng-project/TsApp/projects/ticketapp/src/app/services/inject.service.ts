@@ -5,6 +5,7 @@ import { StorageService } from "./storage.service";
 import { ToastService } from 'ts-ui/toast';
 import { ModalService } from "ts-ui/modal";
 import { Alert } from "ts-ui/alert";
+import { UserService } from "./user.service";
 
 @Injectable({ providedIn: 'root' })
 export class InjectService {
@@ -31,6 +32,10 @@ export class InjectService {
   get storage(): StorageService {
     return this.inject.get(StorageService);
   }
+
+  // get users(): UserService {
+  //   return this.inject.get(UserService);
+  // }
 
   get dialog(): DialogService {
     return this.inject.get(DialogService);

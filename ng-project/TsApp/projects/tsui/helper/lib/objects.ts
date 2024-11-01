@@ -1,7 +1,7 @@
 import crypto from 'crypto-js';
 import { Type } from "@angular/core";
-import {BiFunction, Callback} from './function';
-import {JsonAny, JsonKeyType} from "./common";
+import { BiFunction, Callback } from './function';
+import { JsonAny, JsonKeyType } from "./common";
 
 export class Objects {
 
@@ -9,11 +9,11 @@ export class Objects {
   static assign<E>(target: E, source: any, excludeFields?: string[]): E
   static assign<E>(object: E | Type<E>, source: any, excludeFields: string[] = []): E {
     //console.log(`\n\n--------------------------\n\n`)
-    const target: any = object instanceof  Type ? new object() : object;
+    const target: any = object instanceof Type ? new object() : object;
     if (Objects.isObject(target) && Objects.isObject(source)) {
       for (const key of Object.keys(source)) {
         if (!excludeFields.includes(key)) {
-         // console.log(key);
+          // console.log(key);
           const get = `get_${key}`, set = `set_${key}`;
           const srcVal = typeof source[get] === 'function' ? source[get]() : source[key];
           if (typeof target[set] === 'function') target[set](srcVal);
@@ -80,6 +80,10 @@ export class Objects {
     return obj === null || obj === void 0;
   }
 
+  static isBool(value: any): value is boolean {
+    return typeof value === 'boolean';
+  }
+
   static isBlank(str: string): boolean {
     return Objects.isNull(str) || `${str}`.trim().length == 0;
   }
@@ -105,7 +109,7 @@ export class Objects {
   }
 
   static isFalse(object: any): object is boolean {
-    return object === false ;
+    return object === false;
   }
 
   static isTrue(object: any): object is boolean {
@@ -151,7 +155,7 @@ export class Objects {
   static equals(obj1: any, obj2: any, field?: Function | string): boolean {
 
     if (Objects.notNull(field)) {
-      return Objects.resolveFieldData(obj1, field) 
+      return Objects.resolveFieldData(obj1, field)
         === Objects.resolveFieldData(obj2, field);
     }
     else if (obj1 === obj2) return true;
@@ -253,6 +257,11 @@ export class Objects {
     return objects.some(o => Objects.isNull(o));
   }
 
+  static anyNotEmpty(...objects: any[][]): boolean {
+    return objects.some(o => Objects.notBlank(o));
+  }
+
+
   static isClass(object: any): boolean {
     return Objects.isObject(object) && object.constructor.name !== 'Object';
   }
@@ -338,15 +347,15 @@ export class Objects {
     return target;
   }
 
-  static arrayToJson<E, K extends JsonKeyType, V>(array: E[], mapFunction: BiFunction<E,number, [K, V]>): JsonAny {
+  static arrayToJson<E, K extends JsonKeyType, V>(array: E[], mapFunction: BiFunction<E, number, [K, V]>): JsonAny {
     return Object.fromEntries(array.map((item, index) => mapFunction(item, index)));
   }
 
   static getter(object: any, field: string): any {
-    if(!Objects.isObject(object)) {
+    if (!Objects.isObject(object)) {
       throw new Error(`The data [${object}] not object`);
     }
-    else if(typeof object[`get_${field}`] === 'function') {
+    else if (typeof object[`get_${field}`] === 'function') {
       return object[`get_${field}`]();
     }
     else {
@@ -355,10 +364,10 @@ export class Objects {
   }
 
   static setter(object: any, field: string, value: any): any {
-    if(!Objects.isObject(object)) {
+    if (!Objects.isObject(object)) {
       throw new Error(`The data [${object}] not object`);
     }
-    else if(typeof object[`set_${field}`] === 'function') {
+    else if (typeof object[`set_${field}`] === 'function') {
       object[`set_${field}`](value);
       return object;
     }
@@ -369,10 +378,10 @@ export class Objects {
   }
 
   static fillArray(length: number): Array<number> {
-    return Array.from({length}, (v, i) => i);
+    return Array.from({ length }, (v, i) => i);
   }
 
- 
+
 
 }
 
@@ -384,9 +393,9 @@ function mergeObject(target: any, source: any): any {
 
       //-- source[key] is object
       if (Objects.isObject(source[key])) {
-        if(key in target)  target[key] = mergeObject(target[key], source[key]);
-        else  Object.assign(target, { [key]: source[key] });
-      } 
+        if (key in target) target[key] = mergeObject(target[key], source[key]);
+        else Object.assign(target, { [key]: source[key] });
+      }
 
       // else 
       else {

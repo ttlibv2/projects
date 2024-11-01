@@ -27,6 +27,12 @@ ts-ticket-form {
       text-decoration: underline;
       color: var(--info-color);
     }
+
+    .ts-tag.select {
+      background: var(--danger-color);
+      color: var(--tag-active-color);
+      border-color: var(--danger-color);
+    }
   }
 
   &.template {

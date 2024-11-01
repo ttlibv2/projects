@@ -1,12 +1,9 @@
-import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FontIcon } from "./font-icon";
+import { NgModule } from "@angular/core";
+import { Icon } from "./icon";
 
 @NgModule({
-    declarations: [ FontIcon], 
-    exports: [FontIcon],
-    imports: [CommonModule]
+    imports: [Icon],
+    exports: [Icon]
 })
-export class TsIconModule {
-
-}
+export class IconModule { }

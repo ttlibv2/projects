@@ -4,59 +4,57 @@
       <div class="grid">
         <div class="p-fluid col-6">
           <label for="first_name">{{i18n.first_name | translate}}</label>
-          <p-iconField>
-            <p-inputIcon styleClass="fa-light fa-user" />
+          <ts-inputgroup [prefixIcons]="['pi pi-user']">
             <input id="first_name" type="text" pInputText placeholder="First Name" formControlName="first_name" />
-          </p-iconField>
+          </ts-inputgroup>
         </div>
         <div class="p-fluid col-6">
           <label for="last_name">{{i18n.last_name | translate}}</label>
-          <p-iconField>
-            <p-inputIcon styleClass="fa-light fa-user" />
+          <ts-inputgroup [prefixIcons]="['pi pi-user']">
             <input id="last_name" type="text" pInputText placeholder="Last Name" formControlName="last_name" />
-          </p-iconField>
+          </ts-inputgroup>
         </div>
         <div class="p-fluid col-6">
           <label for="email">{{i18n.email | translate}}</label>
-          <p-iconField>
-            <p-inputIcon styleClass="fa-light fa-envelope" />
+          <ts-inputgroup [prefixIcons]="['pi pi-at']">
             <input id="email" type="text" pInputText placeholder="Email" formControlName="email" />
-          </p-iconField>
+          </ts-inputgroup>
         </div>
         <div class="p-fluid col-6">
           <label for="phone">{{i18n.phone | translate}}</label>
-          <p-iconField>
-            <p-inputIcon styleClass="fa-light fa-phone" />
+          <ts-inputgroup [prefixIcons]="['pi pi-phone']">
             <input id="phone" type="text" pInputText placeholder="Phone" formControlName="phone" />
-          </p-iconField>
+          </ts-inputgroup>
         </div>
         <div class="p-fluid col-6">
           <label for="password">{{ i18n.password| translate}}</label>
-          <p-iconField>
-            <p-inputIcon styleClass="fa-light fa-key" />
+          <ts-inputgroup [prefixIcons]="['pi pi-key']">
             <p-password [minlength]="8" [toggleMask]="true" placeholder="Password" [feedback]="false"
               formControlName="password"></p-password>
-          </p-iconField>
+          </ts-inputgroup>
         </div>
         <div class="p-fluid col-6">
           <label for="re_password">{{i18n.re_password | translate}}</label>
-          <p-iconField>
-            <p-inputIcon styleClass="fa-light fa-key" />
-            <p-password tem id="re_password" [minlength]="8" placeholder="Repeat Password" [toggleMask]="true" [feedback]="false"
-              formControlName="re_password">
+          <ts-inputgroup [prefixIcons]="['pi pi-key']">
+            <p-password tem id="re_password" [minlength]="8" placeholder="Repeat Password" [toggleMask]="true"
+              [feedback]="false" formControlName="re_password">
             </p-password>
-          </p-iconField>
+          </ts-inputgroup>
         </div>
         <div class="p-fluid col-6">
           <label for="dob">{{i18n.dob | translate}}</label>
-          <p-calendar id="dob" formControlName="dob" dateFormat="yy-mm-dd" placeholder="Ngày sinh" [showIcon]="true"
-            [iconDisplay]="'input'"></p-calendar>
-
+          <ts-inputgroup>
+            <p-calendar id="dob" formControlName="dob" dateFormat="yy-mm-dd" placeholder="Ngày sinh" [showIcon]="true"
+              [iconDisplay]="'input'" showOnFocus="false" hideOnDateTimeSelect="false"></p-calendar>
+          </ts-inputgroup>
         </div>
         <div class="p-fluid col-6">
           <label for="gender">{{i18n.gender | translate}}</label>
-          <p-dropdown id="gender" formControlName="gender"
-            placeholder="{{'users.holder.gender' | translate}}"></p-dropdown>
+          <ts-inputgroup>
+            <p-dropdown id="gender" formControlName="gender"
+              placeholder="{{'users.holder.gender' | translate}}"></p-dropdown>
+          </ts-inputgroup>
+
         </div>
       </div>
       <div class="grid mt-1">

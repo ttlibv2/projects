@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.conyeu.common.exception.BaseException;
 import vn.conyeu.commons.utils.Classes;
+import vn.conyeu.restclient.ClientLogger;
 import vn.conyeu.ts.domain.ApiInfo;
 import vn.conyeu.ts.domain.UserApi;
 import vn.conyeu.ts.dtocls.TsErrors;
@@ -14,9 +15,11 @@ import vn.conyeu.ts.ticket.service.TSApp;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @Service
-public class OdService {
+public class Ts24Service {
     private final Map<String, Class<? extends OdApp>> APP_CLS = new HashMap<>();// Map<APP_UID, OdApp>
     private final Map<String, ClsApiCfg> defaultConfigs = new HashMap<>(); // Map<APP_UID, ClsApiCfg>
     private final Map<Long, AppForUser> UserApp = new HashMap<>();
@@ -25,7 +28,7 @@ public class OdService {
     private final HttpLogService logService;
 
     @Autowired
-    public OdService(ApiInfoService aiService, UserApiService apiService, HttpLogService logService) {
+    public Ts24Service(ApiInfoService aiService, UserApiService apiService, HttpLogService logService) {
         this.aiService = aiService;
         this.uaService = apiService;
         this.logService = logService;
@@ -35,7 +38,7 @@ public class OdService {
     protected final void registerDefaultApp() {
         registerApp(TSApp.APP_UID, TSApp.class, TSApp.DEFAULT_CONFIG);
 
-        for(String app_uid:defaultConfigs.keySet()) {
+        for (String app_uid : defaultConfigs.keySet()) {
             ClsApiCfg config = defaultConfigs.get(app_uid);
             aiService.tryCreateApi(app_uid, ai -> {
                 ai.setAppName(app_uid);
@@ -52,15 +55,12 @@ public class OdService {
         }
     }
 
-
     public AppForUser forUser(Long userId) {
-        if(!UserApp.containsKey(userId)) {
+        if (!UserApp.containsKey(userId)) {
             UserApp.put(userId, new AppForUser(userId));
         }
         return UserApp.get(userId);
     }
-
-
 
     //===================================================================
     // AppForUser
@@ -84,14 +84,14 @@ public class OdService {
 
         /**
          * Load api config without app_name
-         * @param appName  the app name
+         * @param appName the app name
          * @param override if true then load config from db
          */
         public ClsApiCfg loadConfig(String appName, boolean override) {
             if (override || !configs.containsKey(appName)) {
-                editConfig(uaService
-                        .findByAppName(userId, appName).map(this::createConfig)
-                        .orElseThrow(() -> TsErrors.noApiUser(userId, appName)));
+                apps.remove(appName);
+                Optional<UserApi> optional = uaService.findByAppName(userId, appName);
+                editConfig(optional.map(this::createConfig).orElseThrow(() -> TsErrors.noApiUser(userId, appName)));
             }
 
             return configs.get(appName);
@@ -101,29 +101,51 @@ public class OdService {
          * update info config
          * @param config the config api
          */
-        public void editConfig(ClsApiCfg config) {
+        private void editConfig(ClsApiCfg config) {
             String appName = config.getAppName();
-            if(!configs.containsKey(appName)) configs.put(appName, config);
+            if (!configs.containsKey(appName)) configs.put(appName, config);
             else configs.get(appName).update(config);
         }
 
         /**
          * Find or create app without appName
          * @param appName the name to find or create
-         * */
+         * @see #loadApp(String, boolean)
+         */
         public <A extends OdApp> A loadApp(String appName) {
-            if(!apps.containsKey(appName)){
+            return loadApp(appName, false);
+        }
+            
+        /**
+         * Find or create app without appName
+         * @param appName the name to find or create
+         */
+        public <A extends OdApp> A loadApp(String appName, boolean override) {
+            if (override || !apps.containsKey(appName)) {
                 ClsApiCfg config = loadConfig(appName, false);
+                Long accountId = config.getAccountId();
+
                 Class<A> clsApp = findClsApp(config.getAppUID());
                 OdApp<?> odApp = Classes.newObject(clsApp, config);
-                odApp.loginConsumer((cfg, user) -> uaService.updateConsumer(
-                        config.getAccountId(), appName,
-                        ua -> ua.setUserInfo(user)
-                ));
+                odApp.loginConsumer((cfg, user) -> {
+                    Consumer<UserApi> consumer = ua -> ua.setUserInfo(user);
+                    uaService.updateConsumer(accountId, appName, consumer);
+                });
+
+                // write log if true
+                if(config.isSaveLog()) {
+                    odApp.loggerFunc(requestId -> {
+                        ClientLogger logger = new ClientLogger(requestId, accountId);
+                        logger.submitResponseConsumer(response -> logService.save(requestId, response));
+                        logger.submitRequestConsumer(request -> logService.save(requestId, request));
+                        logger.submitLoggerConsumer(log -> logService.save(requestId, logger));
+                        return logger;
+                    });
+                }
+
                 apps.put(appName, odApp);
-                return (A) odApp;
             }
-            return (A)apps.get(appName);
+            return (A) apps.get(appName);
         }
 
         private ClsApiCfg createConfig(UserApi ua) {
@@ -143,46 +165,15 @@ public class OdService {
             cls.setClsUser(ua.getUserInfo());
             cls.setAutoLogin(ua.isAutoLogin());
             cls.setAccountId(ua.getUserId());
-
-
-//            cls.setCustomBuilderConsumer(builder -> {
-//                LoggingFilter loggingFilter = new LoggingFilter(requestId -> {
-//                    ClientLogger logger = new ClientLogger(requestId);
-//                    logger.userLogin(cls.getAccountId());
-//
-//                    logger.submitResponseConsumer(response -> {
-//                        logService.save(requestId, response);
-//                    });
-//
-//                    logger.submitRequestConsumer(request -> {
-//                        logService.save(requestId, request);
-//                    });
-//
-//                    logger.submitLoggerConsumer(log -> {
-//                        logService.save(requestId, logger);
-//                    });
-//
-//                    return logger;
-//                });
-//
-//                builder.filter(loggingFilter);
-//            });
-
+            cls.setSaveLog(ua.isSaveLog());
             return cls;
         }
-
-
-
-
     }
-
 
 
     public <C extends OdApp> void registerApp(String app_uid, Class<C> clsApp, ClsApiCfg defaultConfig) {
         if (APP_CLS.containsKey(app_uid)) {
-            throw BaseException.e500("register_app")
-                    .detail("app_uid", app_uid)
-                    .message("The app '%s' has registry", app_uid);
+            throw BaseException.e500("register_app").detail("app_uid", app_uid).message("The app '%s' has registry", app_uid);
         }
 
         APP_CLS.put(app_uid, clsApp);
@@ -190,9 +181,8 @@ public class OdService {
     }
 
     protected <A extends OdApp> Class<A> findClsApp(String appUID) {
-        if(APP_CLS.containsKey(appUID)) return (Class<A>) APP_CLS.get(appUID);
-        else throw BaseException.e500("app_uid").detail("app_uid", appUID)
-                .message("The app_uid `%s` not register", appUID);
+        if (APP_CLS.containsKey(appUID)) return (Class<A>) APP_CLS.get(appUID);
+        else throw BaseException.e500("app_uid").detail("app_uid", appUID).message("The app_uid `%s` not register", appUID);
     }
 
 }

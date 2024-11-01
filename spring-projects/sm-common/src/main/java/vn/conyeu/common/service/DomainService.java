@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -29,14 +30,22 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Service
+@Service @Slf4j
 public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serializable, R extends DomainRepo<S, Id>> {
-    protected ICacheService cacheService = ICacheService.defaultService();
+    private ICacheService cacheService = ICacheService.defaultService();
 
     private final R entityRepo;
 
     public DomainService(R domainRepo) {
         this.entityRepo = domainRepo;
+    }
+
+    protected ICacheService cache() {
+        if(cacheService == null) {
+            cacheService = ICacheService.defaultService();
+            log.debug("Use default cache service");
+        }
+        return cacheService;
     }
 
     @Autowired
@@ -393,5 +402,7 @@ public abstract class DomainService<S extends DomainId<S, Id>, Id extends Serial
                 .trim().toLowerCase()+"s";
     }
 
-    public void clearCache() {}
+    public void clearCache() {
+        cache().clearAll(getCacheName());
+    }
 }

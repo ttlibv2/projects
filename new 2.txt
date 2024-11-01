@@ -1,0 +1,3 @@
+E:\TS24_SVN\SVN_2024\2022\2ez\Konect24\frpc\konect24service.exe -key=7mNe5yESBZ4jfwGQd2I99joXce9it5Bh
+accesskey=On8Ya2y5LFEVVQPFPHfnpPJYNrfOGcdj
+cmd E:\TS24_SVN\SVN_2024\2022\2ez\Konect24\Java\Jre18\bin\java.exe -jar E:\TS24_SVN\SVN_2024\2022\2ez\Konect24\Api\iXHD\xhd-api-exe.jar --server.port=8999

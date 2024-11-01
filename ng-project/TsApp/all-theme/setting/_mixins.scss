@@ -22,7 +22,7 @@
     outline: cfg.$focusOutline;
     outline-offset: cfg.$inputFocusOutlineOffset;
     box-shadow: cfg.$focusShadow;
-	border-color: cfg.$inputFocusBorderColor;
+    border-color: cfg.$inputFocusBorderColor;
 }
 
 @mixin focused-listitem() {
@@ -81,7 +81,7 @@
 }
 
 @mixin menuitem {
-    > .p-menuitem-content {
+    >.p-menuitem-content {
         color: cfg.$menuitemTextColor;
         transition: cfg.$listItemTransition;
         border-radius: cfg.$menuitemBorderRadius;
@@ -107,7 +107,7 @@
     }
 
     &.p-highlight {
-        > .p-menuitem-content {
+        >.p-menuitem-content {
             color: cfg.$menuitemTextActiveColor;
             background: cfg.$menuitemActiveBg;
 
@@ -124,7 +124,7 @@
         }
 
         &.p-focus {
-            > .p-menuitem-content {
+            >.p-menuitem-content {
                 background: cfg.$menuitemActiveFocusBg;
             }
         }
@@ -132,7 +132,7 @@
 
     &:not(.p-highlight):not(.p-disabled) {
         &.p-focus {
-            > .p-menuitem-content {
+            >.p-menuitem-content {
                 color: cfg.$menuitemTextFocusColor;
                 background: cfg.$menuitemFocusBg;
 
@@ -149,7 +149,7 @@
             }
         }
 
-        > .p-menuitem-content {
+        >.p-menuitem-content {
             &:hover {
                 color: cfg.$menuitemTextHoverColor;
                 background: cfg.$menuitemHoverBg;
@@ -212,7 +212,7 @@
 }
 
 @mixin horizontal-rootmenuitem {
-    > .p-menuitem-content {
+    >.p-menuitem-content {
         color: cfg.$horizontalMenuRootMenuitemTextColor;
         transition: cfg.$listItemTransition;
         border-radius: cfg.$horizontalMenuRootMenuitemBorderRadius;
@@ -238,7 +238,7 @@
     }
 
     &:not(.p-highlight):not(.p-disabled) {
-        > .p-menuitem-content {
+        >.p-menuitem-content {
             &:hover {
                 color: cfg.$horizontalMenuRootMenuitemTextHoverColor;
                 background: cfg.$horizontalMenuRootMenuitemHoverBg;
@@ -262,12 +262,15 @@
     ::-webkit-input-placeholder {
         @content;
     }
+
     :-moz-placeholder {
         @content;
     }
+
     ::-moz-placeholder {
         @content;
     }
+
     :-ms-input-placeholder {
         @content;
     }
@@ -275,6 +278,10 @@
 
 @mixin scaledPadding($val, $scale) {
     padding: nth($val, 1) * $scale nth($val, 2) * $scale;
+}
+
+@mixin scaledPaddingSub($tag, $val, $scale) {
+    #{$tag}: nth($val, 1) * $scale nth($val, 2) * $scale;
 }
 
 @mixin scaledFontSize($val, $scale) {
@@ -289,6 +296,7 @@
                     padding-left: $val * ($index + 1);
                 }
             }
+
             @if $index < $length {
                 @include nested-submenu-indents($val, $index + 2, $length);
             }
@@ -350,7 +358,7 @@
     background: cfg.$secondaryButtonBg;
     border: cfg.$secondaryButtonBorder;
 
-    &:not(:disabled){
+    &:not(:disabled) {
         &:hover {
             background: cfg.$secondaryButtonHoverBg;
             color: cfg.$secondaryButtonTextHoverColor;
@@ -372,9 +380,11 @@
 @mixin randomColor($colors) {
     @each $name, $color in $colors {
         @for $i from 0 through 5 {
-            @if ($i == 0) {
+            @if ($i ==0) {
                 --#{$name}-50: #{tint($color, (5 - $i) * 19%)};
-            } @else {
+            }
+
+            @else {
                 --#{$name}-#{$i * 100}: #{tint($color, (5 - $i) * 19%)};
             }
         }

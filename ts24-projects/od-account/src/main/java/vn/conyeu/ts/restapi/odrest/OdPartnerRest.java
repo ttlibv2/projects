@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import vn.conyeu.ts.dtocls.TsErrors;
 import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.odcore.domain.ClsSearch;
-import vn.conyeu.ts.service.OdService;
+import vn.conyeu.ts.service.Ts24Service;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.ClsPartner;
 
@@ -15,7 +15,7 @@ import vn.conyeu.ts.ticket.domain.ClsPartner;
 @RequestMapping(TsVar.Rest.odPartner)
 public class OdPartnerRest extends OdBaseRest {
 
-    public OdPartnerRest(OdService odService, UserApiService apiService) {
+    public OdPartnerRest(Ts24Service odService, UserApiService apiService) {
         super(odService, apiService);
     }
 

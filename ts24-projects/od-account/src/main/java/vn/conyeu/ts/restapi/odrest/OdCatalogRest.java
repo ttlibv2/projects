@@ -9,7 +9,7 @@ import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.ts.dtocls.TsVar;
 import vn.conyeu.ts.odcore.domain.ClsApiCfg;
 import vn.conyeu.ts.odcore.domain.ClsUser;
-import vn.conyeu.ts.service.OdService;
+import vn.conyeu.ts.service.Ts24Service;
 import vn.conyeu.ts.service.UserApiService;
 import vn.conyeu.ts.ticket.domain.*;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @CacheConfig(cacheNames = "od_catalogs")
 public class OdCatalogRest extends OdBaseRest {
 
-    public OdCatalogRest(OdService odService, UserApiService apiService) {
+    public OdCatalogRest(Ts24Service odService, UserApiService apiService) {
         super(odService, apiService);
     }
 

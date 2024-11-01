@@ -1,59 +1,86 @@
 <div class="search-user-form grid" [style]="{'max-width': '1024px'}">
     <p-card class="col-12">
         <form [formGroup]="form" (ngSubmit)="clickSearch()" class="sm grid">
-            <div class="p-fluid col-12">
+            <!-- <div class="p-fluid col-12">
                 <label for="display_name">Tên hiển thị</label>
                 <input pInputText id="display_name" formControlName="display_name"/>
+            </div> -->
+            <div class="col-6">
+                <div class="grid">
+                    <div class="p-fluid col-12">
+                        <label for="vat">Mã số thuế</label>
+                        <ts-inputgroup compact="false">
+                            <input pInputText id="vat" formControlName="vat" placeholder="VAT" />
+                            <ng-template pTemplate="addonAfter">
+                                <ts-inputgroup compact="false" [style]="{'max-width': '80px'}">
+                                    <input pInputText formControlName="company_id" placeholder="C_UID" />
+                                    <ng-template pTemplate="suffix">
+                                        <ts-icon name="pi pi-times" color="red" size=".8rem"
+                                            (onClick)="clearUID('company_id')" />
+                                    </ng-template>
+                                </ts-inputgroup>
+
+                            </ng-template>
+                        </ts-inputgroup>
+                    </div>
+                    <div class="p-fluid col-12">
+                        <label for="company_name">Tên công ty</label>
+                        <input pInputText formControlName="company_name" id="company_name" />
+                    </div>
+                    <div class="p-fluid col-12" *ngIf="state.allowNew">
+                        <label for="street">Địa chỉ</label>
+                        <input pInputText id="street" formControlName="street" />
+                    </div>
+                </div>
             </div>
-            <div class="p-fluid col-6">
-                <label for="vat">Mã số thuế</label>
-                <input pInputText id="vat" formControlName="vat"/>
-            </div>
-            <div class="p-fluid col-6">
-                <label for="email">Email (Cá nhân *)</label>
-                <input pInputText id="email" formControlName="email"/>
-            </div>
-            <div class="p-fluid col-6" *ngIf="state.allowNew">
-                <label for="company_name">Tên công ty</label>
-                <p-inputGroup class="flex">
-                    <input pInputText formControlName="company_name" id="company_name"/>
-                    <input pInputText formControlName="company_id" [style]="{'max-width': '80px'}"/>
-                </p-inputGroup>
-            </div>
-            <div class="p-fluid col-6" *ngIf="state.allowNew">
-                <label for="customer_name">Người liên hệ (Cá nhân) *</label>
-                <p-inputGroup class="flex">
-                    <input pInputText id="customer_name" formControlName="customer_name"/>
-                    <input pInputText formControlName="customer_id" [style]="{'max-width': '80px'}" />
-                </p-inputGroup>
-            </div>
-            <div class="p-fluid col-6" *ngIf="state.allowNew">
-                <label for="street">Địa chỉ</label>
-                <input pInputText id="street" formControlName="street"/>
-            </div>
-            <div class="p-fluid col-6" *ngIf="state.allowNew">
-                <label for="phone">Số điện thoại (Cá nhân)</label>
-                <input pInputText id="phone" formControlName="phone"/>
+            <div class="col-6">
+                <div class="grid">
+                    <div class="p-fluid col-12">
+                        <label for="email">Email (Cá nhân *)</label>
+                        <ts-inputgroup compact="false">
+                            <input pInputText id="email" formControlName="email" placeholder="E-mail" />
+                            <ng-template pTemplate="addonAfter">
+                                <ts-inputgroup [style]="{'max-width': '80px'}">
+                                    <input pInputText formControlName="customer_id" placeholder="C_UID" />
+                                    <ng-template pTemplate="suffix">
+                                        <ts-icon name="pi pi-times" color="red" size=".8rem"
+                                            (onClick)="clearUID('customer_id')" />
+                                    </ng-template>
+                                </ts-inputgroup>
+
+                            </ng-template>
+                        </ts-inputgroup>
+                    </div>
+                        <div class="p-fluid col-12">
+                            <label for="phone">Số điện thoại (Cá nhân)</label>
+                            <input pInputText id="phone" formControlName="phone" />
+                        </div>
+                    <div class="p-fluid col-12" *ngIf="state.allowNew">
+                        <label for="customer_name">Người liên hệ (Cá nhân) *</label>
+                        <input pInputText id="customer_name" formControlName="customer_name" />
+                    </div>
+                </div>
             </div>
             <div class="col-12 flex gap-5  align-items-center">
                 <label for="search_where">Tìm theo: </label>
                 <div class="flex gap-3 align-items-center" id="search_where">
                     <ng-container formGroupName="options">
                         @for (opt of formOption; track $index) {
-                            <p-checkbox label="{{opt.label | translate}}" [value]="opt.checked" 
-                                [binary]="true" [formControlName]="opt.name"></p-checkbox>
+                        <p-checkbox label="{{opt.label | translate}}" [value]="opt.checked" [binary]="true"
+                            [formControlName]="opt.name"></p-checkbox>
                         }
                     </ng-container>
                 </div>
             </div>
             <div class="col-12 flex flex-wrap gap-4 mb-2 align-items-center">
                 <span>Tùy chỉnh: </span>
-                <p-radioButton label="Tìm gần đúng" name="operator" value="like"  formControlName="operator"></p-radioButton>
-                <p-radioButton label="Tìm chính xác" name="operator" value="equal" formControlName="operator"></p-radioButton>
+
+                <p-radioButton label="Tìm chính xác" value="equal" formControlName="operator"></p-radioButton>
+                <p-radioButton label="Tìm gần đúng" value="like" formControlName="operator"></p-radioButton>
                 <div class="inline-flex align-items-center gap-3">
                     <span class="font-weight-bold"> | Số dòng: </span>
-                    <p-inputNumber [min]="1" [max]="80"
-                                   formControlName="pageSize" [inputStyle]="{'max-width': '100px'}" showButtons="false"/>
+                    <p-inputNumber [min]="1" [max]="80" formControlName="pageSize" [inputStyle]="{'max-width': '100px'}"
+                        showButtons="false" />
                     <div class="flex gap-1" *ngIf="page?.data">
                         <p-divider layout="vertical"></p-divider>
                         <label>Tìm được</label>
@@ -64,31 +91,37 @@
             </div>
             <div class="col-12 flex gap-2">
                 <p-button label="Lấy mặc định" severity="warning" (click)="clickResetForm()"></p-button>
-                <p-button label="Tìm kiếm" severity="primary" [loading]="state.asyncLoading" (onClick)="clickSearch(true, false)"></p-button>
-                <p-button label="Tìm theo MST" severity="info" [loading]="state.asyncLoading" (onClick)="clickSearchMST()"></p-button>
 
-                <p-button label="+ Cá nhân" severity="success" (click)="clickNewPerson()"
-                          [loading]="state.asyncSave" *ngIf="visiblePersonBtn"></p-button>
+                <ts-splitButton severity="info" label="Tìm kiếm" icon="pi pi-search"
+                    [loading]="state.asyncLoading" loadingIcon="pi pi-sync"
+                    (onClick)="clickSearch()" [model]="searchMenu"/>
 
-                <p-button label="+ Công ty" severity="info" (click)="clickNewCompany()"
-                          [loading]="state.asyncSave" *ngIf="visibleCompBtn"></p-button>
+                <ts-splitButton visibleMenuButton="false" severity="warning" label="Tạo mới" icon="pi pi-user-plus"
+                    [loading]="state.asyncSave" loadingIcon="pi pi-sync"
+                    ></ts-splitButton>    
+
+                <p-button label="+ [E-mail] Cá nhân" severity="success" (click)="clickNewPersonEmail()"
+                    [loading]="state.asyncSave"></p-button>
+
+                <p-button label="+ Cá nhân" severity="success" (click)="clickNewPerson()" [loading]="state.asyncSave"
+                    *ngIf="visiblePersonBtn"></p-button>
+
+                <p-button label="+ Công ty" severity="info" (click)="clickNewCompany()" [loading]="state.asyncSave"
+                    *ngIf="visibleCompBtn"></p-button>
 
                 <p-checkbox label="Tạo mới dữ liệu" [binary]="true"
-                            (onChange)="state.allowNew = $event.checked"></p-checkbox>
+                    (onChange)="state.allowNew = $event.checked"></p-checkbox>
             </div>
         </form>
     </p-card>
     <div class="col-12">
-        <ts-ag-table #agTable [option]="tableOption" [columns]="columns" [rows]="rowData"
-                     (rowClicked)="clickRow($event.data)"></ts-ag-table>
+        <ts-ag-table #agTable [option]="tableOption" [tableHeight]="tableHeight" [columns]="columns" [rows]="rowData"
+            (rowClicked)="clickRow($event.data)"></ts-ag-table>
     </div>
 
-    <div class="col-12 flex flex-row justify-content-end gap-2" *ngIf="state.showToolbar">
-        <p-button severity="help" label="Chọn và đóng" (onClick)="selectAndClose()" *ngIf="dataSelect"/>
+    <div class="col-12 flex flex-row justify-content-end gap-2" *ngIf="state.hasDialog">
+        <p-button severity="help" label="Chọn và đóng" (onClick)="selectAndClose()" [disabled]="!dataSelect"/>
         <p-button severity="info" label="Đóng" (onClick)="closeDialog()"/>
-     </div>
+    </div>
 
 </div>
-
-
-
