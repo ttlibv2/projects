@@ -29,6 +29,7 @@ $textColor: clr.$shade700 !default;
 $textSecondaryColor: clr.$shade500 !default;
 $borderRadius: 4px !default;
 $borderWidth: 1px!default;
+$borderColor: clr.$shade300 !default;
 $transitionDuration: 0.2s !default;
 $formElementTransition: background-color $transitionDuration, color $transitionDuration, border-color $transitionDuration, box-shadow $transitionDuration, outline-color $transitionDuration !default;
 $actionIconTransition: background-color $transitionDuration, color $transitionDuration, border-color $transitionDuration, box-shadow $transitionDuration, outline-color $transitionDuration !default;
@@ -50,6 +51,9 @@ $scaleLG: 1.5 !default; //  Large
 $scaleXL: 1.75 !default; //  Large
 $scaleXXL: 2!default; // Medium
 
+//margin
+$marginSm: .5rem;
+$marginLg: 1rem;
 
 
 
@@ -299,6 +303,11 @@ $colorPickerPreviewHeight: 1.5rem !default;
 $colorPickerBg: #323232 !default;
 $colorPickerBorder: 1px solid #191919 !default;
 $colorPickerHandleColor: clr.$shade000 !default;
+
+
+
+
+
 
 //togglebutton
 $toggleButtonBg: clr.$shade100 !default;

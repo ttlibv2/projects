@@ -245,15 +245,26 @@
       "get_api": "Lấy danh sách ứng dụng"
     },
     "holder": {
-      "gender": "Vui lòng nhập giới tính"
+      "gender": "Nhập giới tính"    ,
+	  "fisrt_name": "Nhập tên",
+	  "last_name": "Nhập tên"  ,
+	  "dob": "Nhập ngày sinh"   ,
+	  "email": "Nhập e-mail"     ,
+	  "password": "Nhập mật khẩu",
+	  "re_password": "Nhập lại mật khẩu"
     }
   },
   "template": {
     "entity_code": "Mã mẫu",
     "data": "Nội dung",
     "icon": "Icon",
-    "setting": "Thiết lập nội dung",
-    "severity": "Severity"
+    "setting": "Thiết lập",
+    "severity": "Severity",
+    "thread": "Loại mẫu",
+    "holder": {
+      "data": "Nhập nội dung",
+      "severity": "Chọn thông tin"
+    }
   },
   "ticket":{
     "chanels": "Kênh - Tình trạng",
@@ -278,7 +289,7 @@
     "create": "Tạo mới",
     "update": "Cập nhật",
     "cancel": "Hủy bỏ",
-    "delete": "Xóa",
+    "delete": "Xóa thông tin",
     "delete_all": "Xóa tất cả",
     "check_api": "Kiểm tra kết nối",
     "close": "Đóng",

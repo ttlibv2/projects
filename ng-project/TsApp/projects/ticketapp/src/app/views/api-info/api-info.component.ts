@@ -284,7 +284,7 @@ export class ApiInfoComponent implements OnInit, OnDestroy {
         this.state.asyncMenu = false;
       },
       next: links => {
-        this.fgInfo.patchControl('links', JSON.stringify(links));
+        this.fgInfo.path_value('links', JSON.stringify(links));
         this.toast.close(loadingRef);
         this.toast.success(this.cfg.i18n.updateMenuOk);
         this.state.asyncMenu = false;

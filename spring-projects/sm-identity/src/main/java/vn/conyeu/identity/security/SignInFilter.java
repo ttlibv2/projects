@@ -63,7 +63,7 @@ public class SignInFilter extends UsernamePasswordAuthenticationFilter {
 
         try {
             // 1. Get credentials from request
-            SignInDto dto = SignInDto.readRequest(request);
+            SignInDto dto = SignInDto.readRequest(request).validate();
 
             // 2. Create auth object (contains credentials) which will be used by auth manager
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

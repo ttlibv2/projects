@@ -46,6 +46,7 @@ export class StorageData {
     }
 
     up_config(field: any, data: any): this {
+        console.log(`update_config(${field}=${data})`);
         this.config.update({[field]: data});
         return this;
     }

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 
-import { FindPartnerRoutingModule } from './find-partner-routing.module';
+import { PartnerRouting } from './find-partner-routing.module';
 import { FindPartnerComponent } from './find-partner.component';
 import { ChipsModule } from "primeng/chips";
 import { CheckboxModule } from "primeng/checkbox";
@@ -21,6 +21,7 @@ import { FormsModule } from 'ts-ui/forms';
 import { SplitButtonModule } from 'ts-ui/split-button';
 import { InputGroupModule } from 'ts-ui/input-group';
 import { IconModule } from 'ts-ui/icon';
+import { SharedModule } from 'primeng/api';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { IconModule } from 'ts-ui/icon';
   ],
   imports: [
     CommonModule,
-    FindPartnerRoutingModule,
+    PartnerRouting,
+    SharedModule,
     FormsModule,
     DialogModule,
     ChipsModule,

@@ -44,18 +44,17 @@ export class SigninComponent implements OnInit {
               private toast: ToastService) {  }
 
   ngOnInit() {
-    //if(this.cfg.isLogin) this.router.navigate([this.lastUrl??'/']).then();
-    //else
       this.initialize();
   }
 
   initialize() {
     this.cache = this.cfg.rememberUser;
-   
     this.asyncView = true;
 
     this.cacheUsers = Object.keys(this.cache?.users ?? {});
-    const info = this.cache?.users[this.cache?.currentUser];
+    const info = this.cache?.users[this.cache?.currentUser] || {};
+    info.url_dev = 'https://tsapi.konect24.ts24.com.vn';
+
     this.signinForm = this.fb.group({
       username: [info?.username, [Validators.required, Validators.email]],
       password: [info?.password, Validators.required],
@@ -82,29 +81,33 @@ export class SigninComponent implements OnInit {
     }
 
     const obj: ChkUser = this.signinForm.getRawValue();
-
     if (this.isDev && Objects.notBlank(obj.url_dev)) {
-      this.cfg.set_baseUrl(obj.url_dev);
+      this.cfg.set_baseUrl(obj.url_dev).subscribe({
+        error: obj => console.error(`update baseUrl error -> ${obj}`),
+        next: _ => this.loginImpl(obj)
+      });
     }
+    else {
+      this.loginImpl(obj);
+    }
+  }
 
+  private loginImpl(obj: ChkUser): void {
     this.asyncLogin = true;
-
     this.auth.signin(obj).subscribe({
       error: err => {
-        console.log(err);
-        this.asyncLogin = false; 
-        this.toast.error( 'error <=> console');
+        //console.log(err);
+        this.asyncLogin = false;
+        //this.toast.error('error <=> console');
       },
       next: (user: User) => {
         this.asyncLogin = false;
-        this.toast.success( 'Đăng nhập thành công.');
+        this.toast.success('Đăng nhập thành công.');
 
-        if(user.required_update === true) this.router.navigate(['/user-info']);
-        else  this.router.navigate([this.lastUrl ?? HOME_PAGE]);
+        if (user.required_update === true) this.router.navigate(['/user-info']);
+        else this.router.navigate([this.lastUrl ?? HOME_PAGE]);
 
       }
     })
-
-
   }
 }

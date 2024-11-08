@@ -10,6 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { ToolBar } from 'ts-ui/toolbar';
+import { ColorPickerPanel } from 'ts-ui/color-picker';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
     InputTextareaModule,
     InputNumberModule,
     ButtonModule,
-    Icon
+    Icon,
+    ToolBar,
+    ColorPickerPanel
 
   ]
 })

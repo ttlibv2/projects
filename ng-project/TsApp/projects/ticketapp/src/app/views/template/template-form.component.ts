@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, signal, Type, ViewChild, ViewEncapsulation, } from "@angular/core";
+import { ChangeDetectorRef, Component, Input, OnInit, Type, ViewChild, ViewEncapsulation, } from "@angular/core";
 import { Validators, } from "@angular/forms";
 import { TemplateService } from "../../services/template.service";
 import { ToastService } from "ts-ui/toast";
@@ -14,10 +14,9 @@ import { Router } from "@angular/router";
 import { Template, TemplateThread, TicketTemplate } from "../../models/template";
 import { Alert } from "ts-ui/alert";
 import { RxjsUtil } from "../shared/rxjs-util";
-import { FormBuilder } from "@angular/forms";
-import { FormGroup } from "@angular/forms";
 import { ModalService } from "ts-ui/modal";
 import { EmailTemplateView } from "../email-template/email-template.view";
+import { FormGroup, FormsBuilder } from "ts-ui/forms";
 
 const { isNull, notBlank, isBlank } = Objects;
 
@@ -34,6 +33,8 @@ interface State {
     asyncSave?: boolean;// = false;
     visibleDelete?: boolean;
     visibleCopy?: boolean;
+    visibleSave?: boolean;
+    clickCreate?: boolean;
 }
 
 
@@ -52,7 +53,7 @@ const defaultInfo: any = {
 export class TemplateFormComponent implements OnInit {
 
     get template(): Partial<TicketTemplate> {
-        const rawJson = this.formGroup?.getRawValue();
+        const rawJson = this.form?.getRawValue();
         rawJson.data = JSON.parse(rawJson.data || '{}');
         return rawJson;
     }
@@ -74,8 +75,21 @@ export class TemplateFormComponent implements OnInit {
         }
     }
 
+    get textColor(): string {
+        return this.form.get_value('text_color');
+    }
 
-    formGroup: FormGroup;
+    get bgColor(): string {
+        return this.form.get_value('bg_color');
+    }
+
+    get visibleSave(): boolean {
+        return this.form.dirty;
+    }
+
+
+
+    form: FormGroup;
 
     state: State = {};
     labelSave: string = "save";
@@ -102,17 +116,14 @@ export class TemplateFormComponent implements OnInit {
         getRowId: (params: GetRowIdParams<Template>) => `ROWID_${params.data?.template_id}`,
     };
 
-    @ViewChild(AgTable)
-    agTable: AgTable;
+    @ViewChild(AgTable) agTable: AgTable;
 
-    @Input({ alias: 'thread' })
-    thread: string;
+    @Input({ alias: 'thread' }) thread: string;
 
-    @Input()
-    lastUrl: string;
+    @Input() lastUrl: string;
 
     constructor(
-        private fb: FormBuilder,
+        private fb: FormsBuilder,
         private toast: ToastService,
         private alert: Alert,
         private config: StorageService,
@@ -127,7 +138,7 @@ export class TemplateFormComponent implements OnInit {
     private createFormGroup() {
         const threadValue = { value: this.thread, disabled: notBlank(this.thread) };
 
-        this.formGroup = this.fb.group({
+        this.form = this.fb.group({
             icon: [null], template_id: [null],
             thread: [threadValue, Validators.required],
             title: [null, Validators.required],
@@ -154,11 +165,13 @@ export class TemplateFormComponent implements OnInit {
         this.resetForm();
         this.state.visibleCopy = false;
         this.state.visibleDelete = false;
+        this.state.clickCreate = true; 
         this.tryDisabledThreadControl();
     }
 
     copyTemplate(): void {
         this.state.visibleDelete = false;
+        this.state.clickCreate = false;
         this.resetForm({
             ...this.template,
             data: JSON.stringify(this.template.data),
@@ -193,14 +206,15 @@ export class TemplateFormComponent implements OnInit {
     /** Save template to server */
     saveTemplate() {
 
-        if (this.formGroup.invalid) {
+        if (this.form.invalid) {
             this.toast.warning(this.config.i18n.form_invalid);
             return;
         }
         else {
             this.state.asyncSave = true;
+            this.state.clickCreate = false;
 
-            const formValue = this.formGroup.getRawValue();
+            const formValue = this.form.getRawValue();
             formValue.data = JSON.parse(formValue.data ?? '{}');
 
             const isNew = isNull(formValue.template_id);
@@ -272,7 +286,7 @@ export class TemplateFormComponent implements OnInit {
         this.pathValue(template);
         this.state.visibleCopy = true;
         this.tryDisabledThreadControl(true);
-        this.formGroup.get('data').disable();
+        this.form.get('data').disable();
 
         if (!this.lsEntity.includes(template.thread)) {
             this.toast.warning(`Mã mẫu ${template.thread} không tồn tại.`)
@@ -280,7 +294,7 @@ export class TemplateFormComponent implements OnInit {
     }
 
     resetForm(data?: any): void {
-        this.formGroup.reset({ ...defaultInfo, ...data });
+        this.form.reset({ ...defaultInfo, ...data });
     }
 
     settingData() {
@@ -340,7 +354,7 @@ export class TemplateFormComponent implements OnInit {
 
     private pathValue(value: Partial<Template>) {
         const data = value.data ? JSON.stringify(value.data, null, 0) : undefined;
-        this.formGroup.patchValue({ ...value, data });
+        this.form.patchValue({ ...value, data });
     }
 
 
@@ -348,7 +362,7 @@ export class TemplateFormComponent implements OnInit {
         const func = disabled === true ? 'disable'
             : notBlank(this.thread) ? 'disable' : 'enable';
 
-        this.formGroup.get('thread')[func]();
+        this.form.get('thread')[func]();
     }
 
 }

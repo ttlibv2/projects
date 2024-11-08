@@ -81,4 +81,8 @@ public class SignInDto implements Serializable {
         this.signinType = signinType;
         return this;
     }
+
+    public SignInDto validate() {
+        return this;
+    }
 }

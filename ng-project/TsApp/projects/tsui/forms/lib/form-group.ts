@@ -3,13 +3,9 @@ import { AsyncValidator, ValidatorOrOpts } from "./forms.common";
 import { BiConsumer, Consumer, Objects } from "ts-ui/helper";
 
 export type TControl<T> = { [K in keyof T]: AbstractControl<any, any> };
-export type TKeyControl<TC> = string & keyof TC;
-export type TRawValue<TC extends TControl<TC>> = ɵTypedOrUntyped<TC, ɵFormGroupRawValue<TC>, any>;
-export type TControlValue<TC extends TControl<TC>, K extends TKeyControl<TC>> = ɵGetProperty<TRawValue<TC>, K>;
-
-
-
-
+export type TKC<TC> = string & keyof TC;
+export type TRValue<TC extends TControl<TC>> = ɵTypedOrUntyped<TC, ɵFormGroupRawValue<TC>, any>;
+export type TCValue<TC extends TControl<TC>, K extends TKC<TC>> = ɵGetProperty<TRValue<TC>, K>;
 
 export interface Options {
     onlySelf?: boolean;
@@ -35,50 +31,19 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
         super(controls, validatorOrOpts, asyncValidator);
     }
 
-    registerEvent(consumer: Consumer<this>): void {
-        consumer(this);
+    formChange(valueCb: Consumer<TRValue<TC>>): void {
+        this.valueChanges.subscribe((_: any) => valueCb(this.getRawValue()));
     }
 
-    formValueChange(valueCb: Consumer<TRawValue<TC>>): void {
-        this.valueChanges.subscribe((value: any) => valueCb(value));
+    controlChange<K extends TKC<TC>>(control: K, valueCb: BiConsumer<AbstractControl<TCValue<TC, K>>, TCValue<TC, K>>): void {
+        const contr = this.get(control);
+        contr.valueChanges.subscribe((value: any) => valueCb(contr, value));
     }
 
-    controlValueChange<K extends TKeyControl<TC>>(control: K, valueCb: Consumer<TControlValue<TC, K>>): void {
-        this.get(control).valueChanges.subscribe((value: any) => valueCb(value));
-    }
-
-    controlsValueChange<K extends TKeyControl<TC>>(controls: K[], consumer: BiConsumer<FormGroup, TRawValue<TC>>): void {
+    controlsChange<K extends TKC<TC>>(controls: K[], consumer: BiConsumer<FormGroup, TRValue<TC>>): void {
         const func =  () => <any>Objects.arrayToJson(controls, c => [c, this.get_value(c)]);
         controls.forEach(c => this.get(c).valueChanges.subscribe(_ => consumer(this, func())));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    enableOrDisableControl<K extends TKeyControl<TC>>(control: K, enable: boolean):void {
-        enable ? this.get(control)?.enable() : this.get(control)?.disable();
-    }
-
-
-
-
-
-
-
-
-
 
     override getRawValue(): ɵTypedOrUntyped<TC, ɵFormGroupRawValue<TC>, any> {
         return super.getRawValue();
@@ -89,68 +54,45 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
      *
      * This signature for get supports strings and `const` arrays (`.get(['foo', 'bar'] as const)`).
      */
-    override get<K extends TKeyControl<TC>>(control: K): AbstractControl<TControlValue<TC, K>> {
+    override get<K extends TKC<TC>>(control: K | string[]): AbstractControl<TCValue<TC, K>> {
         return super.get(control);
+    }
+
+    set_enable<K extends TKC<TC>>(control: K, flag: boolean, options?: Options): void {
+        this.get(control)[flag ? 'enable' : 'disable'](options);
     }
 
     /**
      * Sets errors on a form control when running validations manually, rather than automatically.
+     * @param name
+     * @param errors
      * @param opts Configuration options that determine how the control propagates
      * changes and emits events after the control errors are set.
      * * `emitEvent`: When true or not supplied (the default), the `statusChanges`
      * observable emits an event after the errors are set.
      */
-    set_error<K extends TKeyControl<TC>>(name: K, errors: ValidationErrors | null, opts?: { emitEvent?: boolean; }): void {
+    set_error<K extends TKC<TC>>(name: K, errors: ValidationErrors | null, opts?: { emitEvent?: boolean; }): void {
         this.get(name).setErrors(errors, opts);
     }
 
-    set_value<K extends TKeyControl<TC>>(name: K, value: any) {
+    set_value<K extends TKC<TC>>(name: K, value: any) {
         this.get(name).setValue(value);
     }
 
-    reset_value<K extends TKeyControl<TC>>(name: K, value: any) {
+    reset_value<K extends TKC<TC>>(name: K, value: any) {
         this.get(name).reset(value);
+    }
+
+    path_value<K extends TKC<TC>>(name: K, value: any, options?: Options) {
+        this.get(name).patchValue(value, options);
     }
 
     /**
      * The raw value of this control. For most control implementations, the raw value will include
      * disabled children.
      */
-    get_value<K extends TKeyControl<TC>>(name: K) {
+    get_value<K extends TKC<TC>>(name: K) {
         return this.get(name).getRawValue();
     }
-
-    /**
-     * Disables the control. This means the control is exempt from validation checks and
-     * excluded from the aggregate value of any parent. Its status is `DISABLED`.
-     *
-     * If the control has children, all children are also disabled.
-     *
-     * @see {@link AbstractControl.status}
-     *
-     * @param opts Configuration options that determine how the control propagates
-     * changes and emits events after the control is disabled.
-     * * `onlySelf`: When true, mark only this control. When false or not supplied,
-     * marks all direct ancestors. Default is false.
-     * * `emitEvent`: When true or not supplied (the default), the `statusChanges`,
-     * `valueChanges` and `events`
-     * observables emit events with the latest status and value when the control is disabled.
-     * When false, no events are emitted.
-     */
-    set_disable<K extends TKeyControl<TC>>(name: K,opts?: {onlySelf?: boolean; emitEvent?: boolean; }) {
-        this.get(name).disable(opts);
-    }
-
-    /**
-     * Patches the value of the control
-     * @param control the control name
-     * @param value the value update
-     * @param options the option
-     * 
-     */
-    patchControl<K extends TKeyControl<TC>>(control: K, value: any, options?: Options): void {
-        this.get(control).patchValue(value, options);
-    }
-
 
 }

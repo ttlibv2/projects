@@ -18,11 +18,11 @@
     }
 
     .p-inputnumber-button {
-      border-top-right-radius: cfg.$borderRadius - 1;
-      border-bottom-right-radius: cfg.$borderRadius - 1;
+      border-top-right-radius: cfg.$borderRadius - 1!important;
+      border-bottom-right-radius: cfg.$borderRadius - 1!important;
       background-color: transparent;
-      border: 0 none;
-      color: clr.$shade500;
+      border: 0 none!important;
+      color: clr.$shade500!important;
 
       &:hover {
         background-color: clr.$shade100;

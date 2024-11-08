@@ -18,24 +18,17 @@ public abstract class SecurityAdapter {
     //@Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        //Make the below setting as * to allow connection from any hos
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.setAllowedMethods(List.of("*"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setMaxAge(3600L);
+        corsConfiguration.setAllowCredentials(false);
+
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
-
-//    @Bean
-//    public JwtAuthenticationFilter jwtAuthenticationFilter(PrincipalService userDetailsService, JwtService jwtService ) {
-//        return new JwtAuthenticationFilter(jwtService, userDetailsService);
-//    }
-
-
 
     public void applyDefaultSecurityFilterChain(HttpSecurity http) throws Exception {
         //http.securityMatcher("/**");

@@ -6,7 +6,7 @@ import { ClsPartner } from "../../models/od-cls";
 export const searchOption: { [name: string]: SearchItem } = {
   'isvat': { label: 'Mã số thuế', name: 'isvat', field: 'vat', checked: true },
   'isemail': { label: 'E-mail', name: 'isemail', field: 'email', checked: true, filter: ['email', '!=', false] },
-  'ismobile': { label: 'Điện thoại', name: 'ismobile', field: 'phone', checked: false, filter: ['mobile', '!=', false] },
+  'ismobile': { label: 'Điện thoại', name: 'ismobile', field: 'mobile', checked: false, filter: ['mobile', '!=', false] },
   'isperson': { label: 'Cá nhân', name: 'isperson', checked: true, filter: ['is_company', '=', false] },
   'iscompany': { label: 'Công ty', name: 'iscompany', checked: false, filter: ['is_company', '=', true] },
 };
@@ -74,8 +74,7 @@ export interface State {
   asyncSave?: boolean;
   visiblePerson?: boolean;
   visibleComp?: boolean;
-  allowNew?: boolean;
-  showToolbar?: boolean;
+  visibleNewEmail?: boolean;
   hasDialog?: boolean;
 }
 
@@ -85,6 +84,7 @@ export interface InputOption extends DynamicDialogConfig {
   trialMST?: boolean;
   newEmail?: boolean;
   showToatResult?: boolean;
+  max_width?: string;
   tableHeight?: 'auto' | string;
   afterSearch?: AfterSearchFunc;
 }

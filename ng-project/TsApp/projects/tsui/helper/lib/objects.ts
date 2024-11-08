@@ -1,5 +1,5 @@
 import crypto from 'crypto-js';
-import { Type } from "@angular/core";
+import { TemplateRef, Type } from "@angular/core";
 import { BiFunction, Callback } from './function';
 import { JsonAny, JsonKeyType } from "./common";
 
@@ -51,6 +51,10 @@ export class Objects {
   //   else if (typeof value === 'number') return value === num;
   //   else return def;
   // }
+
+  static allNotNull(...values: any[]): boolean {
+    return !values.some(value => Objects.isNull(value));
+  }
 
   static anyNotNull(...values: any[]): boolean {
     return values.some(value => Objects.notNull(value));
@@ -116,7 +120,11 @@ export class Objects {
     return object === true;
   }
 
-  static isArray(value: any): value is [] {
+  static isTemplateRef(object: any): object is TemplateRef<any> {
+    return object instanceof TemplateRef;
+  }
+
+  static isArray(value: any): value is any[] {
     return Array.isArray(value);
   }
 
@@ -128,8 +136,16 @@ export class Objects {
     return Objects.notNull(value) && typeof value === 'string';
   }
 
+  static isStringNotBlank(value: any): value is string {
+    return Objects.isString(value) && value.length > 0;
+  }
+
   static isObject(value: any): boolean {
-    return Objects.notNull(value) && typeof value == 'object' && !Objects.isArray(value);
+    return Objects.notNull(value) && !Objects.isArray(value) && typeof value == 'object' ;
+  }
+
+  static isObjectNotEmpty(value: any): boolean {
+    return Objects.isObject(value) && Objects.notEmpty(value);
   }
 
   static isUrl(str: string): boolean {
@@ -251,6 +267,10 @@ export class Objects {
   static decodeBase64(string: string): string {
     const wa = crypto.enc.Base64.parse(string);
     return wa.toString(CryptoJS.enc.Utf8);
+  }
+
+  static allNull(...objects: any[]): boolean {
+    return !objects.some(o => Objects.notNull(o));
   }
 
   static anyNull(...objects: any[]): boolean {

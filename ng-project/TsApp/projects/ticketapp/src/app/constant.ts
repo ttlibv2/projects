@@ -89,7 +89,8 @@ export const layoutConfig: LayoutConfig = {
 };
 
 export const toastConfig: Partial<ToastConfig> = {
-    newestOnTop: true
+    newestOnTop: true,
+    position: 'bottom-right'
     // toastClassPrefix: 'p-toast',
     // closeClass: 'close-icon',
     // autoDismiss: true,

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
+import { Color } from 'ts-ui/color-picker';
 
 @Component({
   selector: 'ts-dashboard',
@@ -21,5 +22,7 @@ export class DashboardComponent {
       onClick: () => console.log('click')
     }
   ];
+
+  color: Color = new Color('blue').setAlpha(.5);
 }
 

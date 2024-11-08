@@ -86,8 +86,8 @@ export class RememberUser extends BaseModel {
 
 
 export interface ChkUser {
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
   url_dev?: string;
-  remember: boolean;
+  remember?: boolean;
 }

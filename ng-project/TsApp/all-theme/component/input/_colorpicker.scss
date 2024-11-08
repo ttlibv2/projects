@@ -1,28 +1,352 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 
+$pickerCls: 'ts-colorpicker';
+$width: 250px !default;
+
 .p-colorpicker-preview,
-.p-fluid .p-colorpicker-preview.p-inputtext  {
-    width: cfg.$colorPickerPreviewWidth;
-    height: cfg.$colorPickerPreviewHeight;
+.p-fluid .p-colorpicker-preview.p-inputtext {
+  width: cfg.$colorPickerPreviewWidth;
+  height: cfg.$colorPickerPreviewHeight;
 }
 
 .p-colorpicker-panel {
-    background: cfg.$colorPickerBg;
-    border: cfg.$colorPickerBorder;
+  background: cfg.$colorPickerBg;
+  border: cfg.$colorPickerBorder;
 
-    .p-colorpicker-color-handle,
-    .p-colorpicker-hue-handle {
-        border-color: cfg.$colorPickerHandleColor;
-    }
+  .p-colorpicker-color-handle,
+  .p-colorpicker-hue-handle {
+    border-color: cfg.$colorPickerHandleColor;
+  }
 }
 
 .p-colorpicker-overlay-panel {
-    box-shadow: cfg.$inputOverlayShadow;
+  box-shadow: cfg.$inputOverlayShadow;
 }
 
 .p-inputgroup input.p-colorpicker-preview.p-inputtext:last-child {
-    border-top-left-radius: cfg.$borderRadius;
-    border-bottom-left-radius: cfg.$borderRadius;
-    border-left-width: 1px;
+  border-top-left-radius: cfg.$borderRadius;
+  border-bottom-left-radius: cfg.$borderRadius;
+  border-left-width: 1px;
+}
+
+.#{$pickerCls} {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  width: max-content;
+  min-width: $width;
+  visibility: visible;
+
+  &-hidden {
+    display: none;
+  }
+
+  &-panel {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    width: $width;
+    padding: .5rem;
+    box-shadow: 0 3px 6px -4px #0000001f,
+      0 6px 16px #00000014,
+      0 9px 28px 8px #0000000d;
+
+    &-disabled {
+      cursor: not-allowed;
+    }
+
+    &-header-title {
+      display: flex;
+
+      &-content {
+        flex: 1;
+      }
+
+      &-clear {
+        flex: 0 0 18px;
+
+        position: relative;
+        width: 18px;
+        height: 18px;
+        overflow: hidden;
+        border: cfg.$borderWidth solid cfg.$borderColor;
+        border-radius: cfg.$borderRadius;
+        cursor: pointer;
+
+        &::after {
+          position: absolute;
+          top: 0;
+          display: block;
+          width: 40px;
+          height: 2px;
+          background-color: #f5222d;
+          transform: rotate(-45deg);
+          transform-origin: right;
+          content: '';
+          inset-inline-end: 1px;
+        }
+      }
+
+    }
+  }
+
+  /** <color-format-view> */
+  &-color-format {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: .2rem;
+
+    &-select {
+      .p-dropdown {
+        max-width: 55px;
+        min-width: 55px;
+        background: transparent !important;
+        border-color: transparent !important;
+        box-shadow: none;
+
+        &-trigger {
+          width: 1.5rem !important;
+        }
+
+        &.p-focus {
+          outline: none !important;
+        }
+
+      }
+    }
+
+    &-input {
+      flex: 1 1 0%;
+      column-gap: .2rem;
+      display: flex;
+
+      >.p-element {
+        flex: 1 1 0%;
+      }
+
+      .p-inputtext {
+        width: 100%;
+        min-width: 100%;
+        border-radius: 0;
+      }
+
+      .ts-inputgroup-input {
+        border-radius: 0;
+      }
+
+
+      &-hsb,
+      &-rgb {
+        .ts-inputgroup-input {
+          display: none !important;
+        }
+      }
+
+      .p-inputnumber {
+
+        &-button {
+          width: 1rem;
+
+          &:hover {
+            background: transparent !important;
+
+            .p-icon-wrapper {
+              color: var(--info-color);
+            }
+
+          }
+        }
+
+        &:not(:hover) {
+          .p-inputnumber-button-group {
+            display: none;
+          }
+        }
+
+
+      }
+
+
+    }
+
+    &-alpha {
+
+      .p-inputnumber-input {
+        width: 48px;
+        border-radius: 0;
+      }
+
+    }
+
+
+
+
+
+
+  }
+
+  /** <color-block-view> */
+  &-color-block {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    background-image: conic-gradient(rgba(0, 0, 0, 0.06) 0 25%,
+        transparent 0 50%,
+        rgba(0, 0, 0, 0.06) 0 75%,
+        transparent 0);
+    background-size: 50% 50%;
+
+    &-inner {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      border: cfg.$borderWidth solid cfg.$borderColor;
+    }
+
+  }
+
+  /** <color-slider-view> */
+  &-color-slider {
+    width: 100%;
+    border-radius: cfg.$borderRadius;
+
+    .#{$pickerCls}-palette {
+      height: 8px;
+    }
+
+    &-alpha {
+      background-image: conic-gradient(rgba(0, 0, 0, 0.06) 0 25%,
+          transparent 0 50%,
+          rgba(0, 0, 0, 0.06) 0 75%,
+          transparent 0);
+      background-size: 8px 8px;
+    }
+
+    &-group {
+      flex: 1 1 0%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    &-container {
+      display: flex;
+      flex-direction: row;
+      column-gap: 1rem;
+    }
+  }
+
+  /** <color-select-view> */
+  &-color-select {
+    .#{$pickerCls}-palette {
+      min-height: 160px;
+      overflow: hidden;
+    }
+
+  }
+
+
+
+
+
+  &-saturation {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: inherit;
+  }
+
+  &-handler {
+    box-sizing: border-box;
+    width: 16px;
+    height: 16px;
+    border: cfg.$borderWidth solid #fff;
+    border-radius: 50%;
+
+    &-sm {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 3px;
+    border: cfg.$borderWidth solid cfg.$borderColor;
+    border-radius: cfg.$borderRadius;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      //border-color: cfg.$primaryColor;
+    }
+
+    &-text {
+      //margin: 0 @margin-xss 0 @margin-xs;
+      //font-size: @font-size-base;
+    }
+  }
+
+  &-sm0 {
+    min-width: 24px;
+    height: 24px;
+  }
+
+  &-lg0 {
+    min-width: 40px;
+    height: 40px;
+
+    .#{$pickerCls}-trigger-text {
+      //font-size: @font-size-lg;
+    }
+  }
+
+
+
+  &-disabled0 {
+    //color: @disabled-color;
+    //background: @disabled-bg;
+    cursor: not-allowed;
+
+    .#{$pickerCls}-trigger {
+      cursor: not-allowed;
+
+      &:hover {
+        border-color: cfg.$borderColor;
+      }
+    }
+  }
+
+  &-inline0 {
+    display: inline-block;
+
+    .#{$pickerCls}-color-block {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+    }
+
+    &-lg {
+      .#{$pickerCls}-color-block {
+        width: 32px;
+        height: 32px;
+      }
+    }
+
+    &-sm {
+      .#{$pickerCls}-color-block {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
 }

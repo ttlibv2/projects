@@ -228,9 +228,14 @@ public class LogDetail implements Serializable {
             return exp.getObject();
         }
 
-        return new LogDetail()
-                .status(objectMap.getInteger("status", 500))
-                .message("Xảy ra lỗi từ máy chủ")
+        Integer status  = objectMap.getInteger("status", 500);
+        String msg = "Xảy ra lỗi từ máy chủ";
+        String omsg = objectMap.getString("message");
+        if(status == 403 && "Access Denied".equals(omsg)) {
+            msg = "Bạn không có quyền truy cập tài nguyên này";
+        }
+
+        return new LogDetail().status(status).message(msg)
                 .custom("msg_detail", objectMap.getString("message"))
                 .custom("origin", map);
     }

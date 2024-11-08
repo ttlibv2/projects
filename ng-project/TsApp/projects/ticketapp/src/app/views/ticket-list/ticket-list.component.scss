@@ -82,12 +82,13 @@
     }
 
     .pi-icon {
-      font-size: 2rem;
+      font-size: 1.5rem;
 
       &-state-error {
         color: red;
       }
 
+      &.pi-check,
       &-state-success {
         color: rgb(20, 172, 71);
       }

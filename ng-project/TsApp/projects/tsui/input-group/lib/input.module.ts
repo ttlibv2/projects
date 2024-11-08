@@ -18,7 +18,7 @@ import { InputTextModule } from "primeng/inputtext";
     exports: [
         InputGroup,
         PrimeTemplate,
-        InputTextModule
+        InputTextModule,
     ]
 })
 export class InputGroupModule { }

@@ -77,7 +77,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
     this.checkboxes.forEach(item => this.cChecked
       .addControl(item.field, this.fb.control(item.check ?? false)));
 
-    this.form.controlValueChange('selectAll', b => this.handleSelectAll(b));  
+    this.form.controlChange('selectAll', (c, b) => this.handleSelectAll(b));
 
 
     this.hasDialog = notNull(this.modal.getInstance(this.ref));
@@ -91,7 +91,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.form.patchControl('selectAll', true);
+    this.form.path_value('selectAll', true);
     if (this.autoLoad)this.loadCatalog();
   }
 

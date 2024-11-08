@@ -13,6 +13,7 @@ $cls: '.ts-inputgroup';
     --input-padding: #{cfg.$inputPadding};
 
     @include displayFlex(var(--input-flex-addon));
+    transition: all .3s;
 
     &-input {
         @include displayFlex(.5rem);
@@ -37,6 +38,8 @@ $cls: '.ts-inputgroup';
             border-color: cfg.$inputHoverBorderColor;
         }
 
+        //&:has(input.ng-invalid),
+        &:has(.ng-invalid.ng-dirty),
         &.ng-dirty.ng-invalid {
             @include util.invalid-input();
         }
@@ -68,6 +71,7 @@ $cls: '.ts-inputgroup';
                 box-shadow: unset !important;
                 background: transparent !important;
                 padding: 0 !important;
+                border-radius: 0!important;
 
                 &:focus,
                 &.p-focus {

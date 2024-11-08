@@ -8,4 +8,4 @@ const routes: Routes = [{ path: '', component: FindPartnerComponent }];
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class FindPartnerRoutingModule { }
+export class PartnerRouting { }

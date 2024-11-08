@@ -9,7 +9,7 @@
     <div id="ticketListTool" class="tool-r1 col-12 flex flex-inline gap-2">
         <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="flex align-items-center gap-2 sm">
             <p-calendar placeholder="Lấy dữ liệu từ ngày ?" selectionMode="range" showIcon="true" iconDisplay="input"
-                dateFormat="yy-mm-dd" [numberOfMonths]="2" formControlName="dateOn"
+                dateFormat="yy-mm-dd" [numberOfMonths]="2" formControlName="dateOn" showButtonBar="true"
                 [style]="{width: '210px'}"></p-calendar>
 
             <p-dropdown placeholder="Tùy chọn" formControlName="option" [options]="searchOptions" optionLabel="label"

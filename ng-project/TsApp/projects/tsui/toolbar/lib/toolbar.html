@@ -1,0 +1,18 @@
+<div class="p-component ts-toolbar" [ngStyle]="ngStyle()">
+    @if(leftTemplate){
+    <div class="ts-toolbar-group-left" [style.gap]="flexGap">
+        <ng-container *ngTemplateOutlet="leftTemplate"></ng-container>
+    </div>
+    }
+
+    @if(centerTemplate){
+        <div class="ts-toolbar-group-center" [style.gap]="flexGap">
+            <ng-container *ngTemplateOutlet="centerTemplate"></ng-container>
+        </div>
+    }
+    @if(rightTemplate){
+        <div class="ts-toolbar-group-right" [style.gap]="flexGap">
+            <ng-container *ngTemplateOutlet="rightTemplate"></ng-container>
+        </div>
+    }
+</div>

@@ -1,79 +1,68 @@
 <div [ngClass]="containerCls()" [ngStyle]="containerStyleCls()">
 
-    @if(hasAddonBefore){
+
+
+    @if(templates.hasAddonBefore()){
     <div class="ts-inputgroup-addon ts-inputgroup-addon-before" [ngStyle]="styleAddonCls()">
-
-        @if (addonBeforeIcons?.length) {
-        @for (icon of addonBeforeIcons; track $index) {
-        <p-button [icon]="ngIconClass(icon)" (onClick)="iconClick(icon)" />
-        }
-        }
-
-        @if (addonBeforeTemplate) {
-        <ng-container *ngTemplateOutlet="addonBeforeTemplate"></ng-container>
-        }
-
+        <ng-container *ngTemplateOutlet="viewRef; context: {$implicit: templates.addonBefore}"></ng-container>
     </div>
     }
 
-    <div class="ts-inputgroup-input" [ngStyle]="styleInputCls()">
-        @if(hasPrefix){
+    <div class="ts-inputgroup-input" [ngStyle]="styleInputCls()" #divInput>
+
+        @if(templates.hasPrefix()){
         <div class="ts-inputgroup-affix ts-inputgroup-prefix" [ngStyle]="styleInputCls()">
-
-            @if(prefixIcons?.length) {
-            @for(icon of prefixIcons; track $index) {
-            <span class="icon" [ngClass]="ngIconClass(icon)" (click)="iconClick(icon)"></span>
-            }
-            }
-
-            @if (prefixTemplate) {
-            <ng-container *ngTemplateOutlet="prefixTemplate"></ng-container>
-            }
-
+            <ng-container
+                *ngTemplateOutlet="viewRef; context: {$implicit: templates.prefix, type: 'affix'}"></ng-container>
         </div>
         }
 
         <div class="ts-inputgroup-field" [ngStyle]="styleInputCls()">
-            @if (fieldTemplate) {
-            <ng-container *ngTemplateOutlet="fieldTemplate"></ng-container>
-            }
-            @else {
-            <!-- <input pInputText [placeholder]="placeholder"/> -->
-            <ng-content select="input"></ng-content>
-            }
+            @if (fieldTemplate) {<ng-container *ngTemplateOutlet="fieldTemplate"></ng-container>}
+            @else if(fieldTag) { <ng-content [select]="fieldTag"></ng-content>}
+            @else {<ng-content select="input,p-password,p-calendar,p-dropdown,p-autoComplete,p-calendar,[field]"></ng-content>}
         </div>
 
-        @if(hasSuffix){
+        @if(templates.hasSuffix()){
         <div class="ts-inputgroup-affix ts-inputgroup-suffix" [ngStyle]="styleInputCls()">
-
-            @if(suffixIcons?.length){
-            @for(icon of suffixIcons; track $index) {
-            <span class="icon" [ngClass]="ngIconClass(icon)" (click)="iconClick(icon)"></span>
-            }
-            }
-
-            @if (suffixTemplate) {
-            <ng-container *ngTemplateOutlet="suffixTemplate"></ng-container>
-            }
+            <ng-container
+                *ngTemplateOutlet="viewRef; context: {$implicit: templates.suffix, type: 'affix'}"></ng-container>
         </div>
         }
+
     </div>
 
-    @if(hasAddonAfter){
-    <div class="ts-inputgroup-addon ts-inputgroup-addon-after" [ngStyle]="styleAddonCls()">
-        @if (addonAfterIcons?.length) {
-        @for (icon of addonAfterIcons; track $index) {
-        <p-button [icon]="ngIconClass(icon)" (onClick)="iconClick(icon)" />
-        }
-        }
 
-        @if (addonAfterTemplate) {
-        <ng-container *ngTemplateOutlet="addonAfterTemplate"></ng-container>
-        }
+    @if(templates.hasAddonAfter()){
+    <div class="ts-inputgroup-addon ts-inputgroup-addon-after" [ngStyle]="styleAddonCls()">
+        <ng-container *ngTemplateOutlet="viewRef; context: {$implicit: templates.addonAfter}"></ng-container>
     </div>
     }
 
-
-
-
 </div>
+
+<ng-template #viewRef let-item let-type="type">
+    @if(item.isPTemplate()) {
+    <ng-container *ngTemplateOutlet="item.ptemplate"></ng-container>
+    }
+
+    <!-- input is TemplateRef -->
+    @if(item.isInputTemplate()) {
+    <ng-container *ngTemplateOutlet="item.input"></ng-container>
+    }
+
+    <!-- input is string -->
+    @else if(item.isString() || item.isObject()) {
+    @if(type==='affix'){<span [class]="ngIconClass(item.input)" (click)="iconClick(item.input)"></span>}
+    @else{<p-button [icon]="ngIconClass(item.input)" (onClick)="iconClick(item.input)" />}
+    }
+
+    <!-- input is string -->
+    @else if(item.isArray()) {
+    @for (icon of item.input; track $index) {
+    @if(type==='affix'){<span [class]="ngIconClass(icon)" (click)="iconClick(icon)"></span>}
+    @else{<p-button [icon]="ngIconClass(icon)" (onClick)="iconClick(icon)" />}
+    }
+    }
+
+</ng-template>

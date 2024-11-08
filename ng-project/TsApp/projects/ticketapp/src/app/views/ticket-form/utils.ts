@@ -172,35 +172,35 @@ export class Utils {
 
     private registerListener(): void {
 
-        this.form.controlValueChange('options', opt => this.options.update(opt));
+        this.form.controlChange('options', (c, opt) => this.options.update(opt));
 
         //--subject event
-        this.form.controlsValueChange(['tax_code', 'support_help', 'ticket_on'], (f, j) => {
+        this.form.controlsChange(['tax_code', 'support_help', 'ticket_on'], (f, j) => {
             if (this.auto_create && !this.is_email_ticket) {
-                f.patchControl('subject', this.createSubject(j));
+                f.path_value('subject', this.createSubject(j));
             }
         });
 
         //--note
-        this.form.controlsValueChange(['support_help', 'complete_time', 'group_help', 'content_help'], (f, j) => {
-            if (this.auto_create) f.patchControl('note', this.createNote(j));
+        this.form.controlsChange(['support_help', 'complete_time', 'group_help', 'content_help'], (f, j) => {
+            if (this.auto_create) f.path_value('note', this.createNote(j));
         });
 
-        this.form.controlsValueChange(['phone', 'content_required', 'soft_name', 'support_help', 'reception_time'], (f, j) => {
-            if (this.auto_create) f.patchControl('body', this.createBody(j));
+        this.form.controlsChange(['phone', 'content_required', 'soft_name', 'support_help', 'reception_time'], (f, j) => {
+            if (this.auto_create) f.path_value('body', this.createBody(j));
         });
 
-        this.form.controlsValueChange(['subject', 'body', 'note', 'email', 'tax_code', 'customer_name'], (f, j) => {
+        this.form.controlsChange(['subject', 'body', 'note', 'email', 'tax_code', 'customer_name'], (f, j) => {
             //console.log(`content_copy`, this.auto_create);
-            if (this.auto_create) f.patchControl('content_copy', this.createContentCopy());
+            if (this.auto_create) f.path_value('content_copy', this.createContentCopy());
         });
 
-        this.form.controlsValueChange(['od_partner_id'], (forms, json) => {
-            if (isBlank(json['od_partner_id'])) forms.patchControl('od_partner', undefined);
+        this.form.controlsChange(['od_partner_id'], (forms, json) => {
+            if (isBlank(json['od_partner_id'])) forms.path_value('od_partner', undefined);
         });
 
          //--subject event
-        this.form.controlValueChange('email_template', v => this.changeEmailTemplate(v));
+        this.form.controlChange('email_template', (c, v) => this.changeEmailTemplate(v));
     }
 
     private createSubject(formData: Partial<Ticket>): string {

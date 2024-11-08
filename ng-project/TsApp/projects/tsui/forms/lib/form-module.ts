@@ -7,11 +7,11 @@ import { FormsBuilder } from "./form-builder";
     imports: [
         CommonModule,
         NgxFormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
     ],
     exports: [
         NgxFormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
     ],
     providers: [
         FormsBuilder

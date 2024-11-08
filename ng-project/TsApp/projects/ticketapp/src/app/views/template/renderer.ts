@@ -21,6 +21,5 @@ export class AgCellColor implements ICellRendererAngularComp {
     private setColor(params: ICellRendererParams<any, any, any>) {
         const field = params.colDef.field;
         this.color = params.value;//params.value ? params.value[field] : undefined;
-        console.log(this.color)
     }
 }

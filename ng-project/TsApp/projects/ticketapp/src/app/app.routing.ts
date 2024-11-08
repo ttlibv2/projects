@@ -15,13 +15,17 @@ const appRoutes: Route[] = [
         loadChildren: () => import('./views/error/error.module').then(m => m.ErrorModule)
     },
     {
+        path: 'dashboard',
+        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+    },
+    {
         path: '',
         loadChildren: () => import('./admin.routing').then(m => m.AdminRouting)
     },
     {
         path: '**',
         pathMatch: 'full',
-        redirectTo: '/demo'
+        redirectTo: 'dashboard'
     }
 ];
 

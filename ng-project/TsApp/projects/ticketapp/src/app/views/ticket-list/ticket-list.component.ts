@@ -93,7 +93,6 @@ export class TicketListComponent implements OnInit, AfterContentInit {
 
   agOption: TableOption<Ticket> = {
     rowModelType: 'clientSide',
-    rowHeight: 25,
     components: {
       'sendStatus': AgStatusRenderer,
       'ticketCell': AgTicketCell,
@@ -151,9 +150,8 @@ export class TicketListComponent implements OnInit, AfterContentInit {
 
   @Input({ alias: 'visible', transform: (v:any) => booleanAttribute(v, true) })
   set visibleForm(bool: boolean) {
-    console.log(`visibleForm`, bool)
     this.initVisibleForm = bool;
-    this.searchForm.patchControl('visibleForm', bool);
+    this.searchForm.path_value('visibleForm', bool);
   }
 
   @Input({ alias: 'template' })
@@ -216,7 +214,7 @@ export class TicketListComponent implements OnInit, AfterContentInit {
       visibleChanel: [false]
     });
 
-    this.searchForm.controlValueChange('visibleChanel', val => {
+    this.searchForm.controlChange('visibleChanel', (c, val) => {
       this.chanelChecked(val);
     });
 
@@ -418,11 +416,14 @@ export class TicketListComponent implements OnInit, AfterContentInit {
 
       // view_kpi
       if ('view_kpi' === code) {
-        this.searchForm.patchControl('visibleChanel', true);
+        this.searchForm.path_value('visibleChanel', true);
         //this.chanelChecked();
       }
       else if ('send_ticket' === code) {
-        this.searchForm.patchControl('visibleForm', false);
+        this.searchForm.patchValue({
+          visibleForm: false,
+          visibleChanel: false
+        })
       }
 
     }

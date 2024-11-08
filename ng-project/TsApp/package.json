@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve ticketapp --hmr true --port 4200 --open true",
+    "start": "ng serve ticketapp --hmr true --port 8999 --host 127.0.0.1 --open true",
     "start:tskpi": "ng serve tskpi --hmr true --port 4400  --open true",
     "build": "ng build ticketapp --base-href /tsweb/ --ssr false --prerender false --source-map true",
     "build:tskpi": "ng build tskpi --base-href / --ssr false --prerender false --source-map false",
@@ -48,6 +48,7 @@
     "@angular/platform-server": "^18.0.3",
     "@angular/router": "^18.0.3",
     "@angular/ssr": "^18.0.4",
+    "@ctrl/tinycolor": "^4.1.0",
     "@ng-select/ng-select": "^13.3.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",

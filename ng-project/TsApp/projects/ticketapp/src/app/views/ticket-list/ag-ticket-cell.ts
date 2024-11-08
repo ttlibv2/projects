@@ -129,8 +129,8 @@ export class AgStatusRenderer implements ICellRendererAngularComp {
             ['pi pi-icon']: notBlank(this.state),
             ['pi-icon-state-'+this.state]:  notBlank(this.state),
             'pi-spin pi-cog': this.state === 'loading',
-            'pi-verified': this.state === 'success',
-            'pi-exclamation-triangle': this.state === 'error',
+            'pi-check': this.state === 'success',
+            'pi-times': this.state === 'error',
             
         };
     }
@@ -143,7 +143,7 @@ export class AgStatusRenderer implements ICellRendererAngularComp {
     imports: [CommonModule, NgIf],
     template: `
         @if(is) {
-            <span class="pi-icon pi pi-verified"></span>
+            <span class="pi-icon pi pi-check"></span>
         }
     `
 })
