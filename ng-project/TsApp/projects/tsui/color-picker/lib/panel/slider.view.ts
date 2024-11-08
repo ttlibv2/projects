@@ -75,12 +75,12 @@ export class SliderView implements OnInit, AfterViewInit, OnChanges {
     @Input() type: HsbaColorType = 'hue';
     @Input() color: Color | null = null;
     @Input() value: string | null = null;
-    
+
     @Input({ transform: booleanAttribute }) 
     disabled: boolean = false;
 
-    @Output() onChange = new EventEmitter<Color>();
-    @Output() onChangeComplete = new EventEmitter<HsbaColorType>();
+    @Output() onChangeColor = new EventEmitter<Color>();
+    @Output() onChangeColorType = new EventEmitter<HsbaColorType>();
 
     offsetValue: TransformOffset = { x: 0, y: 0 };
     dragRef: boolean = false;
@@ -168,7 +168,7 @@ export class SliderView implements OnInit, AfterViewInit, OnChanges {
         }
 
         this.offsetValue = calcOffset;
-        this.onChange.emit(
+        this.onChangeColor.emit(
             Utils.calculateColor(
                 calcOffset,
                 this.containerRef,
@@ -194,7 +194,7 @@ export class SliderView implements OnInit, AfterViewInit, OnChanges {
         this.document.removeEventListener('touchend', this.mouseUpRef);
         this.mouseMoveRef = () => null;
         this.mouseUpRef = () => null;
-        this.onChangeComplete?.emit(this.type);
+        this.onChangeColorType?.emit(this.type);
     };
 
     onDragStart: EventHandle = (e: EventType) => {

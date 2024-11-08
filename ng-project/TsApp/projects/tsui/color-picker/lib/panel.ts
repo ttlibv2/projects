@@ -51,15 +51,15 @@ const { anyNotNull, notNull, isTemplateRef } = Objects;
                       type="hue" [color]="colorValue" [disabled]="disabled"
                       [value]="'hsl(' + colorValue?.toHsb()?.h + ',100%, 50%)'"
                       [gradientColors]="hueColor"
-                      (onChange)="handleChangeColorType($event, 'hue')"
-                      (onChangeComplete)="onChangeComplete.emit($event)"/>
+                      (onChangeColor)="handleChangeColorType($event, 'hue')"
+                      (onChangeColorType)="onChangeComplete.emit($event)"/>
 
                     @if(!disabledAlpha) {
                         <color-slider-view
                           type="alpha" [color]="colorValue" [value]="toRgbString"
                           [gradientColors]="gradientColors" [disabled]="disabled"
-                          (onChange)="handleChangeColorType($event, 'alpha')"
-                          (onChangeComplete)="onChangeComplete.emit($event)"/>
+                          (onChangeColor)="handleChangeColorType($event, 'alpha')"
+                          (onChangeColorType)="onChangeComplete.emit($event)"/>
                     }
                 </div>
 
@@ -137,8 +137,8 @@ export class ColorPickerPanel implements OnInit, AfterContentInit, OnChanges {
 
 
 
-    @Output() onChangeColorType = new EventEmitter<{ color: Color; type?: HsbaColorType }>();
-    @Output() onChangeComplete = new EventEmitter<HsbaColorType>();
+    @Output() onChangeColor = new EventEmitter<{ color: Color; type?: HsbaColorType }>();
+    @Output() onChangeColorType = new EventEmitter<HsbaColorType>();
     @Output() onClearColor = new EventEmitter<boolean>();
 
     get titleTemplateRef(): TemplateRef<any> {
@@ -215,7 +215,7 @@ export class ColorPickerPanel implements OnInit, AfterContentInit, OnChanges {
 
     handleChangeColorType(color: Color, type?: HsbaColorType): void {
         this.setColorValue(color);
-        this.onChangeColorType.emit({ color, type });
+        this.onChangeColor.emit({ color, type });
     }
 
     ngAfterContentInit(): void {
