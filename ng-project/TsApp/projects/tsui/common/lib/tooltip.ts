@@ -1,1 +1,0 @@
-export type TooltipPos = 'right' | 'left' | 'top' | 'bottom';

@@ -1,0 +1,9 @@
+@use "../setting/config" as cfg;
+@use 'strings';
+
+$name-sep: cfg.$grid-separator;
+
+@function join-name($first, $segments:[], $sep: '-'){
+  $path: strings.from($segments, $sep);
+  @return '#{$first + $name-sep + $path}';
+}

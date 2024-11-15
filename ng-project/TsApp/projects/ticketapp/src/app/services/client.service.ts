@@ -1,5 +1,5 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { Injectable, } from '@angular/core';
+import { ErrorHandler, inject, Injectable, } from '@angular/core';
 import {ClientParams, ErrorResponse } from '../models/common';
 import {catchError, map, Observable, of, switchMap, tap, throwError} from 'rxjs';
 import {Callback, Objects, Pageable, Page} from "ts-ui/helper";
@@ -16,23 +16,24 @@ export const defaultPage: Pageable = {};
 
 @Injectable({ providedIn: 'root' })
 export class ClientService {
+  private errorHandler = inject(ErrorHandler);
 
-  constructor(protected inject: InjectService) { }
+  constructor(protected inject2: InjectService) { }
 
   protected get http() : HttpClient {
-    return this.inject.http;
+    return this.inject2.http;
   }
 
   protected get storage(): StorageService {
-    return this.inject.storage;
+    return this.inject2.storage;
   }
 
   protected get router(): Router {
-    return this.inject.get(Router);
+    return this.inject2.get(Router);
   }
 
   protected get logger(): LoggerService {
-    return this.inject.get(LoggerService);
+    return this.inject2.get(LoggerService);
   }
 
   protected joinUrls(rootPath: string, ...paths: string[]): string {
@@ -96,7 +97,7 @@ export class ClientService {
     let errorCode: string = 'undefined';
 
     if(err instanceof HttpErrorResponse) {
-      console.error(`[handlerError] ${url}`, err.error);
+      this.errorHandler.handleError(`[handlerError] ${url} ${JSON.stringify(err.error)}`);
 
       const error: ErrorResponse = err.error ?? {};
       const baseUrl = (text: string) => `<a href="${new URL(url).host}" target="_blank" rel="noopener noreferrer">${text}</a>`;
@@ -106,16 +107,18 @@ export class ClientService {
       object.title = 'Thông báo !!';
 
       if(err.status === 0) {
-        errorCode = 'disconnect';
+        errorCode = 'e_server';//'disconnect';
         object.message = 'Lỗi không kết nối được tới máy chủ';
         object.detail = `Vui lòng kiểm tra kết nối: ${baseUrl(' Tại đây ')}`;
         object.timeOut = 10 * 1000;
+        showError = true;
       }
 
       else if(err.status === 500) {
         errorCode = error.code === 'e_500' ? 'e_server' : error.code;
         object.message = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')}`;
-        object.timeOut = 10 * 1000;        
+        object.timeOut = 10 * 1000;   
+        showError = true;     
       }
 
       else if(err.status === 401 && errorCode === 'ts_api') {
@@ -132,7 +135,7 @@ export class ClientService {
 
      // logout if session expired
      if(errorCode.startsWith('jwt.')) {
-      this.inject.get(Alert).warning({
+      this.inject2.get(Alert).warning({
         title: 'Thông báo đăng xuất',
         summary: 'Phiên làm việc của bạn đã hết hạn. Vui lòng đăng nhập lại !!',
         okClick: _ => this.storage.set_loginToken(null).pipe(
@@ -156,7 +159,7 @@ export class ClientService {
     }
 
    
-
+    object.code = object.code ?? errorCode;
     return throwError(() => object);
   }
 
@@ -171,26 +174,27 @@ export class ClientService {
     }
 
     else if(Objects.notBlank(response['alert_msg'])) {
-     this.inject.toast.info( response['alert_msg']);
+     this.inject2.toast.info( response['alert_msg']);
     }
 
     return of(response);
   }
 
   private showError(object: Partial<ToastMessage>,visible: boolean, alertType: 'toast' | 'modal' = 'toast') {
-    //console.log('showError', object);
-    if(visible) this.inject.toast.error(object);
+    if(visible) {
+      this.inject2.toast.error(object);
+    }
   }
 
   private showUpdateApiToken(summary: string, app_name: string) {
-    this.inject.alert.danger({        
+    this.inject2.alert.danger({        
       title: 'Cảnh báo !!',
       okLabel: 'Kiểm tra',
       cancelLabel: 'Không kiểm tra',
       summary: summary,
       okClick: evt => {
         evt.dynamicRef.close();
-        ApiInfoComponent.showDialog(this.inject.modal, {name: app_name});
+        ApiInfoComponent.showDialog(this.inject2.modal, {name: app_name});
       }
     })
   }

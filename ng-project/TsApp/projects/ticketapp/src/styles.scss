@@ -14,10 +14,19 @@
 @import "primeicons/primeicons.css";
 @import "primeng/resources/primeng.css";
 
-
-
 // @import "primeflex/primeflex.min.css";
-@import "../../../all-theme/primeflex";
+ @import "../../../all-theme/primeflex";
+
+
+@media screen and (min-width: 768px) {
+  .p-dynamic-dialog {
+      // flex: 1 1 auto;
+  
+      &:not(.p-dialog-maximized) {
+        max-width: 60%;
+      }
+    }
+}
 
 .overlay-container {
   position: absolute;
@@ -28,13 +37,7 @@
   width: unset;
 }
 
-.p-dynamic-dialog {
- // flex: 1 1 auto;
 
-  &:not(.p-dialog-maximized) {
-    max-width: 60%;
-  }
-}
 
 .p-button.small {
   padding: 0.3rem 0.5rem !important;

@@ -6,7 +6,9 @@ import {ToastItem} from "./toast-item";
 
 const {isJson, isString, notBlank, notNull} = Objects;
 
-export type ToastMessage = Partial<MessageConfig>;
+export interface ToastMessage extends Partial<MessageConfig> {
+    code?: string;
+}
 
 function throwInvalidArgument(method: string, args: any[]) {
     throw new Error(`${method} invalid argument ${args.join(',')}`);
@@ -17,7 +19,7 @@ export class ToastService {
 
     constructor(
         @Inject(TOAST_CONFIG)
-        private globalConfig: ToastConfig,
+        public readonly globalConfig: ToastConfig,
         private service: ToastrService) {
     }
 

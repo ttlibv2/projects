@@ -2,7 +2,24 @@ ts-ticket-form {
   display: block;
 }
 
+
+
+
 .ticket-form {
+
+  .ts-chanels {
+    .p-multiselect-label:not(.p-multiselect-label-empty) {
+      padding: 0!important;
+    }
+
+  }
+
+
+
+
+
+
+
   .p-fieldset {
     border-width: 0;
 
@@ -23,6 +40,7 @@ ts-ticket-form {
     .p-chip {
       cursor: pointer;
     }
+
     a.here {
       text-decoration: underline;
       color: var(--info-color);
@@ -35,17 +53,7 @@ ts-ticket-form {
     }
   }
 
-  &.template {
-    // display: block;
 
-    .col-left {
-      width: 75% !important;
-    }
-
-    .col-right {
-      width: 25% !important;
-    }
-  }
 
   &.grid {
     margin-top: 0px;
@@ -59,6 +67,7 @@ ts-ticket-form {
 
   .r-import {
     font-weight: bold;
+
     .current {
       color: var(--danger-color);
     }
@@ -78,6 +87,27 @@ ts-ticket-form {
     .p-abort {
       text-decoration: underline;
       color: var(--danger-color);
+    }
+  }
+
+  .is-mobile & {
+    .col-right {
+      margin-top: .5rem;
+    }
+
+  }
+
+  html:not(.is-mobile) & {
+    &.template {
+      // display: block;
+
+      .col-left {
+        width: 75% !important;
+      }
+
+      .col-right {
+        width: 25% !important;
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import { ColorInput, HSVA, Numberify, TinyColor } from '@ctrl/tinycolor';
+import { ColorInput, HSLA, HSVA, Numberify, TinyColor } from '@ctrl/tinycolor';
 
 export interface HSB {
     h: number | string;
@@ -22,7 +22,7 @@ export interface RGBA extends RGB {
 
 export type ColorValue<T = Color> = string | number | RGB | RGBA | HSB | HSBA | T;
 
-export type HsbaColorType = 'hue' | 'alpha';
+export type HsbaColorType = 'hue' | 'alpha' | 'select';
 
 export const getRoundNumber = (value: number): number => Math.round(Number(value || 0));
 
@@ -42,6 +42,7 @@ const convertHsb2Hsv = (color: ColorValue): ColorInput => {
 
 export class Color extends TinyColor {
 
+   
     constructor(color: ColorValue) {
         super(convertHsb2Hsv(color));
     }
@@ -68,4 +69,13 @@ export class Color extends TinyColor {
         const { v, ...resets } = hsv;
         return {  ...resets,   b: hsv.v  };
     }
+
+    override toString(format: 'hsb' | 'rgb' | 'hex'): string {
+        switch (format) {
+            case 'hsb': return this.toHsbString();
+            case 'rgb': return this.toRgbString();
+            default: return this.getAlpha() < 1 ? this.toHex8String() : this.toHexString();
+        }
+    }   
+    
 }

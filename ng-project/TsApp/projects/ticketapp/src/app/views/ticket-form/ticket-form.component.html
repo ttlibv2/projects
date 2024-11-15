@@ -1,12 +1,12 @@
 <form [formGroup]="form" (ngSubmit)="saveTicket()" class="grid sm ticket-form" [ngClass]="{template: viewTemplate}">
-    <p-card class="lg:col-7 col-left">
+    <p-card class="sm:col-12 lg:col-7 col-left">
         <p-fieldset legend="-- Thông tin chung --">
             <div class="grid">
-                <div class="p-fluid col-12 xxl:col-12">
-                    <label for="chanels">Kênh - Tình trạng <span class="p-text-danger">(*)</span></label>
-                    <p-multiSelect #ms id="chanels" class="required" [showToggleAll]="false" [showHeader]="false"
-                        [filter]="true" [options]="catalog.ls_chanel" [maxSelectedLabels]="99" formControlName="chanels"
-                        optionLabel="value" display="chip" dataKey="id" (onClear)="onSelectChanel()"
+                <ts-form-field class="p-fluid" inputId="chanels" title="Kênh - Tình trạng" [required]="true" [span]="12"
+                    [xxl]="utils.is_view_all ? 6: 4">
+                    <p-multiSelect field #ms id="chanels" class="required" [showHeader]="false"
+                        [options]="catalog.ls_chanel" formControlName="chanels" optionLabel="value" display="chip"
+                        dataKey="id" styleClass="ts-chanels" (onClear)="onSelectChanel()"
                         (onChange)="onSelectChanel($event.value)">
 
                         <ng-template pTemplate="footer">
@@ -14,148 +14,144 @@
                                 <p-button label="Đóng" (onClick)="ms.close(null)"></p-button>
                             </div>
                         </ng-template>
-
                     </p-multiSelect>
-                </div>
-                <div class="p-fluid col-6 xxl:col-6">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-3" *ngIf="utils.is_view_all || viewTemplate">
+                    <label for="support_help">Hình thức hỗ trợ <span class="p-text-danger">(*)</span></label>
+                    <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false"
+                        dataKey="id" formControlName="support_help"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-3" *ngIf="utils.is_view_all || viewTemplate">
+                    <label for="soft_names">Tên phần mềm <span class="p-text-danger">(*)</span></label>
+                    <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" dataKey="id"
+                        formControlName="soft_name" emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6" [ngClass]="utils.r_ghelp_cls">
+                    <label for="group-help">Nhóm hỗ trợ <span class="p-text-danger">(*)</span></label>
+                    <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help" optionLabel="value"
+                        dataKey="id" formControlName="group_help"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6" [ngClass]="utils.r_software_cls">
                     <label for="software">Nhóm Phần mềm <span class="p-text-danger">(*)</span></label>
                     <p-dropdown id="software" class="required" [options]="catalog.ls_software" dataKey="id"
                         optionLabel="value" (onChange)="onSelectSoftware($event.value)"
                         formControlName="software"></p-dropdown>
-                </div>
-                <div class="p-fluid col-6 xxl:col-6">
-                    <label for="group-help">Nhóm hỗ trợ <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help" optionLabel="value"
-                        dataKey="id" formControlName="group_help"></p-dropdown>
-                </div>
-                <div class="p-fluid col-6 xxl:col-6" *ngIf="utils.is_view_all || viewTemplate">
-                    <label for="support_help">Hình thức hỗ trợ <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false"
-                        dataKey="id" formControlName="support_help"></p-dropdown>
-                </div>
-                <div class="p-fluid col-6 xxl:col-6" *ngIf="utils.is_view_all || viewTemplate">
-                    <label for="soft_names">Tên phần mềm <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" dataKey="id"
-                        formControlName="soft_name" emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
-                </div>
+                </ts-form-field>
             </div>
         </p-fieldset>
         <p-fieldset legend="-- Thông tin TS --">
             <div class="grid">
-                <div class="p-fluid col-3 md:col-6 lg:col-6 xl:col-6 xxl:col-3">
+                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-6" [ngClass]="utils.r_steam_cls">
                     <label for="od_team">Support Team <span class="p-text-danger">(*)</span></label>
                     <p-dropdown formControlName="od_team" id="od_team" [options]="catalog.ls_helpdesk_team"
-                        optionLabel="display_name" [filter]="true" [overlayOptions]="overlayOptions" dataKey="id"
+                        optionLabel="display_name" [overlayOptions]="overlayOptions" dataKey="id"
                         (onChange)="changeOdTeam($event.value)"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_suser_cls">
                     <label for="od_assign">Phân công cho <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown id="od_assign" [options]="catalog.ls_assign" optionLabel="display_name" [filter]="true"
-                        [loading]="state.assign" [overlayOptions]="overlayOptions"
-                        (onFilter)="searchAssign($event.filter)" dataKey="id" formControlName="od_assign"></p-dropdown>
-                </div>
-                <div class="p-fluid col-6  xl:col-6 xxl:col-3">
-                    <label for="od_subject_type">Ticket Subject Type <span class="p-text-danger">(*)</span></label>
+                    <p-dropdown id="od_assign" [options]="catalog.ls_assign" optionLabel="display_name"
+                        [overlayOptions]="overlayOptions" dataKey="id" formControlName="od_assign"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_ttype_cls">
+                    <label for="od_ticket_type">Ticket type<span class="p-text-danger">(*)</span></label>
+                    <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type" [overlayOptions]="overlayOptions"
+                        optionLabel="display_name" dataKey="id" formControlName="od_ticket_type"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xl:col-6" [ngClass]="utils.r_ttype_cls">
+                    <label for="od_subject_type">Ticket Sub_type <span class="p-text-danger">(*)</span></label>
                     <p-dropdown formControlName="od_subject_type" id="od_subject_type" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_subject_type" dataKey="id" optionLabel="display_name"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3 lg:col-6  xl:col-6 md:col-6 xxl:col-3"
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_ttype_cls">
+                    <label for="od_category">Danh mục <span class="p-text-danger">(*)</span></label>
+                    <p-dropdown formControlName="od_category" id="od_category" [overlayOptions]="overlayOptions"
+                        [options]="catalog.ls_category" dataKey="id" optionLabel="display_name"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_ttype_cls">
+                    <label for="od_category_sub">Danh mục phụ <span class="p-text-danger">(*)</span></label>
+                    <p-dropdown formControlName="od_category_sub" id="od_category_sub" [overlayOptions]="overlayOptions"
+                        [options]="catalog.ls_category_sub" dataKey="id" optionLabel="display_name"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6  xl:col-6 md:col-6 xxl:col-3"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
                     <label for="od_replied">Replied Status <span class="p-text-danger">(*)</span></label>
                     <p-dropdown formControlName="od_replied" id="od_replied" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_replied_status" dataKey="id" optionLabel="name"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
-                    *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
-                    <label for="od_category">Danh mục <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown formControlName="od_category" id="od_category" [overlayOptions]="overlayOptions"
-                        [options]="catalog.ls_category" dataKey="id" optionLabel="display_name"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
-                    *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
-                    <label for="od_category_sub">Danh mục phụ <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown formControlName="od_category_sub" id="od_category_sub" [overlayOptions]="overlayOptions"
-                        [options]="catalog.ls_category_sub" dataKey="id" optionLabel="display_name"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
                     <label for="od_team_head">Team Head</label>
                     <p-dropdown id="od_team_head" [options]="catalog.ls_team_head" [overlayOptions]="overlayOptions"
                         formControlName="od_team_head" dataKey="id" optionLabel="name"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3">
-                    <label for="od_ticket_type">Ticket type<span class="p-text-danger">(*)</span></label>
-                    <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type" [overlayOptions]="overlayOptions"
-                        optionLabel="display_name" dataKey="id" formControlName="od_ticket_type"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
                     <label for="od_priority">Độ ưu tiên</label>
                     <p-dropdown formControlName="od_priority" id="od_priority" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_priority" dataKey="id" optionLabel="display_name"></p-dropdown>
-                </div>
-                <div class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
                     <label for="od_tags">Thẻ -- Tags</label>
                     <p-multiSelect formControlName="od_tags" id="od_tags" [overlayOptions]="overlayOptions"
                         optionLabel="display_name" [showToggleAll]="false" [showHeader]="false" [filter]="false"
                         dataKey="id" [options]="catalog.ls_ticket_tag"></p-multiSelect>
-                </div>
+                </ts-form-field>
             </div>
         </p-fieldset>
         <p-fieldset legend="{{'ticket.h1_customer'|translate}}" *ngIf="!viewTemplate">
             <div class="grid">
-                <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
+                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
                     <label for="tax_code">Mã số thuế <span class="p-text-danger">(*)</span></label>
                     <input formControlName="tax_code" id="tax_code" class="required" pInputText />
-                </div>
-                <div class="p-fluid xl:col-3 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xl:col-3 lg:col-6 md:col-6 xxl:col-3">
                     <label for="image_name">DS_HINH</label>
                     <input id="image_name" placeholder="(1,2,3...).png" pInputText formControlName="images" />
-                </div>
-                <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
                     <label for="email">Email <span class="p-text-danger">(*)</span></label>
                     <input id="email" class="required" pInputText formControlName="email" />
-                </div>
-                <div class="p-fluid xl:col-3 lg:col-6 md:col-6 xxl:col-1">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xl:col-3 lg:col-6 md:col-6 xxl:col-1">
                     <label for="od_partner_id">KH_ID</label>
                     <input id="od_partner_id" pInputText formControlName="od_partner_id" readonly showClear="true"
                         class="font-bold text-danger">
-                </div>
-                <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
                     <label for="content_required">Nội dung hỗ trợ <span class="p-text-danger">(*)</span></label>
                     <input id="content_required" pInputText formControlName="content_required" />
-                </div>
-                <div class="p-fluid xl:col-3 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xl:col-3 lg:col-6 md:col-6 xxl:col-3">
                     <label for="reception_time">TG tiếp nhận <span class="p-text-danger">(*)</span></label>
                     <input id="reception_time" pInputText formControlName="reception_time" />
-                </div>
-                <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
                     <label for="phone">Số DT</label>
                     <input id="phone" pInputText formControlName="phone" />
-                </div>
-                <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
                     <label for="teamviewer">Teamviewer</label>
                     <input id="teamviewer" pInputText formControlName="teamviewer" />
-                </div>
-                <div class="p-fluid xl:col-4 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
                     <label for="content_help">Nội dung đã hỗ trọ <span class="p-text-danger">(*)</span></label>
                     <input id="content_help" pInputText formControlName="content_help" />
-                </div>
-                <div class="p-fluid xl:col-3 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-3 xxl:col-3">
                     <label for="complete_time">TG hoàn thành <span class="p-text-danger">(*)</span></label>
                     <input id="complete_time" pInputText formControlName="complete_time" />
-                </div>
-                <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
                     <label for="customer_name">Tên khách hàng</label>
                     <input id="customer_name" pInputText formControlName="customer_name" />
-                </div>
-                <div class="p-fluid xl:col-5 lg:col-6 md:col-6 xxl:col-3">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
                     <label for="question">Nội dung mẫu</label>
                     <p-dropdown id="question" [options]="catalog.ls_question" optionLabel="title" #refQues
                         [filter]="true" dataKey="id" formControlName="question"
                         (onChange)="onSelectQuestion($event.value)"></p-dropdown>
-                </div>
+                </ts-form-field>
             </div>
         </p-fieldset>
 
@@ -166,8 +162,8 @@
                 <div class="p-fluid col-3">
                     <label for="emailTemplate">..</label>
                     <div class="flex gap-2">
-                        <p-dropdown class="ct_email flex-1" [options]="emailTemplates" optionLabel="title" dataKey="template_id"
-                            formControlName="email_template" showClear="true"></p-dropdown>
+                        <p-dropdown class="ct_email flex-1" [options]="emailTemplates" optionLabel="title"
+                            dataKey="template_id" formControlName="email_template" showClear="true"></p-dropdown>
 
                         <p-button icon="pi pi-eye" severity="help" size="small" (onClick)="openEmailTemplate()"
                             *ngIf="utils.isPreviewEmailHtml"></p-button>
@@ -190,41 +186,50 @@
         }
         <!-- END: email ticket info -->
     </p-card>
-    <p-card class="lg:col-5 col-right">
-        @if (!viewTemplate) {
+    <p-card class="sm:col-12 lg:col-5 col-right">
+
+        @if (!viewTemplate && isPC) {
         <p-fieldset legend="{{'ticket.h1_support'|translate}}">
             <div class="grid">
-                <div class="p-fluid col-12">
+                <ts-form-field class="p-fluid col-12">
                     <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
                     <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
                         placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
-                </div>
-                <div class="p-fluid col-12" *ngIf="utils.is_view_all">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-12" *ngIf="utils.is_view_all">
                     <label for="body">Hỗ trợ => Body</label>
                     <textarea pInputTextarea [autoResize]="true" id="body" formControlName="body"></textarea>
-                </div>
-                <div class="p-fluid col-12" *ngIf="utils.is_view_all">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-12" *ngIf="utils.is_view_all">
                     <label for="note">Hỗ trợ => Note</label>
                     <textarea pInputTextarea [autoResize]="true" id="note" formControlName="note"></textarea>
-                </div>
-                <div class="p-fluid col-12" *ngIf="!utils.is_view_all">
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-12" *ngIf="!utils.is_view_all">
                     <label for="content_copy">Hỗ trợ => Copy</label>
                     <textarea pInputTextarea [autoResize]="true" id="content_copy" formControlName="content_copy"
                         [rows]="7" [style.max-height]="'230px'"></textarea>
-                </div>
+                </ts-form-field>
             </div>
         </p-fieldset>
         }
 
-
         <p-fieldset class="col-option" legend="{{'ticket.h1_option'|translate}}">
-            <div class="flex flex-wrap gap-3" formGroupName="options">
+            <div class="grid" formGroupName="options">
                 <ng-template ngFor let-item [ngForOf]="labelOptions">
                     <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
-                        (onChange)="item.command && item.command($event.checked)"></p-checkbox>
+                        (onChange)="item.command && item.command($event.checked)" class="col-6 lg:col-3"></p-checkbox>
                 </ng-template>
             </div>
+            <!-- <div class="flex flex-wrap gap-3" formGroupName="options">
+                <ng-template ngFor let-item [ngForOf]="labelOptions">
+                    <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
+                        (onChange)="item.command && item.command($event.checked)" class0="col-6 lg:col-6"></p-checkbox>
+                </ng-template>
+            </div> -->
         </p-fieldset>
+
+
+
         @if (!viewTemplate) {
         <p-fieldset class="template-list mt-2" legend="-- Danh sách mẫu --">
             <div class="flex flex-wrap gap-2">
@@ -248,7 +253,7 @@
     </p-card>
 
     <!-- BEGIN: form_tool -->
-    <div class="flex col-12 gap-2 align-items-center">
+    <div class="flex flex-wrap col-12 gap-2 align-items-center mt-2 p-0">
         @if (state.visibleToolImport && idata) {
 
         <div class="r-import flex gap-2 align-items-center ">

@@ -1,9 +1,20 @@
 import { ElementRef } from "@angular/core";
 import { Color, ColorValue, HsbaColorType } from "./color";
 import { TransformOffset } from "./interface";
+import { ValidatorFn } from "@angular/forms";
+import { Objects } from "ts-ui/helper";
 
 export class Utils {
-    static readonly defaultColor = Utils.generateColor('#1677ff');
+    static readonly defaultColor = Utils.generateColor('#22bc65');
+
+    static validatorColorHexFn(): ValidatorFn {
+        return control => {
+            const REGEXP = /^[0-9a-fA-F]{6}$/;
+            if (!control.value) return { error: true };
+            else if (!REGEXP.test(control.value)) return { error: true };
+            else return null;
+        };
+    }
 
     static generateColor(color: ColorValue): Color {
         if (color instanceof Color) return color;
@@ -50,40 +61,49 @@ export class Utils {
         });
     }
 
-    static calculateOffset(
-        containerRef: ElementRef,
-        targetRef: ElementRef,
-        color?: Color | null,
-        type?: HsbaColorType
-    ): TransformOffset | null {
-        const { width, height } = containerRef.nativeElement.getBoundingClientRect();
-        const { width: targetWidth, height: targetHeight } = targetRef.nativeElement.getBoundingClientRect();
-        const centerOffsetX = targetWidth / 2;
-        const centerOffsetY = targetHeight / 2;
-        const hsb = color?.toHsb() || { a: 0, h: 0, s: 0, b: 0 };
+    static clientRect(ref: ElementRef<any>) {
+        return ref?.nativeElement?.getBoundingClientRect() || { x: 0, y: 0, width: 0, height: 0 };
+    }
+
+
+    static calculateOffset(containerRef: ElementRef, targetRef: ElementRef, color?: Color, type?: HsbaColorType): TransformOffset | null {
+        const { width, height } = Utils.clientRect(containerRef);
+        const { width: targetWidth, height: targetHeight } = Utils.clientRect(targetRef);
+
+        // console.log(`calculateOffset`, targetWidth, targetHeight)
 
         // Exclusion of boundary cases
         if ((targetWidth === 0 && targetHeight === 0) || targetWidth !== targetHeight) {
             return null;
         }
 
-        if (type) {
+
+        const centerOffsetY = targetHeight / 2;
+        const hsb = color?.toHsb() || { a: 0, h: 0, s: 0, b: 0 };
+
+        if (Objects.isNull(type)) {
+            return {
+                x: hsb.s * width - targetWidth,
+                y: Math.max(0, (1 - hsb.b) * height - centerOffsetY)
+            };
+        }
+
+        // HsbaColorType
+        else {
+            const offsetY = targetHeight > height ? (targetHeight - height) / 2 : centerOffsetY / 3;
             switch (type) {
                 case 'hue':
                     return {
-                        x: (hsb.h / 360) * width - centerOffsetX,
-                        y: -centerOffsetY / 3
+                        x: Math.max(0, (hsb.h / 360) * width - targetWidth / 2),
+                        y: -offsetY
                     };
                 case 'alpha':
                     return {
-                        x: hsb.a * width - centerOffsetX,
-                        y: -centerOffsetY / 3
+                        x: Math.max(0, hsb.a * width - targetWidth),
+                        y: -offsetY
                     };
             }
+
         }
-        return {
-            x: hsb.s * width - centerOffsetX,
-            y: (1 - hsb.b) * height - centerOffsetY
-        };
     };
 }

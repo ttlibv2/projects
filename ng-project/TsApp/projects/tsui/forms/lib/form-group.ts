@@ -1,6 +1,7 @@
 import { AbstractControl, FormGroup as NgxFormGroup, ValidationErrors, ɵFormGroupRawValue, ɵGetProperty, ɵTypedOrUntyped } from "@angular/forms";
 import { AsyncValidator, ValidatorOrOpts } from "./forms.common";
 import { BiConsumer, Consumer, Objects } from "ts-ui/helper";
+import { debounceTime, distinctUntilChanged, filter, Subject, takeUntil } from "rxjs";
 
 export type TControl<T> = { [K in keyof T]: AbstractControl<any, any> };
 export type TKC<TC> = string & keyof TC;
@@ -34,6 +35,38 @@ export class FormGroup<TC extends TControl<TC> = any> extends NgxFormGroup<TC> {
     formChange(valueCb: Consumer<TRValue<TC>>): void {
         this.valueChanges.subscribe((_: any) => valueCb(this.getRawValue()));
     }
+
+    distinctChange(destroy$: Subject<any>, options: {
+        filter: (fb: FormGroup) => boolean,
+        debounceTime: number,
+        comparator?: (previous: any, current: any) => boolean,
+        subscribe: Consumer<TRValue<TC>>
+    }): void {
+
+        const predicate = () => options?.filter(this) ?? true;
+        const comparator = (v1: any, v2: any) => options?.comparator(v1, v2) ?? v1 === v2;
+        const dueTime = options?.debounceTime ?? 200;
+        const subscribe = options?.subscribe ?? ((val: any) =>  {});
+
+        const pipe$ = this.valueChanges.pipe(
+            filter(() => predicate()),
+            debounceTime(dueTime),
+            distinctUntilChanged((prev: any, current) =>Object.keys(prev).every(key => comparator(prev[key],current[key]))),
+            takeUntil(destroy$)
+        );
+
+        pipe$.subscribe(value => subscribe(value))
+    }
+
+
+
+
+
+
+
+
+
+
 
     controlChange<K extends TKC<TC>>(control: K, valueCb: BiConsumer<AbstractControl<TCValue<TC, K>>, TCValue<TC, K>>): void {
         const contr = this.get(control);

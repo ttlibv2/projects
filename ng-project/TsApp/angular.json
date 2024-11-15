@@ -74,7 +74,7 @@
 
             ],
 
-            "allowedCommonJsDependencies": ["crypto-js", "quill-delta"],
+            "allowedCommonJsDependencies": ["crypto-js", "quill-delta", "exceljs"],
             "budgets": [{
               "type": "initial",
               "maximumWarning": "8mb",

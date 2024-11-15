@@ -1,7 +1,6 @@
 <div [ngClass]="containerCls()" [ngStyle]="containerStyleCls()">
 
 
-
     @if(templates.hasAddonBefore()){
     <div class="ts-inputgroup-addon ts-inputgroup-addon-before" [ngStyle]="styleAddonCls()">
         <ng-container *ngTemplateOutlet="viewRef; context: {$implicit: templates.addonBefore}"></ng-container>

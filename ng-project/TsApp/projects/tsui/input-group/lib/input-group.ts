@@ -1,5 +1,5 @@
 import {
-    AfterContentInit, afterRender, AfterRenderRef, AfterViewChecked, booleanAttribute, Component, ContentChildren, ElementRef, Input, NgZone,
+    AfterContentInit, afterRender, AfterRenderRef, AfterViewChecked, booleanAttribute, ChangeDetectionStrategy, Component, ContentChildren, ElementRef, Input, NgZone,
     OnChanges, OnDestroy, Optional, QueryList, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation
 } from "@angular/core";
 import { PrimeTemplate } from "primeng/api";
@@ -7,7 +7,6 @@ import { Subscription } from "rxjs";
 import { Objects } from "ts-ui/helper";
 import { IconDesc, IconObject } from "./input.interface";
 import { DomHandler } from "primeng/dom";
-import { Calendar } from "primeng/calendar";
 
 const { isString, notNull, notBlank, anyTrue, isArray, isObjectNotEmpty, isStringNotBlank, isNull, allNull, isTrue } = Objects;
 const cls = 'ts-inputgroup';

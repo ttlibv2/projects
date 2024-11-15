@@ -122,7 +122,7 @@ export class CatalogComponent implements OnInit, AfterViewInit {
       },
       error: (err) => {
         this.asyncLoading = false;
-        if (err.code !== 'disconnect') {
+        if (err.code !== 'e_server') {
           this.toast.error("Lấy danh mục bị lỗi");
         }
         this.logger.error("Lấy danh mục bị lỗi: ", err);

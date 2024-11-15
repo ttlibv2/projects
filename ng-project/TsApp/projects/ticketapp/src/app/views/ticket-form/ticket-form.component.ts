@@ -1,6 +1,7 @@
 import {
-  booleanAttribute, ChangeDetectorRef, Component, EventEmitter,
-  Input, OnDestroy, OnInit, Output, ViewEncapsulation
+  booleanAttribute, ChangeDetectorRef, Component, effect, EventEmitter,
+  inject,
+  Input, OnDestroy, OnInit, Output, signal, ViewEncapsulation
 } from "@angular/core";
 import { MenuItem, OverlayOptions } from "primeng/api";
 import { Ticket } from "../../models/ticket";
@@ -32,11 +33,12 @@ import { EmailTemplate, TemplateThread, TicketTemplate, TicketTemplateData } fro
 import { Alert } from "ts-ui/alert";
 import { ModalService } from "ts-ui/modal";
 import { FormGroup, FormsBuilder } from "ts-ui/forms";
-import { Utils } from "./utils";
+import { Utils } from "./ticket-form-utils";
 import { ImportData } from "./import-data";
 import { OdPartnerService } from "../../services/od-partner.service";
 import { AuthService } from "../../services/auth.service";
 import { InputOption, SearchData as SearchUserData } from "../find-partner/partner.interface";
+import { Platform } from "@angular/cdk/platform";
 const { notNull, notEmpty, isEmpty, isBlank, isNull, notBlank, isTrue, isFalse } = Objects;
 
 export type TicketState = 'add' | 'update' | 'delete';
@@ -94,6 +96,7 @@ export interface SearchUserOption extends InputOption {
     autoSave?: boolean;
 }
 
+
 @Component({
   selector: "ts-ticket-form",
   templateUrl: "./ticket-form.component.html",
@@ -101,6 +104,36 @@ export interface SearchUserOption extends InputOption {
   encapsulation: ViewEncapsulation.None
 })
 export class TicketFormComponent implements OnInit, OnDestroy {
+
+  @Input({ transform: booleanAttribute })
+  hasBorderEnd: boolean = false;
+
+  @Input()
+  set formData(input: Ticket) {
+    this.inputTicket = input;
+    this.visibleResult = notBlank(input?.ticket_number);
+    if (notNull(input) && notNull(this.utils)) {
+      this.utils?.reset(input, {});
+      this.inputTicket = undefined;
+      //this.ticketIsSend = input.hasSend();
+    }
+  }
+
+  @Input({ transform: booleanAttribute, alias: 'viewall' })
+  private inputViewAll: boolean | undefined = undefined;
+
+  @Output()
+  onSave = new EventEmitter<SaveTicketEvent>();
+
+  @Output()
+  onDelete = new EventEmitter<DeleteTicketEvent>();
+
+
+  get isPC(): boolean {
+    //const {ANDROID, IOS} = this.platform;
+    //return (isNull(ANDROID) || isFalse(ANDROID)) && (isNull(IOS) && isFalse(IOS));
+    return true;
+  }
 
 
   get templateTitle(): string {
@@ -115,7 +148,6 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     return notNull(this.formData?.ticket_id);
   }
 
-
   get templateDefault(): TicketTemplate {
     if (notNull(this.ticketTemplate)) return this.ticketTemplate;
     else return this.catalog?.ls_ticket_template?.get_default();
@@ -127,6 +159,10 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   get form(): FormGroup {
     return this.utils?.form;
+  }
+
+  get isViewAll(): boolean {
+    return this.utils?.options?.viewAll ?? this.inputViewAll;
   }
 
   readonly toolActions: MenuItem[] = [
@@ -171,6 +207,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     {
       label: "Hiển thị ALL",
       formControl: "viewAll",
+      command: e => this.clickViewAll(e)
     },
     {
       label: "Hiển thị cột TS24",
@@ -184,9 +221,6 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   ];
 
 
-  @Input({ transform: booleanAttribute })
-  hasBorderEnd: boolean = false;
-
   state: State = { visibleToolImport: true };
   catalog: Catalog = new Catalog();
   lsSoftName: string[] = [];
@@ -198,7 +232,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   //options: TicketOption = TicketOption.createDef();
   //ticketIsSend: boolean = false;
   visibleResult: boolean = false;
-  utils: Utils;
+  readonly utils: Utils = new Utils(this);
 
   // use for dialogRef
   overlayOptions: OverlayOptions;
@@ -206,29 +240,12 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   //------ import
   idata: ImportData | null = null;
 
-
-  @Input()
-  set formData(input: Ticket) {
-    this.inputTicket = input;
-    this.visibleResult = notBlank(input?.ticket_number);
-    if (notNull(input) && notNull(this.utils)) {
-      this.utils?.reset(input, {});
-      this.inputTicket = undefined;
-      //this.ticketIsSend = input.hasSend();
-    }
-  }
-
-  @Output()
-  onSave = new EventEmitter<SaveTicketEvent>();
-
-  @Output()
-  onDelete = new EventEmitter<DeleteTicketEvent>();
-
   get newLabel(): string {
     return this.isEditTicket ? 'actions.update' : 'actions.save';
   }
 
   constructor(
+    public readonly platform: Platform,
     public readonly fb: FormsBuilder,
     public readonly alert: Alert,
     public readonly modal: ModalService,
@@ -246,8 +263,6 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     private router: Router,
 
     private dialogRef: DynamicDialogRef) {
-    //this.initFormGroup();
-
   }
 
   ngOnInit() {
@@ -259,7 +274,9 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     }
 
     this.userLogin = this.storage.loginUser;
-    this.utils = new Utils(this);
+    this.utils.initialize({
+      viewAll: this.inputViewAll ?? false
+    });
 
     this.loadCatalogs({autoLoad: true, useCache: true}).subscribe({
       next: _ => {
@@ -803,5 +820,12 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     return hasChecked ? 'select' : undefined;
   }
 
+  clickViewAll(checked: boolean): void {}
+
+  demo1234444() {
+    this.testTitle = 'testTitle';
+  }
+
+  testTitle: string;
 
 }

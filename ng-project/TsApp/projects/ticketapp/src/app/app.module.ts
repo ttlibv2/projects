@@ -1,8 +1,9 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule, } from '@angular/platform-browser';
 import { AppRouting } from './app.routing';
 import { AppComponent } from './app.component';
 import { RouterOutlet } from "@angular/router";
+import { PlatformModule } from "@angular/cdk/platform";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -27,6 +28,14 @@ import { ToastModule } from 'ts-ui/toast';
 import {DBService, LocalDbModule} from "ts-ui/local-db";
 import { FormsModule } from 'ts-ui/forms';
 
+class ErrorHandlerBasic implements ErrorHandler {
+
+    handleError(error: any): void {
+        console.log(error);
+    }
+
+
+}
 registerLocaleData(vi);
 
 function LOAD_CFG(storage: StorageService, logger: LoggerService) {
@@ -48,6 +57,7 @@ function LOAD_DB(service: DBService) {
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
+        PlatformModule,
         FormsModule,
         CommonModule,
         RouterOutlet,
@@ -68,6 +78,7 @@ function LOAD_DB(service: DBService) {
         provideHttpClient(withFetch(), withInterceptors([tokenInterceptor])),
         { provide: APP_INITIALIZER, useFactory: LOAD_DB, deps: [DBService], multi: true },
         { provide: APP_INITIALIZER, useFactory: LOAD_CFG, deps: [StorageService, LoggerService], multi: true },
+        { provide: ErrorHandler, useClass: ErrorHandlerBasic },
         DatePipe, MessageService, DialogService,
 
     ],

@@ -30,7 +30,7 @@
     }
 
     @if ($responsive) {
-        @each $key, $val in $breakpoints {
+        @each $key, $val in $grid-breakpoints {
             @media screen and (min-width: #{$val}) {
                 .#{$key + $separator} {
                     @each $key, $val in $map {
@@ -154,7 +154,7 @@
         }
     }
 
-    @each $key, $val in $breakpoints {
+    @each $key, $val in $grid-breakpoints {
         @media screen and (min-width: #{$val}) {
             .#{$key + $separator} {
                 @each $dir, $prop in $directions {
@@ -198,7 +198,7 @@
         }
     }
     
-    @each $key, $val in $breakpoints {
+    @each $key, $val in $grid-breakpoints {
         @media screen and (min-width: #{$val}) {
             .#{$key + $separator} {
                 @each $key, $val in $map {
@@ -298,7 +298,7 @@
     }
 
     @if ($responsive) {
-        @each $key, $val in $breakpoints {
+        @each $key, $val in $grid-breakpoints {
             @media screen and (min-width: #{$val}) {
                 @each $name, $prop in $map {
                     @for $i from 0 through length($scales) - 1 {
@@ -370,7 +370,7 @@
     }
 
     @if ($responsive) {
-        @each $key, $val in $breakpoints {
+        @each $key, $val in $grid-breakpoints {
             @media screen and (min-width: #{$val}) {
                 .#{$key + $separator} {
                     @each $name, $propMap in $map {

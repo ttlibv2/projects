@@ -9,11 +9,12 @@ type HandlerSize = 'default' | 'small';
     template: `
     <div
       class="ts-colorpicker-handler"
-      [style.background-color]="color"
+      [style.background-color]="colorRgb"
       [class.ts-colorpicker-handler-sm]="size === 'small'"></div>
   `
 })
 export class ColorHandler {
-    @Input() color: string | null = null;
+    @Input() colorRgb: string | null = null;
     @Input() size: HandlerSize = 'default';
+
 }

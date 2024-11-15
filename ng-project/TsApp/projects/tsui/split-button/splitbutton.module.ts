@@ -6,6 +6,8 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ChevronDownIcon } from 'primeng/icons/chevrondown';
 import { RippleModule } from 'primeng/ripple';
+import { OverlayModule } from 'primeng/overlay';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 
 
@@ -16,7 +18,8 @@ import { RippleModule } from 'primeng/ripple';
     RippleModule,
     TieredMenuModule,
     AutoFocusModule, 
-    ChevronDownIcon
+    ChevronDownIcon,
+    OverlayPanelModule
   ], 
   exports: [
     SplitButton, 

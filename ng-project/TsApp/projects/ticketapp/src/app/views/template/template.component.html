@@ -24,21 +24,11 @@
         </div>
         <div class="p-fluid col-6 xxl:col-3">
           <label for="bgColor">{{ 'style.bg_color' | translate }}</label>
-          <ts-inputgroup>
-            <input [value]="bgColor" pInputText readonly />
-            <ng-template pTemplate="suffix">
-              <p-colorPicker format="hex" formControlName="bg_color"></p-colorPicker>
-            </ng-template>
-          </ts-inputgroup>
+          <ts-color [inputId]="'bgColor'" [focusOpen]="true" format="hex" formControlName="bg_color"></ts-color>
         </div>
         <div class="p-fluid col-6 xxl:col-3">
           <label for="textColor">{{ 'style.text_color' | translate }}</label>
-          <ts-inputgroup #textColorG>
-            <input [value]="textColor" pInputText readonly />
-            <ng-template pTemplate="suffix">
-              <p-colorPicker format="hex" formControlName="text_color" [appendTo]="textColorG.divInput"></p-colorPicker>
-            </ng-template>
-          </ts-inputgroup>
+          <ts-color [inputId]="'textColor'" [focusOpen]="true" format="hex" formControlName="text_color"></ts-color>
         </div>
         <div class="col-12 p-fluid">
           <label for="summary">{{'summary' | translate}}</label>

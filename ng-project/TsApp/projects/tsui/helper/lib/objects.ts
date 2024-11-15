@@ -136,11 +136,15 @@ export class Objects {
     return Objects.notNull(value) && typeof value === 'string';
   }
 
+  static isNumber(value: any): value is number {
+    return Objects.notNull(value) && typeof value === 'number';
+  }
+
   static isStringNotBlank(value: any): value is string {
     return Objects.isString(value) && value.length > 0;
   }
 
-  static isObject(value: any): boolean {
+  static isObject<T=object>(value: any): value is T {
     return Objects.notNull(value) && !Objects.isArray(value) && typeof value == 'object' ;
   }
 
@@ -399,6 +403,18 @@ export class Objects {
 
   static fillArray(length: number): Array<number> {
     return Array.from({ length }, (v, i) => i);
+  }
+
+  static parseFlex(flex: number | string): string {
+    const {isNull, isString, isNumber} = Objects;
+    if(isNull(flex)) return undefined;
+    else if(isNumber(flex)) return `${flex} ${flex}`;
+    else {
+      if (/^\d+(\.\d+)?(px|em|rem|%)$/.test(flex)) {
+        return `0 0 ${flex}`;
+      }
+      else return flex;
+    }
   }
 
 

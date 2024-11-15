@@ -4,7 +4,7 @@
         <p-fieldset class="col-12">
             <div class="grid row-gap-3" formGroupName="all">
                 @for (item of checkboxes; track $index) {
-                <p-checkbox class="col-4" [label]="item.title" [binary]="true" [formControlName]="item.field" />
+                <p-checkbox class="col-6 lg:col-4" [label]="item.title" [binary]="true" [formControlName]="item.field" />
                 }
             </div>
         </p-fieldset>

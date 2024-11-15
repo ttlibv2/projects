@@ -1,0 +1,11 @@
+@use '../mixins/grid' as gr;
+
+// Row
+// Rows contain your columns.
+.row, .grid {
+  @include gr.make-row();
+}
+
+// Columns
+// Common styles for small and large grid columns
+@include gr.make-grid-columns();

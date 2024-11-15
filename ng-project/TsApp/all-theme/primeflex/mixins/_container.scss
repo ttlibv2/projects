@@ -1,0 +1,12 @@
+@use '../setting/config' as cfg;
+
+$padding-x: cfg.$container-padding-x;
+$prefix: cfg.$prefix;
+
+@mixin make-container($gutter: $padding-x) {
+  width: 100%;
+  padding-right: var(--#{$prefix}gutter-x, #{$gutter});
+  padding-left: var(--#{$prefix}gutter-x, #{$gutter});
+  margin-right: auto;
+  margin-left: auto;
+}

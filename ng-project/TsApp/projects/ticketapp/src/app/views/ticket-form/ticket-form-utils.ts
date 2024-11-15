@@ -11,20 +11,35 @@ const { isTrue, isBlank, notNull, notBlank, isNull, notEmpty } = Objects;
 
 export class Utils {
 
-    public readonly form: FormGroup;
+    
     public emailFields: FormField[] = [];
     public options = TicketOption.createDef();
     public emailTemplate: EmailTemplate;
+    private _hasInitialize: boolean = false;
+    private _form: FormGroup;
 
-    constructor(private comp: TicketFormComponent) {
-        this.form = this.createFg();
-        this.registerListener();
-        this.form.reset({options: this.options});
+    constructor(private comp: TicketFormComponent) { }
+
+
+    initialize(options?: Partial<TicketOption>): void {
+        if (!this._hasInitialize) {
+            this._hasInitialize = true;
+            this._form = this.createFg();
+            this.registerListener();
+
+            this.options.update(options ?? {});
+            this._form.reset({ options: this.options });
+        }
     }
+
 
     //-- get control...
     get fb(): FormsBuilder {
         return this.comp.fb;
+    }
+
+    get form(): FormGroup {
+        return this._form;
     }
 
     get cOption(): FormGroup {
@@ -34,7 +49,6 @@ export class Utils {
     get cEmailObject(): FormGroup {
         return this.form.get('email_object') as FormGroup;
     }
-
 
     //--data
     get user(): User { return this.comp.userLogin; }
@@ -71,6 +85,8 @@ export class Utils {
         const { emailTicket, autoFill } = this.options;
         return (emailTicket === false || autoFill === true);
     }
+
+    
 
     copyValue() {
         this.form.reset({
@@ -340,4 +356,49 @@ export class Utils {
     dateTo(date: Date | number | string, format: string): string {
         return this.comp.datePipe.transform(date, format);
     }
+
+    //------------------
+
+    get r_chanel_cls(): any {
+        const is = this.is_view_all;
+        return {
+            [`xxl:col-${is ? 6 : 4}`]: true,
+        }
+    }
+
+    get r_ghelp_cls(): any {
+        const is = this.is_view_all;
+        return {
+            [`xxl:col-${is ? 6 : 4}`]: true,
+        }
+    }
+
+    get r_software_cls(): any {
+        const is = this.is_view_all;
+        return {
+            [`xxl:col-${is ? 6 : 4}`]: true,
+        }
+    }
+
+    get r_steam_cls() {
+        const is = this.is_view_all;
+        return {
+            [`xxl:col-${is ? 3 : 4}`]: true,
+        }
+    }
+
+    get r_suser_cls() {
+        const is = this.is_view_all;
+        return {
+            [`xxl:col-${is ? 3 : 4}`]: true,
+        }
+    }
+
+    get r_ttype_cls() {
+        const is = this.is_view_all;
+        return {
+            [`xxl:col-${is ? 3 : 4}`]: true,
+        }
+    }
+
 }

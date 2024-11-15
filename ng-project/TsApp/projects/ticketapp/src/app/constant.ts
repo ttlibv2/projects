@@ -3,6 +3,8 @@ import { TranslateLoader, TranslateModuleConfig } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ToastConfig } from "ts-ui/toast";
+import { inject } from "@angular/core";
+import { Platform } from "@angular/cdk/platform";
 
 export const routerUrl = {
     signinUrl: '/auth/signin',
@@ -88,9 +90,11 @@ export const layoutConfig: LayoutConfig = {
     // ]
 };
 
+//const position = !!inject(Platform).ANDROID ? 'bottom-right' : undefined;
+
 export const toastConfig: Partial<ToastConfig> = {
     newestOnTop: true,
-    position: 'bottom-right'
+    position: 'top-right'
     // toastClassPrefix: 'p-toast',
     // closeClass: 'close-icon',
     // autoDismiss: true,

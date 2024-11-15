@@ -1,6 +1,12 @@
 $prefix: '' !default;
 $separator: '\\:' !default;
 
+
+
+
+
+
+
 $sm: 576px !default; 
 $md: 768px !default;
 $lg: 992px !default;
@@ -10,13 +16,13 @@ $gutter: .5rem !default;
 $col_gutter:  .25rem $gutter!default;
 $media_gutter: .25rem $gutter!default;
 
-$fieldMargin: .5srem !default;
+$fieldMargin: .5rem !default;
 $fieldLabelMargin: .25rem !default;
 $helperTextMargin: .25rem !default;
 
 $spacer: 1rem !default;
 
-$breakpoints: (
+$grid-breakpoints: (
     'sm': $sm,
     'md': $md,
     'lg': $lg,

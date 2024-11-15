@@ -1,9 +1,5 @@
-<div class="grid m-4">
-
-
-    <ts-colorpicker-panel [value]="color"
-         [title]="'Allow Clear'" [allowClear]="true"
-         [format]="'hsb'"></ts-colorpicker-panel>
-
+<div class="grid m-4" [formGroup]="form">
+    <ts-color [disabledAlpha]="false"  [inline]="false" [visibleCopy]="true"
+        [readonly]="true" [focusOpen]="true" (onCopy)="copyColor($event)" formControlName="color"></ts-color>
 
 </div>

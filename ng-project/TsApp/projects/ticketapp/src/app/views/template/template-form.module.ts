@@ -24,6 +24,7 @@ import { AgCellColor } from './renderer';
 import { JsonPipe } from '../../pipes/json.pipe';
 import { FormsModule } from 'ts-ui/forms';
 import { EditorModule } from 'primeng/editor';
+import { InputColor } from 'ts-ui/color-picker';
 
 
 
@@ -54,6 +55,7 @@ import { EditorModule } from 'primeng/editor';
     InputTextareaModule,
     TranslateModule,
     ColorPipe,
+    InputColor,
     CheckboxModule,
     RippleModule,
     EditorModule,

@@ -9,7 +9,7 @@ const { encodeBase64 } = Objects;
 @Injectable({ providedIn: "root" })
 export class AuthService extends ClientService {
   private get user(): UserService {
-    return this.inject.get(UserService);
+    return this.inject2.get(UserService);
   }
 
   signup(dto: SignUpDto): Observable<AuthToken> {

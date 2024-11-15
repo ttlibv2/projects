@@ -1,0 +1,142 @@
+@use '../setting/config' as cfg;
+@use '../mixins/breakpoints' as bp;
+@use '../mixins/utils' as utl;
+
+@use 'sass:math';
+@use 'sass:list';
+
+$prefix: cfg.$prefix;
+$gutter-width: cfg.$grid-gutter-width;
+$grid-columns: cfg.$grid-columns;
+$grid-breakpoints: cfg.$grid-breakpoints;
+$grid-row-columns: cfg.$grid-row-columns;
+
+
+// Grid system
+// Generate semantic grid columns with these mixins.
+
+@mixin make-row($gutter: $gutter-width) {
+  --#{$prefix}gutter-x: #{$gutter};
+  --#{$prefix}gutter-y: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(var(--#{$prefix}gutter-y) * -1);
+  margin-right: calc(var(--#{$prefix}gutter-x) * -.5);
+  margin-left: calc(var(--#{$prefix}gutter-x) * -.5);
+
+  > * {
+    @include make-col-ready();
+  }
+}
+
+@mixin make-col-ready($gutter: $gutter-width) {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: calc(var(--#{$prefix}gutter-x) * .5);
+  padding-left: calc(var(--#{$prefix}gutter-x) * .5);
+  margin-top: var(--#{$prefix}gutter-y);
+}
+
+@mixin make-col($size: false, $columns: $grid-columns) {
+  $percent: percentage(math.div($size, $columns));
+
+
+
+
+
+
+  @if $size {
+    flex: 0 0 $percent;
+    max-width: $percent;
+    padding: cfg.$col_gutter;
+
+  }
+  @else {
+    flex: 1 1 0;
+    max-width: 100%;
+  }
+
+
+
+
+
+
+}
+
+@mixin make-col-auto() {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+@mixin make-col-offset($size, $columns: $grid-columns) {
+  $num: math.div($size, $columns);
+  margin-left: if($num == 0, 0, percentage($num));
+}
+
+// Row columns
+// Specify on a parent element(e.g., .row) to force immediate children into NN
+// number of columns. Supports wrapping to new lines, but does not do a Masonry
+// style grid.
+@mixin row-cols($count) {
+  > * {
+    flex: 0 0 auto;
+    width: math.div(100%, $count);
+  }
+}
+
+// Framework grid generation
+
+@mixin make-grid-rows-with-name($infix) {
+  // Provide basic `.col-{bp}` classes for equal-width flexbox columns
+  .col#{$infix} {flex: 1 0 0;}
+
+  .row-cols#{$infix}-auto > * {
+    @include make-col-auto();
+  }
+
+  @if $grid-row-columns > 0 {
+    @for $i from 1 through $grid-row-columns {
+      .row-cols#{$infix}-#{$i} {
+        @include row-cols($i);
+      }
+    }
+  }
+}
+
+@mixin make-grid-columns-with-name($infix,$columns: $grid-columns) {
+
+  // sm:col-auto
+  .#{utl.join-name($infix, 'col-auto')} {
+    @include make-col-auto();
+  }
+
+  @if $columns > 0 {
+
+    @for $i from 1 through $columns {
+
+      .#{$infix}col{
+        &-#{$i} {  @include make-col($i,$columns); }
+
+      }
+
+
+      //.#{utl.join-name($infix, 'col', '')} {
+      //  &-#{$i} {@include make-col($i, $columns);} //sm:col-1
+      //}
+    }
+
+  }
+}
+
+@mixin make-grid-columns($columns: $grid-columns, $gutter: $gutter-width, $breakpoints: $grid-breakpoints) {
+  @each $breakpoint in map-keys($breakpoints) {
+    $infix: bp.breakpoint-infix($breakpoint, $breakpoints); // sm | lg....
+    @include bp.media-breakpoint-up($breakpoint, $breakpoints) {
+        @include make-grid-rows-with-name($infix);
+        @include make-grid-columns-with-name($infix,$columns);
+    }
+  }
+}

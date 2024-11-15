@@ -1,18 +1,11 @@
-2024-11-06 08:38:57.967 [I] [sub/root.go:144] Starting Konect24 service with configuration file [./k24svr.ini]
-2024-11-06 08:38:57.968 [I] [client/service.go:295] try to connect to Konect24 server...
-2024-11-06 08:38:58.094 [I] [client/service.go:287] [fedd9118353cfa36] login to server success, get run id [fedd9118353cfa36]
-2024-11-06 08:38:58.095 [I] [proxy/proxy_manager.go:173] [fedd9118353cfa36] Konect24 service added: [tsweb tsapi]
-2024-11-06 08:38:58.099 [I] [client/control.go:168] [fedd9118353cfa36] [tsweb] start Konect24 service success
-2024-11-06 08:38:58.099 [I] [client/control.go:168] [fedd9118353cfa36] [tsapi] start Konect24 service success
-2024-11-06 11:05:15.880 [E] [proxy/proxy.go:206] [fedd9118353cfa36] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
-2024-11-06 11:05:15.948 [E] [proxy/proxy.go:206] [fedd9118353cfa36] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
-2024-11-06 12:05:56.782 [I] [client/service.go:295] [fedd9118353cfa36] try to connect to Konect24 server...
-2024-11-06 12:05:57.535 [I] [client/service.go:287] [fedd9118353cfa36] login to server success, get run id [fedd9118353cfa36]
-2024-11-06 12:05:57.601 [I] [proxy/proxy_manager.go:173] [fedd9118353cfa36] Konect24 service added: [tsweb tsapi]
-2024-11-06 12:05:57.642 [I] [client/control.go:168] [fedd9118353cfa36] [tsweb] start Konect24 service success
-2024-11-06 12:05:57.642 [I] [client/control.go:168] [fedd9118353cfa36] [tsapi] start Konect24 service success
-2024-11-06 12:52:28.619 [I] [client/service.go:295] [fedd9118353cfa36] try to connect to Konect24 server...
-2024-11-06 12:52:30.834 [I] [client/service.go:287] [fedd9118353cfa36] login to server success, get run id [fedd9118353cfa36]
-2024-11-06 12:52:30.840 [I] [proxy/proxy_manager.go:173] [fedd9118353cfa36] Konect24 service added: [tsweb tsapi]
-2024-11-06 12:52:30.847 [I] [client/control.go:168] [fedd9118353cfa36] [tsapi] start Konect24 service success
-2024-11-06 12:52:30.847 [I] [client/control.go:168] [fedd9118353cfa36] [tsweb] start Konect24 service success
+2024-11-15 09:05:52.875 [I] [sub/root.go:144] Starting Konect24 service with configuration file [./k24svr.ini]
+2024-11-15 09:05:52.878 [I] [client/service.go:295] try to connect to Konect24 server...
+2024-11-15 09:05:53.008 [I] [client/service.go:287] [9fcb0b38ccbb9372] login to server success, get run id [9fcb0b38ccbb9372]
+2024-11-15 09:05:53.010 [I] [proxy/proxy_manager.go:173] [9fcb0b38ccbb9372] Konect24 service added: [tsweb tsapi]
+2024-11-15 09:05:53.015 [I] [client/control.go:168] [9fcb0b38ccbb9372] [tsweb] start Konect24 service success
+2024-11-15 09:05:53.016 [I] [client/control.go:168] [9fcb0b38ccbb9372] [tsapi] start Konect24 service success
+2024-11-15 12:02:01.671 [I] [client/service.go:295] [9fcb0b38ccbb9372] try to connect to Konect24 server...
+2024-11-15 12:02:02.130 [I] [client/service.go:287] [9fcb0b38ccbb9372] login to server success, get run id [9fcb0b38ccbb9372]
+2024-11-15 12:02:02.130 [I] [proxy/proxy_manager.go:173] [9fcb0b38ccbb9372] Konect24 service added: [tsweb tsapi]
+2024-11-15 12:02:02.179 [I] [client/control.go:168] [9fcb0b38ccbb9372] [tsweb] start Konect24 service success
+2024-11-15 12:02:02.179 [I] [client/control.go:168] [9fcb0b38ccbb9372] [tsapi] start Konect24 service success

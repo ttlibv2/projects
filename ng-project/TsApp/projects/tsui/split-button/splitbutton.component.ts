@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ContentChildren, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewEncapsulation, booleanAttribute, numberAttribute, signal } from '@angular/core';
-import { MenuItem, PrimeTemplate, TooltipOptions } from 'primeng/api';
+import { MenuItem, OverlayModeType, PrimeTemplate, TooltipOptions } from 'primeng/api';
 import { TieredMenu } from 'primeng/tieredmenu';
 import { UniqueComponentId } from 'primeng/utils';
 import { ButtonProps, MenuButtonProps } from './splitbutton.interface';
@@ -153,6 +153,10 @@ export class SplitButton {
      * Menu Button Props
      */
     @Input() menuButtonProps: MenuButtonProps | undefined;
+
+    @Input() mode: OverlayModeType = 'overlay';
+
+
     /**
      * When present, it specifies that the component should automatically get focus on load.
      * @group Props
