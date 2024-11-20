@@ -1,11 +1,23 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 
+.p-card .p-fieldset {
+  padding: 0 !important;
+
+  &-content {
+    padding: 0 !important;
+    margin-left: calc(var(--gutter-grx) * -1);
+    margin-right: calc(var(--gutter-grx) * -1);
+  }
+
+}
+
 .p-fieldset {
   border: cfg.$panelContentBorder;
   background: cfg.$panelContentBg;
   color: cfg.$panelContentTextColor;
   border-radius: cfg.$borderRadius;
+  padding: cfg.$fieldsetPadding;
 
   &-legend:has(span:not(:empty)) {
     padding: cfg.$fieldsetHeaderPadding;
@@ -19,6 +31,8 @@
   &-content {
     padding: cfg.$fieldsetContentPadding;
   }
+
+
 
   &-toggleable {
     .p-fieldset-legend {

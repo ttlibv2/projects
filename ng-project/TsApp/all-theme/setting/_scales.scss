@@ -1,0 +1,10 @@
+@use 'config' as cfg;
+@use 'sass:map';
+
+@function get-scale-padding($key, $scales: cfg.$paddingScales) {
+    @return map-get($scales, $key);
+}
+
+@function get-scale-font($key, $scales: cfg.$fontScales) {
+    @return map-get($scales, $key);
+}

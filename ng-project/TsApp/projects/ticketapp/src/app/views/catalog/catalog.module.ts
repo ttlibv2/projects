@@ -9,6 +9,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
 import { FormsModule } from 'ts-ui/forms';
+import { ToolBar } from 'ts-ui/toolbar';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { FormsModule } from 'ts-ui/forms';
   imports: [
     CommonModule,
     CatalogRoutingModule,
+    ToolBar,
     FormsModule,
     CardModule,
     FieldsetModule,

@@ -1,5 +1,6 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
+
 .p-card {
     background: cfg.$panelContentBg;
     color: cfg.$panelContentTextColor;
@@ -24,9 +25,13 @@
 
     .p-card-content {
         padding: cfg.$cardContentPadding;
+        display: flex;
+        flex-direction: column;
+        row-gap: .5rem;
     }
 
     .p-card-footer {
         padding: cfg.$cardFooterPadding;
     }
+
 }

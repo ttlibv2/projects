@@ -1,6 +1,7 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 @use "../../setting/prefix" as pf;
+@use "../../setting/scales" as sc;
 
 #{pf.$inputText} {
     font-family: cfg.$fontFamily;
@@ -51,12 +52,12 @@
 
     form.sm &, &-sm {
         //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
-        @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleSM);
+        @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(sm));
     }
 
     form.lg &, &-lg {
         //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
-        @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleLG);
+        @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(lg));
     }
 
 
@@ -126,16 +127,16 @@
     }
 }
 
-.p-inputtext-sm {
-    .p-inputtext {
-        @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
-        @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleSM);
-    }
-}
+// .p-inputtext-sm {
+//     .p-inputtext {
+//         @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
+//         @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleSM);
+//     }
+// }
 
-.p-inputtext-lg {
-    .p-inputtext {
-        @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
-        @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleLG);
-    }
-}
+// .p-inputtext-lg {
+//     .p-inputtext {
+//         @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
+//         @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleLG);
+//     }
+// }

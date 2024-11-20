@@ -2,7 +2,7 @@
 
 @mixin style-class($prop, $map, $responsive: false, $states: false) {
     @each $key, $val in $map {
-        .#{$prefix}#{$key} {
+        .#{$prefix+$key} {
             #{$prop}: #{$val} !important;
         }
     }
@@ -268,6 +268,7 @@
 
 @mixin spacing-class($inPrefix, $map, $scales, $responsive: true, $auto: false, $negative: false) {
     $inPrefix: $prefix + $inPrefix;
+    //$responsive: false;
 
     @each $name, $prop in $map {
         @for $i from 0 through length($scales) - 1 {

@@ -276,6 +276,7 @@
     }
 }
 
+
 @mixin scaledPadding($val, $scale) {
     padding: nth($val, 1) * $scale nth($val, 2) * $scale;
 }

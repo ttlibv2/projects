@@ -13,6 +13,11 @@
   .ag-cell[col-id='vat'] a {
     color: var(--danger-color);
   }
+
+  label.options {
+    width: 70px;
+    font-weight: bold;
+  }
   
 }
 

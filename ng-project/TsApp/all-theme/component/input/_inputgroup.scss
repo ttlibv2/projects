@@ -1,5 +1,6 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
+@use "../../setting/scales" as sc;
 
 @mixin displayFlex($gap: .5rem, $align: stretch) {
     display: flex;
@@ -208,12 +209,12 @@ $cls: '.ts-inputgroup';
 
     form.sm &,
     &-sm {
-        @include util.scaledPaddingSub(--input-padding, cfg.$inputPadding, cfg.$scaleSM);
+        @include util.scaledPaddingSub(--input-padding, cfg.$inputPadding, sc.get-scale-padding(sm));
     }
 
     form.lg &,
     &-lg {
-        @include util.scaledPaddingSub(--input-padding, cfg.$inputPadding, cfg.$scaleLG);
+        @include util.scaledPaddingSub(--input-padding, cfg.$inputPadding, sc.get-scale-padding(lg));
     }
 
 }

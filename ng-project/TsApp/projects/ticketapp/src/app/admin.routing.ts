@@ -79,6 +79,10 @@ const appRoutes: Route[] = [
                 loadChildren: () => import('./views/catalog/catalog.module').then(m => m.CatalogModule)
             },
             {
+                path: 'email-template',
+                loadChildren: () => import('./views/email-template/email-template.module').then(m => m.EmailTemplateModule)
+            },
+            {
                 path: '**',
                 pathMatch: 'prefix',
                 redirectTo: 'catalog'

@@ -20,15 +20,15 @@ export class EmailTemplateView implements OnInit {
     constructor(
         private dialogRef: DynamicDialogRef,
         private modal: ModalService,
-        private fb: FormBuilder) { 
-            this.createFG();
-        }
+        private fb: FormBuilder) {
+        this.createFG();
+    }
 
     ngOnInit(): void {
         const instanceData: any = this.modal.getData(this.dialogRef);
-        const {fields, html} = instanceData?.template?.data || {fields: [], html: null};
+        const { fields, html } = instanceData?.template?.data || { fields: [], html: null };
         this.addFields(Objects.isEmpty(fields) ? 1 : fields.length);
-        this.formGroup.patchValue({html: {html}, fields});
+        this.formGroup.patchValue({ html: { html }, fields });
     }
 
     private createFG() {
@@ -40,30 +40,41 @@ export class EmailTemplateView implements OnInit {
     }
 
     private addFields(total: number) {
-        for(let i=0;i<total;i++) {
+        for (let i = 0; i < total; i++) {
             this.addField();
         }
+    }
+
+    disabledAddField(): boolean {
+        return this.fields.length && this.fields.at(this.fields.length - 1).invalid;
     }
 
     /**
      * Add field to array
      */
     addField() {
-        this.fields.push(this.fb.group({
-            name: [null, Validators.required],
-            label: [null, Validators.required],
-            type: ['text', Validators.required],
-            value: [null], required: [true]
-        }));
+        const wasAdd = this.fields.length === 0 || this.fields.at(this.fields.length - 1).valid;
+        if (wasAdd) {
+            const field = this.fb.group({
+                name: [null, Validators.required],
+                label: [null, Validators.required],
+                type: ['text', Validators.required],
+                value: [null], required: [true]
+            });
+
+            this.fields.push(field);
+        }
     }
 
     /** 
      * Remove field at index
-     * @param {number} fieldIndex the index to delete
+     * @param {number} pos the index to delete
      * */
-    removeField(fieldIndex: number) {
-        if (this.fields.length > 1) {
-            this.fields.removeAt(fieldIndex);
+    removeField(pos: number) {
+        const len = this.fields.length;
+        if (len && pos < len) {
+            if (len > 1) this.fields.removeAt(pos);
+            else this.fields.at(pos).reset();
         }
     }
 
@@ -79,11 +90,9 @@ export class EmailTemplateView implements OnInit {
      */
     saveForm(): void {
         if (!this.formGroup.invalid) {
-            let {fields, html} = this.formGroup.getRawValue();
+            let { fields, html } = this.formGroup.getRawValue();
             html = typeof html === 'string' ? html : html.html;
-            this.dialogRef.close({data: {fields, html}});
+            this.dialogRef.close({ data: { fields, html } });
         }
-
-
     }
 }

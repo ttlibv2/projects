@@ -1,6 +1,18 @@
 @use '../setting/config' as cfg;
 $breakpoints: cfg.$grid-breakpoints;
 
+@function join-col($breakpointName, $col-prefix, $index) { // sm:col-1
+  $first: join-col-prefix($breakpointName, $col-prefix);
+  @return #{$first + if($index <=0, '', "-#{$index}")};
+}
+
+// $breakpointName:$prefixCol
+@function join-col-prefix($breakpointName, $prefixCol, $breakpoints: $breakpoints) {
+  $bName: if(breakpoint-min($breakpointName, $breakpoints)==null, '', $breakpointName);
+  $prefix: if($bName==null or $bName=='', '', '#{$bName + cfg.$grid-separator}');
+  @return #{$prefix + cfg.$prefix + $prefixCol};
+}
+
 // Breakpoint viewport sizes and media queries.
 //
 // Breakpoints are defined as a map of (name: minimum width), order from small to large:

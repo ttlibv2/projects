@@ -1,6 +1,7 @@
 @use "sass:math";
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
+@use "../../setting/scales" as sc;
 
 .p-multiselect {
   background: cfg.$inputBg;
@@ -195,7 +196,7 @@
   &-sm {
     .p-multiselect-label {
       //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
-      @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleSM);
+      @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(sm));
     }
   }
 
@@ -203,7 +204,7 @@
   &-lg {
     .p-multiselect-label {
       //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
-      @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleLG);
+      @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(lg));
     }
   }
 }

@@ -21,14 +21,14 @@ $colorSchema: light;
 
 //global
 $fontFamily: "Inter var", sans-serif, serif !default;
-$fontFeatureSettings: "cv02", "cv03", "cv04", "cv11"!default;
-$fontVariationSettings: normal!default;
+$fontFeatureSettings: "cv02", "cv03", "cv04", "cv11" !default;
+$fontVariationSettings: normal !default;
 $fontSize: 1rem !default;
 $fontWeight: normal !default;
 $textColor: clr.$shade700 !default;
 $textSecondaryColor: clr.$shade500 !default;
 $borderRadius: 4px !default;
-$borderWidth: 1px!default;
+$borderWidth: 1px !default;
 $borderColor: clr.$shade300 !default;
 $transitionDuration: 0.2s !default;
 $formElementTransition: background-color $transitionDuration, color $transitionDuration, border-color $transitionDuration, box-shadow $transitionDuration, outline-color $transitionDuration !default;
@@ -42,22 +42,46 @@ $maskBg: rgba(0, 0, 0, 0.4) !default;
 $loadingIconFontSize: 2rem !default;
 $errorColor: #f87171 !default;
 
+$spacer: 1rem !default;
+$spacers: (
+    0: 0,
+    1: $spacer * .25,
+    2: $spacer * .5,
+    3: $spacer,
+    4: $spacer * 1.5,
+    5: $spacer * 2,
+    6: $spacer * 2.5,
+    7: $spacer * 3,
+    8: $spacer * 3.5,
+    9: $spacer * 4,
+    ) !default;
+
+$fontScales: (
+    sm: .9,
+    md: 1,
+    lg: 1.15,
+    xl: 1.30,
+    xxl: 1.35) !default;
 
 //scale
-$scaleXSM: .25!default;  // X-Small
-$scaleSM: 0.25 !default; //0.875 !default; Small
-$scaleMD: 1!default; // Medium
-$scaleLG: 1.5 !default; //  Large
-$scaleXL: 1.75 !default; //  Large
-$scaleXXL: 2!default; // Medium
+$paddingScales: (
+    sm: .875,
+    md: 1.25,
+    lg: 1.5,
+    xl: 1.75,
+    xxl: 2) !default;
+
+// $scaleXSM: .25 !default; // X-Small
+// $scaleSM: 0.25 !default; //0.875 !default; Small
+// $scaleMD: 1 !default; // Medium
+// $scaleLG: 1.5 !default; //  Large
+// $scaleXL: 1.75 !default; //  Large
+// $scaleXXL: 2 !default; // Medium
+
 
 //margin
 $marginSm: .5rem;
 $marginLg: 1rem;
-
-
-
-
 
 
 //focus
@@ -85,7 +109,10 @@ $inputIconRightPadding: 0.4rem !default;
 //input field (e.g. inputtext, spinner, inputmask)
 $inputPadding: 0.2rem 0.35rem !default;
 $inputTextFontSize: 1rem !default;
-$inputShadow: 0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05);
+$inputShadow: 0 0 #0000,
+    0 0 #0000,
+    0 1px 2px 0 rgba(18, 18, 23, 0.05
+);
 
 $inputBg: clr.$shade000 !default;
 $inputTextColor: $textColor !default;
@@ -132,7 +159,7 @@ $inputOverlayBg: $inputListBg !default;
 $inputOverlayHeaderBg: $inputListHeaderBg !default;
 $inputOverlayBorder: 1px solid clr.$shade200 !default;
 $inputOverlayShadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-0 2px 4px -2px rgb(0 0 0 / 0.1) !default;
+    0 2px 4px -2px rgb(0 0 0 / 0.1) !default;
 
 //password
 $passwordMeterBg: clr.$shade200 !default;
@@ -142,7 +169,7 @@ $passwordStrongBg: #22c55e !default;
 
 //button
 // $buttonPadding: 0.5rem 1rem;//0.5rem 1rem !default;
-// $buttonIconOnlyWidth: 2.5rem !default;
+// $buttonIconOnlyWidth: 2.5rem !default; 
 // $buttonIconOnlyPadding: 0.5rem 0 !default;
 // $buttonBg: $secondaryColor !default;
 // $buttonTextColor: $secondaryTextColor !default;
@@ -157,7 +184,7 @@ $passwordStrongBg: #22c55e !default;
 // $roundedButtonBorderRadius: 2rem !default;
 
 //button
-$buttonPadding: 0.5rem 1rem !default;
+$buttonPadding: 0.25rem .45rem !default;
 $buttonIconOnlyWidth: 2.5rem !default;
 $buttonIconOnlyPadding: 0.5rem 0 !default;
 $buttonBg: $secondaryColor !default;
@@ -432,9 +459,9 @@ $panelFooterTextColor: clr.$shade700 !default;
 $panelFooterPadding: 0 1.125rem 1.125rem 1.125rem !default;
 
 //fieldset
-$fieldsetPadding: .5rem!default;
-$fieldsetContentPadding: 0!default;
-$fieldsetHeaderPadding: 0!default;
+$fieldsetPadding: .5rem !default;
+$fieldsetContentPadding: 0 !default;
+$fieldsetHeaderPadding: 0 !default;
 
 //accordion
 $accordionSpacing: 0 !default;
@@ -501,13 +528,13 @@ $scrollPanelTrackBorder: 0 none !default;
 $scrollPanelTrackBg: clr.$shade100 !default;
 
 //card
-$cardBodyPadding: .5rem!default;//1rem 1rem !default;
+$cardBodyPadding: .5rem !default; //1rem 1rem !default;
 $cardTitleFontSize: 1.25rem !default;
 $cardTitleFontWeight: 600 !default;
 $cardSubTitleFontWeight: 400 !default;
 $cardSubTitleColor: $textSecondaryColor !default;
 $cardContentPadding: 0 0 0 0 !default;
-$cardFooterPadding: 0 0 0 0 !default;
+$cardFooterPadding: 1rem 0 0 0 !default;
 $cardShadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !default;
 
 //editor
@@ -635,7 +662,7 @@ $inlineMessageBorderWidth: 1px !default;
 
 //toast
 $toastCloseIconFontSize: 1.125rem !default;
-$toastMessageIconFontSize: 2rem!default;
+$toastMessageIconFontSize: 2rem !default;
 $toastMessageTextMargin: 0 0 0 0.5rem !default;
 $toastMargin: 0 0 .5rem 0 !default;
 $toastPadding: 0.5rem 0.75rem !default;
@@ -645,9 +672,9 @@ $toastOpacity: 1 !default;
 $toastTitleFontWeight: 500 !default;
 $toastHeaderPadding: 0.5rem 0.75rem 0 0.75rem;
 $toastDetailMargin: $inlineSpacing 0 0 0 !default;
-$toastCloseBorderRadius: 0!default;//$actionIconBorderRadius!default;
-$toastCloseIconPadding: .5rem!default;
-$toastContentPadding: 0.7rem!default;
+$toastCloseBorderRadius: 0 !default; //$actionIconBorderRadius!default;
+$toastCloseIconPadding: .5rem !default;
+$toastContentPadding: 0.7rem !default;
 $toastFontSize: 1.1rem;
 
 //severities
@@ -671,7 +698,7 @@ $warningMessageBorderColor: #fde68a !default;
 
 $errorMessageBg: rgba(254, 242, 242, 0.95) !default;
 $errorMessageBorder: $messageBorderWidth solid #fecaca !default;
-$errorMessageTextColor: #dc2626 !default; 
+$errorMessageTextColor: #dc2626 !default;
 $errorMessageIconColor: #dc2626 !default;
 $errorMessageBorderColor: #fecaca !default;
 
@@ -697,32 +724,32 @@ $contrastMessageBorderColor: clr.$shade500 !default;
 $overlayContentBorder: 1px solid clr.$shade200 !default;
 $overlayContentBg: clr.$shade000 !default;
 $overlayContainerShadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-0 8px 10px -6px rgb(0 0 0 / 0.1) !default;
+    0 8px 10px -6px rgb(0 0 0 / 0.1) !default;
 
 //dialog
-$dialogMarginTop: 3rem!important;
-$dialogMarginLeftRight: 1rem!default;
+$dialogMarginTop: 3rem !important;
+$dialogMarginLeftRight: 1rem !default;
 
 $dialogHeaderBg: clr.$shade000 !default;
 $dialogHeaderBorder: 0 none !default;
 $dialogHeaderTextColor: clr.$shade700 !default;
 $dialogHeaderFontWeight: 600 !default;
 $dialogHeaderFontSize: 1.25rem !default;
-$dialogHeaderPadding: 1rem 0 .2rem 0!default;//1.5rem !default;
-$dialogHeaderMargin: 0 1rem!default;
+$dialogHeaderPadding: 1rem 0 .2rem 0 !default; //1.5rem !default;
+$dialogHeaderMargin: 0 1rem !default;
 
-$dialogHeaderBottomBorder: var(--primary-color) 3px solid!default;
+$dialogHeaderBottomBorder: var(--primary-color) 3px solid !default;
 
-$dialogContentMargin: 0!default;
-$dialogContentPadding: 0.5rem 1rem!default;
+$dialogContentMargin: 0 !default;
+$dialogContentPadding: 0.5rem 1rem !default;
 
 
-$dialogFooterPadding: .5rem 1rem!default; //0 1.5rem 1.5rem 1.5rem !default;
-$dialogFooterMargin: 0!default;
+$dialogFooterPadding: .5rem 1rem !default; //0 1.5rem 1.5rem 1.5rem !default;
+$dialogFooterMargin: 0 !default;
 $dialogFooterBg: transparent !default;
 $dialogFooterBorder: 0 none !default;
-$dialogFooterButtonGap: .5rem!default;
-$dialogFooterButtonPos: end!default;
+$dialogFooterButtonGap: .5rem !default;
+$dialogFooterButtonPos: end !default;
 
 
 
@@ -790,7 +817,7 @@ $submenuHeaderFontWeight: 600 !default;
 $overlayMenuBg: $menuBg !default;
 $overlayMenuBorder: 1px solid clr.$shade200 !default;
 $overlayMenuShadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-0 2px 4px -2px rgb(0 0 0 / 0.1) !default;
+    0 2px 4px -2px rgb(0 0 0 / 0.1) !default;
 $verticalMenuPadding: 0.25rem 0.25rem !default;
 $menuSeparatorMargin: 2px 0 !default;
 
@@ -885,11 +912,14 @@ $galleriaThumbnailNavigatorHeight: 2rem !default;
 //divider
 $dividerHorizontalMargin: 1rem 0 !default;
 $dividerHorizontalPadding: 0 1rem !default;
-$dividerVerticalMargin: 0!default;//0 1rem !default;
-$dividerVerticalPadding: 0!default;//1rem 0 !default;
-$dividerSize: 1px !default;
-$dividerColor: $primaryColor !default;
-$dividerStyle: solid!default;
+$dividerVerticalMargin: 0  8px !default; //0 1rem !default;
+$dividerVerticalPadding: 0 !default; //1rem 0 !default;
+$dividerSize: 2px !default;
+$dividerColor: $borderColor!default;
+$dividerStyle: solid !default;
+$divider-text-padding: 1em;
+$divider-orientation-margin: 5%;
+
 
 //avatar
 $avatarBg: clr.$shade200 !default;

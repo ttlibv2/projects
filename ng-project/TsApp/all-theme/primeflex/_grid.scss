@@ -1,0 +1,33 @@
+@use "mixins/grid" as gr;
+@use "mixins/breakpoints" as bp;
+@use "setting/config" as cfg;
+
+//.row, .grid
+@include gr.make-grid-row();
+@include gr.make-grid-columns("");
+@include gr.make-breakpoint();
+
+@include bp.media-breakpoint-down(sm) {
+    
+    @for $i from 1 through cfg.$grid-columns {
+        .#{cfg.$prefix + cfg.$grid-col-prefix}-#{$i}{
+            --#{cfg.$prefix}gutter-grx: .2rem;
+            //--#{cfg.$prefix}gutter-gry: 0;
+        }
+    }
+    
+    
+}
+
+//
+
+.flex-nowrap {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.flex-wrap-center {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}

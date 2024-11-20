@@ -14,8 +14,9 @@
 @import "primeicons/primeicons.css";
 @import "primeng/resources/primeng.css";
 
+// @import "../public/css/primeflex.css";
 // @import "primeflex/primeflex.min.css";
- @import "../../../all-theme/primeflex";
+@import "../../../all-theme/primeflex";
 
 
 @media screen and (min-width: 768px) {
@@ -27,6 +28,7 @@
       }
     }
 }
+
 
 .overlay-container {
   position: absolute;

@@ -4,6 +4,11 @@
         <ng-container *ngTemplateOutlet="leftTemplate"></ng-container>
     </div>
     }
+    @else {
+        <div class="ts-toolbar-group-left" [style.gap]="flexGap">
+            <ng-content></ng-content>
+        </div>
+    }
 
     @if(centerTemplate){
         <div class="ts-toolbar-group-center" [style.gap]="flexGap">

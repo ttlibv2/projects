@@ -188,7 +188,7 @@
     </p-card>
     <p-card class="sm:col-12 lg:col-5 col-right">
 
-        @if (!viewTemplate && isPC) {
+        @if (!viewTemplate) {
         <p-fieldset legend="{{'ticket.h1_support'|translate}}">
             <div class="grid">
                 <ts-form-field class="p-fluid col-12">
@@ -196,15 +196,15 @@
                     <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
                         placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-12" *ngIf="utils.is_view_all">
+                <ts-form-field class="p-fluid col-12 ticket-body" *ngIf="utils.is_view_all" >
                     <label for="body">Hỗ trợ => Body</label>
                     <textarea pInputTextarea [autoResize]="true" id="body" formControlName="body"></textarea>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-12" *ngIf="utils.is_view_all">
+                <ts-form-field class="p-fluid col-12 ticket-note" *ngIf="utils.is_view_all">
                     <label for="note">Hỗ trợ => Note</label>
                     <textarea pInputTextarea [autoResize]="true" id="note" formControlName="note"></textarea>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-12" *ngIf="!utils.is_view_all">
+                <ts-form-field class="p-fluid col-12 ticket-copy" *ngIf="!utils.is_view_all">
                     <label for="content_copy">Hỗ trợ => Copy</label>
                     <textarea pInputTextarea [autoResize]="true" id="content_copy" formControlName="content_copy"
                         [rows]="7" [style.max-height]="'230px'"></textarea>
@@ -220,31 +220,30 @@
                         (onChange)="item.command && item.command($event.checked)" class="col-6 lg:col-3"></p-checkbox>
                 </ng-template>
             </div>
-            <!-- <div class="flex flex-wrap gap-3" formGroupName="options">
-                <ng-template ngFor let-item [ngForOf]="labelOptions">
-                    <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
-                        (onChange)="item.command && item.command($event.checked)" class0="col-6 lg:col-6"></p-checkbox>
-                </ng-template>
-            </div> -->
         </p-fieldset>
 
 
 
         @if (!viewTemplate) {
         <p-fieldset class="template-list mt-2" legend="-- Danh sách mẫu --">
-            <div class="flex flex-wrap gap-2">
-                @for (item of catalog.get_ticket(); track $index) {
-                <ts-tag [value]="item" [label]="item.title" [icon]="item.icon" (click)="selectTemplate(item)"
-                    [styleClass]="tagSelectClass(item)"></ts-tag>
-                }
-
-                @if(catalog.get_ticket()?.length == 0){
-                <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b class="text-danger">[Khác > Cập
-                        nhật mẫu mặc định]</b>).</span>
-
-                <span> Hoặc <a class="here" [routerLink]="['/templates']" [queryParams]="{thread: 'ticket_template'}"
-                        (click)="viewTemplateSetting('ticket_template')">{{'actions.click_here'|translate}}</a></span>
-                }
+            <div class="grid">
+                <ts-toolbar class="col-12">
+                    <ng-template pTemplate="left">
+                        @for (item of catalog.get_ticket(); track $index) {
+                        <ts-tag [value]="item" [label]="item.title" [icon]="item.icon" (click)="selectTemplate(item)"
+                            [styleClass]="tagSelectClass(item)"></ts-tag>
+                        }
+                        
+                        @if(catalog.get_ticket()?.length == 0){
+                        <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b class="text-danger">[Khác >
+                                Cập
+                                nhật mẫu mặc định]</b>).</span>
+                        
+                        <span> Hoặc <a class="here" [routerLink]="['/templates']" [queryParams]="{thread: 'ticket_template'}"
+                                (click)="viewTemplateSetting('ticket_template')">{{'actions.click_here'|translate}}</a></span>
+                        }
+                    </ng-template>
+                </ts-toolbar>
             </div>
         </p-fieldset>
 
@@ -253,7 +252,7 @@
     </p-card>
 
     <!-- BEGIN: form_tool -->
-    <div class="flex flex-wrap col-12 gap-2 align-items-center mt-2 p-0">
+    <div class="col-12 flex flex-wrap gap-2 align-items-center mt-3 form-tool" >
         @if (state.visibleToolImport && idata) {
 
         <div class="r-import flex gap-2 align-items-center ">
@@ -275,11 +274,13 @@
 
             <p-button label="Lùi" iconPos="left" icon="pi pi-angle-double-left" severity="info" text="true"
                 styleClass="p-click" [disabled]="idata.disableClickPrev" (onClick)="idata.clickPrev()"></p-button>
+
             <label class="flex gap-1">
                 <span class="current">{{idata?.current}}</span>
                 <span class="sep">/</span>
                 <span class="total">{{idata.size}}</span>
             </label>
+
             <p-button label="Tới" iconPos="right" icon="pi pi-angle-double-right" severity="info" text="true"
                 size="large" styleClass="p-click" [disabled]="idata.disableClickNext"
                 (onClick)="idata.clickNext()"></p-button>
@@ -297,27 +298,27 @@
         }
 
         @else if (!viewTemplate) {
-        <p-button type="submit" severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
+        <p-button type="submit" severity="warning" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
             loadingIcon="pi pi-sync" label="{{newLabel|translate}}" [disabled]="form.invalid"></p-button>
 
+        <p-button severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-new" loadingIcon="pi pi-sync"
+            label="{{'actions.create'|translate}}" (onClick)="createNew()"></p-button>
 
         <p-button icon="pi pi-search" (click)="searchUser()" label="{{'ticket.search_user' | translate}}"></p-button>
 
-
-        <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="{{'ticket.get_cate' | translate}}"></p-button>
+        <!-- <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="{{'ticket.get_cate' | translate}}"></p-button> -->
 
         <p-button icon="pi pi-result" (click)="viewResultTicket()" label="{{'ticket.view_result' | translate}}"
             *ngIf="visibleResult"></p-button>
 
-        <p-button icon="pi pi-clone" (click)="copyTicket()" label="{{'ticket.copy' | translate}}"></p-button>
+        <!-- <p-button icon="pi pi-clone" (click)="copyTicket()" label="{{'ticket.copy' | translate}}"></p-button> -->
+        
         <p-divider [layout]="'vertical'"></p-divider>
         <p-button severity="danger" icon="pi pi-folder-plus" (onClick)="deleteTicket()"
             label="{{'actions.delete_ticket' | translate}}" *ngIf="isEditTicket"></p-button>
 
-        <ts-splitButton [icon]="'pi pi-wrench'" label="{{'ticket.other' | translate}}" severity="info"
+        <ts-splitButton label="{{'ticket.other' | translate}}" severity="info"
             [model]="toolActions" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
-
-
         }
         @else {
         <p-button [disabled]="form.invalid" (onClick)="saveTemplate()"

@@ -60,7 +60,7 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
   state: State = {};
 
   tableOption: TableOption = {
-    height: '550px',
+    height: '350px',
     onRowDoubleClicked: evt => this.selectAndClose(evt.data)
   };
 

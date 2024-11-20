@@ -1,6 +1,6 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
-
+@use "../../setting/scales" as sc;
 .p-treetable {
     .p-paginator-top {
         border-width: cfg.$tableTopPaginatorBorderWidth;
@@ -237,7 +237,7 @@
 
     &.p-treetable-sm {
         .p-treetable-header {
-            @include util.scaledPadding(cfg.$tableHeaderPadding, cfg.$scaleSM);
+            @include util.scaledPadding(cfg.$tableHeaderPadding, sc.get-scale-padding(sm));
         }
 
         .p-treetable-thead > tr > th {

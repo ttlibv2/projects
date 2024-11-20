@@ -1,26 +1,30 @@
 'use strict';
 
-var gulp = require('gulp'),
-    // concat = require('gulp-concat'),
-    // uglifycss = require('gulp-uglifycss'),
+const destCss = './projects/ticketapp/public/css/';
+const gulp = require('gulp'),
     rename = require('gulp-rename'),
-    // flatten = require('gulp-flatten'),
     sass = require('gulp-sass')(require('sass'));
 
-var destCss = './projects/ticketapp/public/css/';
-
-
-function compileScss() {
-    return gulp.src(['./all-theme/theme/*/*.scss'])
+function compileScss(src,dest) {
+    return gulp.src([src])
         .pipe(sass().on('error', sass.logError))
-        .pipe(rename(file => {
-            file.dirname = '';
-
-            return './projects/ticketapp/public/css/';
-        }))
+        .pipe(rename(file => {file.dirname = '';return destCss;}))
         .pipe(gulp.dest(destCss));
 }
 
+//===================
+function theme() {
+    compileScss('./all-theme/theme/*/*.scss', destCss);
+}
 
+function grid() {
+    compileScss('./all-theme/primeflex/_index.scss', destCss);
+}
 
-gulp.task('theme', compileScss);
+gulp.task('theme', theme);
+gulp.task('grid', grid);
+
+gulp.task('all', done => {
+    gulp.series('grid');
+    done();
+});

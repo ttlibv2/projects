@@ -2,7 +2,7 @@
 @use "../../../setting/config" as cfg;
 
 .p-fieldset {
-  padding: cfg.$fieldsetPadding;
+  //padding: cfg.$fieldsetPadding;
   margin: 0;
 
   &.p-fieldset-toggleable {

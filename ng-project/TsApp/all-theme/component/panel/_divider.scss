@@ -1,36 +1,95 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
-.p-divider {
-    .p-divider-content {
-        background-color: cfg.$panelContentBg;
-    }
 
-    &.p-divider-horizontal {
+$prefix-cls: "p-divider";
+$prefix-ts-cls: "ts-divider";
+.#{$prefix-cls}{
+    &-content{
+        background-color: cfg.$panelContentBg;
+        z-index: 1;
+    }
+    &-horizontal{
         margin: cfg.$dividerHorizontalMargin;
         padding: cfg.$dividerHorizontalPadding;
-
-        &:before {
+        &:before{
             border-top: cfg.$dividerSize cfg.$dividerColor;
-            border-top-style: cfg.$dividerStyle;            
-            
+            border-top-style: cfg.$dividerStyle;
         }
-
-        .p-divider-content {
+        .#{$prefix-cls}-content{
             padding: 0 cfg.$inlineSpacing;
         }
     }
-
-    &.p-divider-vertical {
+    &-vertical{
         margin: cfg.$dividerVerticalMargin;
         padding: cfg.$dividerVerticalPadding;
-
-        &:before {            
+        &:before{
             border-left: cfg.$dividerSize cfg.$dividerColor;
             border-left-style: cfg.$dividerStyle;
         }
-
-        .p-divider-content {
+        .#{$prefix-cls}-content{
             padding: cfg.$inlineSpacing 0;
+        }
+    }
+}
+
+.#{$prefix-ts-cls}{
+    $bw: var(--divider-size, cfg.$dividerSize);
+    $bc: var(--divider-color, cfg.$dividerColor);
+    $bs: var(--divider-style, cfg.$dividerStyle);
+    $o-margin: cfg.$divider-orientation-margin;
+    
+    border-color: $bc;
+    
+    &-content{
+        display: inline-block;
+        padding: 0 cfg.$divider-text-padding;
+    }
+    
+    &-vertical{
+        position: relative;
+        top: -0.06em;
+        display: inline-block;
+        height: 0.9em;
+        margin: cfg.$dividerVerticalMargin;
+        vertical-align: middle;
+        border-top: 0;
+        border-left: $bw $bs $bc;
+    }
+    
+    &-horizontal{
+        display: flex;
+        clear: both;
+        width: 100%;
+        min-width: 100%;
+        border-bottom: 0;
+        
+        &::before,
+        &::after{
+            position: relative;
+            width: 50%;
+            border-top: $bw solid $bc;
+            border-top-color: inherit;
+            border-bottom: 0;
+            //transform: translateY(50%);
+            content: "";
+        }
+    }
+    
+    &-with-text{
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        white-space: nowrap;
+        text-align: center;
+        
+       
+        &-left{
+            &::before{width: $o-margin;}
+            &::after{width: 100% - $o-margin;}
+        }
+        &-right{
+            &::before{width: 100% - $o-margin;}
+            &::after{width: $o-margin;}
         }
     }
 }

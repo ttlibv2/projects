@@ -41,6 +41,45 @@
   --toast-border-color: #{cfg.$errorMessageBorderColor};
 }
 
+@mixin center() {
+  @include tsToast();
+  left: 50%!important;
+  top: 50%!important;
+  min-width: 20vw!important;
+  transform: translate(-50%, -50%)!important;
+}
+
+@mixin bottom-center() {
+  @include tsToast();
+  bottom: 10px!important;
+  left: 50%!important;
+  transform: translateX(-50%)!important;
+}
+
+@media screen and (max-width: 575.98px){
+  
+  .ts-toast {
+    
+    &-top-right {
+      @include  bottom-center();
+      left: unset!important;
+      bottom: 0!important;
+      right: 10px!important;
+      transform: translateX(4px)!important;
+    }
+    
+    &-bottom-right {
+      @include  bottom-center();
+      left: unset!important;
+      bottom: 0!important;
+      right: 10px!important;
+      transform: translateX(4px)!important;
+    }
+    
+  }
+  
+}
+
 .ts-toast {
 
   &-message {
@@ -175,18 +214,11 @@
   }
 
   &-bottom-center {
-    @include tsToast();
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    @include  bottom-center();
   }
 
   &-center {
-    @include tsToast();
-    left: 50%;
-    top: 50%;
-    min-width: 20vw;
-    transform: translate(-50%, -50%);
+    @include center();
   }
 
   &-top-full-width {

@@ -1,5 +1,6 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
+
 .p-accordion {
     .p-accordion-header {
         .p-accordion-header-link {
@@ -67,8 +68,8 @@
         .p-accordion-tab {
             margin-bottom: cfg.$accordionSpacing;
         }
-        
-        @if cfg.$accordionSpacing == 0 {
+
+        @if cfg.$accordionSpacing ==0 {
             .p-accordion-header {
                 .p-accordion-header-link {
                     border-radius: 0;
@@ -116,6 +117,6 @@
                     border-bottom-left-radius: cfg.$borderRadius;
                 }
             }
-        } 
+        }
     }
 }

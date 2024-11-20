@@ -11,10 +11,13 @@ import { CardModule } from "primeng/card";
 import { FieldsetModule } from "primeng/fieldset";
 import { DividerModule } from "primeng/divider";
 import { AgTableModule } from "ts-ui/ag-table";
+import { DynamicDialogRef } from "primeng/dynamicdialog";
+import { ToolBar } from "ts-ui/toolbar";
 
 @NgModule({
     declarations: [EmailTemplateView],
     exports: [EmailTemplateView],
+    providers: [DynamicDialogRef],
     imports: [
         CommonModule, 
         FormsModule,
@@ -26,7 +29,8 @@ import { AgTableModule } from "ts-ui/ag-table";
         DropdownModule,
         CardModule,
         FieldsetModule,
-        DividerModule
+        DividerModule,
+        ToolBar
         
     ]
 })

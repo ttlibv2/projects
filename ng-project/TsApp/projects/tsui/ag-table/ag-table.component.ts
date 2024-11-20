@@ -7,6 +7,7 @@ import { AgI18N } from './ag-table.i18n';
 import { Asserts, Consumer, JsonAny, Objects } from 'ts-ui/helper';
 import { Workbook, Worksheet } from 'exceljs';
 import { Observable, Observer } from 'rxjs';
+import { myTheme } from './ag-theme';
 
 const { isEmpty, notNull, mergeDeep, isTrue } = Objects;
 
@@ -82,6 +83,8 @@ export class AgTable<E = any> implements OnInit, OnChanges {
   set pagination(view: boolean) {
     this.tableApi?.setGridOption('pagination', view);
   }
+
+  theme = myTheme; 
 
   constructor(@Inject(AG_CONFIG_TOKEN) private config: AgTableConfig) {
     this.gridOption = this.createDefaultGridOption();

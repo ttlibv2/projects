@@ -167,12 +167,12 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   readonly toolActions: MenuItem[] = [
     {
-      label: "Cập nhật DL mẫu",
+      label: "Ticket mẫu",
       icon: "pi pi-home",
       command: _ => this.viewTemplateSetting('ticket_template'),
     },
     {
-      label: "Cập nhật Email mẫu",
+      label: "E-mail mẫu",
       icon: "pi pi-at",
       command: _ => this.viewTemplateSetting('email_template'),
     },
@@ -181,6 +181,17 @@ export class TicketFormComponent implements OnInit, OnDestroy {
       label: "Nạp danh sách lỗi",
       icon: "pi pi-file-excel",
       command: _ => this.openDialogImportXsl(),
+    },
+    { separator: true, label: '1111' },
+    {
+      label: 'Sao chép ticket',
+      icon: 'pi pi-clone',
+      command: _ => this.copyTicket()
+    },
+    {
+      label: 'Tải danh mục',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
     },
     { separator: true, label: '1111' },
     {
@@ -323,7 +334,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
         const cateRef = this.modal.open(CatalogComponent, {
           header: 'Danh mục cần lấy ?',
-          width: '700px',
+         // width: '700px',
           data: { 
             templateCode: ['ticket_template', 'email_template'], 
             autoLoad: options.autoLoad 
@@ -359,10 +370,9 @@ export class TicketFormComponent implements OnInit, OnDestroy {
       const ref = this.alert.warning({
         title: 'Thông báo !!',
         summary: 'Bạn chưa cấu hình dữ liệu mặc định cho Ticket. Bạn có muốn cấu hình luôn không ?',
-        actions: [
-          { label: 'Cấu hình', onClick: e => e.dynamicRef.close('ok') },
-          //{ label: 'Hủy', onClick: e => e.dynamicRef.close('cancel') }
-        ]
+        okLabel: 'Cấu hình',
+        cancelClick: e => e.dynamicRef.destroy(),
+        okClick: e => e.dynamicRef.close('ok'),
       });
 
       ref.onClose.subscribe(btn => {

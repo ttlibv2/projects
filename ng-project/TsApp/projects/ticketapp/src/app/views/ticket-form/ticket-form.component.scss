@@ -2,9 +2,6 @@ ts-ticket-form {
   display: block;
 }
 
-
-
-
 .ticket-form {
 
   .ts-chanels {
@@ -51,12 +48,6 @@ ts-ticket-form {
       color: var(--tag-active-color);
       border-color: var(--danger-color);
     }
-  }
-
-
-
-  &.grid {
-    margin-top: 0px;
   }
 
   .toolbar.border-end {
@@ -110,4 +101,14 @@ ts-ticket-form {
       }
     }
   }
+}
+
+@media screen and (max-width: 575.98px) {
+    .ticket-form {
+
+      .ticket-body, .ticket-note, .ticket-copy {
+        display: none;
+      }
+
+    }
 }

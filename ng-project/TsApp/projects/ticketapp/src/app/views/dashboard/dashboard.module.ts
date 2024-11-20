@@ -28,7 +28,7 @@ import { ChipsModule } from 'primeng/chips';
     DashboardRoutingModule,
     JFormsModule,
     FormsModule,
-    //StringTemplateOutlet,
+    //StringTemplate,
     //InputGroupModule,
     InputTextModule,
     InputTextareaModule,

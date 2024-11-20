@@ -8,7 +8,7 @@ import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
 import {ButtonModule} from "primeng/button";
 import {ChipsModule} from "primeng/chips";
 import {ColorPickerModule} from "primeng/colorpicker";
-import {DividerModule} from "primeng/divider";
+import {Divider} from "ts-ui/divider";
 import {InputGroupModule} from "ts-ui/input-group";
 import {InputIconModule} from "primeng/inputicon";
 import {IconFieldModule} from "primeng/iconfield";
@@ -48,7 +48,7 @@ import { InputColor } from 'ts-ui/color-picker';
     ButtonModule,
     ChipsModule,
     ColorPickerModule,
-    DividerModule,
+    Divider,
     InputGroupModule,
     InputIconModule,
     IconFieldModule,

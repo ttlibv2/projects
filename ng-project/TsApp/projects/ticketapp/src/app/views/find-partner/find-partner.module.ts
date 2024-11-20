@@ -17,7 +17,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DividerModule } from 'primeng/divider';
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 import { TranslateModule } from '@ngx-translate/core';
-import { FormsModule } from 'ts-ui/forms';
+import { FormField, FormLabel, FormsModule } from 'ts-ui/forms';
 import { SplitButtonModule } from 'ts-ui/split-button';
 import { InputGroupModule } from 'ts-ui/input-group';
 import { IconModule } from 'ts-ui/icon';
@@ -50,6 +50,8 @@ import { SharedModule } from 'primeng/api';
     DividerModule,
     InputGroupAddonModule,
     TranslateModule,
+    FormLabel,
+    FormField,
     NgIf
   ],
   providers: [

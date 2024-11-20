@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TemplateFormComponent } from './template-form.component';
-import { EmailTemplateView } from '../email-template/email-template.view';
 import { EmailTemplateModule } from '../email-template/email-template.module';
 
 const routes: Routes = [
-  { path: '', component: TemplateFormComponent },
-  { path: 'email', component: EmailTemplateView }
+  { 
+    path: '', component: TemplateFormComponent 
+  },
+  {
+    path: 'email',
+    loadChildren: () => import('../email-template/email-template.routing').then(m => m.EmailTemplateRouting)
+  }
 ];
 
 @NgModule({

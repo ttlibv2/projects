@@ -4,7 +4,7 @@ import { PrimeTemplate } from "primeng/api";
 import { Breakpoint, QueryUtil } from "ts-ui/common";
 import { FormLabel } from "./form-label";
 import { Objects } from "ts-ui/helper";
-const { isTemplateRef } = Objects;
+const { isTemplateRef, isFalse, notBlank } = Objects;
 
 type PropCls = { [kclass: string]: boolean };
 
@@ -38,6 +38,10 @@ export class FormField implements AfterContentInit {
      * @group Props
      * */
     @Input() requiredText: string = '(*)';
+
+    get field_required(): string | boolean {
+        return isFalse(this.required) ? false : notBlank(this.requiredText) ? this.requiredText : true;
+    }
 
    
 

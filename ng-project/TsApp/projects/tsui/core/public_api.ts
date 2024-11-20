@@ -1,2 +1,2 @@
-export * from './lib/string-template-outlet';
+export * from './lib/string-template';
 export * from './lib/idocument';

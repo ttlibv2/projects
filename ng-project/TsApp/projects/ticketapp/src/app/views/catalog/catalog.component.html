@@ -1,7 +1,7 @@
 <form class="catalog-page grid" [formGroup]="form" (ngSubmit)="loadCatalog()" [style]="{'max-width': '720px'}">
     <p-card>
 
-        <p-fieldset class="col-12">
+        <p-fieldset class="col-12" styleClass="bw-0">
             <div class="grid row-gap-3" formGroupName="all">
                 @for (item of checkboxes; track $index) {
                 <p-checkbox class="col-6 lg:col-4" [label]="item.title" [binary]="true" [formControlName]="item.field" />
@@ -9,15 +9,23 @@
             </div>
         </p-fieldset>
 
-        <div class="col-12 flex justify-content-between">
-            <div class="flex gap-2 align-items-center">
-                <p-button type="submit" label="Tải danh mục" severity="help"
-                    [loading]="asyncLoading" loadingIcon="pi pi-sync"></p-button>
-                <p-checkbox class="select-all ml-2" label="Lấy tất cả" [binary]="true" formControlName="selectAll" />
-            </div>
-            <p-button label="{{'actions.close' | translate }}" severity="warning"
-                (onClick)="closeDialog()" [disabled]="asyncLoading" *ngIf="hasDialog"></p-button>
-        </div>
+        <ng-template pTemplate="title">
+            <span class="font-bold text-size-2">Lấy danh mục:</span>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <ts-toolbar>
+                <ng-template pTemplate="left">
+                        <p-button type="submit" label="Tải danh mục" severity="help" [loading]="asyncLoading"
+                            loadingIcon="pi pi-sync"></p-button>
+                        <p-checkbox class="select-all ml-2" label="Lấy tất cả" [binary]="true" formControlName="selectAll" />
+                </ng-template>
+                <ng-template pTemplate="right" *ngIf="hasDialog">
+                    <p-button label="{{'actions.close' | translate }}" severity="warning" (onClick)="closeDialog()"
+                        [disabled]="asyncLoading" *ngIf="hasDialog"></p-button>
+                </ng-template>
+            </ts-toolbar>
+        </ng-template>
 
     </p-card>
 </form>

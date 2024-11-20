@@ -1,9 +1,9 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 
-$prefix: ".p-button";
+$prefixBtn: ".p-button";
 
-#{$prefix} {
+#{$prefixBtn} {
   color: cfg.$buttonTextColor;
   background: cfg.$buttonBg;
   border: cfg.$buttonBorder;
@@ -14,7 +14,7 @@ $prefix: ".p-button";
   outline-color: transparent;
 
   &:not(:disabled) {
-    &:hover { 
+    &:hover {
       background: cfg.$buttonHoverBg;
       color: cfg.$buttonTextHoverColor;
       border-color: cfg.$buttonHoverBorderColor;
@@ -108,15 +108,15 @@ $prefix: ".p-button";
     margin-right: cfg.$inlineSpacing;
   }
 
-  #{$prefix}-icon-right {
+  #{$prefixBtn}-icon-right {
     margin-left: cfg.$inlineSpacing;
   }
 
-  #{$prefix}-icon-bottom {
+  #{$prefixBtn}-icon-bottom {
     margin-top: cfg.$inlineSpacing;
   }
 
-  #{$prefix}-icon-top {
+  #{$prefixBtn}-icon-top {
     margin-bottom: cfg.$inlineSpacing;
   }
 
@@ -152,23 +152,28 @@ $prefix: ".p-button";
     }
   }
 
-  form.sm &, &-sm {
-    //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleSM);
-    @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleSM);
 
-   // .p-button-icon {
-      //@include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleSM);
-  //  }
-  }
 
-  form.lg &, &-lg {
-    //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleLG);
-    @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleLG);
 
-    //.p-button-icon {
-     // @include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleLG);
-   // }
-  }
+  // form.sm &,
+  // &-sm {
+  //   // @include util.scaledFontSize(cfg.$fontSize, cfg.$scaleSM);
+  //   @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleSM);
+
+  //   // .p-button-icon {
+  //   //@include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleSM);
+  //   //  }
+  // }
+
+  // form.lg &,
+  // &-lg {
+  //   //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleLG);
+  //   @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleLG);
+
+  //   //.p-button-icon {
+  //   // @include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleLG);
+  //   // }
+  // }
 
   &-loading-label-only {
     .p-button-label {
@@ -197,27 +202,9 @@ $prefix: ".p-button";
   }
 }
 
-// .p-fluid {
-//     .p-button {
-//         width: 100%;
-//     }
-
-//     .p-button-icon-only {
-//         width: cfg.$buttonIconOnlyWidth;
-//     }
-
-//     .p-button-group {
-//         display: flex;
-
-//         .p-button {
-//             flex: 1;
-//         }
-//     }
-// }
-
 .p-button.p-button-primary,
-.p-button-group.p-button-primary > .p-button,
-.p-splitbutton.p-button-primary > .p-button{
+.p-button-group.p-button-primary>.p-button,
+.p-splitbutton.p-button-primary>.p-button {
   color: cfg.$primaryButtonTextColor;
   background: cfg.$primaryButtonBg;
   border: cfg.$primaryButtonBorder;
@@ -276,8 +263,8 @@ $prefix: ".p-button";
 }
 
 .p-button.p-button-secondary,
-.p-button-group.p-button-secondary > .p-button,
-.p-splitbutton.p-button-secondary > .p-button {
+.p-button-group.p-button-secondary>.p-button,
+.p-splitbutton.p-button-secondary>.p-button {
   color: cfg.$secondaryButtonTextColor;
   background: cfg.$secondaryButtonBg;
   border: cfg.$secondaryButtonBorder;
@@ -336,8 +323,8 @@ $prefix: ".p-button";
 }
 
 .p-button.p-button-info,
-.p-button-group.p-button-info > .p-button,
-.p-splitbutton.p-button-info > .p-button {
+.p-button-group.p-button-info>.p-button,
+.p-splitbutton.p-button-info>.p-button {
   color: cfg.$infoButtonTextColor;
   background: cfg.$infoButtonBg;
   border: cfg.$infoButtonBorder;
@@ -396,8 +383,8 @@ $prefix: ".p-button";
 }
 
 .p-button.p-button-success,
-.p-button-group.p-button-success > .p-button,
-.p-splitbutton.p-button-success > .p-button {
+.p-button-group.p-button-success>.p-button,
+.p-splitbutton.p-button-success>.p-button {
   color: cfg.$successButtonTextColor;
   background: cfg.$successButtonBg;
   border: cfg.$successButtonBorder;
@@ -456,8 +443,8 @@ $prefix: ".p-button";
 }
 
 .p-button.p-button-warning,
-.p-button-group.p-button-warning > .p-button,
-.p-splitbutton.p-button-warning > .p-button {
+.p-button-group.p-button-warning>.p-button,
+.p-splitbutton.p-button-warning>.p-button {
   color: cfg.$warningButtonTextColor;
   background: cfg.$warningButtonBg;
   border: cfg.$warningButtonBorder;
@@ -516,8 +503,8 @@ $prefix: ".p-button";
 }
 
 .p-button.p-button-help,
-.p-button-group.p-button-help > .p-button,
-.p-splitbutton.p-button-help > .p-button {
+.p-button-group.p-button-help>.p-button,
+.p-splitbutton.p-button-help>.p-button {
   color: cfg.$helpButtonTextColor;
   background: cfg.$helpButtonBg;
   border: cfg.$helpButtonBorder;
@@ -576,8 +563,8 @@ $prefix: ".p-button";
 }
 
 .p-button.p-button-danger,
-.p-button-group.p-button-danger > .p-button,
-.p-splitbutton.p-button-danger > .p-button {
+.p-button-group.p-button-danger>.p-button,
+.p-splitbutton.p-button-danger>.p-button {
   color: cfg.$dangerButtonTextColor;
   background: cfg.$dangerButtonBg;
   border: cfg.$dangerButtonBorder;
@@ -635,10 +622,39 @@ $prefix: ".p-button";
   }
 }
 
+.p-button.p-button-link {
+  color: cfg.$linkButtonColor;
+  background: transparent;
+  border: transparent;
+
+  &:not(:disabled):hover {
+    background: transparent;
+    color: cfg.$linkButtonHoverColor;
+    border-color: transparent;
+
+    .p-button-label {
+      text-decoration: cfg.$linkButtonTextHoverDecoration;
+    }
+  }
+
+  &:not(:disabled):focus {
+    background: transparent;
+    box-shadow: cfg.$linkButtonFocusShadow;
+    border-color: transparent;
+  }
+
+  &:not(:disabled):active {
+    background: transparent;
+    color: cfg.$linkButtonColor;
+    border-color: transparent;
+  }
+}
+
 @if variable-exists(contrastButtonTextColor) {
+
   .p-button.p-button-contrast,
-  .p-button-group.p-button-contrast > .p-button,
-  .p-splitbutton.p-button-contrast > .p-button {
+  .p-button-group.p-button-contrast>.p-button,
+  .p-splitbutton.p-button-contrast>.p-button {
     color: cfg.$contrastButtonTextColor;
     background: cfg.$contrastButtonBg;
     border: cfg.$contrastButtonBorder;
@@ -697,30 +713,33 @@ $prefix: ".p-button";
   }
 }
 
-.p-button.p-button-link {
-  color: cfg.$linkButtonColor;
-  background: transparent;
-  border: transparent;
 
-  &:not(:disabled):hover {
-    background: transparent;
-    color: cfg.$linkButtonHoverColor;
-    border-color: transparent;
+/// button_size
+/// 
 
-    .p-button-label {
-      text-decoration: cfg.$linkButtonTextHoverDecoration;
+// @if variable-exists($name: scales) {
+@each $key, $paddingVal in cfg.$paddingScales {
+
+  %css-#{$key} {
+    //$fontVal: map.get(cfg.$fontScales, $key);
+    //@include util.scaledFontSize(cfg.$fontSize, $fontVal);
+    @include util.scaledPadding(cfg.$buttonPadding, $paddingVal);
+  }
+
+  #{$prefixBtn} {
+
+    &-#{$key} {
+      @extend %css-#{$key};
     }
+
+    form.#{$key} & {
+      @extend %css-#{$key};
+    }
+
+
   }
 
-  &:not(:disabled):focus {
-    background: transparent;
-    box-shadow: cfg.$linkButtonFocusShadow;
-    border-color: transparent;
-  }
 
-  &:not(:disabled):active {
-    background: transparent;
-    color: cfg.$linkButtonColor;
-    border-color: transparent;
-  }
 }
+
+// }

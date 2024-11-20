@@ -1,11 +1,21 @@
 .email-template {
-    max-width: 750px;
+  max-width: 750px;
 
   .p-card-body {
     padding: 0.5rem !important;
   }
 
-  .field-remove {
-    padding-top: 1.75rem !important;
+  .field-remove .p-button {
+    width: 1.8rem;
+    color: #000;
+    height: 100%;
+    top: 1px;
+  }
+
+  @media screen and (max-width: 575.98px) {
+    .ls-field {
+      overflow: scroll;
+      max-height: 21rem;
+    }
   }
 }

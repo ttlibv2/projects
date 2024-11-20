@@ -1,14 +1,14 @@
 <div class="ts-formfield" [ngClass]="fieldClass">
 
     <div class="ts-formfield-title" *ngIf="title || titleTemplate || required">
-        @if(title || titleTemplate) {
-            <ts-label [for]="inputId" [html]="titleTemplate ?? title"/>
+        @if(title || titleTemplate || required) {
+            <ts-label [for]="inputId" [html]="titleTemplate ?? title" [required]="field_required"/>
         }
 
-        @if(required) {
+        <!-- @if(required) {
             <span class="required text-danger bold" 
                 [ngClass]="requiredStyleClass">{{requiredText}}</span>
-        }
+        } -->
     </div>
 
     <div class="ts-formfield-label">
