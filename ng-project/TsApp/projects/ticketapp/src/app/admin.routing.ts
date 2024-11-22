@@ -6,17 +6,17 @@ import { userGuard } from "./guards/auth.guard";
 const appRoutes: Route[] = [
     {
         path: '',
-        //component: AppLayoutComponent,
+        component: AppLayoutComponent,
         canActivate: [userGuard],
         children: [
             {
                 path: 'ticket-list',
                 loadChildren: () => import('./views/ticket-list/ticket-list.module').then(m => m.TicketListModule)
             },
-            // {
-            //     path: 'dashboard',
-            //     loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
-            // },
+            {
+                path: 'dashboard',
+                loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+            },
             {
                 path: 'chanels',
                 loadChildren: () => import('./views/chanel/chanel.module').then(m => m.ChanelModule)
@@ -85,7 +85,7 @@ const appRoutes: Route[] = [
             {
                 path: '**',
                 pathMatch: 'prefix',
-                redirectTo: 'catalog'
+                redirectTo: 'dashboard'
             }
         ]
     }

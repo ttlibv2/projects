@@ -1,6 +1,5 @@
 .layout-topbar {
     position: fixed;
-    top: 0;
     z-index: 999;
     width: 100%;
     height: $topbarHeight;
@@ -9,6 +8,8 @@
     color: var(--topbar-item-text-color);
     background-color: var(--topbar-bg);
     box-shadow: 2px 0 4px -1px #0003, 4px 0 5px #00000024, 1px 0 10px #0000001f;
+    inset: 0 0 0 0;
+    bottom: initial;
     
     ul {
         margin: 0;

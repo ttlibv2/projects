@@ -112,6 +112,7 @@ export class TemplateFormComponent implements OnInit {
     agOption: TableOption = {
         defaultColDef: { suppressHeaderMenuButton: true, },
         rowSelection: 'multiple',
+        sideBar: false,
         onRowSelected: () => this.state.visibleDelete = this.agTable.getSelectedRows().length > 0,
         getRowId: (params: GetRowIdParams<Template>) => `ROWID_${params.data?.template_id}`,
     };

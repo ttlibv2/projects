@@ -22,6 +22,7 @@ import { SplitButtonModule } from 'ts-ui/split-button';
 import { InputGroupModule } from 'ts-ui/input-group';
 import { IconModule } from 'ts-ui/icon';
 import { SharedModule } from 'primeng/api';
+import { Divider } from 'ts-ui/divider';
 
 
 @NgModule({
@@ -52,6 +53,7 @@ import { SharedModule } from 'primeng/api';
     TranslateModule,
     FormLabel,
     FormField,
+    Divider,
     NgIf
   ],
   providers: [

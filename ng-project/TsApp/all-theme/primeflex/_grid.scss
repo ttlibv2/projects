@@ -4,7 +4,6 @@
 
 //.row, .grid
 @include gr.make-grid-row();
-@include gr.make-grid-columns("");
 @include gr.make-breakpoint();
 
 @include bp.media-breakpoint-down(sm) {

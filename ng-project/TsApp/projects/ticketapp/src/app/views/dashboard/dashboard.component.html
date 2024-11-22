@@ -1,5 +1,3 @@
-<div class="grid m-4" [formGroup]="form">
-    <ts-color [disabledAlpha]="false"  [inline]="false" [visibleCopy]="true"
-        [readonly]="true" [focusOpen]="true" (onCopy)="copyColor($event)" formControlName="color"></ts-color>
-
-</div>
+<ts-page-status [status]="503" [title]="'Internal Server Error'"  [style]="{'max-width': '800px'}" [homeUrl]="['/ticket-list']"
+                [description]="'The page you are attempting to reach is currently not available. This may be because the page does not exist or has been moved.'"
+        [header]="'https://angular.pixelstrap.com/endless/assets/images/other-images/sad.png'"></ts-page-status>

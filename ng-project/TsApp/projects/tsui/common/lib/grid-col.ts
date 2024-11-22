@@ -31,6 +31,7 @@ export interface EmbeddedProperty {
     push?: number;
     offset?: number;
     order?: number;
+    hide?: boolean;
 }
 
 
@@ -176,8 +177,11 @@ export class ColDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy
             const sizeVal: string | number | EmbeddedProperty = this[name];
             if (isNumStr(sizeVal)) hostClassMap[`${name}:col-${sizeVal}`] = true;
             else namePrefixes.forEach(prefix => {
+                const sizeVal2 = sizeVal[prefix];
                 const cls = prefix === 'span' ? '-' : `-${prefix}-`;
-                hostClassMap[`${name}:col${cls}${sizeVal[prefix]}`] = notNull(sizeVal[prefix]);
+               
+                // col-hide
+                hostClassMap[`${name}:col${cls}${sizeVal2}`] = notNull(sizeVal[prefix]);
             })
         });
 

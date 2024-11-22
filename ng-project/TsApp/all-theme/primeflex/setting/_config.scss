@@ -18,6 +18,8 @@ $spacers: (
         9: $spacer * 4,
 ) !default;
 
+$gutters: $spacers;
+
 // -- Grid
 $grid-breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px, xxl: 1400px, x2l: 1400px, x3l: 1600px) !default;
 

@@ -1,24 +1,22 @@
 import { CommonModule } from "@angular/common";
 import { AfterContentInit, booleanAttribute, Component, ContentChildren, Input, QueryList, TemplateRef, ViewEncapsulation } from "@angular/core";
 import { PrimeTemplate } from "primeng/api";
-import { Breakpoint, QueryUtil } from "ts-ui/common";
+import {  QueryUtil } from "ts-ui/common";
 import { FormLabel } from "./form-label";
 import { Objects } from "ts-ui/helper";
+import {PropCls} from "ts-ui/common";
 const { isTemplateRef, isFalse, notBlank } = Objects;
 
-type PropCls = { [kclass: string]: boolean };
-
-
 @Component({
-    selector: 'ts-form-field',
     standalone: true,
+    selector: 'ts-form-field',
     imports: [CommonModule, FormLabel],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './form-field.html'
 })
 export class FormField implements AfterContentInit {
     @Input() inputId: string;
-    @Input() fieldClass: { [kclass: string]: any };
+    @Input() fieldClass: PropCls;
     @Input() title: string | TemplateRef<any>;
 
     /**
@@ -66,6 +64,12 @@ export class FormField implements AfterContentInit {
 
     get titleIsString(): boolean {
         return !isTemplateRef(this.title);
+    }
+
+    get fieldCls(): any {
+        return {
+            ...this.fieldClass
+        };
     }
 
     //--------

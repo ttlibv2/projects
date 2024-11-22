@@ -919,6 +919,7 @@ $dividerColor: $borderColor!default;
 $dividerStyle: solid !default;
 $divider-text-padding: 1em;
 $divider-orientation-margin: 5%;
+$divider-vertical-height: 1.5rem!default;
 
 
 //avatar
@@ -986,3 +987,21 @@ $imagePreviewActionIconWidth: 3rem !default;
 $imagePreviewActionIconHeight: 3rem !default;
 $imagePreviewActionIconFontSize: 1.5rem !default;
 $imagePreviewActionIconBorderRadius: 50% !default;
+
+//status-error
+$status-error-family: work-Sans, sans-serif!default;
+$status-error-color: linear-gradient(to right, #29d155 0%, #1b8d39 51%, #29d155 100%)!default;
+$status-error-gap: 1rem!default;
+$status-error-number-size: 17rem !default;
+$status-error-number-weight: 700!default;
+$status-error-summary-size: 1.5rem!default;
+$status-error-back-home-size: 1.6rem !default;
+$status-error-back-home-padding:  .56rem 1.2rem !default;
+$status-error-s400: linear-gradient(to right, #2990ff 0%, #0067d6 51%, #2990ff 100%)!default;
+$status-error-s401: linear-gradient(to right, #ffb469 0%, #ff8a17 51%, #ffb469 100%)!default;
+$status-error-s403: linear-gradient(to right, #29d155 0%, #1b8d39 51%, #29d155 100%) !default;
+$status-error-s404: linear-gradient(to right, #ff7c92 0%, #ff2a4e 51%, #ff7c92 100%)!default;
+$status-error-s500: linear-gradient(to right, #6a85f5 0%, #1e47ef 51%, #6a85f5 100%) !default;
+
+$status-error-s503: linear-gradient(to right, #44b5ef 0%, #128fd0 51%, #44b5ef 100%) !default;
+$status-error-hover-s503:linear-gradient(to right, #44b5ef 0%, #128fd0 51%, #44b5ef 100%)!default;

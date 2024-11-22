@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ContentChildren, ElementRef, EventEmitter, Input, Output, QueryList, TemplateRef, ViewChild, ViewEncapsulation, booleanAttribute, numberAttribute, signal } from '@angular/core';
-import { MenuItem, OverlayModeType, PrimeTemplate, TooltipOptions } from 'primeng/api';
+import { MenuItem, OverlayModeType, OverlayOptions, PrimeTemplate, TooltipOptions } from 'primeng/api';
 import { TieredMenu } from 'primeng/tieredmenu';
 import { UniqueComponentId } from 'primeng/utils';
 import { ButtonProps, MenuButtonProps } from './splitbutton.interface';
@@ -124,7 +124,7 @@ export class SplitButton {
      *  Target element to attach the overlay, valid values are "body" or a local ng-template variable of another element (note: use binding with brackets for template variables, e.g. [appendTo]="mydiv" for a div element having #mydiv as variable name).
      * @group Props
      */
-    @Input() appendTo: HTMLElement | ElementRef | TemplateRef<any> | string | null | undefined | any;
+    @Input() appendTo: HTMLElement | ElementRef | TemplateRef<any> | string | null | undefined | any ='body';
     /**
      * Indicates the direction of the element.
      * @group Props
@@ -154,8 +154,7 @@ export class SplitButton {
      */
     @Input() menuButtonProps: MenuButtonProps | undefined;
 
-    @Input() mode: OverlayModeType = 'overlay';
-
+    @Input() overlayOptions: OverlayOptions;
 
     /**
      * When present, it specifies that the component should automatically get focus on load.

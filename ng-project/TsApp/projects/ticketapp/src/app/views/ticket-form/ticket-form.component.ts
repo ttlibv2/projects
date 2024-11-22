@@ -41,7 +41,7 @@ import { InputOption, SearchData as SearchUserData } from "../find-partner/partn
 import { Platform } from "@angular/cdk/platform";
 const { notNull, notEmpty, isEmpty, isBlank, isNull, notBlank, isTrue, isFalse } = Objects;
 
-export type TicketState = 'add' | 'update' | 'delete';
+export type TicketState = 'add' | 'update' | 'delete' | undefined;
 
 export interface State {
   assign?: boolean;
@@ -58,14 +58,17 @@ export interface OptionLabel {
   command?: (event: any) => void;
 }
 
-export interface SaveTicketEvent {
+interface TicketEvent {
   ticket: Partial<Ticket>;
   state: TicketState;
 }
 
-export interface DeleteTicketEvent {
-  ticket: Partial<Ticket>;
-  state: TicketState;
+export interface SaveTicketEvent extends TicketEvent {
+  state: 'add' | 'update';
+}
+
+export interface DeleteTicketEvent extends TicketEvent {
+  state: 'delete';
   result: any;
 }
 
@@ -334,6 +337,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
         const cateRef = this.modal.open(CatalogComponent, {
           header: 'Danh mục cần lấy ?',
+          closable: false,
          // width: '700px',
           data: { 
             templateCode: ['ticket_template', 'email_template'], 
@@ -832,10 +836,11 @@ export class TicketFormComponent implements OnInit, OnDestroy {
 
   clickViewAll(checked: boolean): void {}
 
-  demo1234444() {
-    this.testTitle = 'testTitle';
+  formCls(): any {
+    return {
+      [`template`]: this.viewTemplate,
+      [`is-email-ticket`]: this.utils.is_email_ticket
+    }
   }
-
-  testTitle: string;
 
 }

@@ -3,12 +3,11 @@ import { TranslateLoader, TranslateModuleConfig } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ToastConfig } from "ts-ui/toast";
-import { inject } from "@angular/core";
-import { Platform } from "@angular/cdk/platform";
+import { RouterLink } from "@angular/router";
 
 export const routerUrl = {
-    signinUrl: '/auth/signin',
-    signupUrl: '/auth/signup',
+    signinUrl: '/signin',
+    signupUrl: '/signup',
     template: '/templates',
     form_ticket: '/ticket-form',
 };
@@ -32,14 +31,15 @@ export const AgTemplateCode = {
     agTicket: 'ticket_list'
 };
 
+
 export const layoutConfig: LayoutConfig = {
-    visibleTopBar: false,
-    visibleSideBar: false,
+    visibleTopBar: true,
+    visibleSideBar: true,
     visibleConfig: false,
-    appLogo: 'assets/images/logo-dark.svg',
-    appName: 'ConYeu.Vn',
+    appLogo: '', // assets/images/logo-dark.svg
+    appName: '', // ConYeu.Vn
     menuTheme: 'light',
-    menuMode: 'slim',
+    menuMode: 'overlay',
     theme: 'aura-light',
     colorScheme: 'lime',
     themeUrlPrefix: '',
@@ -64,30 +64,60 @@ export const layoutConfig: LayoutConfig = {
         }
     },
 
-    // listMenu2: [
-    //   {
-    //    label: 'Danh mục',
-    //    items: [
-    //       {label: 'Kênh - Tình trạng', icon: 'pi pi-address-book', routerLink: '/admin/chanels'},
-    //       {label: 'Nhóm Phần mềm', icon: 'pi pi-android', routerLink: '/admin/softwares'},
-    //       {label: 'Nhóm hỗ trợ', icon: 'pi pi-bookmark-fill', routerLink: '/admin/group-helps'},
-    //       {label: 'Nội dung mẫu', icon: 'pi pi-chart-bar', routerLink: '/admin/questions'},
-    //       {label: 'Danh mục TS', items: [
-    //         {label: 'Support Team'},
-    //         {label: 'Phân công cho'},
-    //         {label: 'Ticket Subject Type'},
-    //         {label: 'Replied Status'},
-    //         {label: 'Danh mục'},
-    //         {label: 'Danh mục phụ'},
-    //         {label: 'Team Head'},
-    //         {label: 'Loại yêu cầu hỗ trợ'},
-    //         {label: 'Độ ưu tiên'},
-    //         {label: 'Thẻ -- Tags'},
-    //       ]}
-    //    ]
-    //  },
-
-    // ]
+    listMenu: [
+        {
+            label: 'Ticket', icon: 'pi pi-ticket', items: [
+                {
+                    label: 'Quản lý vé',
+                    icon: 'pi pi-ticket',
+                    routerLink: ['/ticket-list'],
+                    queryParams: { visible: false }
+                },
+                { label: 'Thêm mới vé', icon: 'pi pi-ticket', routerLink: ['/ticket-form'] },
+                {
+                    label: 'Quản lý email mẫu',
+                    icon: 'pi pi-ticket',
+                    routerLink: ['/templates'],
+                    queryParams: { thread: 'email_template' }
+                },
+                {
+                    label: 'Quản lý dl mẫu',
+                    icon: 'pi pi-ticket',
+                    routerLink: ['/templates'],
+                    queryParams: { thread: 'ticket_template' }
+                },
+                { label: 'Quản lý lịch sử', icon: 'pi pi-ticket', routerLink: ['/ticket-history'] },
+                { label: 'Quản lý tệp đính kèm', icon: 'pi pi-ticket', routerLink: ['/ticket-file'] },
+                { label: 'Quản lý khách hàng', icon: 'pi pi-ticket', routerLink: ['/ticket-customer'] },
+            ]
+        },
+        {
+            label: 'Templates', icon: 'pi pi-ticket', items: [
+                { label: 'Quản lý mẫu', icon: 'pi pi-ticket', routerLink: ['/templates'] },
+            ]
+        },
+        {
+            label: 'Danh mục', icon: 'pi pi-ticket', expanded: false, items: [
+                { label: 'Kênh - Tình trạng', icon: 'pi pi-ticket', routerLink: ['/chanel'] },
+                { label: 'Nhóm phần mềm', icon: 'pi pi-ticket', routerLink: ['/software'] },
+                { label: 'Nhóm câu hỏi', icon: 'pi pi-ticket', routerLink: ['/question'] },
+                { label: 'Nhóm hỗ trợ', icon: 'pi pi-ticket', routerLink: ['/ghelp'] },
+            ]
+        },
+        {
+            label: '[TS] Danh mục', icon: 'pi pi-ticket', items: [
+                { label: 'Support Team', icon: 'pi pi-ticket', routerLink: ['/ts-steam'] },
+                { label: 'Danh mục', icon: 'pi pi-ticket', routerLink: ['/ts-category'] },
+                { label: 'Danh mục phụ', icon: 'pi pi-ticket', routerLink: ['/ts-sub-category'] },
+                { label: 'Ticket type', icon: 'pi pi-ticket', routerLink: ['/ts-ticket-type'] },
+                { label: 'Ticket Subject Type', icon: 'pi pi-ticket', routerLink: ['/ts-ticket-subject-type'] },
+                { label: 'Replied Status', icon: 'pi pi-ticket', routerLink: ['/ts-replied-status'] },
+                { label: 'Độ ưu tiên', icon: 'pi pi-ticket', routerLink: ['/ts-priority'] },
+                { label: 'Thẻ -- Tags', icon: 'pi pi-ticket', routerLink: ['/ts-tag'] },
+                { label: 'Team Head', icon: 'pi pi-ticket', routerLink: ['/ts-team-head'] },
+            ]
+        }
+    ]
 };
 
 //const position = !!inject(Platform).ANDROID ? 'bottom-right' : undefined;

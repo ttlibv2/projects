@@ -1,12 +1,12 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { PrimeNGConfig } from "primeng/api";
+import { Component, computed, HostListener, inject, OnInit, Signal, signal, ViewChild } from '@angular/core';
+import { OverlayOptions, PrimeNGConfig } from "primeng/api";
 import { TranslateService } from "@ngx-translate/core";
 import { LayoutService } from 'ts-ui/app-layout';
 import { Platform } from '@angular/cdk/platform';
 import { ToastService } from 'ts-ui/toast';
 import { toastConfig } from './constant';
 import { DOCUMENT } from '@angular/common';
-import { DomHandler } from 'primeng/dom';
+import { DomHandler } from 'ts-ui/core';
 
 @Component({
   selector: 'ts-root',
@@ -19,6 +19,7 @@ import { DomHandler } from 'primeng/dom';
 })
 export class AppComponent implements OnInit {
   document = inject(DOCUMENT);
+  windowWidth = signal<number>(0);
 
   constructor(
     private platform: Platform,
@@ -26,6 +27,11 @@ export class AppComponent implements OnInit {
     private primengConfig: PrimeNGConfig,
     private layoutService: LayoutService,
     private translateService: TranslateService) {
+  }
+
+  @HostListener('window:resize', ['$event'])
+  private onWindowResize(event: any) {
+    this.windowWidth.set(window.innerWidth);
   }
 
   ngOnInit() {
@@ -37,7 +43,28 @@ export class AppComponent implements OnInit {
     }
 
     this.layoutService.tryAddTheme();
+
+    //primengConfig
     this.primengConfig.ripple = true;
+    this.primengConfig.overlayOptions = this.computedOverlayOption();
+
+
+
     this.translateService.get('primeng').subscribe(s => this.primengConfig.setTranslation(s));
+  }
+
+  private get isMobile(): boolean {
+    return this.windowWidth() <= 575.98;
+  }
+
+  private get computedOverlayOption(): Signal<OverlayOptions> {
+    return computed(() => {
+      const appendTo = this.isMobile ? 'body' : undefined;
+      const options: OverlayOptions = {
+        appendTo,
+        onShow: evt => DomHandler.alignOverlay(evt.overlay, evt.target, appendTo)
+      };
+      return options;
+    });
   }
 }

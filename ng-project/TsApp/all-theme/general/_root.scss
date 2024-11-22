@@ -25,7 +25,7 @@ $primaryColor: clr.$primary;
   --maskbg: #{cfg.$maskBg};
   --highlight-bg: #{cfg.$highlightBg};
   --highlight-text-color: #{cfg.$highlightTextColor};
-  --p-anchor-gutter: 2px;
+  --p-anchor-gutter: 3px;
   --p-focus-ring-color: var(--primary-color);
 
   color-scheme: cfg.$colorSchema;

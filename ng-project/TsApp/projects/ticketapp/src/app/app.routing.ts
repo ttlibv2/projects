@@ -3,20 +3,16 @@ import { Route, RouterModule } from '@angular/router';
 
 const appRoutes: Route[] = [
     {
-        path: 'auth/signin',
+        path: 'signin',
         loadChildren: () => import('./views/signin/signin.module').then(m => m.SigninModule)
     },
     {
-        path: 'auth/signup',
+        path: 'signup',
         loadChildren: () => import('./views/signup/signup.module').then(m => m.SignupModule)
     },
     {
         path: 'not-found',
         loadChildren: () => import('./views/error/error.module').then(m => m.ErrorModule)
-    },
-    {
-        path: 'dashboard',
-        loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
     },
     {
         path: '',
@@ -25,7 +21,7 @@ const appRoutes: Route[] = [
     {
         path: '**',
         pathMatch: 'full',
-        redirectTo: 'dashboard'
+        redirectTo: 'not-found'
     }
 ];
 

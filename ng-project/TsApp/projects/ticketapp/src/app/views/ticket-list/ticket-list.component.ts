@@ -1,9 +1,9 @@
-import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, HostListener, Inject, Input, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, computed, HostListener, Inject, Input, OnInit, signal, Signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoggerService } from 'ts-ui/logger';
 import { AgTable as Table, TableOption } from 'ts-ui/ag-table';
 import { Ticket } from '../../models/ticket';
 import { Validators } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, OverlayOptions } from 'primeng/api';
 import { ToastService } from 'ts-ui/toast';
 import { AgTableService } from '../../services/ag-table.service';
 import { TicketService } from '../../services/ticket.service';
@@ -13,7 +13,7 @@ import { TagRemoveEvent } from 'ts-ui/tag';
 import { AgTable } from '../../models/ag-table';
 import { AgTableTemplate } from './ag-table-template';
 import { RxjsUtil } from '../shared/rxjs-util';
-import { SaveTicketEvent } from '../ticket-form/ticket-form.component';
+import { DeleteTicketEvent, SaveTicketEvent } from '../ticket-form/ticket-form.component';
 import {
   catchError,
   concatMap,
@@ -104,7 +104,7 @@ export class TicketListComponent implements OnInit, AfterContentInit {
 
 
   searchOptions: SearchOption[] = [
-    { label: '1. Tất cả', code: 'all', value: null },
+    { label: '1. Lấy tất cả', code: 'all', value: null },
     { label: '2. Đã gửi ticket', code: 'is_send', value: true },
     { label: '3. Đã thêm ghi chú', code: 'is_note', value: true },
     { label: '4. Đã gửi đính kèm', code: 'is_attach', value: true },
@@ -125,7 +125,7 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   ];
 
   toolOptions: MenuItem[] = [
-    { label: 'Xóa ticket', icon: 'pi pi-trash', command: evt => this.deleteTicket() },
+    { label: 'Xóa ticket', icon: 'pi pi-trash', command: evt => this.deleteMoreTicket() },
     { label: 'Tự động sửa', icon: 'pi pi-user-edit' },
     { label: 'Tạo / Cập nhật mẫu', icon: 'pi pi-sync', command: this.editAgTemple.bind(this) },
     { label: 'Gửi báo cáo', icon: 'pi pi-flag' },
@@ -141,12 +141,21 @@ export class TicketListComponent implements OnInit, AfterContentInit {
     { label: '6. Theo dõi và đóng ticket', code: 'close_ticket', icon: 'fa-regular fa-lock', command: this.onSendHelpdesk.bind(this) }
   ];
 
+  windowWidth = signal<number>(window.innerWidth);
+
+  overlayOptions: Signal<OverlayOptions> = computed(() => ({
+    //mode: this.windowWidth() <= 575 ? 'modal' : 'overlay',
+    //appendTo: 'body'
+  }));
+
 
   @ViewChild(Table, { static: true })
   agTable: Table<Partial<Ticket>>;
 
   @ViewChild(FileUpload)
   fileUpload: FileUpload;
+
+ 
 
   @Input({ alias: 'visible', transform: (v:any) => booleanAttribute(v, true) })
   set visibleForm(bool: boolean) {
@@ -564,7 +573,7 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   }
 
 
-  deleteTicket(): void {
+  deleteMoreTicket(): void {
 
     //this.agTable.tableApi.getSelectedNodes().sort((n1, n2) => n1.rowIndex - n2.rowIndex);
 
@@ -640,6 +649,10 @@ export class TicketListComponent implements OnInit, AfterContentInit {
     const clientHeight = this.document.documentElement.clientHeight;
     const posAg = r.offsetTop + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
     this.tableHeight = (clientHeight - posAg) + 'px';
+  }
+
+  deleteTicket(event: DeleteTicketEvent): void {
+    this.agTable.saveRow(event.ticket, event.state);
   }
 
   saveTicket(event: SaveTicketEvent): void {

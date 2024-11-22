@@ -1,6 +1,6 @@
 {
-  "editor.fontSize": 14,
-  "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+  "editor.fontSize": 15,
+  "editor.fontFamily": "'Droid Sans Mono', 'JetBrains Mono', Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
   "editor.smoothScrolling": true,
   "files.autoSave": "off",
@@ -14,5 +14,12 @@
   "angular.forceStrictTemplates": true,
   "html.format.indentHandlebars": true,
   "html.format.indentInnerHtml": true,
-  "html.format.templating": true
+  "html.format.templating": true,
+  "workbench.colorCustomizations": {
+    "[Bearded Theme Black & Diamond1]": {
+      "activityBar.background": "#fff",
+      "menu.background": "#fff",
+      "sideBar.background": "#fff"
+    }
+  }
 }

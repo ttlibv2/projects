@@ -1,5 +1,5 @@
 import { AbstractControl, FormGroup as NgxFormGroup, ValidationErrors, ɵFormGroupRawValue, ɵGetProperty, ɵTypedOrUntyped } from "@angular/forms";
-import { AsyncValidator, ValidatorOrOpts } from "./forms.common";
+import { AsyncValidator, ValidatorOrOpts } from "./form-common";
 import { BiConsumer, Consumer, Objects } from "ts-ui/helper";
 import { debounceTime, distinctUntilChanged, filter, Subject, takeUntil } from "rxjs";
 

@@ -37,8 +37,9 @@ export class AppLayoutModule {
         return {
             ngModule: AppLayoutModule,
             providers: [
+                LayoutService, MenuService, StyleManager,
                 {provide: LAYOUT_CONFIG, useValue: newConfig},
-                LayoutService, MenuService, StyleManager
+                
             ],
         };
     }

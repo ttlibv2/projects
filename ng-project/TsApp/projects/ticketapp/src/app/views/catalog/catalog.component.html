@@ -15,12 +15,12 @@
 
         <ng-template pTemplate="footer">
             <ts-toolbar>
-                <ng-template pTemplate="left">
-                        <p-button type="submit" label="Tải danh mục" severity="help" [loading]="asyncLoading"
-                            loadingIcon="pi pi-sync"></p-button>
-                        <p-checkbox class="select-all ml-2" label="Lấy tất cả" [binary]="true" formControlName="selectAll" />
+                <ng-template pTemplate="left">                       
+                        <p-checkbox class="select-all" label="Lấy tất cả" [binary]="true" formControlName="selectAll" />
                 </ng-template>
-                <ng-template pTemplate="right" *ngIf="hasDialog">
+                <ng-template pTemplate="right">
+                    <p-button type="submit" label="Tải danh mục" severity="help" [loading]="asyncLoading"
+                        loadingIcon="pi pi-sync"></p-button>
                     <p-button label="{{'actions.close' | translate }}" severity="warning" (onClick)="closeDialog()"
                         [disabled]="asyncLoading" *ngIf="hasDialog"></p-button>
                 </ng-template>

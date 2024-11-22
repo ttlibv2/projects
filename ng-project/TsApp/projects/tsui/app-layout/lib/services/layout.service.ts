@@ -25,7 +25,7 @@ export const defaultLayoutConfig: LayoutConfig = {
   themeUrlPrefix: "",
 };
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class LayoutService {
   private _configUpdate = new Subject<LayoutConfig>();
   private _overlayOpen = new Subject<any>();

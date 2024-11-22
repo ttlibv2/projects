@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, inject, Input, OnInit } from "@angular/core";
 import { LayoutService } from "../services/layout.service";
 import { MenuService } from "../services/menu.service";
 import {
@@ -35,7 +35,7 @@ export class AppConfigComponent implements OnInit {
   @Input() topbarThemes: TopbarThemeLabel[] = allTopbarThemeLabel;
 
   //--
-  allTheme: Record<string, ThemeInfo> = this.config.listTheme ?? {};
+  allTheme: Record<string, ThemeInfo> ;//= this.config.listTheme ?? {};
 
   private get state(): LayoutState {
     return this.layoutService.state;
@@ -162,13 +162,12 @@ export class AppConfigComponent implements OnInit {
     return this.scale === this.scales[this.scales.length-1];
   }
 
-
-  constructor(
-    public layoutService: LayoutService,
-    public menuService: MenuService
-  ) {}
+  public layoutService = inject(LayoutService);
+  public menuService = inject(MenuService);
 
   ngOnInit(): void {
+    this.allTheme = this.config.listTheme ?? {};
+
     this.layoutService.tryAddTheme();
 
     if(isNull(this.theme)) {

@@ -1,5 +1,5 @@
-<form [formGroup]="form" (ngSubmit)="saveTicket()" class="grid sm ticket-form" [ngClass]="{template: viewTemplate}">
-    <p-card class="sm:col-12 lg:col-7 col-left">
+<form [formGroup]="form" (ngSubmit)="saveTicket()" class="grid sm ticket-form" [ngClass]="formCls()" >
+    <p-card class="col-12 col-order-2 lg:col-order-1 lg:col-7 col-left">
         <p-fieldset legend="-- Thông tin chung --">
             <div class="grid">
                 <ts-form-field class="p-fluid" inputId="chanels" title="Kênh - Tình trạng" [required]="true" [span]="12"
@@ -186,12 +186,12 @@
         }
         <!-- END: email ticket info -->
     </p-card>
-    <p-card class="sm:col-12 lg:col-5 col-right">
+    <p-card class="col-12 col-order-1 lg:col-order-2 lg:col-5 col-right">
 
         @if (!viewTemplate) {
         <p-fieldset legend="{{'ticket.h1_support'|translate}}">
             <div class="grid">
-                <ts-form-field class="p-fluid col-12">
+                <ts-form-field class="p-fluid col-12 f-email-ticket">
                     <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
                     <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
                         placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
@@ -252,7 +252,7 @@
     </p-card>
 
     <!-- BEGIN: form_tool -->
-    <div class="col-12 flex flex-wrap gap-2 align-items-center mt-3 form-tool" >
+    <div class="col-12 col-order-3 lg:col-order-3 flex-wrap-center gap-2 mt-3 form-tool" >
         @if (state.visibleToolImport && idata) {
 
         <div class="r-import flex gap-2 align-items-center ">
@@ -312,12 +312,12 @@
             *ngIf="visibleResult"></p-button>
 
         <!-- <p-button icon="pi pi-clone" (click)="copyTicket()" label="{{'ticket.copy' | translate}}"></p-button> -->
-        
-        <p-divider [layout]="'vertical'"></p-divider>
+        <!-- <p-divider [layout]="'vertical'"></p-divider> -->
+
         <p-button severity="danger" icon="pi pi-folder-plus" (onClick)="deleteTicket()"
             label="{{'actions.delete_ticket' | translate}}" *ngIf="isEditTicket"></p-button>
 
-        <ts-splitButton label="{{'ticket.other' | translate}}" severity="info"
+        <ts-splitButton icon="pi pi-ellipsis-h" iconPos="right" label="{{'ticket.other' | translate}}" severity="help"
             [model]="toolActions" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
         }
         @else {

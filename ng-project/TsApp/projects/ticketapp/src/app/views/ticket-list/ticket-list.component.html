@@ -1,53 +1,48 @@
-<div *ngIf="visibleForm" class="ticket-form" id="ticketListForm" [@toggle]="visibleForm == true" (@toggle.done)="endAnimationForm()">
-    <ts-ticket-form [formData]="currentTicket" 
-        (onDelete)="saveTicket($event)"
+<div *ngIf="visibleForm" class="ticket-form" id="ticketListForm" [@toggle]="visibleForm == true"
+    (@toggle.done)="endAnimationForm()">
+    <ts-ticket-form [formData]="currentTicket" (onDelete)="deleteTicket($event)"
         (onSave)="saveTicket($event)"></ts-ticket-form>
 </div>
 
 <div class="ticket-list grid mt-1">
     <p-divider id="r-divider" class="r-divider col-12" *ngIf="visibleForm"></p-divider>
-    <div id="ticketListTool" class="tool-r1 col-12 flex flex-inline gap-2">
-        <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="flex align-items-center gap-2 sm">
-            <p-calendar placeholder="Lấy dữ liệu từ ngày ?" selectionMode="range" showIcon="true" iconDisplay="input"
-                dateFormat="yy-mm-dd" [numberOfMonths]="2" formControlName="dateOn" showButtonBar="true"
-                [style]="{width: '210px'}"></p-calendar>
+    <div id="ticketListTool" class="tool-r1 col-12">
+        <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="grid sm sm:gap-2 sm:grx-0">
+            <p-calendar class="p-col-dateon sm:col-auto sm:col-order-1" placeholder="Lấy dữ liệu từ ngày ?" selectionMode="range" showIcon="true"
+                iconDisplay="input" dateFormat="yy-mm-dd" [numberOfMonths]="1" formControlName="dateOn"
+                showButtonBar="true"></p-calendar>
 
-            <p-dropdown placeholder="Tùy chọn" formControlName="option" [options]="searchOptions" optionLabel="label"
-                filter="false">
+            <p-dropdown class="p-col-option sm:col-auto sm:col-order-2" placeholder="Tùy chọn" formControlName="option" [options]="searchOptions"
+                optionLabel="label" filter="false" [overlayOptions]="overlayOptions()">
             </p-dropdown>
 
-            <p-button severity="help" icon="pi pi-sync" [loading]="asyncSearch" loadingIcon="pi pi-sync" type="submit"
-                label="Lấy dữ liệu"></p-button>
+            <p-button class="p-col-search sm:col-auto sm:col-order-3" severity="help" icon="pi pi-sync" [loading]="asyncSearch"
+                loadingIcon="pi pi-sync" type="submit" label="Lấy dữ liệu"></p-button>
 
-            <p-divider [layout]="'vertical'"></p-divider>
-
-
-            <ts-splitButton label="Nạp / Xuất DL" [model]="excelItems" [visibleMenuButton]="false"
-                [menuTrigger]="'hover'"  icon="pi pi-file-excel"
-                (onClick)="exportXsl()"></ts-splitButton>
-
-            <ts-splitButton label="Danh sách mẫu" [model]="agTemplates" [visibleMenuButton]="false"
-                [menuTrigger]="'hover'"  icon="pi pi-list"></ts-splitButton>
-
-            <ts-splitButton label="Báo cáo" [model]="reportItems" [visibleMenuButton]="false" [menuTrigger]="'hover'"
-                 icon="pi pi-flag" *ngIf="visibleReportMenu"></ts-splitButton>
+            <ts-splitButton class="p-col-send sm:col-auto sm:col-order-6" label="Báo cáo" [model]="reportItems" [visibleMenuButton]="false"
+                [menuTrigger]="'hover'" icon="pi pi-flag" *ngIf="visibleReportMenu || true"></ts-splitButton>
 
             <ts-splitButton label="Khác" [model]="toolOptions" [visibleMenuButton]="false" [menuTrigger]="'hover'"
-                 icon="pi pi-flag">
-            </ts-splitButton>
+                icon="pi pi-flag" class="p-col-tool sm:col-auto sm:col-order-7" />
 
-            <p-button label="Demo"  (onClick)="demo()"></p-button>
+            <ts-splitButton class="p-col-excel sm:col-auto sm:col-order-4" label="Nạp / Xuất DL" [model]="excelItems" [visibleMenuButton]="false"
+                [menuTrigger]="'hover'" icon="pi pi-file-excel" (onClick)="exportXsl()"></ts-splitButton>
 
-            <p-divider [layout]="'vertical'"></p-divider>
-            <p-checkbox [binary]="true" label="Hiển thị kênh" formControlName="visibleChanel"></p-checkbox>
-            <p-checkbox [binary]="true" label="Hiển thị form" formControlName="visibleForm" (onChange)="changeVisibleForm($event.checked)"></p-checkbox>
+            <ts-splitButton class="p-col-ag sm:col-auto sm:col-order-5" label="Danh sách mẫu" [model]="agTemplates" [visibleMenuButton]="false"
+                [menuTrigger]="'hover'" icon="pi pi-list"></ts-splitButton>
 
-            <p-divider [layout]="'vertical'"></p-divider>
+            <p-checkbox [binary]="true" label="Hiển thị kênh" formControlName="visibleChanel"
+                class="p-col-chk-chanel sm:col-auto sm:col-order-8"></p-checkbox>
+                
+            <p-checkbox [binary]="true" label="Hiển thị form" formControlName="visibleForm"
+                (onChange)="changeVisibleForm($event.checked)" class="p-col-chk-visible sm:col-auto sm:col-order-9"></p-checkbox>
 
-            <div class="flex gap-2 align-items-center font-bold">
+            <div class="flex-wrap-center gap-2 font-bold p-col-total sm:col-auto sm:col-order-10">
                 <label>Tổng số: </label>
                 <label class="text-danger">{{totalRow}}</label>
             </div>
+
+
         </form>
     </div>
     <div id="ticketListReportTool" class="col-12 tool-r2" *ngIf="visibleReportMenu">

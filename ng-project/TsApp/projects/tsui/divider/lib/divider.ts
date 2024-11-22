@@ -1,9 +1,6 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, Input, OnChanges, Renderer2, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, Component, ElementRef, Input, TemplateRef, ViewChild, ViewEncapsulation} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {PropCls} from "ts-ui/common";
-import {DomHandler} from "primeng/dom";
-import {Objects} from "ts-ui/helper";
-const {isNull} = Objects;
 
 export const dividerPrefix = 'ts-divider';
 
@@ -59,7 +56,7 @@ export class Divider {
    * width | height line
    * @group Props
    */
-  @Input() size: string = '1px';
+  @Input() size: string = '2px';
   /**
    * color line
    * @group Props
@@ -67,8 +64,6 @@ export class Divider {
   @Input() color: string;
 
   @Input() text: string | TemplateRef<any>;
-
-  private renderer = inject(Renderer2);
 
   @ViewChild('container', {static: true})
   container: ElementRef<HTMLElement>;
