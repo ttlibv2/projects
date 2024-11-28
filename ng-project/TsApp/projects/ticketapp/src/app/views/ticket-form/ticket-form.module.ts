@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { TicketFormRoutingModule } from './ticket-form-routing.module';
 import { TicketFormComponent } from './ticket-form.component';
-import { CardModule } from "primeng/card";
 import { MultiSelectModule } from "primeng/multiselect";
 import { DropdownModule } from "primeng/dropdown";
 import { InputTextModule } from "primeng/inputtext";
@@ -31,6 +30,7 @@ import { FormsModule, FormField, FormLabel } from 'ts-ui/forms';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ToolBar } from 'ts-ui/toolbar';
 import { ColDirective } from 'ts-ui/common';
+import { Card } from 'ts-ui/card';
 
 
 @NgModule({
@@ -42,7 +42,7 @@ import { ColDirective } from 'ts-ui/common';
     CommonModule,
     FormsModule,
     TicketFormRoutingModule,
-    CardModule,
+    Card,
     MultiSelectModule,
     ToolBar,
     DropdownModule,

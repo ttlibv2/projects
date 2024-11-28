@@ -92,7 +92,7 @@ export class ClientService {
    * Handler error client
    * */
   protected handlerError(err: any, url: string, showError: boolean = true): Observable<any> {
-    let object: ToastMessage = {};
+    let object: any = {};
     let alertType: 'toast' | 'modal' = 'toast';
     let errorCode: string = 'undefined';
 
@@ -105,6 +105,7 @@ export class ClientService {
       errorCode = error?.code;
       object.message = error?.summary;
       object.title = 'Thông báo !!';
+      object.url = url;
 
       if(err.status === 0) {
         errorCode = 'e_server';//'disconnect';

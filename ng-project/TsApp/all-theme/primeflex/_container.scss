@@ -1,8 +1,8 @@
 @use "mixins/breakpoints" as bp;
-@use 'setting/config' as cfg;
+@use "../setting/layout-config" as cfg;
 @use 'mixins/container' as c;
 
-
+$prefix: cfg.$prefix;
 $max-widths: cfg.$container-max-widths;
 $breakpoints: cfg.$grid-breakpoints;
 

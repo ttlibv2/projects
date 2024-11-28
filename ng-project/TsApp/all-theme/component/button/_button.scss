@@ -1,28 +1,28 @@
-@use "../../setting/config" as cfg;
-@use "../../setting/mixins" as util;
+@use "../../setting/config"as cfg;
+@use "../../setting/mixins"as util;
 
 $prefixBtn: ".p-button";
 
 #{$prefixBtn} {
-  color: cfg.$buttonTextColor;
-  background: cfg.$buttonBg;
-  border: cfg.$buttonBorder;
-  padding: cfg.$buttonPadding;
-  font-size: cfg.$fontSize;
-  transition: cfg.$formElementTransition;
+  color        : cfg.$buttonTextColor;
+  background   : cfg.$buttonBg;
+  border       : cfg.$buttonBorder;
+  padding      : cfg.$buttonPadding;
+  font-size    : cfg.$fontSize;
+  transition   : cfg.$formElementTransition;
   border-radius: cfg.$borderRadius;
   outline-color: transparent;
 
   &:not(:disabled) {
     &:hover {
-      background: cfg.$buttonHoverBg;
-      color: cfg.$buttonTextHoverColor;
+      background  : cfg.$buttonHoverBg;
+      color       : cfg.$buttonTextHoverColor;
       border-color: cfg.$buttonHoverBorderColor;
     }
 
     &:active {
-      background: cfg.$buttonActiveBg;
-      color: cfg.$buttonTextActiveColor;
+      background  : cfg.$buttonActiveBg;
+      color       : cfg.$buttonTextActiveColor;
       border-color: cfg.$buttonActiveBorderColor;
     }
   }
@@ -33,54 +33,54 @@ $prefixBtn: ".p-button";
 
   &-outlined {
     background-color: transparent;
-    color: cfg.$buttonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$buttonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled) {
       &:hover {
         background: rgba(cfg.$buttonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$buttonBg;
-        border: cfg.$outlinedButtonBorder;
+        color     : cfg.$buttonBg;
+        border    : cfg.$outlinedButtonBorder;
       }
 
       &:active {
         background: rgba(cfg.$buttonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$buttonBg;
-        border: cfg.$outlinedButtonBorder;
+        color     : cfg.$buttonBg;
+        border    : cfg.$outlinedButtonBorder;
       }
     }
 
     &.p-button-plain {
-      color: cfg.$plainButtonTextColor;
+      color       : cfg.$plainButtonTextColor;
       border-color: cfg.$plainButtonTextColor;
 
       &:not(:disabled):hover {
         background: cfg.$plainButtonHoverBgColor;
-        color: cfg.$plainButtonTextColor;
+        color     : cfg.$plainButtonTextColor;
       }
 
       &:not(:disabled):active {
         background: cfg.$plainButtonActiveBgColor;
-        color: cfg.$plainButtonTextColor;
+        color     : cfg.$plainButtonTextColor;
       }
     }
   }
 
   &-text {
     background-color: transparent;
-    color: cfg.$buttonBg;
-    border-color: transparent;
+    color           : cfg.$buttonBg;
+    border-color    : transparent;
 
     &:not(:disabled) {
       &:hover {
-        background: rgba(cfg.$buttonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$buttonBg;
+        background  : rgba(cfg.$buttonBg, cfg.$textButtonHoverBgOpacity);
+        color       : cfg.$buttonBg;
         border-color: transparent;
       }
 
       &:active {
-        background: rgba(cfg.$buttonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$buttonBg;
+        background  : rgba(cfg.$buttonBg, cfg.$textButtonActiveBgOpacity);
+        color       : cfg.$buttonBg;
         border-color: transparent;
       }
     }
@@ -90,43 +90,52 @@ $prefixBtn: ".p-button";
 
       &:not(:disabled):hover {
         background: cfg.$plainButtonHoverBgColor;
-        color: cfg.$plainButtonTextColor;
+        color     : cfg.$plainButtonTextColor;
       }
 
       &:not(:disabled):active {
         background: cfg.$plainButtonActiveBgColor;
-        color: cfg.$plainButtonTextColor;
+        color     : cfg.$plainButtonTextColor;
       }
     }
   }
 
   &-label {
     transition-duration: cfg.$transitionDuration;
+    white-space: nowrap;
   }
 
-  &-icon-left {
-    margin-right: cfg.$inlineSpacing;
-  }
+  &-icon {
+    &-left {
+      margin-right: cfg.$inlineSpacing;
+    }
 
-  #{$prefixBtn}-icon-right {
-    margin-left: cfg.$inlineSpacing;
-  }
+    &-right {
+      margin-left: cfg.$inlineSpacing;
+    }
 
-  #{$prefixBtn}-icon-bottom {
-    margin-top: cfg.$inlineSpacing;
-  }
+    &-bottom {
+      margin-top: cfg.$inlineSpacing;
+    }
 
-  #{$prefixBtn}-icon-top {
-    margin-bottom: cfg.$inlineSpacing;
-  }
+    &-top {
+      margin-bottom: cfg.$inlineSpacing;
+    }
 
-  .p-badge {
-    margin-left: cfg.$inlineSpacing;
-    min-width: cfg.$fontSize;
-    height: cfg.$fontSize;
-    line-height: cfg.$fontSize;
-    color: cfg.$buttonBg;
-    background-color: cfg.$buttonTextColor;
+    &-only {
+      width  : cfg.$buttonIconOnlyWidth;
+      padding: cfg.$buttonIconOnlyPadding;
+
+      .p-button-icon-left,
+      .p-button-icon-right {
+        margin: 0;
+      }
+
+      &.p-button-rounded {
+        border-radius: 50%;
+        height       : cfg.$buttonIconOnlyWidth;
+      }
+    }
   }
 
   &-raised {
@@ -137,19 +146,13 @@ $prefixBtn: ".p-button";
     border-radius: cfg.$roundedButtonBorderRadius;
   }
 
-  &-icon-only {
-    width: cfg.$buttonIconOnlyWidth;
-    padding: cfg.$buttonIconOnlyPadding;
-
-    .p-button-icon-left,
-    .p-button-icon-right {
-      margin: 0;
-    }
-
-    &.p-button-rounded {
-      border-radius: 50%;
-      height: cfg.$buttonIconOnlyWidth;
-    }
+  .p-badge {
+    margin-left     : cfg.$inlineSpacing;
+    min-width       : cfg.$fontSize;
+    height          : cfg.$fontSize;
+    line-height     : cfg.$fontSize;
+    color           : cfg.$buttonBg;
+    background-color: cfg.$buttonTextColor;
   }
 
 
@@ -186,7 +189,8 @@ $prefixBtn: ".p-button";
   }
 
   .p-fluid & {
-    width: 100%;
+    width : 100%;
+    height: 100%;
 
     &-icon-only {
       width: cfg.$buttonIconOnlyWidth;
@@ -205,13 +209,13 @@ $prefixBtn: ".p-button";
 .p-button.p-button-primary,
 .p-button-group.p-button-primary>.p-button,
 .p-splitbutton.p-button-primary>.p-button {
-  color: cfg.$primaryButtonTextColor;
+  color     : cfg.$primaryButtonTextColor;
   background: cfg.$primaryButtonBg;
-  border: cfg.$primaryButtonBorder;
+  border    : cfg.$primaryButtonBorder;
 
   &:not(:disabled):hover {
-    background: cfg.$primaryButtonHoverBg;
-    color: cfg.$primaryButtonTextHoverColor;
+    background  : cfg.$primaryButtonHoverBg;
+    color       : cfg.$primaryButtonTextHoverColor;
     border-color: cfg.$primaryButtonHoverBorderColor;
   }
 
@@ -220,44 +224,44 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):active {
-    background: cfg.$primaryButtonActiveBg;
-    color: cfg.$primaryButtonTextActiveColor;
+    background  : cfg.$primaryButtonActiveBg;
+    color       : cfg.$primaryButtonTextActiveColor;
     border-color: cfg.$primaryButtonActiveBorderColor;
   }
 
   &-outlined {
     background-color: transparent;
-    color: cfg.$primaryButtonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$primaryButtonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled):hover {
       background: rgba(cfg.$primaryButtonBg, cfg.$textButtonHoverBgOpacity);
-      color: cfg.$primaryButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$primaryButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
 
     &:not(:disabled):active {
       background: rgba(cfg.$primaryButtonBg, cfg.$textButtonActiveBgOpacity);
-      color: cfg.$primaryButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$primaryButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
   }
 
   &.p-button-text {
     background-color: transparent;
-    color: cfg.$primaryButtonBg;
-    border-color: transparent;
+    color           : cfg.$primaryButtonBg;
+    border-color    : transparent;
 
     &:not(:disabled):hover {
-      background: rgba(cfg.$primaryButtonBg, cfg.$textButtonHoverBgOpacity);
+      background  : rgba(cfg.$primaryButtonBg, cfg.$textButtonHoverBgOpacity);
       border-color: transparent;
-      color: cfg.$primaryButtonBg;
+      color       : cfg.$primaryButtonBg;
     }
 
     &:not(:disabled):active {
-      background: rgba(cfg.$primaryButtonBg, cfg.$textButtonActiveBgOpacity);
+      background  : rgba(cfg.$primaryButtonBg, cfg.$textButtonActiveBgOpacity);
       border-color: transparent;
-      color: cfg.$primaryButtonBg;
+      color       : cfg.$primaryButtonBg;
     }
   }
 }
@@ -265,13 +269,13 @@ $prefixBtn: ".p-button";
 .p-button.p-button-secondary,
 .p-button-group.p-button-secondary>.p-button,
 .p-splitbutton.p-button-secondary>.p-button {
-  color: cfg.$secondaryButtonTextColor;
+  color     : cfg.$secondaryButtonTextColor;
   background: cfg.$secondaryButtonBg;
-  border: cfg.$secondaryButtonBorder;
+  border    : cfg.$secondaryButtonBorder;
 
   &:not(:disabled):hover {
-    background: cfg.$secondaryButtonHoverBg;
-    color: cfg.$secondaryButtonTextHoverColor;
+    background  : cfg.$secondaryButtonHoverBg;
+    color       : cfg.$secondaryButtonTextHoverColor;
     border-color: cfg.$secondaryButtonHoverBorderColor;
   }
 
@@ -280,44 +284,44 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):active {
-    background: cfg.$secondaryButtonActiveBg;
-    color: cfg.$secondaryButtonTextActiveColor;
+    background  : cfg.$secondaryButtonActiveBg;
+    color       : cfg.$secondaryButtonTextActiveColor;
     border-color: cfg.$secondaryButtonActiveBorderColor;
   }
 
   &-outlined {
     background-color: transparent;
-    color: cfg.$secondaryButtonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$secondaryButtonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled):hover {
       background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonHoverBgOpacity);
-      color: cfg.$secondaryButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$secondaryButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
 
     &:not(:disabled):active {
       background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonActiveBgOpacity);
-      color: cfg.$secondaryButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$secondaryButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
   }
 
   &.p-button-text {
     background-color: transparent;
-    color: cfg.$secondaryButtonBg;
-    border-color: transparent;
+    color           : cfg.$secondaryButtonBg;
+    border-color    : transparent;
 
     &:not(:disabled):hover {
-      background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonHoverBgOpacity);
+      background  : rgba(cfg.$secondaryButtonBg, cfg.$textButtonHoverBgOpacity);
       border-color: transparent;
-      color: cfg.$secondaryButtonBg;
+      color       : cfg.$secondaryButtonBg;
     }
 
     &:not(:disabled):active {
-      background: rgba(cfg.$secondaryButtonBg, cfg.$textButtonActiveBgOpacity);
+      background  : rgba(cfg.$secondaryButtonBg, cfg.$textButtonActiveBgOpacity);
       border-color: transparent;
-      color: cfg.$secondaryButtonBg;
+      color       : cfg.$secondaryButtonBg;
     }
   }
 }
@@ -325,13 +329,13 @@ $prefixBtn: ".p-button";
 .p-button.p-button-info,
 .p-button-group.p-button-info>.p-button,
 .p-splitbutton.p-button-info>.p-button {
-  color: cfg.$infoButtonTextColor;
+  color     : cfg.$infoButtonTextColor;
   background: cfg.$infoButtonBg;
-  border: cfg.$infoButtonBorder;
+  border    : cfg.$infoButtonBorder;
 
   &:not(:disabled):hover {
-    background: cfg.$infoButtonHoverBg;
-    color: cfg.$infoButtonTextHoverColor;
+    background  : cfg.$infoButtonHoverBg;
+    color       : cfg.$infoButtonTextHoverColor;
     border-color: cfg.$infoButtonHoverBorderColor;
   }
 
@@ -340,44 +344,44 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):active {
-    background: cfg.$infoButtonActiveBg;
-    color: cfg.$infoButtonTextActiveColor;
+    background  : cfg.$infoButtonActiveBg;
+    color       : cfg.$infoButtonTextActiveColor;
     border-color: cfg.$infoButtonActiveBorderColor;
   }
 
   &.p-button-outlined {
     background-color: transparent;
-    color: cfg.$infoButtonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$infoButtonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled):hover {
       background: rgba(cfg.$infoButtonBg, cfg.$textButtonHoverBgOpacity);
-      color: cfg.$infoButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$infoButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
 
     &:not(:disabled):active {
       background: rgba(cfg.$infoButtonBg, cfg.$textButtonActiveBgOpacity);
-      color: cfg.$infoButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$infoButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
   }
 
   &.p-button-text {
     background-color: transparent;
-    color: cfg.$infoButtonBg;
-    border-color: transparent;
+    color           : cfg.$infoButtonBg;
+    border-color    : transparent;
 
     &:not(:disabled):hover {
-      background: rgba(cfg.$infoButtonBg, cfg.$textButtonHoverBgOpacity);
+      background  : rgba(cfg.$infoButtonBg, cfg.$textButtonHoverBgOpacity);
       border-color: transparent;
-      color: cfg.$infoButtonBg;
+      color       : cfg.$infoButtonBg;
     }
 
     &:not(:disabled):active {
-      background: rgba(cfg.$infoButtonBg, cfg.$textButtonActiveBgOpacity);
+      background  : rgba(cfg.$infoButtonBg, cfg.$textButtonActiveBgOpacity);
       border-color: transparent;
-      color: cfg.$infoButtonBg;
+      color       : cfg.$infoButtonBg;
     }
   }
 }
@@ -385,13 +389,13 @@ $prefixBtn: ".p-button";
 .p-button.p-button-success,
 .p-button-group.p-button-success>.p-button,
 .p-splitbutton.p-button-success>.p-button {
-  color: cfg.$successButtonTextColor;
+  color     : cfg.$successButtonTextColor;
   background: cfg.$successButtonBg;
-  border: cfg.$successButtonBorder;
+  border    : cfg.$successButtonBorder;
 
   &:not(:disabled):hover {
-    background: cfg.$successButtonHoverBg;
-    color: cfg.$successButtonTextHoverColor;
+    background  : cfg.$successButtonHoverBg;
+    color       : cfg.$successButtonTextHoverColor;
     border-color: cfg.$successButtonHoverBorderColor;
   }
 
@@ -400,44 +404,44 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):active {
-    background: cfg.$successButtonActiveBg;
-    color: cfg.$successButtonTextActiveColor;
+    background  : cfg.$successButtonActiveBg;
+    color       : cfg.$successButtonTextActiveColor;
     border-color: cfg.$successButtonActiveBorderColor;
   }
 
   &.p-button-outlined {
     background-color: transparent;
-    color: cfg.$successButtonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$successButtonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled):hover {
       background: rgba(cfg.$successButtonBg, cfg.$textButtonHoverBgOpacity);
-      color: cfg.$successButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$successButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
 
     &:not(:disabled):active {
       background: rgba(cfg.$successButtonBg, cfg.$textButtonActiveBgOpacity);
-      color: cfg.$successButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$successButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
   }
 
   &.p-button-text {
     background-color: transparent;
-    color: cfg.$successButtonBg;
-    border-color: transparent;
+    color           : cfg.$successButtonBg;
+    border-color    : transparent;
 
     &:not(:disabled):hover {
-      background: rgba(cfg.$successButtonBg, cfg.$textButtonHoverBgOpacity);
+      background  : rgba(cfg.$successButtonBg, cfg.$textButtonHoverBgOpacity);
       border-color: transparent;
-      color: cfg.$successButtonBg;
+      color       : cfg.$successButtonBg;
     }
 
     &:not(:disabled):active {
-      background: rgba(cfg.$successButtonBg, cfg.$textButtonActiveBgOpacity);
+      background  : rgba(cfg.$successButtonBg, cfg.$textButtonActiveBgOpacity);
       border-color: transparent;
-      color: cfg.$successButtonBg;
+      color       : cfg.$successButtonBg;
     }
   }
 }
@@ -445,13 +449,13 @@ $prefixBtn: ".p-button";
 .p-button.p-button-warning,
 .p-button-group.p-button-warning>.p-button,
 .p-splitbutton.p-button-warning>.p-button {
-  color: cfg.$warningButtonTextColor;
+  color     : cfg.$warningButtonTextColor;
   background: cfg.$warningButtonBg;
-  border: cfg.$warningButtonBorder;
+  border    : cfg.$warningButtonBorder;
 
   &:not(:disabled):hover {
-    background: cfg.$warningButtonHoverBg;
-    color: cfg.$warningButtonTextHoverColor;
+    background  : cfg.$warningButtonHoverBg;
+    color       : cfg.$warningButtonTextHoverColor;
     border-color: cfg.$warningButtonHoverBorderColor;
   }
 
@@ -460,44 +464,44 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):active {
-    background: cfg.$warningButtonActiveBg;
-    color: cfg.$warningButtonTextActiveColor;
+    background  : cfg.$warningButtonActiveBg;
+    color       : cfg.$warningButtonTextActiveColor;
     border-color: cfg.$warningButtonActiveBorderColor;
   }
 
   &.p-button-outlined {
     background-color: transparent;
-    color: cfg.$warningButtonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$warningButtonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled):hover {
       background: rgba(cfg.$warningButtonBg, cfg.$textButtonHoverBgOpacity);
-      color: cfg.$warningButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$warningButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
 
     &:not(:disabled):active {
       background: rgba(cfg.$warningButtonBg, cfg.$textButtonActiveBgOpacity);
-      color: cfg.$warningButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$warningButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
   }
 
   &.p-button-text {
     background-color: transparent;
-    color: cfg.$warningButtonBg;
-    border-color: transparent;
+    color           : cfg.$warningButtonBg;
+    border-color    : transparent;
 
     &:not(:disabled):hover {
-      background: rgba(cfg.$warningButtonBg, cfg.$textButtonHoverBgOpacity);
+      background  : rgba(cfg.$warningButtonBg, cfg.$textButtonHoverBgOpacity);
       border-color: transparent;
-      color: cfg.$warningButtonBg;
+      color       : cfg.$warningButtonBg;
     }
 
     &:not(:disabled):active {
-      background: rgba(cfg.$warningButtonBg, cfg.$textButtonActiveBgOpacity);
+      background  : rgba(cfg.$warningButtonBg, cfg.$textButtonActiveBgOpacity);
       border-color: transparent;
-      color: cfg.$warningButtonBg;
+      color       : cfg.$warningButtonBg;
     }
   }
 }
@@ -505,13 +509,13 @@ $prefixBtn: ".p-button";
 .p-button.p-button-help,
 .p-button-group.p-button-help>.p-button,
 .p-splitbutton.p-button-help>.p-button {
-  color: cfg.$helpButtonTextColor;
+  color     : cfg.$helpButtonTextColor;
   background: cfg.$helpButtonBg;
-  border: cfg.$helpButtonBorder;
+  border    : cfg.$helpButtonBorder;
 
   &:not(:disabled):hover {
-    background: cfg.$helpButtonHoverBg;
-    color: cfg.$helpButtonTextHoverColor;
+    background  : cfg.$helpButtonHoverBg;
+    color       : cfg.$helpButtonTextHoverColor;
     border-color: cfg.$helpButtonHoverBorderColor;
   }
 
@@ -520,44 +524,44 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):active {
-    background: cfg.$helpButtonActiveBg;
-    color: cfg.$helpButtonTextActiveColor;
+    background  : cfg.$helpButtonActiveBg;
+    color       : cfg.$helpButtonTextActiveColor;
     border-color: cfg.$helpButtonActiveBorderColor;
   }
 
   &.p-button-outlined {
     background-color: transparent;
-    color: cfg.$helpButtonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$helpButtonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled):hover {
       background: rgba(cfg.$helpButtonBg, cfg.$textButtonHoverBgOpacity);
-      color: cfg.$helpButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$helpButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
 
     &:not(:disabled):active {
       background: rgba(cfg.$helpButtonBg, cfg.$textButtonActiveBgOpacity);
-      color: cfg.$helpButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$helpButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
   }
 
   &.p-button-text {
     background-color: transparent;
-    color: cfg.$helpButtonBg;
-    border-color: transparent;
+    color           : cfg.$helpButtonBg;
+    border-color    : transparent;
 
     &:not(:disabled):hover {
-      background: rgba(cfg.$helpButtonBg, cfg.$textButtonHoverBgOpacity);
+      background  : rgba(cfg.$helpButtonBg, cfg.$textButtonHoverBgOpacity);
       border-color: transparent;
-      color: cfg.$helpButtonBg;
+      color       : cfg.$helpButtonBg;
     }
 
     &:not(:disabled):active {
-      background: rgba(cfg.$helpButtonBg, cfg.$textButtonActiveBgOpacity);
+      background  : rgba(cfg.$helpButtonBg, cfg.$textButtonActiveBgOpacity);
       border-color: transparent;
-      color: cfg.$helpButtonBg;
+      color       : cfg.$helpButtonBg;
     }
   }
 }
@@ -565,13 +569,13 @@ $prefixBtn: ".p-button";
 .p-button.p-button-danger,
 .p-button-group.p-button-danger>.p-button,
 .p-splitbutton.p-button-danger>.p-button {
-  color: cfg.$dangerButtonTextColor;
+  color     : cfg.$dangerButtonTextColor;
   background: cfg.$dangerButtonBg;
-  border: cfg.$dangerButtonBorder;
+  border    : cfg.$dangerButtonBorder;
 
   &:not(:disabled):hover {
-    background: cfg.$dangerButtonHoverBg;
-    color: cfg.$dangerButtonTextHoverColor;
+    background  : cfg.$dangerButtonHoverBg;
+    color       : cfg.$dangerButtonTextHoverColor;
     border-color: cfg.$dangerButtonHoverBorderColor;
   }
 
@@ -580,56 +584,56 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):active {
-    background: cfg.$dangerButtonActiveBg;
-    color: cfg.$dangerButtonTextActiveColor;
+    background  : cfg.$dangerButtonActiveBg;
+    color       : cfg.$dangerButtonTextActiveColor;
     border-color: cfg.$dangerButtonActiveBorderColor;
   }
 
   &.p-button-outlined {
     background-color: transparent;
-    color: cfg.$dangerButtonBg;
-    border: cfg.$outlinedButtonBorder;
+    color           : cfg.$dangerButtonBg;
+    border          : cfg.$outlinedButtonBorder;
 
     &:not(:disabled):hover {
       background: rgba(cfg.$dangerButtonBg, cfg.$textButtonHoverBgOpacity);
-      color: cfg.$dangerButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$dangerButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
 
     &:not(:disabled):active {
       background: rgba(cfg.$dangerButtonBg, cfg.$textButtonActiveBgOpacity);
-      color: cfg.$dangerButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color     : cfg.$dangerButtonBg;
+      border    : cfg.$outlinedButtonBorder;
     }
   }
 
   &.p-button-text {
     background-color: transparent;
-    color: cfg.$dangerButtonBg;
-    border-color: transparent;
+    color           : cfg.$dangerButtonBg;
+    border-color    : transparent;
 
     &:not(:disabled):hover {
-      background: rgba(cfg.$dangerButtonBg, cfg.$textButtonHoverBgOpacity);
+      background  : rgba(cfg.$dangerButtonBg, cfg.$textButtonHoverBgOpacity);
       border-color: transparent;
-      color: cfg.$dangerButtonBg;
+      color       : cfg.$dangerButtonBg;
     }
 
     &:not(:disabled):active {
-      background: rgba(cfg.$dangerButtonBg, cfg.$textButtonActiveBgOpacity);
+      background  : rgba(cfg.$dangerButtonBg, cfg.$textButtonActiveBgOpacity);
       border-color: transparent;
-      color: cfg.$dangerButtonBg;
+      color       : cfg.$dangerButtonBg;
     }
   }
 }
 
 .p-button.p-button-link {
-  color: cfg.$linkButtonColor;
+  color     : cfg.$linkButtonColor;
   background: transparent;
-  border: transparent;
+  border    : transparent;
 
   &:not(:disabled):hover {
-    background: transparent;
-    color: cfg.$linkButtonHoverColor;
+    background  : transparent;
+    color       : cfg.$linkButtonHoverColor;
     border-color: transparent;
 
     .p-button-label {
@@ -638,14 +642,14 @@ $prefixBtn: ".p-button";
   }
 
   &:not(:disabled):focus {
-    background: transparent;
-    box-shadow: cfg.$linkButtonFocusShadow;
+    background  : transparent;
+    box-shadow  : cfg.$linkButtonFocusShadow;
     border-color: transparent;
   }
 
   &:not(:disabled):active {
-    background: transparent;
-    color: cfg.$linkButtonColor;
+    background  : transparent;
+    color       : cfg.$linkButtonColor;
     border-color: transparent;
   }
 }
@@ -655,13 +659,13 @@ $prefixBtn: ".p-button";
   .p-button.p-button-contrast,
   .p-button-group.p-button-contrast>.p-button,
   .p-splitbutton.p-button-contrast>.p-button {
-    color: cfg.$contrastButtonTextColor;
+    color     : cfg.$contrastButtonTextColor;
     background: cfg.$contrastButtonBg;
-    border: cfg.$contrastButtonBorder;
+    border    : cfg.$contrastButtonBorder;
 
     &:not(:disabled):hover {
-      background: cfg.$contrastButtonHoverBg;
-      color: cfg.$contrastButtonTextHoverColor;
+      background  : cfg.$contrastButtonHoverBg;
+      color       : cfg.$contrastButtonTextHoverColor;
       border-color: cfg.$contrastButtonHoverBorderColor;
     }
 
@@ -670,44 +674,44 @@ $prefixBtn: ".p-button";
     }
 
     &:not(:disabled):active {
-      background: cfg.$contrastButtonActiveBg;
-      color: cfg.$contrastButtonTextActiveColor;
+      background  : cfg.$contrastButtonActiveBg;
+      color       : cfg.$contrastButtonTextActiveColor;
       border-color: cfg.$contrastButtonActiveBorderColor;
     }
 
     &.p-button-outlined {
       background-color: transparent;
-      color: cfg.$contrastButtonBg;
-      border: cfg.$outlinedButtonBorder;
+      color           : cfg.$contrastButtonBg;
+      border          : cfg.$outlinedButtonBorder;
 
       &:not(:disabled):hover {
         background: rgba(cfg.$contrastButtonBg, cfg.$textButtonHoverBgOpacity);
-        color: cfg.$contrastButtonBg;
-        border: cfg.$outlinedButtonBorder;
+        color     : cfg.$contrastButtonBg;
+        border    : cfg.$outlinedButtonBorder;
       }
 
       &:not(:disabled):active {
         background: rgba(cfg.$contrastButtonBg, cfg.$textButtonActiveBgOpacity);
-        color: cfg.$contrastButtonBg;
-        border: cfg.$outlinedButtonBorder;
+        color     : cfg.$contrastButtonBg;
+        border    : cfg.$outlinedButtonBorder;
       }
     }
 
     &.p-button-text {
       background-color: transparent;
-      color: cfg.$contrastButtonBg;
-      border-color: transparent;
+      color           : cfg.$contrastButtonBg;
+      border-color    : transparent;
 
       &:not(:disabled):hover {
-        background: rgba(cfg.$contrastButtonBg, cfg.$textButtonHoverBgOpacity);
+        background  : rgba(cfg.$contrastButtonBg, cfg.$textButtonHoverBgOpacity);
         border-color: transparent;
-        color: cfg.$contrastButtonBg;
+        color       : cfg.$contrastButtonBg;
       }
 
       &:not(:disabled):active {
-        background: rgba(cfg.$contrastButtonBg, cfg.$textButtonActiveBgOpacity);
+        background  : rgba(cfg.$contrastButtonBg, cfg.$textButtonActiveBgOpacity);
         border-color: transparent;
-        color: cfg.$contrastButtonBg;
+        color       : cfg.$contrastButtonBg;
       }
     }
   }
@@ -718,7 +722,8 @@ $prefixBtn: ".p-button";
 /// 
 
 // @if variable-exists($name: scales) {
-@each $key, $paddingVal in cfg.$paddingScales {
+@each $key,
+$paddingVal in cfg.$paddingScales {
 
   %css-#{$key} {
     //$fontVal: map.get(cfg.$fontScales, $key);

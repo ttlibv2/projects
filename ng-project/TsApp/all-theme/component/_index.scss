@@ -23,7 +23,6 @@
 @import "input/slider";
 @import "input/togglebutton";
 @import "input/treeselect";
-@import "input/label";
 
 //Button
 @import "button/button";
@@ -57,6 +56,7 @@
 @import "panel/stepper";
 @import "panel/tag";
 @import "panel/statuserror";
+@import "panel/border-panel";
 
 //Overlay
 @import "overlay/confirmpopup";
@@ -104,3 +104,6 @@
 @import "misc/skeleton";
 @import "misc/tag";
 @import "misc/terminal";
+
+//form
+@import "form";

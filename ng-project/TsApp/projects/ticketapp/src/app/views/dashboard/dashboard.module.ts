@@ -1,8 +1,13 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {StatusPageView} from "ts-ui/http-status";
+import { BorderPanel } from 'ts-ui/border-panel';
+import { AnyTemplateOutlet } from 'ts-ui/common';
+import { Card } from 'ts-ui/card';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [
@@ -11,7 +16,13 @@ import {StatusPageView} from "ts-ui/http-status";
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    StatusPageView
+    ButtonModule,
+    StatusPageView,
+    InputTextModule,
+    BorderPanel,
+    AnyTemplateOutlet,
+    Card,
+    JsonPipe
   ]
 })
 export class DashboardModule { }

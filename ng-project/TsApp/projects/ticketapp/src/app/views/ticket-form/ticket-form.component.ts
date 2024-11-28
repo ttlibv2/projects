@@ -391,7 +391,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
         const data = template.data;
         if (notEmpty(data)) {
           this.templateToTicket(data).subscribe({
-            error: err => console.error(err),
+            error: err => console.warn(err.url, err.message),
             next: json => this.utils.reset(json, { func: `selectTemplate` })
           });
         }

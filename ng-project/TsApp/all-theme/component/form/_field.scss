@@ -1,0 +1,8 @@
+$field-cls: 'ts-formfield';
+
+.#{$field-cls} {
+    
+    &-required {
+        color: var(--danger-color);
+    }
+}

@@ -1,7 +1,9 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 
-.p-dialog {
+$dialog-cls: 'p-dialog';
+
+.#{$dialog-cls} {
   border-radius: cfg.$borderRadius;
   box-shadow: cfg.$overlayContainerShadow;
   border: cfg.$overlayContentBorder;
@@ -13,15 +15,15 @@
     background: transparent; //cfg.$dialogHeaderBg;
     color: cfg.$dialogHeaderTextColor;
     border-top-right-radius: cfg.$borderRadius;
-    border-top-left-radius: cfg.$borderRadius; 
+    border-top-left-radius: cfg.$borderRadius;
     border-bottom: cfg.$dialogHeaderBottomBorder;
 
-    .p-dialog-title {
+    .#{$dialog-cls}-title {
       font-weight: cfg.$dialogHeaderFontWeight;
       font-size: cfg.$dialogHeaderFontSize;
     }
 
-    .p-dialog-header-icon {
+    &-icon {
       margin-right: cfg.$inlineSpacing;
       @include util.action-icon();
 
@@ -49,7 +51,7 @@
     margin: cfg.$dialogFooterMargin;
     border-top: cfg.$dialogFooterBorder;
     background: cfg.$dialogFooterBg;
-    color: cfg.$panelFooterTextColor;    
+    color: cfg.$panelFooterTextColor;
     text-align: right;
     border-bottom-right-radius: cfg.$borderRadius;
     border-bottom-left-radius: cfg.$borderRadius;
@@ -68,6 +70,12 @@
     }
 
   }
+
+  &-maximized {
+    margin: 0 !important;
+    border-radius: 0;
+  }
+
 
   &.p-confirm-dialog {
     .p-confirm-dialog-icon {

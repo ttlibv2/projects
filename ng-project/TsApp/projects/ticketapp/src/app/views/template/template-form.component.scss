@@ -7,6 +7,8 @@
 
 .template-form {
   max-width: 1000px;
+  display: flex;
+  flex-flow: column nowrap;
 
   .p-preview {
     padding: 0.3rem 0.5rem;

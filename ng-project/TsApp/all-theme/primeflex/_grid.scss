@@ -1,6 +1,6 @@
 @use "mixins/grid" as gr;
 @use "mixins/breakpoints" as bp;
-@use "setting/config" as cfg;
+@use "../setting/layout-config" as cfg;
 
 //.row, .grid
 @include gr.make-grid-row();

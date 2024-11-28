@@ -1,4 +1,6 @@
+import { Directive, Input, OnChanges, SimpleChanges } from "@angular/core";
 import {Severity} from "./interface";
+import { ButtonDirective } from "primeng/button";
 
 export interface ButtonProps {
   /**
@@ -65,4 +67,18 @@ export interface ButtonProps {
    * @group Props
    */
   plain?: boolean;
+}
+
+@Directive({
+  standalone: true, 
+  selector: '[pButtonCustom]',
+  exportAs: 'pButtonCustom'
+})
+export class pButtonCustom implements OnChanges {
+  @Input() props: ButtonProps;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    
+  }
+
 }

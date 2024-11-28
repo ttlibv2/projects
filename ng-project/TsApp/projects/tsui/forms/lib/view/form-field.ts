@@ -1,26 +1,41 @@
 import { CommonModule } from "@angular/common";
-import { AfterContentInit, booleanAttribute, Component, ContentChildren, Input, QueryList, TemplateRef, ViewEncapsulation } from "@angular/core";
+import { AfterContentInit, booleanAttribute, Component, ContentChildren, Input, OnDestroy, QueryList, TemplateRef, ViewEncapsulation } from "@angular/core";
 import { PrimeTemplate } from "primeng/api";
-import {  QueryUtil } from "ts-ui/common";
+import { INgStyle, QueryUtil, StringTemplate } from "ts-ui/common";
 import { FormLabel } from "./form-label";
 import { Objects } from "ts-ui/helper";
-import {PropCls} from "ts-ui/common";
-const { isTemplateRef, isFalse, notBlank } = Objects;
+import {INgClass} from "ts-ui/common";
+import { TranslateModule } from "@ngx-translate/core";
+import { Subject } from "rxjs";
+const { isTemplateRef, isString, isNull, parseI18N } = Objects;
 
 @Component({
     standalone: true,
     selector: 'ts-form-field',
-    imports: [CommonModule, FormLabel],
+    imports: [CommonModule, FormLabel, TranslateModule, PrimeTemplate],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './form-field.html'
 })
-export class FormField implements AfterContentInit {
-    @Input() inputId: string;
-    @Input() fieldClass: PropCls;
-    @Input() title: string | TemplateRef<any>;
+export class FormField implements AfterContentInit, OnDestroy {
+    
+    /**
+     * Define id field
+     * @group Props
+     * */    
+    @Input() set inputId(id: string) {
+        this._inputId = id;
+    }
+
+    get inputId(): string {
+        return this._inputId || this.labelAsId();
+    }
+
+    @Input() fieldClass: INgClass;
+
+    @Input() label: StringTemplate;
 
     /**
-     * define is required
+     * Define is required
      * @group Props
      * */
     @Input({ transform: booleanAttribute }) required: boolean = false;
@@ -29,7 +44,13 @@ export class FormField implements AfterContentInit {
      * define required class
      * @group Props
      * */
-    @Input() requiredStyleClass: PropCls;
+    @Input() requiredClass: INgClass;
+
+    /**
+     * define required style
+     * @group Props
+     * */
+    @Input() requiredStyle: INgStyle;    
 
     /**
      * define required text
@@ -37,9 +58,10 @@ export class FormField implements AfterContentInit {
      * */
     @Input() requiredText: string = '(*)';
 
-    get field_required(): string | boolean {
-        return isFalse(this.required) ? false : notBlank(this.requiredText) ? this.requiredText : true;
-    }
+    @Input() fieldTag: string;
+
+    //
+
 
    
 
@@ -62,34 +84,46 @@ export class FormField implements AfterContentInit {
     @ContentChildren(PrimeTemplate)
     private templates!: QueryList<PrimeTemplate>;
 
-    get titleIsString(): boolean {
-        return !isTemplateRef(this.title);
+    private destroy$ = new Subject<boolean>();
+    private _inputId: string;
+
+    get labelIsString(): boolean {
+        return !isTemplateRef(this.label);
     }
 
-    get fieldCls(): any {
-        return {
-            ...this.fieldClass
-        };
-    }
 
     //--------
-    titleTemplate: TemplateRef<any>;
+    labelTemplate: TemplateRef<any>;
+
 
     ngAfterContentInit(): void {
 
         const resetTemplate = () => {
-            this.titleTemplate = undefined;
+            this.labelTemplate = undefined;
         };
 
-        QueryUtil.queryList(this.templates, resetTemplate, item => {
+        QueryUtil.queryList(this.destroy$, this.templates, resetTemplate, item => {
             switch (item.getType()) {
-                case 'title': this.titleTemplate = item.template; break;
+                case 'label': this.labelTemplate = item.template; break;
             }
         });
 
 
     }
 
+    ngOnDestroy(): void {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
 
+
+    private labelAsId(): string {
+        const text = parseI18N(this.label);
+        if(isNull(text)) return undefined;
+        else {
+            let index = text.lastIndexOf('.');
+            return index < 0 ? text : text.substring(index +1);
+        }
+    }
 
 }

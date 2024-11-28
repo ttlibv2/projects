@@ -1,46 +1,41 @@
-<div class="grid user-form">
-    <p-card [style]="{width: '720px'}" class="col-12" header="{{'users.h1_label' | translate}}">
-        <form [formGroup]="form" (ngSubmit)="clickSave()" class="sm">
-            <div class=" grid">
-                <div class="p-fluid col-6">
-                    <label for="ls_app">{{ 'users.ts_app' | translate }}</label>
-                    <p-dropdown id="ls_app" dataKey="api_id" placeholder="{{'users.ts_app_holder' | translate}}"
-                        optionLabel="displayName" formControlName="ls_app" [loading]="state.lsDs" [options]="lsApi"
-                        [showClear]="true" (onChange)="changeApp($event.value)"></p-dropdown>
-                </div>
-                <div class="p-fluid col-3">
-                    <label for="room_code">{{ 'users.room_code' | translate }}</label>
-                    <input pInputText id="room_code" formControlName="room_code"
-                        placeholder="{{'users.room_code_holder' | translate}}" />
-                </div>
-                <div class="p-fluid col-3">
-                    <label for="user_code">{{ 'users.user_code' | translate }}</label>
-                    <input pInputText id="user_code" formControlName="user_code"
-                        placeholder="{{'users.user_code_holder' | translate}}" />
-                </div>
-                <div class="p-fluid col-6">
-                    <label for="ts_name">{{ 'users.ts_name' | translate }}</label>
-                    <input pInputText id="ts_name" formControlName="ts_name"
-                        placeholder="{{'users.ts_name_holder' | translate}}" />
-                </div>
-                <div class="p-fluid col-6">
-                    <label for="ts_email">{{'users.ts_email' | translate}}</label>
-                    <input pInputText id="ts_email" formControlName="ts_email"
-                        placeholder="{{'users.ts_email_holder'|translate}}" />
-                </div>
-                <div class="p-fluid col-12 flex gap-2 mt-2">
+<ts-card [styleClass]="'user-form'" header="{{'users.h1_label' | translate}}">
+    <form [formGroup]="form" (ngSubmit)="clickSave()" class="grid sm">
+        <div class="p-fluid col-6">
+            <label for="ls_app">{{ 'users.ts_app' | translate }}</label>
+            <p-dropdown id="ls_app" dataKey="api_id" placeholder="{{'users.ts_app_holder' | translate}}"
+                optionLabel="displayName" formControlName="ls_app" [loading]="state.lsDs" [options]="lsApi"
+                [showClear]="true" (onChange)="changeApp($event.value)"></p-dropdown>
+        </div>
+        <div class="p-fluid col-3">
+            <label for="room_code">{{ 'users.room_code' | translate }}</label>
+            <input pInputText id="room_code" formControlName="room_code"
+                placeholder="{{'users.room_code_holder' | translate}}" />
+        </div>
+        <div class="p-fluid col-3">
+            <label for="user_code">{{ 'users.user_code' | translate }}</label>
+            <input pInputText id="user_code" formControlName="user_code"
+                placeholder="{{'users.user_code_holder' | translate}}" />
+        </div>
+        <div class="p-fluid col-6">
+            <label for="ts_name">{{ 'users.ts_name' | translate }}</label>
+            <input pInputText id="ts_name" formControlName="ts_name"
+                placeholder="{{'users.ts_name_holder' | translate}}" />
+        </div>
+        <div class="p-fluid col-6">
+            <label for="ts_email">{{'users.ts_email' | translate}}</label>
+            <input pInputText id="ts_email" formControlName="ts_email"
+                placeholder="{{'users.ts_email_holder'|translate}}" />
+        </div>
+        <div class="p-fluid col-12 flex gap-2 mt-2">
 
-                    <p-button icon="pi pi-apple" label="{{'users.btn.get_api' | translate}}" (onClick)="clickLoadApi()"
-                        [loading]="state.lsDs"></p-button>
+            <p-button icon="pi pi-apple" label="{{'users.btn.get_api' | translate}}" (onClick)="clickLoadApi()"
+                [loading]="state.lsDs"></p-button>
 
-                    <p-button icon="pi pi-user" label="{{'users.btn.get_info' | translate}}" (onClick)="loadUserInfo()"
-                        [loading]="state.loadUser"></p-button>
+            <p-button icon="pi pi-user" label="{{'users.btn.get_info' | translate}}" (onClick)="loadUserInfo()"
+                [loading]="state.loadUser"></p-button>
 
-                    <p-button icon="pi pi-user-edit" type="submit" severity="warning" label="{{'actions.update' | translate}}" 
-                        [loading]="state.save" [disabled]="form.invalid"></p-button>
-                </div>
-            </div>
-        </form>
-    </p-card>
-    <!-- <ts-api-info class="col-12" [divider]="false" [showHeader]="true"></ts-api-info> -->
-</div>
+            <p-button icon="pi pi-user-edit" type="submit" severity="warning" label="{{'actions.update' | translate}}"
+                [loading]="state.save" [disabled]="form.invalid"></p-button>
+        </div>
+    </form>
+</ts-card>

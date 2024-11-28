@@ -6,7 +6,7 @@ import { userGuard } from "./guards/auth.guard";
 const appRoutes: Route[] = [
     {
         path: '',
-        component: AppLayoutComponent,
+        //component: AppLayoutComponent,
         canActivate: [userGuard],
         children: [
             {

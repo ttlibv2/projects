@@ -1,0 +1,46 @@
+@use '../../setting/config' as cfg;
+
+$panel-cls: 'p-border-panel';
+
+.#{$panel-cls} {
+    display: flex;
+    flex-flow: column nowrap;
+
+    >div {
+        max-width: 100%;
+    }
+
+    &-top {
+        order: 1;
+    }
+
+    &-bottom {
+        order: 3;
+    }
+
+    &-middle {
+        display: flex;
+        flex-flow: row nowrap;
+        order: 2;
+        flex: 1;
+    }
+
+    &-left {
+        order: 1;
+        flex: 0;
+    }
+
+    &-right {
+        order: 3;
+        flex: 0;
+    }
+
+    &-center {
+        order: 2;
+        flex: 1;
+    }
+
+
+
+
+}

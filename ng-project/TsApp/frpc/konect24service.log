@@ -418,3 +418,40 @@
 2024-11-22 11:53:39.862 [E] [proxy/proxy.go:206] [a636ab1648c7c9cc] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
 2024-11-22 11:53:51.157 [E] [proxy/proxy.go:206] [a636ab1648c7c9cc] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
 2024-11-22 12:17:14.324 [E] [proxy/proxy.go:206] [a636ab1648c7c9cc] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
+2024-11-26 09:38:42.783 [I] [sub/root.go:144] Starting Konect24 service with configuration file [./k24svr.ini]
+2024-11-26 09:38:42.792 [I] [client/service.go:295] try to connect to Konect24 server...
+2024-11-26 09:38:42.918 [I] [client/service.go:287] [6644c8e06539664d] login to server success, get run id [6644c8e06539664d]
+2024-11-26 09:38:42.918 [I] [proxy/proxy_manager.go:173] [6644c8e06539664d] Konect24 service added: [tsweb tsapi]
+2024-11-26 09:38:42.923 [I] [client/control.go:168] [6644c8e06539664d] [tsapi] start Konect24 service success
+2024-11-26 09:38:42.924 [I] [client/control.go:168] [6644c8e06539664d] [tsweb] start Konect24 service success
+2024-11-26 09:38:56.767 [E] [proxy/proxy.go:206] [6644c8e06539664d] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
+2024-11-26 12:09:26.095 [I] [client/service.go:295] [6644c8e06539664d] try to connect to Konect24 server...
+2024-11-26 12:09:26.740 [I] [client/service.go:287] [6644c8e06539664d] login to server success, get run id [6644c8e06539664d]
+2024-11-26 12:09:26.801 [I] [proxy/proxy_manager.go:173] [6644c8e06539664d] Konect24 service added: [tsweb tsapi]
+2024-11-26 12:09:26.811 [I] [client/control.go:168] [6644c8e06539664d] [tsweb] start Konect24 service success
+2024-11-26 12:09:26.811 [I] [client/control.go:168] [6644c8e06539664d] [tsapi] start Konect24 service success
+2024-11-26 16:47:59.086 [E] [proxy/proxy.go:206] [6644c8e06539664d] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
+2024-11-26 16:47:59.086 [E] [proxy/proxy.go:206] [6644c8e06539664d] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
+2024-11-26 16:47:59.086 [E] [proxy/proxy.go:206] [6644c8e06539664d] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
+2024-11-26 16:47:59.134 [E] [proxy/proxy.go:206] [6644c8e06539664d] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
+2024-11-26 16:47:59.187 [E] [proxy/proxy.go:206] [6644c8e06539664d] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
+2024-11-27 09:39:21.671 [I] [sub/root.go:144] Starting Konect24 service with configuration file [./k24svr.ini]
+2024-11-27 09:39:21.691 [I] [client/service.go:295] try to connect to Konect24 server...
+2024-11-27 09:39:21.793 [I] [client/service.go:287] [93394c72c69e2b18] login to server success, get run id [93394c72c69e2b18]
+2024-11-27 09:39:21.794 [I] [proxy/proxy_manager.go:173] [93394c72c69e2b18] Konect24 service added: [tsweb tsapi]
+2024-11-27 09:39:21.798 [I] [client/control.go:168] [93394c72c69e2b18] [tsapi] start Konect24 service success
+2024-11-27 09:39:21.798 [I] [client/control.go:168] [93394c72c69e2b18] [tsweb] start Konect24 service success
+2024-11-27 10:11:52.288 [E] [proxy/proxy.go:206] [93394c72c69e2b18] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
+2024-11-27 10:11:52.341 [E] [proxy/proxy.go:206] [93394c72c69e2b18] [tsweb] connect to local service [127.0.0.1:8999] error: dial tcp 127.0.0.1:8999: connectex: No connection could be made because the target machine actively refused it.
+2024-11-27 10:19:53.256 [E] [proxy/proxy.go:206] [93394c72c69e2b18] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
+2024-11-27 10:20:02.187 [E] [proxy/proxy.go:206] [93394c72c69e2b18] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
+2024-11-27 12:12:10.954 [I] [client/service.go:295] [93394c72c69e2b18] try to connect to Konect24 server...
+2024-11-27 12:12:12.670 [I] [client/service.go:287] [93394c72c69e2b18] login to server success, get run id [93394c72c69e2b18]
+2024-11-27 12:12:12.859 [I] [proxy/proxy_manager.go:173] [93394c72c69e2b18] Konect24 service added: [tsweb tsapi]
+2024-11-27 12:12:12.875 [I] [client/control.go:168] [93394c72c69e2b18] [tsweb] start Konect24 service success
+2024-11-27 12:12:12.875 [I] [client/control.go:168] [93394c72c69e2b18] [tsapi] start Konect24 service success
+2024-11-27 16:21:00.046 [I] [client/service.go:295] [93394c72c69e2b18] try to connect to Konect24 server...
+2024-11-27 16:21:00.161 [I] [client/service.go:287] [93394c72c69e2b18] login to server success, get run id [93394c72c69e2b18]
+2024-11-27 16:21:00.161 [I] [proxy/proxy_manager.go:173] [93394c72c69e2b18] Konect24 service added: [tsweb tsapi]
+2024-11-27 16:21:00.165 [I] [client/control.go:168] [93394c72c69e2b18] [tsapi] start Konect24 service success
+2024-11-27 16:21:00.165 [I] [client/control.go:168] [93394c72c69e2b18] [tsweb] start Konect24 service success

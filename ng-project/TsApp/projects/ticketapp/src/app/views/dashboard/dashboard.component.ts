@@ -1,17 +1,32 @@
+import { MediaMatcher } from '@angular/cdk/layout';
 import { Component, ContentChild, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ViewEncapsulation } from '@angular/core';
 import { PrimeTemplate } from 'primeng/api';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { CardAction } from 'ts-ui/card';
 import { Color } from 'ts-ui/color-picker';
 import { FormsBuilder } from 'ts-ui/forms';
+import { gridResponsiveMap, NzBreakpointService } from './breakpoint';
+import { Subject, takeUntil } from 'rxjs';
+
+
+
 
 @Component({
+  // standalone: true,
   selector: 'ts-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  // imports: [CommonModule,
+  //   StatusPageView,
+  //   BorderPanel,
+  //   AnyTemplateOutlet,
+  //   JsonPipe]
 })
 export class DashboardComponent implements OnInit {
+  header2: string = "pi pi user";
+
   prefix: any[] = [
     {
       name: 'pi pi-user',
@@ -54,5 +69,26 @@ export class DashboardComponent implements OnInit {
     console.log(evt);
   }
 
+  cardActions: CardAction[] = [
+    {label: 'Đăng ký', icon: 'pi pi-at'},
+    {label: 'Đóng', icon: 'pi pi-check'}
+  ];
+
+
+  destroy$ = new Subject<boolean>();
+
+  constructor(private mediaMatcher: MediaMatcher, 
+    private breakpoint: NzBreakpointService) {
+    
+      this.breakpoint.subscribe(gridResponsiveMap, true)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(e => console.log(e));
+
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
 }
 

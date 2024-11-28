@@ -181,10 +181,10 @@ $prefix: ".ts-tag";
   align-items: center;
   gap: 5px;
 
-  padding: 0.15rem 0.5rem;
+  padding: 0rem 0.5rem;
   font-size: cfg.$fontSize;
   transition: cfg.$formElementTransition;
-  border-radius: cfg.$borderRadius;
+  border-radius: cfg.$tagBorderRadius;
   border: cfg.$inputBorder;
   outline-color: transparent;
   cursor: pointer;
@@ -194,11 +194,11 @@ $prefix: ".ts-tag";
   border: var(--tag-border);
 
   &:not(:disabled) {
-    &:hover {
-      background: var(--tag-hover-background);
-      color: var(--tag-hover-color);
-      border-color: var(--tag-hover-border-color);
-    }
+    // &:hover {
+    //   background: var(--tag-hover-background);
+    //   color: var(--tag-hover-color);
+    //   border-color: var(--tag-hover-border-color);
+    // }
 
     &:focus {
       box-shadow: var(--tag-focus-shadow);
@@ -241,11 +241,11 @@ $prefix: ".ts-tag";
     color: var(--tag-color);
     border-color: transparent;
 
-    &:not(:disabled):hover {
-      background: rgba(var(--tag-background), cfg.$textButtonHoverBgOpacity);
-      border-color: transparent;
-      color: var(--tag-background);
-    }
+    // &:not(:disabled):hover {
+    //   background: rgba(var(--tag-background), cfg.$textButtonHoverBgOpacity);
+    //   border-color: transparent;
+    //   color: var(--tag-background);
+    // }
 
     &:not(:disabled):active {
       background: rgba(var(--tag-background), cfg.$textButtonActiveBgOpacity);

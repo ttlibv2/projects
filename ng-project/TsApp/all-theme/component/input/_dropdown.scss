@@ -7,6 +7,10 @@
     transition: cfg.$formElementTransition;
     border-radius: cfg.$borderRadius;
 
+    .p-fluid & {
+        //height: 100%;
+    }
+
     &:not(.p-disabled):hover {
         border-color: cfg.$inputHoverBorderColor;
     }

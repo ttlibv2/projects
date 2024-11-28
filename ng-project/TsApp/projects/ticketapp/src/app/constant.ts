@@ -33,8 +33,8 @@ export const AgTemplateCode = {
 
 
 export const layoutConfig: LayoutConfig = {
-    visibleTopBar: true,
-    visibleSideBar: true,
+    visibleTopBar: false,
+    visibleSideBar: false,
     visibleConfig: false,
     appLogo: '', // assets/images/logo-dark.svg
     appName: '', // ConYeu.Vn

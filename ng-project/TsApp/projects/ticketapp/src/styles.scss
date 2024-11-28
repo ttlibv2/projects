@@ -18,8 +18,12 @@
 // @import "primeflex/primeflex.min.css";
 @import "../../../all-theme/primeflex";
 
+*::-webkit-scrollbar {
+  display: none;
+}
 
 @media screen and (min-width: 768px) {
+
   .p-dynamic-dialog {
       // flex: 1 1 auto;
   

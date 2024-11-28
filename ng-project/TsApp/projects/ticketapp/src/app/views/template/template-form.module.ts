@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule,  } from '@angular/common';
 import { TemplateFormComponent } from './template-form.component';
-import {CardModule} from "primeng/card";
 import {DropdownModule} from "primeng/dropdown";
 import {DialogModule} from "primeng/dialog";
 import {DialogService, DynamicDialogRef} from "primeng/dynamicdialog";
@@ -25,6 +24,7 @@ import { JsonPipe } from '../../pipes/json.pipe';
 import { FormsModule } from 'ts-ui/forms';
 import { EditorModule } from 'primeng/editor';
 import { InputColor } from 'ts-ui/color-picker';
+import { Card } from 'ts-ui/card';
 
 
 
@@ -42,7 +42,7 @@ import { InputColor } from 'ts-ui/color-picker';
     FormsModule,
     ChipModule,
     AgTableModule,
-    CardModule,
+    Card,
     DropdownModule,
     DialogModule,
     ButtonModule,

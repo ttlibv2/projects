@@ -1,4 +1,4 @@
-@use '../setting/config' as cfg;
+@use "../../setting/layout-config" as cfg;
 $breakpoints: cfg.$grid-breakpoints;
 
 @function join-col($breakpointName, $col-prefix, $index) { // sm:col-1

@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { CommonModule, DatePipe, registerLocaleData } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {
+    HTTP_INTERCEPTORS,
     provideHttpClient,
     withFetch,
     withInterceptors
@@ -27,6 +28,7 @@ import { AgTableModule } from 'ts-ui/ag-table';
 import { ToastModule } from 'ts-ui/toast';
 import {DBService, LocalDbModule} from "ts-ui/local-db";
 import { FormsModule } from 'ts-ui/forms';
+import { ErrorInterceptor } from './services/error-interceptor';
 
 class ErrorHandlerBasic implements ErrorHandler {
 
@@ -79,6 +81,7 @@ function LOAD_DB(service: DBService) {
         { provide: APP_INITIALIZER, useFactory: LOAD_DB, deps: [DBService], multi: true },
         { provide: APP_INITIALIZER, useFactory: LOAD_CFG, deps: [StorageService, LoggerService], multi: true },
         { provide: ErrorHandler, useClass: ErrorHandlerBasic },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
         DatePipe, MessageService, DialogService,
 
     ],

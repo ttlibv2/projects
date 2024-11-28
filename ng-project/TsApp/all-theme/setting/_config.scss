@@ -1,5 +1,7 @@
 @use "colors" as clr;
 
+$prefix: ''!default;
+
 $primaryColor: clr.$primary;
 
 
@@ -41,6 +43,7 @@ $disabledOpacity: 0.6 !default;
 $maskBg: rgba(0, 0, 0, 0.4) !default;
 $loadingIconFontSize: 2rem !default;
 $errorColor: #f87171 !default;
+$flexGap: .5rem;
 
 $spacer: 1rem !default;
 $spacers: (
@@ -49,11 +52,7 @@ $spacers: (
     2: $spacer * .5,
     3: $spacer,
     4: $spacer * 1.5,
-    5: $spacer * 2,
-    6: $spacer * 2.5,
-    7: $spacer * 3,
-    8: $spacer * 3.5,
-    9: $spacer * 4,
+    5: $spacer * 3
     ) !default;
 
 $fontScales: (
@@ -528,13 +527,44 @@ $scrollPanelTrackBorder: 0 none !default;
 $scrollPanelTrackBg: clr.$shade100 !default;
 
 //card
-$cardBodyPadding: .5rem !default; //1rem 1rem !default;
-$cardTitleFontSize: 1.25rem !default;
-$cardTitleFontWeight: 600 !default;
-$cardSubTitleFontWeight: 400 !default;
-$cardSubTitleColor: $textSecondaryColor !default;
-$cardContentPadding: 0 0 0 0 !default;
-$cardFooterPadding: 1rem 0 0 0 !default;
+$cardHeight: null!default;
+$cardBorderRadius: $borderRadius!default;
+$cardSpacerX: .65rem!default;
+$cardSpacerY: .25rem !default;
+
+$cardHeaderPadding: $cardSpacerY  $cardSpacerX !default;
+$cardHeaderMargin: 0 !default;
+$cardHeaderBorderWidth: 1px !default;
+$cardHeaderBorderColor: $borderColor!default;
+
+$cardBodyPadding: $cardSpacerY*2 $cardSpacerX !default;
+
+
+
+
+
+
+
+
+
+// $cardHeaderMargin: 0 .5rem!default;
+// $cardHeaderPadding: .65rem 0 !default;
+// $cardHeaderBorderBottom: 3px solid $borderColor;
+
+// $cardFooterPadding: .65rem 0 !default;
+// $cardFooterMargin: $cardHeaderMargin;
+
+// $cardBodyPadding: 0 .5rem !default; //1rem 1rem !default;
+// $cardBodyMargin:  0 .5rem !default; //1rem 1rem !default;
+
+
+
+// $cardTitleFontSize: 1.25rem !default;
+// $cardTitleFontWeight: 600 !default;
+// $cardSubTitleFontWeight: 400 !default;
+// $cardSubTitleColor: $textSecondaryColor !default;
+// $cardContentPadding: 0 0 0 0 !default;
+
 $cardShadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !default;
 
 //editor
@@ -854,6 +884,7 @@ $badgeFontWeight: 700 !default;
 $badgeFontSize: 0.75rem !default;
 
 $tagPadding: 0.25rem 0.4rem !default;
+$tagBorderRadius: 1rem;
 
 //carousel
 $carouselIndicatorsPadding: 1rem !default;
@@ -914,7 +945,7 @@ $dividerHorizontalMargin: 1rem 0 !default;
 $dividerHorizontalPadding: 0 1rem !default;
 $dividerVerticalMargin: 0  8px !default; //0 1rem !default;
 $dividerVerticalPadding: 0 !default; //1rem 0 !default;
-$dividerSize: 2px !default;
+$dividerSize: $borderWidth !default;
 $dividerColor: $borderColor!default;
 $dividerStyle: solid !default;
 $divider-text-padding: 1em;

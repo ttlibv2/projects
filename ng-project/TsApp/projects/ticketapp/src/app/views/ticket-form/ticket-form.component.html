@@ -1,98 +1,88 @@
-<form [formGroup]="form" (ngSubmit)="saveTicket()" class="grid sm ticket-form" [ngClass]="formCls()" >
-    <p-card class="col-12 col-order-2 lg:col-order-1 lg:col-7 col-left">
+<form [formGroup]="form" (ngSubmit)="saveTicket()" class="ticket-form grid sm" [ngClass]="formCls()">
+    <ts-card class="col-order-1 lg:col-order-1 col-left pr-0" [span]="12" [lg]="7">
         <p-fieldset legend="-- Thông tin chung --">
             <div class="grid">
-                <ts-form-field class="p-fluid" inputId="chanels" title="Kênh - Tình trạng" [required]="true" [span]="12"
-                    [xxl]="utils.is_view_all ? 6: 4">
+                <ts-form-field class="p-fluid" inputId="chanels" label="@@ticket.chanels" [required]="true" [span]="12"
+                    [x2l]="utils.is_view_all ? 6: 4">
                     <p-multiSelect field #ms id="chanels" class="required" [showHeader]="false"
                         [options]="catalog.ls_chanel" formControlName="chanels" optionLabel="value" display="chip"
                         dataKey="id" styleClass="ts-chanels" (onClear)="onSelectChanel()"
                         (onChange)="onSelectChanel($event.value)">
-
-                        <ng-template pTemplate="footer">
-                            <div class="mt-4 pd-4">
-                                <p-button label="Đóng" (onClick)="ms.close(null)"></p-button>
-                            </div>
-                        </ng-template>
                     </p-multiSelect>
-                </ts-form-field>
-                <ts-form-field class="p-fluid col-6 xxl:col-3" *ngIf="utils.is_view_all || viewTemplate">
-                    <label for="support_help">Hình thức hỗ trợ <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false"
-                        dataKey="id" formControlName="support_help"></p-dropdown>
-                </ts-form-field>
-                <ts-form-field class="p-fluid col-6 xxl:col-3" *ngIf="utils.is_view_all || viewTemplate">
-                    <label for="soft_names">Tên phần mềm <span class="p-text-danger">(*)</span></label>
-                    <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" dataKey="id"
-                        formControlName="soft_name" emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
-                </ts-form-field>
-                <ts-form-field class="p-fluid col-6" [ngClass]="utils.r_ghelp_cls">
-                    <label for="group-help">Nhóm hỗ trợ <span class="p-text-danger">(*)</span></label>
+                </ts-form-field>                
+                <ts-form-field class="p-fluid" label="@@ticket.ghelp" [required]="true" [span]="6"
+                    [ngClass]="utils.r_ghelp_cls">
                     <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help" optionLabel="value"
                         dataKey="id" formControlName="group_help"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6" [ngClass]="utils.r_software_cls">
-                    <label for="software">Nhóm Phần mềm <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.software" [required]="true" [span]="6"
+                    [ngClass]="utils.r_software_cls">
                     <p-dropdown id="software" class="required" [options]="catalog.ls_software" dataKey="id"
                         optionLabel="value" (onChange)="onSelectSoftware($event.value)"
                         formControlName="software"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid" label="@@ticket.shelp" [required]="true" [span]="6" [x2l]="3"
+                    *ngIf="utils.is_view_all || viewTemplate">
+                    <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false" dataKey="id"
+                        formControlName="support_help"></p-dropdown>
+                </ts-form-field>
+                <ts-form-field class="p-fluid" label="@@ticket.soft_name" [required]="true" [span]="6" [x2l]="3"
+                    *ngIf="utils.is_view_all || viewTemplate">
+                    <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" dataKey="id" formControlName="soft_name"
+                        emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
                 </ts-form-field>
             </div>
         </p-fieldset>
         <p-fieldset legend="-- Thông tin TS --">
             <div class="grid">
-                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-6" [ngClass]="utils.r_steam_cls">
-                    <label for="od_team">Support Team <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.od_team" [span]="6" [required]="true"
+                    [ngClass]="utils.r_steam_cls">
                     <p-dropdown formControlName="od_team" id="od_team" [options]="catalog.ls_helpdesk_team"
                         optionLabel="display_name" [overlayOptions]="overlayOptions" dataKey="id"
                         (onChange)="changeOdTeam($event.value)"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_suser_cls">
-                    <label for="od_assign">Phân công cho <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.od_assign" [span]="6" [required]="true"
+                    [ngClass]="utils.r_suser_cls">
                     <p-dropdown id="od_assign" [options]="catalog.ls_assign" optionLabel="display_name"
                         [overlayOptions]="overlayOptions" dataKey="id" formControlName="od_assign"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_ttype_cls">
-                    <label for="od_ticket_type">Ticket type<span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" [span]="6" label="@@ticket.od_ticket_type" [required]="true"
+                    [ngClass]="utils.r_ttype_cls">
                     <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type" [overlayOptions]="overlayOptions"
                         optionLabel="display_name" dataKey="id" formControlName="od_ticket_type"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 xl:col-6" [ngClass]="utils.r_ttype_cls">
-                    <label for="od_subject_type">Ticket Sub_type <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.od_subtype" [required]="true" [span]="6"
+                    [ngClass]="utils.r_ttype_cls">
                     <p-dropdown formControlName="od_subject_type" id="od_subject_type" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_subject_type" dataKey="id" optionLabel="display_name"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_ttype_cls">
-                    <label for="od_category">Danh mục <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.od_category" [span]="6" [required]="true"
+                    [ngClass]="utils.r_ttype_cls">
                     <p-dropdown formControlName="od_category" id="od_category" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_category" dataKey="id" optionLabel="display_name"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6" [ngClass]="utils.r_ttype_cls">
-                    <label for="od_category_sub">Danh mục phụ <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.od_category_sub" [span]="6" [required]="true"
+                    [ngClass]="utils.r_ttype_cls">
                     <p-dropdown formControlName="od_category_sub" id="od_category_sub" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_category_sub" dataKey="id" optionLabel="display_name"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6  xl:col-6 md:col-6 xxl:col-3"
+                <ts-form-field class="p-fluid" label="@@ticket.od_replied" [span]="6" [x2l]="3" [required]="true"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
-                    <label for="od_replied">Replied Status <span class="p-text-danger">(*)</span></label>
                     <p-dropdown formControlName="od_replied" id="od_replied" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_replied_status" dataKey="id" optionLabel="name"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                <ts-form-field class="p-fluid" label="@@ticket.od_team_head" [x2l]="3" [span]="6"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
-                    <label for="od_team_head">Team Head</label>
                     <p-dropdown id="od_team_head" [options]="catalog.ls_team_head" [overlayOptions]="overlayOptions"
                         formControlName="od_team_head" dataKey="id" optionLabel="name"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                <ts-form-field class="p-fluid" label="@@ticket.od_priority" [x2l]="3" [span]="6"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
-                    <label for="od_priority">Độ ưu tiên</label>
                     <p-dropdown formControlName="od_priority" id="od_priority" [overlayOptions]="overlayOptions"
                         [options]="catalog.ls_priority" dataKey="id" optionLabel="display_name"></p-dropdown>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 lg:col-6 xl:col-6 md:col-6 xxl:col-3"
+                <ts-form-field class="p-fluid" label="@@ticket.od_tag" [x2l]="3" [span]="6"
                     *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
-                    <label for="od_tags">Thẻ -- Tags</label>
                     <p-multiSelect formControlName="od_tags" id="od_tags" [overlayOptions]="overlayOptions"
                         optionLabel="display_name" [showToggleAll]="false" [showHeader]="false" [filter]="false"
                         dataKey="id" [options]="catalog.ls_ticket_tag"></p-multiSelect>
@@ -101,53 +91,47 @@
         </p-fieldset>
         <p-fieldset legend="{{'ticket.h1_customer'|translate}}" *ngIf="!viewTemplate">
             <div class="grid">
-                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
-                    <label for="tax_code">Mã số thuế <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.tax_code" [span]="6" [x2l]="3" [xl]="4"
+                    [required]="true">
                     <input formControlName="tax_code" id="tax_code" class="required" pInputText />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 xl:col-3 lg:col-6 md:col-6 xxl:col-3">
-                    <label for="image_name">DS_HINH</label>
+                <ts-form-field class="p-fluid" label="@@ticket.image_name" [span]="6" [x2l]="3" [xl]="2"
+                    [required]="true">
                     <input id="image_name" placeholder="(1,2,3...).png" pInputText formControlName="images" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
-                    <label for="email">Email <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" label="@@ticket.email" [span]="6" [x2l]="3" [xl]="4" [required]="true">
                     <input id="email" class="required" pInputText formControlName="email" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 xl:col-3 lg:col-6 md:col-6 xxl:col-1">
-                    <label for="od_partner_id">KH_ID</label>
+                <ts-form-field class="p-fluid" [span]="6" [xl]="2" [x2l]="2" label="@@ticket.od_partner_id">
                     <input id="od_partner_id" pInputText formControlName="od_partner_id" readonly showClear="true"
                         class="font-bold text-danger">
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
-                    <label for="content_required">Nội dung hỗ trợ <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" [span]="6" [x2l]="3" label="@@ticket.content_required" [xl]="4"
+                    [required]="true">
                     <input id="content_required" pInputText formControlName="content_required" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 xl:col-3 lg:col-6 md:col-6 xxl:col-3">
-                    <label for="reception_time">TG tiếp nhận <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" [span]="6" [xl]="3" [x2l]="3" label="@@ticket.reception_time"
+                    [required]="true">
                     <input id="reception_time" pInputText formControlName="reception_time" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
-                    <label for="phone">Số DT</label>
+                <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" label="@@ticket.phone" [span]="6" [required]="true">
                     <input id="phone" pInputText formControlName="phone" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
-                    <label for="teamviewer">Teamviewer</label>
+                <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" label="@@ticket.teamviewer" [span]="6">
                     <input id="teamviewer" pInputText formControlName="teamviewer" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6  lg:col-6  xl:col-4 xxl:col-3">
-                    <label for="content_help">Nội dung đã hỗ trọ <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" [span]="6" [x2l]="3" label="@@ticket.content_help" [xl]="4"
+                    [required]="true">
                     <input id="content_help" pInputText formControlName="content_help" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-3 xxl:col-3">
-                    <label for="complete_time">TG hoàn thành <span class="p-text-danger">(*)</span></label>
+                <ts-form-field class="p-fluid" [x2l]="3" [xl]="3" label="@@ticket.complete_time" [span]="6"
+                    [required]="true">
                     <input id="complete_time" pInputText formControlName="complete_time" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
-                    <label for="customer_name">Tên khách hàng</label>
+                <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" [span]="6" label="@@ticket.customer_name">
                     <input id="customer_name" pInputText formControlName="customer_name" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-6 md:col-6 lg:col-6 xl:col-5 xxl:col-3">
-                    <label for="question">Nội dung mẫu</label>
+                <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" label="@@ticket.question" [span]="6">
                     <p-dropdown id="question" [options]="catalog.ls_question" optionLabel="title" #refQues
                         [filter]="true" dataKey="id" formControlName="question"
                         (onChange)="onSelectQuestion($event.value)"></p-dropdown>
@@ -175,7 +159,7 @@
 
                 <ng-container formGroupName="email_object">
                     @for (field of utils.emailFields; track $index) {
-                    <div class="p-fluid col-2 xxl:col-2">
+                    <div class="p-fluid col-2 x2l:col-2">
                         <label>{{field.label}}</label>
                         <input pInputText [formControlName]="field.name" />
                     </div>
@@ -185,29 +169,27 @@
         </p-fieldset>
         }
         <!-- END: email ticket info -->
-    </p-card>
-    <p-card class="col-12 col-order-1 lg:col-order-2 lg:col-5 col-right">
+    </ts-card><!-- END: COl_LEFT -->
+
+    <ts-card class="col-12 col-order-2 lg:col-order-2 col-right" [lg]="5">
 
         @if (!viewTemplate) {
         <p-fieldset legend="{{'ticket.h1_support'|translate}}">
             <div class="grid">
-                <ts-form-field class="p-fluid col-12 f-email-ticket">
-                    <label for="subject">Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)</label>
+                <ts-form-field class="p-fluid col-12 f-email-ticket" label="@@ticket.subject">
                     <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
                         placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-12 ticket-body" *ngIf="utils.is_view_all" >
-                    <label for="body">Hỗ trợ => Body</label>
-                    <textarea pInputTextarea [autoResize]="true" id="body" formControlName="body"></textarea>
+                <ts-form-field class="p-fluid col-12 ticket-body" label="@@ticket.body" *ngIf="utils.is_view_all">
+                    <textarea pInputTextarea id="body" formControlName="body"[autoResize]="true"[style.min-height]="'39px'"></textarea>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-12 ticket-note" *ngIf="utils.is_view_all">
-                    <label for="note">Hỗ trợ => Note</label>
-                    <textarea pInputTextarea [autoResize]="true" id="note" formControlName="note"></textarea>
+                <ts-form-field class="p-fluid col-12 ticket-note" label="@@ticket.note" *ngIf="utils.is_view_all">
+                    <textarea pInputTextarea id="note" formControlName="note" [autoResize]="true" [style.min-height]="'39px'"></textarea>
                 </ts-form-field>
-                <ts-form-field class="p-fluid col-12 ticket-copy" *ngIf="!utils.is_view_all">
-                    <label for="content_copy">Hỗ trợ => Copy</label>
-                    <textarea pInputTextarea [autoResize]="true" id="content_copy" formControlName="content_copy"
-                        [rows]="7" [style.max-height]="'230px'"></textarea>
+                <ts-form-field class="p-fluid col-12 ticket-copy" label="@@ticket.content_copy"
+                    *ngIf="!utils.is_view_all">
+                    <textarea pInputTextarea id="content_copy" formControlName="content_copy" [rows]="7"
+                        [style.max-height]="'230px'" [autoResize]="true"[style.min-height]="'130px'"></textarea>
                 </ts-form-field>
             </div>
         </p-fieldset>
@@ -217,7 +199,7 @@
             <div class="grid" formGroupName="options">
                 <ng-template ngFor let-item [ngForOf]="labelOptions">
                     <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
-                        (onChange)="item.command && item.command($event.checked)" class="col-6 lg:col-3"></p-checkbox>
+                        (onChange)="item.command && item.command($event.checked)" tsCol [span]="6" [xl]="4" [x3l]="3"></p-checkbox>
                 </ng-template>
             </div>
         </p-fieldset>
@@ -230,16 +212,18 @@
                 <ts-toolbar class="col-12">
                     <ng-template pTemplate="left">
                         @for (item of catalog.get_ticket(); track $index) {
-                        <ts-tag [value]="item" [label]="item.title" [icon]="item.icon" (click)="selectTemplate(item)"
+                        <ts-tag [value]="item" [label]="item.title" (click)="selectTemplate(item)"
                             [styleClass]="tagSelectClass(item)"></ts-tag>
                         }
-                        
+
                         @if(catalog.get_ticket()?.length == 0){
-                        <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b class="text-danger">[Khác >
+                        <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b class="text-danger">[Khác
+                                >
                                 Cập
                                 nhật mẫu mặc định]</b>).</span>
-                        
-                        <span> Hoặc <a class="here" [routerLink]="['/templates']" [queryParams]="{thread: 'ticket_template'}"
+
+                        <span> Hoặc <a class="here" [routerLink]="['/templates']"
+                                [queryParams]="{thread: 'ticket_template'}"
                                 (click)="viewTemplateSetting('ticket_template')">{{'actions.click_here'|translate}}</a></span>
                         }
                     </ng-template>
@@ -249,10 +233,10 @@
 
         }
 
-    </p-card>
+    </ts-card><!-- END: COl_RIGHT -->
 
     <!-- BEGIN: form_tool -->
-    <div class="col-12 col-order-3 lg:col-order-3 flex-wrap-center gap-2 mt-3 form-tool" >
+    <div class="col-order-3 lg:col-order-3 flex-wrap-center gap-2 mb-2 form-tool" [span]="12">
         @if (state.visibleToolImport && idata) {
 
         <div class="r-import flex gap-2 align-items-center ">
@@ -329,5 +313,4 @@
         }
     </div>
     <!-- END: form_tool -->
-
 </form>

@@ -1,4 +1,4 @@
-@use "../setting/config" as cfg;
+@use "../../setting/layout-config" as cfg;
 @use "../mixins/breakpoints" as bp;
 @use "../comps/mixins" as mixins2;
 @use "sass:math";
@@ -27,8 +27,8 @@ $gy: var(--#{$prefix}gutter-gry, $gutter-y);
         flex-flow: row wrap;
         min-width: 0;
         row-gap: var(--#{$prefix}gutter-gry);
-        //margin-left: calc($gx * -1);
-        //margin-right: calc($gx * -1);
+        margin-left: calc($gx * -1);
+        margin-right: calc($gx * -1);
 
         &-nogutter {
             margin-right: 0;
@@ -61,15 +61,15 @@ $gy: var(--#{$prefix}gutter-gry, $gutter-y);
             justify-content: center;
         }
 
-        &-between {
+        &-space-between {
             justify-content: space-between;
         }
 
-        &-around {
+        &-space-around {
             justify-content: space-around;
         }
 
-        &-evenly {
+        &-space-evenly {
             justify-content: space-evenly;
         }
 
@@ -89,11 +89,10 @@ $gy: var(--#{$prefix}gutter-gry, $gutter-y);
         >[class*=\:col-] {
             @include make-col-ready();
         }
+
+      
     }
 }
-
-
-
 
 @mixin make-col-ready() {
     box-sizing: border-box;

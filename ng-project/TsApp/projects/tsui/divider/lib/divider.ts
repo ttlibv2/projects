@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, ElementRef, Input, TemplateRef, ViewChild, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, Component, ElementRef, inject, Input, OnChanges, OnInit, Renderer2, SimpleChanges, TemplateRef, ViewEncapsulation} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {PropCls} from "ts-ui/common";
+import {AnyTemplateOutlet} from "ts-ui/common";
 
 export const dividerPrefix = 'ts-divider';
 
@@ -11,106 +11,105 @@ export const dividerPrefix = 'ts-divider';
   preserveWhitespaces: false,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [CommonModule, AnyTemplateOutlet],
   template: ` 
-      <div class="ts-divider" [ngClass]="containerCls()" [ngStyle]="containerStyle()"  #container>
-         
         @if(text) {
             <span class="ts-divider-content">
-            @if(isTemplate) { <ng-container *ngTemplateOutlet="$any(text)"></ng-container> }
-            @else { <span [innerHTML]="text"></span> }
-                  </span>
+              <ng-container *anyTemplate="text">
+                <span [innerHTML]="text"></span>
+              </ng-container>
+        </span>
         }
-       
-      </div>
   `,
+  host: {
+    '[class.p-component]': 'true',
+    '[class.ts-divider]': 'true',
+    '[class.ts-divider-horizontal]': `!isVertical`,
+    '[class.ts-divider-vertical]': `isVertical`,
+    '[class.ts-divider-solid]': `type === 'solid'`,
+    '[class.ts-divider-dashed]': `type === 'dashed'`,
+    '[class.ts-divider-dotted]': `type === 'dotted'`,
+    '[class.ts-divider-top]': `isVertical && align === 'top'`,
+    '[class.ts-divider-bottom]': `isVertical && align === 'bottom'`,
+    '[class.ts-divider-left]': `isLeft`,
+    '[class.ts-divider-center]': `isCenter`,
+    '[class.ts-divider-right]': `isRight`,
+    '[class.ts-divider-with-text]': `text`,
+    '[class.ts-divider-with-text-left]': `text && isLeft`,
+    '[class.ts-divider-with-text-right]': `text && isRight`,
+    '[class.ts-divider-with-text-center]': `text && isCenter`,
+  }
 })
-export class Divider {
+export class Divider implements OnChanges, OnInit {
 
-  /**
-   * Inline style of the component.
-   * @group Props
-   */
-  @Input() style: { [klass: string]: any };
-  /**
-   * Style class of the component.
-   * @group Props
-   */
-  @Input() styleClass: PropCls;
   /**
    * Specifies the orientation.
    * @group Props
    */
   @Input() layout: 'horizontal' | 'vertical' = 'horizontal';
+
   /**
    * Border style type.
    * @group Props
    */
   @Input() type: 'solid' | 'dashed' | 'dotted' = 'solid';
+
   /**
    * Alignment of the content.
    * @group Props
    */
   @Input() align: 'left' | 'right' | 'top' | 'center' | 'bottom';
+
   /**
    * width | height line
    * @group Props
    */
-  @Input() size: string = '2px';
+  @Input() size: string;
+
   /**
    * color line
    * @group Props
    */
   @Input() color: string;
 
+  /**
+   * color line
+   * @group Props
+   */  
   @Input() text: string | TemplateRef<any>;
-
-  @ViewChild('container', {static: true})
-  container: ElementRef<HTMLElement>;
 
   get isTemplate(): boolean {
     return this.text instanceof TemplateRef;
   }
 
   get isLeft(): boolean {
-    return this.layout === 'horizontal' && (!this.align || this.align === 'left');
+    return !this.isVertical && this.align === 'left';
   }
 
   get isRight(): boolean {
-    return this.layout === 'horizontal' && this.align === 'right';
+    return !this.isVertical && this.align === 'right';
   }
 
   get isCenter(): boolean {
-    return (this.layout === 'horizontal' && this.align === 'center') || (this.layout === 'vertical' && (!this.align || this.align === 'center'));
+    return this.align === 'center';
   }
 
-
-  containerCls(): any {
-    return {
-      'ts-divider p-component': true,
-      'ts-divider-horizontal': this.layout === 'horizontal',
-      'ts-divider-vertical': this.layout === 'vertical',
-      'ts-divider-solid': this.type === 'solid',
-      'ts-divider-dashed': this.type === 'dashed',
-      'ts-divider-dotted': this.type === 'dotted',
-      'ts-divider-top': this.layout === 'vertical' && this.align === 'top',
-      'ts-divider-bottom': this.layout === 'vertical' && this.align === 'bottom',
-      'ts-divider-left': this.isLeft,
-      'ts-divider-center': this.isCenter,
-      'ts-divider-right': this.isRight,
-      'ts-divider-with-text': this.text,
-      'ts-divider-with-text-left': this.text && this.isLeft,
-      'ts-divider-with-text-right': this.text &&this.isRight,
-      'ts-divider-with-text-center': this.text &&this.isCenter,
-    };
+  get isVertical(): boolean {
+    return this.layout === 'vertical';
   }
 
-  containerStyle(): any {
-    return {
-      ...this.style,
-      [`--divider-color`]: this.color,
-      [`--divider-size`]: this.size,
-      [`--divider-style`]: this.type,
-    };
+  private renderer = inject(Renderer2);
+  private elementRef = inject(ElementRef);
+
+  ngOnInit(): void {
+    
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const {color, size, type} = changes;
+    const el = this.elementRef.nativeElement;
+    if(color) this.renderer.setStyle(el, '--divider-color', this.color);
+    if (size) this.renderer.setStyle(el, '--divider-size', this.size);
+    if (type) this.renderer.setStyle(el, '--divider-type', this.type);
   }
 }

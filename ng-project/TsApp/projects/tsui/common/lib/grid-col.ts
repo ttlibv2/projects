@@ -2,9 +2,7 @@ import { AfterViewInit, Directive, ElementRef, Input, OnChanges, OnDestroy, OnIn
 import { Subject, takeUntil } from "rxjs";
 import { Direction, Directionality } from "@angular/cdk/bidi";
 import { Objects } from "ts-ui/helper";
-import { DomHandler } from "primeng/dom";
-import { PropCls } from "./interface";
-const { notNull, isObject, isNumber, isString, parseFlex } = Objects;
+const { notNull, isNumber, isString, parseFlex } = Objects;
 
 export interface Breakpoint {
 
@@ -35,7 +33,7 @@ export interface EmbeddedProperty {
 }
 
 
-const sizeNames: string[] = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
+const sizeNames: string[] = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl', 'x2l', 'x3l', 'x4l'];
 const namePrefixes: string[] = ['span', 'pull', 'push', 'offset', 'order'];
 const isNumStr = (obj: any) => isString(obj) || isNumber(obj);
 
@@ -43,7 +41,7 @@ const isNumStr = (obj: any) => isString(obj) || isNumber(obj);
 
 @Directive({
     standalone: true,
-    selector: '[ts-col],ts-form-field',
+    selector: '[tsCol],ts-form-field,ts-card,div',
     exportAs: 'tsCol',
     host: {
         '[style.flex]': 'hostFlexStyle',
@@ -119,10 +117,28 @@ export class ColDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy
     @Input() xl: string | number | EmbeddedProperty;
 
     /**
-     * ≥1600px, could be a span value or an object containing above props
+     * ≥1400px, could be a span value or an object containing above props
      * @group Props
      * */
     @Input() xxl: string | number | EmbeddedProperty;
+
+    /**
+     * ≥1400px, could be a span value or an object containing above props
+     * @group Props
+     * */
+    @Input() x2l: string | number | EmbeddedProperty;
+    
+    /**
+     * ≥1600px, could be a span value or an object containing above props
+     * @group Props
+     * */
+    @Input() x3l: string | number | EmbeddedProperty;
+
+    /**
+     * ≥1900px, could be a span value or an object containing above props
+     * @group Props
+     * */
+    @Input() x4l: string | number | EmbeddedProperty;
 
     private classMap: { [key: string]: boolean } = {};
     private destroy$ = new Subject<boolean>();

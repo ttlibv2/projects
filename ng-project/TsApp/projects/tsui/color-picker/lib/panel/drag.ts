@@ -1,7 +1,7 @@
 import { DOCUMENT } from "@angular/common";
 import { AfterViewInit, booleanAttribute, ChangeDetectorRef, Component, ElementRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { TransformOffset } from "../interface";
-import { Events } from "ts-ui/core";
+import { Events } from "ts-ui/common";
 import { Utils } from "../utils";
 import { Color, HsbaColorType } from "../color";
 import { Objects } from "ts-ui/helper";

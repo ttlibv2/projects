@@ -1,42 +1,172 @@
-@use "../../setting/config" as cfg;
-@use "../../setting/mixins" as util;
+@use "../../setting/config"as cfg;
+@use "../../mixins/utilities"as util;
+
+$cardHeight      : var(--card-height, cfg.$cardHeight);
+$cardBorderRadius: var(--card-border-radius, cfg.$cardBorderRadius);
+$cardShadow      : var(--card-shadow, cfg.$cardShadow);
+
+$cardHeaderPadding    : var(--card-header-padding, cfg.$cardHeaderPadding);
+$cardHeaderMargin     : var(--card-header-margin, cfg.$cardHeaderMargin);
+$cardHeaderBorderWidth: var(--card-header-border-width, cfg.$cardHeaderBorderWidth);
+$cardHeaderBorderColor: var(--card-header-border-color, cfg.$cardHeaderBorderColor);
+$cardHeaderLeftGap    : var(--card-header-left-gap, cfg.$flexGap);
+$cardHeaderIconSize: var(--card-header-icon-size, cfg.$fontSize);
+
+$cardBodyPadding: var(--card-body-padding, cfg.$cardBodyPadding);
+
+@mixin headerFlex() {
+    @include util.flex-row(nowrap, $cardHeaderLeftGap);
+}
 
 .p-card {
-    background: cfg.$panelContentBg;
-    color: cfg.$panelContentTextColor;
-    box-shadow: cfg.$cardShadow;
-    border-radius: cfg.$borderRadius;
+    /// --card-height
+    /// --card-border-radius
+    /// --card-shadow
+    /// --card-header-
 
-    .p-card-body {
-        padding: cfg.$cardBodyPadding;
+    @include util.flex-column();
+
+    word-wrap      : break-word;
+    background-clip: border-box;
+
+    height         : $cardHeight;
+    color          : cfg.$panelContentTextColor;
+    background     : cfg.$panelContentBg;
+    box-shadow     : $cardShadow;
+    border-radius  : $cardBorderRadius;
+    border         : cfg.$borderWidth solid cfg.$borderColor;
+    justify-content: space-between;
+
+    .breakpoint-sm & {
+        --card-border-radius: 0!important;
     }
 
-    .p-card-title {
-        font-size: cfg.$cardTitleFontSize;
-        font-weight: cfg.$cardTitleFontWeight;
-        margin-bottom: cfg.$inlineSpacing;
+    &-header {
+        @include headerFlex();
+        padding      : $cardHeaderPadding;
+        margin       : $cardHeaderMargin;
+        border-bottom: $cardHeaderBorderWidth solid $cardHeaderBorderColor;
+        justify-content: space-between;
+
+        &-left-wrapper, &-right-wrapper {
+            @include headerFlex();
+        }
+
+        &-actions {
+            @include headerFlex();
+        }
+
+        &-title {
+            font-weight: 700;
+        }
+
+        .pi, .icon {
+            font-size: $cardHeaderIconSize;
+        }
+
     }
 
-    .p-card-subtitle {
-        font-weight: cfg.$cardSubTitleFontWeight;
-        margin-bottom: cfg.$inlineSpacing;
-        color: cfg.$cardSubTitleColor;
-    }
 
-    .p-card-content {
-        padding: cfg.$cardContentPadding;
-        display: flex;
-        flex-direction: column;
-        row-gap: .5rem;
-    }
 
-    .p-card-footer {
-        padding: cfg.$cardFooterPadding;
+    &-body {
+        padding: $cardBodyPadding;
     }
+}
 
-    &[class*=col-] {
-        padding-left: 0!important;
-        padding-right: 0!important;
-    }
+
+
+
+
+
+// .p-dialog .p-card {
+//     box-shadow: none;
+
+//     &-body {
+//         padding: 0;
+//         margin: 0;
+
+//     }
+// }
+
+.p-card2 {
+    // background     : cfg.$panelContentBg;
+    // color          : cfg.$panelContentTextColor;
+    // box-shadow     : cfg.$cardShadow;
+    // border-radius  : cfg.$borderRadius;
+    // justify-content: space-between;
+
+    // &-header {
+    //     @include flexRow();
+    //     justify-content: space-between;
+    //     margin         : cfg.$cardHeaderMargin;
+    //     padding        : cfg.$cardHeaderPadding;
+    //     border-bottom  : cfg.$cardHeaderBorderBottom;
+    //     flex           : 0;
+
+    //     &-left-wrapper {
+    //         @include flexRow();
+    //     }
+
+    //     &-right {
+    //         @include flexRow();
+
+    //         &:empty {
+    //             display: none;
+    //         }
+    //     }
+
+    //     &-left {
+    //         @include flexRow();
+
+    //         &:empty {
+    //             display: none;
+    //         }
+    //     }
+
+    //     &-title {
+    //         font-size  : cfg.$cardTitleFontSize;
+    //         font-weight: cfg.$cardTitleFontWeight;
+    //     }
+
+    // }
+
+    // &-body {
+    //     margin : cfg.$cardBodyMargin;
+    //     padding: cfg.$cardBodyPadding;
+    //     flex   : 1;
+    // }
+
+    // &-title {
+    //     font-size    : cfg.$cardTitleFontSize;
+    //     font-weight  : cfg.$cardTitleFontWeight;
+    //     margin-bottom: cfg.$inlineSpacing;
+    // }
+
+    // &-subtitle {
+    //     font-weight  : cfg.$cardSubTitleFontWeight;
+    //     margin-bottom: cfg.$inlineSpacing;
+    //     color        : cfg.$cardSubTitleColor;
+    // }
+
+    // &-content {
+    //     //padding: cfg.$cardContentPadding;
+    //     display       : flex;
+    //     flex-direction: column;
+    //     row-gap       : .5rem;
+    // }
+
+    // &-footer {
+    //     @include flexRow();
+
+    //     flex   : 0;
+    //     margin : cfg.$cardFooterMargin;
+    //     padding: cfg.$cardFooterPadding;
+
+    // }
+
+    // &[class*=col-] {
+    //     padding-left : 0 !important;
+    //     padding-right: 0 !important;
+    // }
 
 }

@@ -4,15 +4,14 @@ import { TranslateService } from "@ngx-translate/core";
 import { LayoutService } from 'ts-ui/app-layout';
 import { Platform } from '@angular/cdk/platform';
 import { ToastService } from 'ts-ui/toast';
-import { toastConfig } from './constant';
 import { DOCUMENT } from '@angular/common';
-import { DomHandler } from 'ts-ui/core';
+import { DomHandler } from 'ts-ui/common';
 
 @Component({
   selector: 'ts-root',
   template: `
     <router-outlet></router-outlet>
-   <div aria-live="polite" toastContainer 
+    <div aria-live="polite" toastContainer 
     [style]="{position: 'absolute', 'z-index': 9999}"></div>
   `,
   styles: []
@@ -20,12 +19,13 @@ import { DomHandler } from 'ts-ui/core';
 export class AppComponent implements OnInit {
   document = inject(DOCUMENT);
   windowWidth = signal<number>(0);
-
+  private layoutService = inject(LayoutService);
+  
   constructor(
     private platform: Platform,
     private toast: ToastService,
     private primengConfig: PrimeNGConfig,
-    private layoutService: LayoutService,
+   // private layoutService: LayoutService,
     private translateService: TranslateService) {
   }
 
@@ -42,11 +42,11 @@ export class AppComponent implements OnInit {
       this.toast.globalConfig.position = 'bottom-right';
     }
 
-    this.layoutService.tryAddTheme();
+    this.layoutService?.tryAddTheme();
 
     //primengConfig
     this.primengConfig.ripple = true;
-    this.primengConfig.overlayOptions = this.computedOverlayOption();
+    //this.primengConfig.overlayOptions = this.computedOverlayOption();
 
 
 

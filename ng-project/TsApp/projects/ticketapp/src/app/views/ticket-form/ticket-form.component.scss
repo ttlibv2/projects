@@ -105,6 +105,7 @@ ts-ticket-form {
 
 @media screen and (max-width: 575.98px) {
   .ticket-form {
+    //padding-top: 3rem;
 
     .ticket-body,
     .ticket-note,
@@ -113,15 +114,16 @@ ts-ticket-form {
     }
 
     .form-tool {
-      position: fixed;
-      background: var(--bluegray-100);
-      padding: .5rem;
-      inset: 0 0 0 0;
-      top: initial;
+      // position: fixed;
+      // background: var(--bluegray-100);
+      // padding: .5rem;
+      // inset: 0 0 0 0;
+      // bottom: initial;
+      // justify-content: space-between;
     }
 
     .col-left {
-      margin-bottom: 40px;
+      //margin-bottom: 40px;
     }
 
     &:has(.is-email-ticket) .f-email-ticket  {

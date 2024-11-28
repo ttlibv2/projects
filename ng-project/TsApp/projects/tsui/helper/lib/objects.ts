@@ -27,6 +27,10 @@ export class Objects {
   }
 
 
+  static parseI18N(str: any, prefix: string = '@@'): string | undefined {
+    return Objects.isString(str) && str.startsWith(prefix) ? str.replace(prefix, '') : undefined;
+  }
+
   static parseDate(value: any): Date {
     if (Objects.isNull(value)) return null;
     else if (value instanceof Date) return value;
@@ -415,6 +419,13 @@ export class Objects {
       }
       else return flex;
     }
+  }
+
+  static ngClassToJson(prop: string | string[] | Set<string> | { [klass: string]: any; }) {
+    if(Objects.isString(prop)) return { [prop] : true};
+    else if(Objects.isArray(prop)) return Objects.arrayToJson(prop, i => [i, true]);
+    else if(prop instanceof Set) return Objects.arrayToJson([...prop], i => [i, true]);
+    else return prop;
   }
 
 

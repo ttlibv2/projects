@@ -23,7 +23,6 @@ import { Utils } from '../utils';
 import { ColorPalette } from './palette.view';
 import { GradientView } from './gradient.view';
 import { ColorHandler } from './handler.view';
-import { Events } from 'ts-ui/core';
 import { DivElRef, DragView, Offset } from './drag';
 
 

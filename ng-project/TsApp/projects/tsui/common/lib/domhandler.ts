@@ -42,7 +42,7 @@ export class DomHandler {
         }
     }
 
-    public static removeMultipleClasses(element, classNames) {
+    public static removeMultipleClasses(element: HTMLElement, classNames: string | string[]) {
         if (element && classNames) {
             [classNames]
                 .flat()
