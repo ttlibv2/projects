@@ -27,6 +27,7 @@ $breakpoints: cfg.$grid-breakpoints;
 
         %responsive-#{$infix} {
             max-width: $max-width;
+            padding-top: var(--#{$prefix}gutter-ry, cfg.$container-gutter-x);
         }
 
         // Extend each breakpoint which is smaller or equal to the current breakpoint

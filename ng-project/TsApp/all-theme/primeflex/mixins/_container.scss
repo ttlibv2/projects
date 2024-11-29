@@ -13,7 +13,7 @@ $gy    :cfg.$container-gutter-y;
     --#{$prefix}gutter-ry            : #{$gutter-x};
 
     width: 100%;
-    padding-top: $ry;
+   // padding-top: var(--#{$prefix}gutter-ry, cfg.$container-gutter-x);
 
     //padding-right: $rx;
     //padding-left: $rx;

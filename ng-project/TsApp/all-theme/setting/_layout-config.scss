@@ -47,11 +47,11 @@ $grid-separator: '\\:' !default;
 $container-gutter-x: $grid-gutter-width * .5 !default;
 $container-gutter-y: $grid-gutter-width * .5 !default;
 $container-max-widths: (
-    sm: 540px,
-    md: 720px,
-    lg: 960px,
-    xl: 1140px,
-    xxl: 1320px,
-    x2l: 1320px,
-    x3l: 1540px,
-    x4l: 1900px) !default;
+    sm: 98%,
+    md: 98%,
+    lg: 98%,
+    xl: 98%,
+    xxl: 98%,
+    x2l: 98%,
+    x3l: 1590px,
+    x4l: 90%) !default;

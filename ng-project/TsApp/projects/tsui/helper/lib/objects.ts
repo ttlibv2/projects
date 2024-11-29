@@ -28,7 +28,7 @@ export class Objects {
 
 
   static parseI18N(str: any, prefix: string = '@@'): string | undefined {
-    return Objects.isString(str) && str.startsWith(prefix) ? str.replace(prefix, '') : undefined;
+    return Objects.isString(str) && str.startsWith(prefix) && !str.includes(' ') ? str.replace(prefix, '') : undefined;
   }
 
   static parseDate(value: any): Date {

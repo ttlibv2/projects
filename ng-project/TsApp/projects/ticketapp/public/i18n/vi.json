@@ -307,7 +307,10 @@
     "h1_option": "-- Tùy chọn --",
     "h1_support": "-- Thông tin BC --",
     "h1_email_ticket": "--Thông tin Email Ticket --",
-    "h1_customer": "-- Thông tin KH --"
+    "h1_customer": "-- Thông tin KH --",
+    "h1_basic": "-- Thông tin chung --",
+    "h1_ts24": "-- Thông tin TS --",
+    "h1_templates": "-- Danh sách mẫu --"
   },
   "actions": {
     "save": "Lưu lại",

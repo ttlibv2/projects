@@ -1,6 +1,6 @@
 <form [formGroup]="form" (ngSubmit)="saveTicket()" class="ticket-form grid sm" [ngClass]="formCls()">
     <ts-card class="col-order-1 lg:col-order-1 col-left pr-0" [span]="12" [lg]="7">
-        <p-fieldset legend="-- Thông tin chung --">
+        <ts-card-section header="@@ticket.h1_basic">
             <div class="grid">
                 <ts-form-field class="p-fluid" inputId="chanels" label="@@ticket.chanels" [required]="true" [span]="12"
                     [x2l]="utils.is_view_all ? 6: 4">
@@ -9,7 +9,7 @@
                         dataKey="id" styleClass="ts-chanels" (onClear)="onSelectChanel()"
                         (onChange)="onSelectChanel($event.value)">
                     </p-multiSelect>
-                </ts-form-field>                
+                </ts-form-field>
                 <ts-form-field class="p-fluid" label="@@ticket.ghelp" [required]="true" [span]="6"
                     [ngClass]="utils.r_ghelp_cls">
                     <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help" optionLabel="value"
@@ -23,17 +23,17 @@
                 </ts-form-field>
                 <ts-form-field class="p-fluid" label="@@ticket.shelp" [required]="true" [span]="6" [x2l]="3"
                     *ngIf="utils.is_view_all || viewTemplate">
-                    <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false" dataKey="id"
-                        formControlName="support_help"></p-dropdown>
+                    <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false"
+                        dataKey="id" formControlName="support_help"></p-dropdown>
                 </ts-form-field>
                 <ts-form-field class="p-fluid" label="@@ticket.soft_name" [required]="true" [span]="6" [x2l]="3"
                     *ngIf="utils.is_view_all || viewTemplate">
-                    <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" dataKey="id" formControlName="soft_name"
-                        emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
+                    <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" dataKey="id"
+                        formControlName="soft_name" emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
                 </ts-form-field>
             </div>
-        </p-fieldset>
-        <p-fieldset legend="-- Thông tin TS --">
+        </ts-card-section>
+        <ts-card-section header="@@ticket.h1_ts24">
             <div class="grid">
                 <ts-form-field class="p-fluid" label="@@ticket.od_team" [span]="6" [required]="true"
                     [ngClass]="utils.r_steam_cls">
@@ -88,8 +88,8 @@
                         dataKey="id" [options]="catalog.ls_ticket_tag"></p-multiSelect>
                 </ts-form-field>
             </div>
-        </p-fieldset>
-        <p-fieldset legend="{{'ticket.h1_customer'|translate}}" *ngIf="!viewTemplate">
+        </ts-card-section>
+        <ts-card-section header="@@ticket.h1_customer" *ngIf="!viewTemplate">
             <div class="grid">
                 <ts-form-field class="p-fluid" label="@@ticket.tax_code" [span]="6" [x2l]="3" [xl]="4"
                     [required]="true">
@@ -137,11 +137,11 @@
                         (onChange)="onSelectQuestion($event.value)"></p-dropdown>
                 </ts-form-field>
             </div>
-        </p-fieldset>
+        </ts-card-section>
 
         <!-- BEGIN: email ticket info -->
         @if (utils.is_email_ticket) {
-        <p-fieldset legend="{{'ticket.h1_email_ticket'|translate}}">
+        <ts-card-section header="@@ticket.h1_email_ticket">
             <div class="grid align-items-center">
                 <div class="p-fluid col-3">
                     <label for="emailTemplate">..</label>
@@ -166,48 +166,51 @@
                     }
                 </ng-container>
             </div>
-        </p-fieldset>
+        </ts-card-section>
         }
         <!-- END: email ticket info -->
     </ts-card><!-- END: COl_LEFT -->
 
-    <ts-card class="col-12 col-order-2 lg:col-order-2 col-right" [lg]="5">
+    <ts-card class="col-right" [lg]="{span: 5, order:2}" [span]="12" [order]="2">
 
         @if (!viewTemplate) {
-        <p-fieldset legend="{{'ticket.h1_support'|translate}}">
+        <ts-card-section header="@@ticket.h1_support">
             <div class="grid">
                 <ts-form-field class="p-fluid col-12 f-email-ticket" label="@@ticket.subject">
                     <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
                         placeholder="[ROOM-SP]-USER_CODE-MST-TIME" />
                 </ts-form-field>
                 <ts-form-field class="p-fluid col-12 ticket-body" label="@@ticket.body" *ngIf="utils.is_view_all">
-                    <textarea pInputTextarea id="body" formControlName="body"[autoResize]="true"[style.min-height]="'39px'"></textarea>
+                    <textarea pInputTextarea id="body" formControlName="body" [autoResize]="true"
+                        [style.min-height]="'39px'"></textarea>
                 </ts-form-field>
                 <ts-form-field class="p-fluid col-12 ticket-note" label="@@ticket.note" *ngIf="utils.is_view_all">
-                    <textarea pInputTextarea id="note" formControlName="note" [autoResize]="true" [style.min-height]="'39px'"></textarea>
+                    <textarea pInputTextarea id="note" formControlName="note" [autoResize]="true"
+                        [style.min-height]="'39px'"></textarea>
                 </ts-form-field>
                 <ts-form-field class="p-fluid col-12 ticket-copy" label="@@ticket.content_copy"
                     *ngIf="!utils.is_view_all">
                     <textarea pInputTextarea id="content_copy" formControlName="content_copy" [rows]="7"
-                        [style.max-height]="'230px'" [autoResize]="true"[style.min-height]="'130px'"></textarea>
+                        [style.max-height]="'230px'" [autoResize]="true" [style.min-height]="'130px'"></textarea>
                 </ts-form-field>
             </div>
-        </p-fieldset>
+        </ts-card-section>
         }
 
-        <p-fieldset class="col-option" legend="{{'ticket.h1_option'|translate}}">
+        <ts-card-section class="col-option" header="@@ticket.h1_option">
             <div class="grid" formGroupName="options">
                 <ng-template ngFor let-item [ngForOf]="labelOptions">
                     <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
-                        (onChange)="item.command && item.command($event.checked)" tsCol [span]="6" [xl]="4" [x3l]="3"></p-checkbox>
+                        (onChange)="item.command && item.command($event.checked)" tsCol [span]="6" [xl]="4"
+                        [x3l]="3"></p-checkbox>
                 </ng-template>
             </div>
-        </p-fieldset>
+        </ts-card-section>
 
 
 
         @if (!viewTemplate) {
-        <p-fieldset class="template-list mt-2" legend="-- Danh sách mẫu --">
+        <ts-card-section class="template-list mt-2" header="@@ticket.h1_templates">
             <div class="grid">
                 <ts-toolbar class="col-12">
                     <ng-template pTemplate="left">
@@ -229,14 +232,14 @@
                     </ng-template>
                 </ts-toolbar>
             </div>
-        </p-fieldset>
+        </ts-card-section>
 
         }
 
     </ts-card><!-- END: COl_RIGHT -->
 
     <!-- BEGIN: form_tool -->
-    <div class="col-order-3 lg:col-order-3 flex-wrap-center gap-2 mb-2 form-tool" [span]="12">
+    <div class="col-order-3 lg:col-order-3 flex-wrap-center gap-2 mb-2 mt-2 form-tool" [span]="12">
         @if (state.visibleToolImport && idata) {
 
         <div class="r-import flex gap-2 align-items-center ">

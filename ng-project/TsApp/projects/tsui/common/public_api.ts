@@ -6,5 +6,6 @@ export * from './lib/p-image-props';
 export * from './lib/idocument';
 export * from './lib/domhandler';
 export * from './lib/any-template';
+export * from './lib/prime-templates';
 export * from './lib/resize';
 export * from './lib/type';

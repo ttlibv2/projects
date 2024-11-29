@@ -30,7 +30,7 @@ import { FormsModule, FormField, FormLabel } from 'ts-ui/forms';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ToolBar } from 'ts-ui/toolbar';
 import { ColDirective } from 'ts-ui/common';
-import { Card } from 'ts-ui/card';
+import { CradModule } from 'ts-ui/card';
 
 
 @NgModule({
@@ -42,7 +42,7 @@ import { Card } from 'ts-ui/card';
     CommonModule,
     FormsModule,
     TicketFormRoutingModule,
-    Card,
+    CradModule,
     MultiSelectModule,
     ToolBar,
     DropdownModule,

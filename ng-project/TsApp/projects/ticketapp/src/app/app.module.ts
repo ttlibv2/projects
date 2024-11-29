@@ -29,6 +29,7 @@ import { ToastModule } from 'ts-ui/toast';
 import {DBService, LocalDbModule} from "ts-ui/local-db";
 import { FormsModule } from 'ts-ui/forms';
 import { ErrorInterceptor } from './services/error-interceptor';
+import { AppLayoutModule2 } from 'ts-ui/layout';
 
 class ErrorHandlerBasic implements ErrorHandler {
 
@@ -67,6 +68,7 @@ function LOAD_DB(service: DBService) {
         DatePipe,
         InputIconModule,
         DialogModule,
+        AppLayoutModule2,
         AgTableModule.forRoot(),
         TsLoggerModule.forRoot(),
         AppLayoutModule.forRoot(layoutConfig),

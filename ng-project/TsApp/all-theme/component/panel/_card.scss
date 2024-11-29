@@ -13,16 +13,13 @@ $cardHeaderLeftGap    : var(--card-header-left-gap, cfg.$flexGap);
 $cardHeaderIconSize: var(--card-header-icon-size, cfg.$fontSize);
 
 $cardBodyPadding: var(--card-body-padding, cfg.$cardBodyPadding);
+$cardSectionGap: var(--card-section-gap, cfg.$cardSectionGap);
 
 @mixin headerFlex() {
     @include util.flex-row(nowrap, $cardHeaderLeftGap);
 }
 
-.p-card {
-    /// --card-height
-    /// --card-border-radius
-    /// --card-shadow
-    /// --card-header-
+.p-card, .ts-card {
 
     @include util.flex-column();
 
@@ -67,106 +64,27 @@ $cardBodyPadding: var(--card-body-padding, cfg.$cardBodyPadding);
     }
 
 
-
     &-body {
         padding: $cardBodyPadding;
     }
-}
+
+    &-body-content .ts-card-section:first-child {
+        margin-top: 0!important;
+    }
+
+    &-section {
+        display: flex;
+        flex-flow: column nowrap;
+        row-gap: $cardSectionGap;
+        margin-top: $cardSectionGap;
+        
+        &-header {
+            color       : cfg.$panelHeaderTextColor;
+            font-weight : cfg.$panelHeaderFontWeight;
+        }
 
 
+    }
 
-
-
-
-// .p-dialog .p-card {
-//     box-shadow: none;
-
-//     &-body {
-//         padding: 0;
-//         margin: 0;
-
-//     }
-// }
-
-.p-card2 {
-    // background     : cfg.$panelContentBg;
-    // color          : cfg.$panelContentTextColor;
-    // box-shadow     : cfg.$cardShadow;
-    // border-radius  : cfg.$borderRadius;
-    // justify-content: space-between;
-
-    // &-header {
-    //     @include flexRow();
-    //     justify-content: space-between;
-    //     margin         : cfg.$cardHeaderMargin;
-    //     padding        : cfg.$cardHeaderPadding;
-    //     border-bottom  : cfg.$cardHeaderBorderBottom;
-    //     flex           : 0;
-
-    //     &-left-wrapper {
-    //         @include flexRow();
-    //     }
-
-    //     &-right {
-    //         @include flexRow();
-
-    //         &:empty {
-    //             display: none;
-    //         }
-    //     }
-
-    //     &-left {
-    //         @include flexRow();
-
-    //         &:empty {
-    //             display: none;
-    //         }
-    //     }
-
-    //     &-title {
-    //         font-size  : cfg.$cardTitleFontSize;
-    //         font-weight: cfg.$cardTitleFontWeight;
-    //     }
-
-    // }
-
-    // &-body {
-    //     margin : cfg.$cardBodyMargin;
-    //     padding: cfg.$cardBodyPadding;
-    //     flex   : 1;
-    // }
-
-    // &-title {
-    //     font-size    : cfg.$cardTitleFontSize;
-    //     font-weight  : cfg.$cardTitleFontWeight;
-    //     margin-bottom: cfg.$inlineSpacing;
-    // }
-
-    // &-subtitle {
-    //     font-weight  : cfg.$cardSubTitleFontWeight;
-    //     margin-bottom: cfg.$inlineSpacing;
-    //     color        : cfg.$cardSubTitleColor;
-    // }
-
-    // &-content {
-    //     //padding: cfg.$cardContentPadding;
-    //     display       : flex;
-    //     flex-direction: column;
-    //     row-gap       : .5rem;
-    // }
-
-    // &-footer {
-    //     @include flexRow();
-
-    //     flex   : 0;
-    //     margin : cfg.$cardFooterMargin;
-    //     padding: cfg.$cardFooterPadding;
-
-    // }
-
-    // &[class*=col-] {
-    //     padding-left : 0 !important;
-    //     padding-right: 0 !important;
-    // }
 
 }

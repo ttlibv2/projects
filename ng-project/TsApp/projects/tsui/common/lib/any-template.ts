@@ -1,15 +1,28 @@
 
-import {Directive,EmbeddedViewRef,Injector,Input,OnChanges,OnDestroy,SimpleChange,SimpleChanges,TemplateRef,ViewContainerRef} from '@angular/core';
+import {booleanAttribute, Component, ComponentRef, Directive,EmbeddedViewRef,inject,Injector,Input,OnChanges,OnDestroy,SimpleChange,SimpleChanges,TemplateRef,ViewContainerRef} from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Objects } from 'ts-ui/helper';
+const {isNull, parseI18N, isFalse} = Objects;
+
+@Component({
+    selector: 'dynamic-i18n',
+    template: `{{text}}`
+})
+class DynamicI18N {
+    @Input() text: string;
+}
 
 @Directive({
     selector: '[anyTemplate]',
     exportAs: 'anyTemplate',
+    providers: [TranslatePipe],
     standalone: true
 })
 export class AnyTemplateOutlet<_T = unknown> implements OnChanges, OnDestroy {
     private embeddedViewRef: EmbeddedViewRef<any>;
+    private componentViewRef: ComponentRef<any>;
     private context = new AnyTemplateOutletContext();
+    private translatePipe = inject(TranslatePipe, { self: true, optional: true });
 
     /**
      * A context object to attach to the {@link EmbeddedViewRef}. This should be an
@@ -22,10 +35,18 @@ export class AnyTemplateOutlet<_T = unknown> implements OnChanges, OnDestroy {
     /**
      * A string defining the template reference and optionally the context object for the template.
      */
-    @Input() anyTemplate: any | TemplateRef<any>;
+    @Input() anyTemplate: any | string | TemplateRef<any>;
 
     /** Injector to be used within the embedded view. */
     @Input() anyTemplateInjector: Injector;
+
+    /**
+     * defined i18n has support 
+     * */
+    @Input({ transform: booleanAttribute }) 
+    anyTemplateUseI18n: boolean = false; 
+
+
 
     constructor(
         private viewContainer: ViewContainerRef,
@@ -48,6 +69,7 @@ export class AnyTemplateOutlet<_T = unknown> implements OnChanges, OnDestroy {
 
     ngOnDestroy(): void {
         this.embeddedViewRef?.destroy();
+        this.componentViewRef?.destroy();
     }
 
     /**
@@ -91,14 +113,29 @@ export class AnyTemplateOutlet<_T = unknown> implements OnChanges, OnDestroy {
         }
     }
 
+    
+
     private recreateView(): void {
         this.viewContainer.clear();
-        const isTemplateRef = this.anyTemplate instanceof TemplateRef;
-        const templateRef = isTemplateRef ? this.anyTemplate : this.templateRef;
-        const viewContext = isTemplateRef ? this.anyTemplateContext : this.context;
-        this.embeddedViewRef = this.viewContainer.createEmbeddedView(
-            templateRef, viewContext, {injector: this.anyTemplateInjector ?? undefined}
-        );
+        this.embeddedViewRef?.destroy();
+        this.componentViewRef?.destroy();
+
+        const hasTemplate = this.anyTemplate instanceof TemplateRef;
+        const i18nKey: string = isFalse(hasTemplate) && this.anyTemplateUseI18n ? parseI18N(this.anyTemplate) : undefined;
+
+        if (hasTemplate || isNull(i18nKey)) {
+            const templateRef = hasTemplate ? this.anyTemplate : this.templateRef;
+            const viewContext = hasTemplate ? this.anyTemplateContext : this.context;
+            this.embeddedViewRef = this.viewContainer.createEmbeddedView(
+                templateRef, viewContext, { injector: this.anyTemplateInjector }
+            );
+        }
+        else {
+            let i18nValue = this.translatePipe.transform(i18nKey);
+            this.componentViewRef = this.viewContainer.createComponent(DynamicI18N, { injector: this.anyTemplateInjector });
+            this.componentViewRef.setInput('text', i18nValue);
+        }
+       
     }
 
     private updateContext(): void {
