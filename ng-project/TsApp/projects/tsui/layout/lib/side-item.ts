@@ -1,3 +1,5 @@
+import { CommonModule } from "@angular/common";
+import { Component, Input, ViewEncapsulation } from "@angular/core";
 import { IsActiveMatchOptions, QueryParamsHandling } from "@angular/router";
 import { MenuItem, TooltipOptions } from "primeng/api";
 import { INgClass, INgStyle, TooltipPos } from "ts-ui/common";
@@ -228,4 +230,15 @@ export interface SideItem  {
      * Callback to execute when item is clicked.
      */
     click?(event: SideItemEvent): void;    
+}
+
+@Component({
+    standalone: true,
+    selector: 'ts-side-item',
+    encapsulation: ViewEncapsulation.None,
+    imports: [CommonModule],
+    templateUrl: './test.html'
+})
+export class SideItemView {
+    @Input() item!: SideItem;
 }
