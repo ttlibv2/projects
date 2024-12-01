@@ -1,0 +1,81 @@
+<div class="p-card p-component" [ngClass]="styleClass" [ngStyle]="style">
+    <ng-content></ng-content>
+
+    @if(visibleHeader && hasHeader()) {
+    <div class="p-card-header">
+
+        <div class="p-card-header-left-wrapper">
+
+            <!-- card-header-icon -->
+            <div class="p-card-header-icon" *ngIf="headerIcon || pTemplate?.headerIcon">
+                <ng-container *anyTemplate="headerIcon || pTemplate?.headerIcon">
+                    <span [ngClass]="headerIcon"></span>
+                </ng-container>
+            </div>
+
+            <!-- card-header-left -->
+            <div class="p-card-header-actions" *ngIf="headerLeft || pTemplate?.headerLeft">
+                <ng-container *anyTemplate="headerLeft || pTemplate?.headerLeft"></ng-container>
+            </div>
+
+            <!-- card-header-title -->
+            <div class="p-card-header-title" *ngIf="header || pTemplate.header">
+                <ng-container *anyTemplate="header || pTemplate.header">
+                    <span [innerHTML]="header"></span>
+                </ng-container>
+            </div>
+
+        </div>
+
+        <!-- card-header-right -->
+        <div class="p-card-header-right-wrapper" *ngIf="headerRight || pTemplate?.headerRight">
+            <div class="p-card-header-actions">
+                <ng-container *anyTemplate="headerRight || pTemplate?.headerRight"></ng-container>
+            </div>
+        </div>
+    </div>
+    }
+
+    <div class="p-card-body">
+
+        <!-- card-body-title -->
+        <div class="p-card-body-title" *ngIf="title || pTemplate.title">
+            <ng-container *anyTemplate="title || pTemplate.title">
+                <h5 [innerText]="title"></h5>
+            </ng-container>
+        </div>
+
+        <!-- card-body-subtitle -->
+        <div class="p-card-body-subtitle" *ngIf="subtitle|| pTemplate.subtitle">
+            <ng-container *anyTemplate="subtitle || pTemplate.subtitle">
+                <h6 [innerText]="subtitle"></h6>
+            </ng-container>
+        </div>
+
+        <!-- card-body-content -->
+        <div class="p-card-body-content" [ngClass]="contentClass" [ngStyle]="contentStyle">
+            <ng-container *anyTemplate="content || pTemplate?.content">
+                <ng-content></ng-content>
+            </ng-container>
+        </div>
+    </div>
+
+    @if(footer || pTemplate?.footer || actions?.length){
+    <div class="p-card-footer" [ngClass]="ngFooterClass()" [ngStyle]="ngFooterStyle()">
+        <ng-container *anyTemplate="footer || pTemplate?.footer">
+            @if(actions?.length){
+            @for (action of actions; track $index) {
+            <ng-template *ngTemplateOutlet="!!actionTemplate ? actionTemplate
+                            : defaultAction; context: {$implicit: action}"></ng-template>
+            }
+            }
+        </ng-container>
+    </div>
+    }
+
+</div>
+
+<ng-template #defaultAction let-btn>
+    <button pButton [label]="btn.label" [icon]="btn.icon" [loading]="btn.loading" [loadingIcon]="btn.loadingIcon"
+        (click)="btn.onClick($event)"></button>
+</ng-template>

@@ -47,7 +47,7 @@ const appRoutes: Route[] = [
             },
             {
                 path: 'ticket-form',
-                loadChildren: () => import('./views/ticket-form/ticket-form.module').then(m => m.TicketFormModule)
+                loadChildren: () => import('./views/ticket-form/ticket-form.routing').then(m => m.TicketFormRouting)
             },
             {
                 path: 'ticket-log',

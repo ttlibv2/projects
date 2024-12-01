@@ -11,7 +11,7 @@ export type PropCls = string | string[] | Set<string> | {[klass: string]: any; }
 export type StyleCls = {[name: string]: any};
 
 
-export type INgClass = { [klass: string]: any; };
+export type INgClass = string | string[] | Set<string> | { [klass: string]: any; };
 export type INgStyle = { [name: string]: any };
 
 

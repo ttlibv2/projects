@@ -31,8 +31,11 @@ $cardSectionGap: var(--card-section-gap, cfg.$cardSectionGap);
     background     : cfg.$panelContentBg;
     box-shadow     : $cardShadow;
     border-radius  : $cardBorderRadius;
-    border         : cfg.$borderWidth solid cfg.$borderColor;
     justify-content: space-between;
+
+    &.has-border {
+        border         : cfg.$borderWidth solid cfg.$borderColor;
+    }
 
     .breakpoint-sm & {
         --card-border-radius: 0!important;
@@ -62,7 +65,6 @@ $cardSectionGap: var(--card-section-gap, cfg.$cardSectionGap);
         }
 
     }
-
 
     &-body {
         padding: $cardBodyPadding;

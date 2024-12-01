@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { TicketFormRoutingModule } from './ticket-form-routing.module';
+import { TicketFormRouting } from './ticket-form.routing';
 import { TicketFormComponent } from './ticket-form.component';
 import { MultiSelectModule } from "primeng/multiselect";
 import { DropdownModule } from "primeng/dropdown";
@@ -30,7 +30,7 @@ import { FormsModule, FormField, FormLabel } from 'ts-ui/forms';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ToolBar } from 'ts-ui/toolbar';
 import { ColDirective } from 'ts-ui/common';
-import { CradModule } from 'ts-ui/card';
+import { CardModule } from 'ts-ui/card';
 
 
 @NgModule({
@@ -41,8 +41,8 @@ import { CradModule } from 'ts-ui/card';
   imports: [
     CommonModule,
     FormsModule,
-    TicketFormRoutingModule,
-    CradModule,
+    //TicketFormRouting,
+    CardModule,
     MultiSelectModule,
     ToolBar,
     DropdownModule,

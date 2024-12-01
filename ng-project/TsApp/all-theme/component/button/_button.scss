@@ -3,7 +3,21 @@
 
 $prefixBtn: ".p-button";
 
+@mixin primary() {
+  --btn-color: cfg.$primaryButtonTextColor;
+  --btn-background: cfg.$primaryButtonBg;
+  --btn-border    : cfg.$primaryButtonBorder;
+}
+
+@mixin basic() {
+  --btn-color        : cfg.$buttonTextColor;
+  --btn-background   : cfg.$buttonBg;
+  --btn-border       : cfg.$buttonBorder;
+}
+
 #{$prefixBtn} {
+ // @include basic();
+
   color        : cfg.$buttonTextColor;
   background   : cfg.$buttonBg;
   border       : cfg.$buttonBorder;
@@ -12,6 +26,7 @@ $prefixBtn: ".p-button";
   transition   : cfg.$formElementTransition;
   border-radius: cfg.$borderRadius;
   outline-color: transparent;
+  justify-content: center;
 
   &:not(:disabled) {
     &:hover {
@@ -103,6 +118,7 @@ $prefixBtn: ".p-button";
   &-label {
     transition-duration: cfg.$transitionDuration;
     white-space: nowrap;
+    flex: 0!important;
   }
 
   &-icon {
@@ -154,29 +170,6 @@ $prefixBtn: ".p-button";
     color           : cfg.$buttonBg;
     background-color: cfg.$buttonTextColor;
   }
-
-
-
-
-  // form.sm &,
-  // &-sm {
-  //   // @include util.scaledFontSize(cfg.$fontSize, cfg.$scaleSM);
-  //   @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleSM);
-
-  //   // .p-button-icon {
-  //   //@include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleSM);
-  //   //  }
-  // }
-
-  // form.lg &,
-  // &-lg {
-  //   //@include util.scaledFontSize(cfg.$fontSize, cfg.$scaleLG);
-  //   @include util.scaledPadding(cfg.$buttonPadding, cfg.$scaleLG);
-
-  //   //.p-button-icon {
-  //   // @include util.scaledFontSize(cfg.$primeIconFontSize, cfg.$scaleLG);
-  //   // }
-  // }
 
   &-loading-label-only {
     .p-button-label {

@@ -1,35 +1,42 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SigninComponent } from './signin.component';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SigninRoutingModule } from "./signin-routing.module";
-import { AutoCompleteModule } from "primeng/autocomplete";
-import { CheckboxModule } from "primeng/checkbox";
-import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
-import { MessageService } from "primeng/api";
-import { PasswordModule } from "primeng/password";
-import { InputGroupModule } from 'ts-ui/input-group';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SigninComponent} from './signin.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {SigninRouting} from "./signin.routing";
+import {AutoCompleteModule} from "primeng/autocomplete";
+import {CheckboxModule} from "primeng/checkbox";
+import {ButtonModule} from "primeng/button";
+import {CardModule} from "ts-ui/card";
+import {MessageService} from "primeng/api";
+import {PasswordModule} from "primeng/password";
+import {InputGroupModule} from 'ts-ui/input-group';
+import {ImageModule} from "primeng/image";
+import {FormField} from "ts-ui/forms";
+import {Divider} from "ts-ui/divider";
 
 
 @NgModule({
-  declarations: [
-    SigninComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SigninRoutingModule,
-    InputGroupModule,
-    AutoCompleteModule,
-    CheckboxModule,
-    ButtonModule,
-    CardModule,
-    PasswordModule
-  ],
-  providers: [
-    MessageService
-  ]
+    declarations: [
+        SigninComponent
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SigninRouting,
+        ImageModule,
+        FormField,
+        InputGroupModule,
+        AutoCompleteModule,
+        CheckboxModule,
+        ButtonModule,
+        CardModule,
+        PasswordModule,
+        Divider
+    ],
+    providers: [
+        MessageService
+    ]
 })
-export class SigninModule { }
+export class SigninModule {
+}

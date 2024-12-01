@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TicketFormComponent } from './ticket-form.component';
+import { SigninComponent } from './signin.component';
 
-const routes: Routes = [{ path: '', component: TicketFormComponent }];
+const routes: Routes = [{ path: '', component: SigninComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TicketFormRoutingModule { }
+export class SigninRouting { }

@@ -5,4 +5,12 @@ $field-cls: 'ts-formfield';
     &-required {
         color: var(--danger-color);
     }
+
+    &-label {
+        margin-bottom: .15rem;
+    }
+
+    .p-password .p-icon-wrapper {
+        right: -.1rem;
+    }
 }
