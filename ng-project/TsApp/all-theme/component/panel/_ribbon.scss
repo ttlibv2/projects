@@ -1,0 +1,185 @@
+@use "../../setting/config"as cfg;
+@use "sass:list";
+
+$prefix: 'ribbon';
+
+//--
+$ribbon-bg             : var(--ribbon-bg, --primary-color);
+$ribbon-color          : var(--ribbon-color, #fff);
+$ribbon-height         : 30px; //var(--ribbon-height, 30px);
+$ribbon-wrapper-padding:58px 18px 28px; // var(--ribbon-wrapper-padding, 58px 18px 28px);
+$ribbon-padding        : var(--ribbon-padding, 0 20px);
+
+//--
+$ribbon-clip-bg         : var(--ribbon-clip-bg, $ribbon-bg);
+$ribbon-clip-border-size: 1rem;
+$ribbon-clip-border     : calc($ribbon-clip-border-size / 2) dashed transparent;
+
+
+//--calc
+$cardBodyPadding: calc(.85rem + 4px);
+$clip-spacing   : calc($cardBodyPadding * -1);
+
+//
+$ribbon-top-gap: 10px;
+
+.#{$prefix} {
+
+    &-wrapper {
+        position: relative;
+    }
+
+    &-primary {
+        --ribbon-bg     : var(--danger-color);
+        --ribbon-clip-bg: var(--danger-color);
+    }
+
+    &-item {
+        position   : absolute;
+        clear      : left;
+        padding    : $ribbon-padding;
+        height     : $ribbon-height;
+        line-height: $ribbon-height;
+        color      : $ribbon-color;
+        background : $ribbon-bg;
+        z-index    : 2;
+    }
+
+    &-left-top {
+        top : $ribbon-top-gap;
+        left: calc(($ribbon-height/2 - var(--gutter-grx, 0.25rem)) * -1);
+
+        &:before {
+            position: absolute;
+            width   : 0;
+            height  : 0;
+            content : "";
+            border  : $ribbon-clip-border;
+
+            top               : $ribbon-height;
+            left              : 0;
+            border-top-color  : $ribbon-bg;
+            border-right-color: $ribbon-bg;
+
+        }
+
+    }
+
+}
+
+
+
+.#{$prefix}2 {
+    position: relative;
+    padding : $ribbon-wrapper-padding;
+
+    &.p-card-body {
+        &:has(.ribbon-item-clip-lt) {
+            padding-top: calc($ribbon-height + $ribbon-top-gap);
+        }
+
+        &:has(.ribbon-item-clip-lb) {
+            padding-bottom: calc($ribbon-height + $ribbon-top-gap);
+        }
+
+        &:has(.ribbon-item-clip-rt) {
+            padding-top: $ribbon-top-gap;
+        }
+
+        &:has(.ribbon-item-clip-rb) {
+            padding-top   : 0;
+            padding-bottom: calc($ribbon-height + $ribbon-top-gap + 10px);
+        }
+    }
+
+    &-item {
+        position   : absolute;
+        clear      : left;
+        padding    : $ribbon-padding;
+        height     : $ribbon-height;
+        line-height: $ribbon-height;
+        color      : $ribbon-color;
+        background : $ribbon-bg;
+        z-index    : 2;
+
+
+        &-clip {
+
+            &:before {
+                position: absolute;
+                width   : 0;
+                height  : 0;
+                content : "";
+                border  : $ribbon-clip-border;
+            }
+
+            &-left-top,
+            &-lt {
+
+                top : $ribbon-top-gap;
+                left: $clip-spacing;
+
+                &:before {
+                    top               : $ribbon-height;
+                    left              : 0;
+                    border-top-color  : $ribbon-bg;
+                    border-right-color: $ribbon-bg;
+                }
+
+            }
+
+            &-left-bottom,
+            &-lb {
+                bottom: .5rem;
+                left  : $clip-spacing;
+
+                &:before {
+                    left               : 0;
+                    bottom             : $ribbon-height;
+                    border-top-color   : transparent;
+                    border-right-color : $ribbon-bg;
+                    border-bottom-color: $ribbon-bg;
+                }
+
+            }
+
+            &-right-top,
+            &-rt {
+                right: $clip-spacing;
+
+                &:before {
+                    right             : 0;
+                    top               : $ribbon-height;
+                    border-right-color: transparent;
+                    border-top-color  : $ribbon-clip-bg;
+                    border-left-color : $ribbon-clip-bg;
+                }
+            }
+
+            &-right-bottom,
+            &-rb {
+                inset: auto $clip-spacing 12px auto;
+
+                &:before {
+                    right              : 0;
+                    bottom             : $ribbon-height;
+                    border-color       : transparent;
+                    border-left-color  : $ribbon-clip-bg;
+                    border-bottom-color: $ribbon-clip-bg;
+                }
+            }
+        }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+}

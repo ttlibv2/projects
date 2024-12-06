@@ -4,7 +4,7 @@ import { CatalogComponent } from './catalog.component';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { TranslateModule } from '@ngx-translate/core';
-import { CatalogRoutingModule } from './catalog.routing';
+import { CatalogRouting } from './catalog.routing';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -17,7 +17,6 @@ import { ToolBar } from 'ts-ui/toolbar';
   ],
   imports: [
     CommonModule,
-    CatalogRoutingModule,
     ToolBar,
     FormsModule,
     CardModule,

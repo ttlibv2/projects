@@ -8,8 +8,8 @@ import {Router} from "@angular/router";
 import {ToastService} from "ts-ui/toast";
 import {TranslateService} from "@ngx-translate/core";
 import {StorageService} from "../../services/storage.service";
-import {HOME_PAGE, routerUrl} from "../../constant";
-import {SocialLink} from "../../models/common";
+import {HOME_PAGE, Urls} from "../../constant";
+import {ALL_SOCIAL, SocialLink} from "../../models/common";
 
 @Component({
     selector: 'ts-signin',
@@ -31,15 +31,10 @@ export class SigninComponent implements OnInit {
     asyncView: boolean = false;
 
     cacheUsers: string[] = [];
-    socialLinks: SocialLink[] = [
-        {label: 'Facebook', icon: 'pi pi-facebook', link: '/auth/facebook'},
-        {label: 'Google', icon: 'pi pi-google', link: '/auth/google'},
-        {label: 'LinkedIn', icon: 'pi pi-linkedin', link: '/auth/linkedIn'},
-        {label: 'Twitter', icon: 'pi pi-twitter', link: '/auth/twitter'},
-    ];
+    socialLinks: SocialLink[] = ALL_SOCIAL;
 
     get signupUrl(): string {
-        return routerUrl.signupUrl;
+        return Urls.signupUrl;
     }
 
     constructor(private fb: FormBuilder,
@@ -69,6 +64,10 @@ export class SigninComponent implements OnInit {
             url_dev: [info?.url_dev ?? this.cfg.baseUrl],
             remember: [info?.remember]
         });
+    }
+
+    clickNewAcc(): void {
+        this.router.navigateByUrl(Urls.signupUrl);
     }
 
     onSearchUser(event: AutoCompleteCompleteEvent) {
@@ -103,7 +102,7 @@ export class SigninComponent implements OnInit {
         this.asyncLogin = true;
         this.auth.signin(obj).subscribe({
             error: err => {
-                //console.log(err);
+                console.log(err);
                 this.asyncLogin = false;
                 //this.toast.error('error <=> console');
             },

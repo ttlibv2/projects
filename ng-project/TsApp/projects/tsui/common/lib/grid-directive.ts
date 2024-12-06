@@ -1,8 +1,12 @@
-import { AfterViewInit, Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, Renderer2, SimpleChanges } from "@angular/core";
+import { Directive, ElementRef, Input, OnChanges, Renderer2, AfterViewInit, SimpleChanges , OnDestroy, OnInit, } from "@angular/core";
+import { Objects } from "ts-ui/helper";
 import { Subject, takeUntil } from "rxjs";
 import { Direction, Directionality } from "@angular/cdk/bidi";
-import { Objects } from "ts-ui/helper";
+import { DomHandler } from "./domhandler";
 const { notNull, isNumber, isString, parseFlex } = Objects;
+
+const {addClass, removeClass} = DomHandler;
+
 
 export interface Breakpoint {
 
@@ -127,7 +131,7 @@ export class ColDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy
      * @group Props
      * */
     @Input() x2l: string | number | EmbeddedProperty;
-    
+
     /**
      * ≥1600px, could be a span value or an object containing above props
      * @group Props
@@ -195,7 +199,7 @@ export class ColDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy
             else namePrefixes.forEach(prefix => {
                 const sizeVal2 = sizeVal[prefix];
                 const cls = prefix === 'span' ? '-' : `-${prefix}-`;
-               
+
                 // col-hide
                 hostClassMap[`${name}:col${cls}${sizeVal2}`] = notNull(sizeVal[prefix]);
             })
@@ -223,4 +227,54 @@ export class ColDirective implements OnInit, OnChanges, AfterViewInit, OnDestroy
 
     };
 
+}
+
+@Directive({
+    standalone: true,
+    selector: '[grid],.grid,.row',
+    exportAs: 'grid',
+    host: {
+        '[class.grid]': 'true',
+        '[class.row]': 'true',
+    }
+})
+export class GridDirective implements OnChanges {
+
+    /**
+     * Define gutter-x for grid
+     * */
+    @Input() gutterX: string;
+
+    /**
+     * Define gutter-y for grid
+     * */
+    @Input() gutterY: string;
+
+    /**
+     * Define container-type for grid
+     * */
+    @Input() containerType: 'size' | 'inline-size' | undefined;
+
+    constructor(private elementRef: ElementRef) { }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        const { gutterX, gutterY, containerType } = changes;
+        if (gutterX) this.setStyle('--gutter-grx', this.gutterX);
+        if (gutterY) this.setStyle('--gutter-gry', this.gutterY);
+        if (containerType) {
+            this.setStyle('container-type', this.containerType);
+            this.addRemoveClass(!!this.containerType, 'container-inline-size');
+        }
+
+    }
+
+    setStyle(cssName: string, cssValue: any): void {
+        Objects.setStyle(this.elementRef.nativeElement, cssName, cssValue, 'important');
+    }
+
+    addRemoveClass(hasAdd: boolean, cls: string) {
+        const el = this.elementRef.nativeElement;
+        if(!!hasAdd) addClass(el, cls);
+        else removeClass(el, cls);
+    }
 }

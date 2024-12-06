@@ -1,23 +1,18 @@
 <div class="search-user-form grid">
     @if(state.hasDialog){
-        <div class="col-12 p-0">
-            <ng-container *ngTemplateOutlet="formView"></ng-container>
-        </div>
+    <div class="col-12 p-0">
+        <ng-container *ngTemplateOutlet="formView"></ng-container>
+    </div>
     }
     @else {
-        <p-card styleClass="col-12">
+    <ts-card styleClass="col-12" title="Tìm kiếm khách hàng">
         <ng-container *ngTemplateOutlet="formView"></ng-container>
-    </p-card>
+    </ts-card>
     }
     <div class="col-12">
         <ts-ag-table #agTable [option]="tableOption" [tableHeight]="tableHeight" [columns]="columns" [rows]="rowData"
             (rowClicked)="clickRow($event.data)"></ts-ag-table>
     </div>
-
-    <!-- <div class="col-12 flex flex-row justify-content-end gap-2" *ngIf="state.hasDialog">
-        <p-button severity="help" label="Chọn và đóng" (onClick)="selectAndClose()" [disabled]="!dataSelect" />
-        <p-button severity="info" label="Đóng" (onClick)="closeDialog()" />
-    </div> -->
 
 </div>
 
@@ -33,18 +28,19 @@
                         <ts-inputgroup compact="false" [style]="{'max-width': '80px'}">
                             <input pInputText formControlName="company_id" placeholder="C_UID" />
                             <ng-template pTemplate="suffix" *ngIf="hasCompanyUID">
-                                <ts-icon name="pi pi-times" color="red" size=".8rem" (onClick)="clearUID('company_id')" />
+                                <ts-icon name="pi pi-times" color="red" size=".8rem"
+                                    (onClick)="clearUID('company_id')" />
                             </ng-template>
                         </ts-inputgroup>
-    
+
                     </ng-template>
                 </ts-inputgroup>
             </div>
-            <div class="p-fluid col-12 sm:col-6 sm:col-order-3 col-order-4">
+            <div class="p-fluid col-12 sm:col-6 sm:col-order-3 col-order-4"*ngIf="state.isViewAdd">
                 <label for="company_name">Tên công ty</label>
                 <input pInputText formControlName="company_name" id="company_name" />
             </div>
-            <div class="p-fluid col-12 sm:col-6 sm:col-order-5 col-order-5">
+            <div class="p-fluid col-12 sm:col-6 sm:col-order-5 col-order-5"*ngIf="state.isViewAdd">
                 <label for="street">Địa chỉ</label>
                 <input pInputText id="street" formControlName="street" />
             </div>
@@ -56,23 +52,24 @@
                         <ts-inputgroup [style]="{'max-width': '80px'}">
                             <input pInputText formControlName="customer_id" placeholder="C_UID" />
                             <ng-template pTemplate="suffix" *ngIf="hasPersonUID">
-                                <ts-icon name="pi pi-times" color="red" size=".8rem" (onClick)="clearUID('customer_id')" />
+                                <ts-icon name="pi pi-times" color="red" size=".8rem"
+                                    (onClick)="clearUID('customer_id')" />
                             </ng-template>
                         </ts-inputgroup>
-    
+
                     </ng-template>
                 </ts-inputgroup>
             </div>
-            <div class="p-fluid col-12 sm:col-6 sm:col-order-4 col-order-3">
+            <div class="p-fluid col-12 sm:col-6 sm:col-order-4 col-order-3" >
                 <label for="mobile" class="text-info">Số điện thoại (Cá nhân)</label>
                 <input pInputText id="mobile" formControlName="mobile" />
             </div>
-            <div class="p-fluid col-12 sm:col-6 sm:col-order-6 col-order-6">
+            <div class="p-fluid col-12 sm:col-6 sm:col-order-6 col-order-6" *ngIf="state.isViewAdd">
                 <label for="customer_name">Người liên hệ (Cá nhân) *</label>
                 <input pInputText id="customer_name" formControlName="customer_name" />
             </div>
         </div>
-        <div class="col-12 grid p-0 row-gap-3">
+        <div class="col-12 grid p-0 row-gap-3 pl-1">
             <div class="col-12 xs:mt-2">
                 <div class="flex-nowrap gap-3">
                     <label for="search_where" class="options">Tìm theo: </label>
@@ -98,10 +95,10 @@
             <div class="col-12 xs:mt-2">
                 <div class="flex-nowrap gap-3">
                     <label for="search_result" class="options">Kết quả: </label>
-                    <div class="flex-wrap-center flex-1 gap-3" id="search_result">
+                    <div class="flex-wrap-center flex-1 gap-2" id="search_result">
                         <ts-label icon="pi pi-at" html=" Số dòng" class="gap-2"></ts-label>
-                        <p-inputNumber [min]="1" [max]="80" formControlName="pageSize" [inputStyle]="{'max-width': '100px'}"
-                            showButtons="false" placeholder="Số dòng" />
+                        <p-inputNumber [min]="1" [max]="80" formControlName="pageSize"
+                            [inputStyle]="{'max-width': '100px'}" showButtons="false" placeholder="Số dòng" />
                         <div class="flex gap-1" *ngIf="!page?.data">
                             <p-divider layout="vertical"></p-divider>
                             <label>Tìm được</label>
@@ -113,20 +110,21 @@
             </div>
         </div>
         <div class="col-12 flex-wrap-center gap-2">
-    
+            <p-button label="Lấy mặc định" icon="pi pi-shield" severity="success" (click)="clickResetForm()"></p-button>
+
             <ts-splitButton severity="info" label="Tìm theo form" icon="pi pi-search" [loading]="state.asyncLoading"
                 loadingIcon="pi pi-sync" (onClick)="clickSearch()" [model]="searchMenu" />
-    
+
             <ts-splitButton visibleMenuButton="false" severity="warning" label="Tạo mới" icon="pi pi-user-plus"
                 [loading]="state.asyncSave" loadingIcon="pi pi-sync" [model]="newMenuItems" *ngIf="visibleAllowNew" />
-    
-            <p-button label="Lấy mặc định" severity="success" (click)="clickResetForm()"></p-button>
-    
-            <ts-divider layout="vertical" color="var(--danger-color)"></ts-divider>
-            <p-button severity="help" label="Chọn và đóng" (onClick)="selectAndClose()" [disabled]="!dataSelect" />
 
-            <p-button severity="info" label="Đóng" (onClick)="closeDialog()" />
-    
+            <ng-container *ngIf="state.hasDialog">
+                <ts-divider layout="vertical" color="var(--danger-color)"></ts-divider>
+                <p-button severity="help" label="Chọn và đóng" (onClick)="selectAndClose()" [disabled]="!dataSelect" />
+                <p-button severity="info" label="Đóng" (onClick)="closeDialog()" />
+            </ng-container>
+
+            <p-checkbox label="ALL" (onChange)="clickViewAdd($event.checked)" [binary]="true" #chk />
         </div>
     </form>
 </ng-template>

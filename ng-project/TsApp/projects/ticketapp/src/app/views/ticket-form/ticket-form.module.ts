@@ -22,14 +22,14 @@ import { CatalogModule } from '../catalog/catalog.module';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TranslateModule } from "@ngx-translate/core";
 import { TagModule } from 'ts-ui/tag';
-import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupModule } from 'ts-ui/input-group';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { RippleModule } from 'primeng/ripple';
 import { TsLoggerModule } from 'ts-ui/logger';
 import { FormsModule, FormField, FormLabel } from 'ts-ui/forms';
 import { IconFieldModule } from 'primeng/iconfield';
 import { ToolBar } from 'ts-ui/toolbar';
-import { ColDirective } from 'ts-ui/common';
+import { ColDirective, GridDirective } from 'ts-ui/common';
 import { CardModule } from 'ts-ui/card';
 
 
@@ -69,9 +69,10 @@ import { CardModule } from 'ts-ui/card';
     TagModule,
     FormField,
     FormLabel,
-    ColDirective
-
-  ],
+    ColDirective,
+    GridDirective,
+    
+],
   providers: [
     DialogService,
     DynamicDialogRef

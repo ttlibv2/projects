@@ -6,7 +6,7 @@ import { SignupComponent } from './signup.component';
 import { CheckboxModule } from "primeng/checkbox";
 import { InputTextModule } from "primeng/inputtext";
 import { ReactiveFormsModule } from "@angular/forms";
-import { CardModule } from "primeng/card";
+import { CardModule } from "ts-ui/card";
 import { ButtonModule } from "primeng/button";
 import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";
@@ -19,6 +19,10 @@ import { BlockUIModule } from "primeng/blockui";
 import { PasswordModule } from "primeng/password";
 import { DropdownModule } from "primeng/dropdown";
 import { InputGroupModule } from 'ts-ui/input-group';
+import { FormField } from 'ts-ui/forms';
+import { Divider } from 'ts-ui/divider';
+import { SocialItem } from '../shared/social-item';
+import { ColDirective } from 'ts-ui/common';
 
 
 @NgModule({
@@ -32,18 +36,21 @@ import { InputGroupModule } from 'ts-ui/input-group';
     InputTextModule,
     ReactiveFormsModule,
     CardModule,
+    FormField,
+    Divider,
     ButtonModule,
     InputGroupModule,
     IconFieldModule,
     InputIconModule,
-    DividerModule,
     EditorModule,
     InputTextareaModule,
     CalendarModule,
     TranslateModule,
     BlockUIModule,
     PasswordModule,
-    DropdownModule
+    DropdownModule,
+    SocialItem,
+    ColDirective
   ]
 })
 export class SignupModule { }

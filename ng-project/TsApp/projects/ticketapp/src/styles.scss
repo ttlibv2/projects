@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+
 @import "../public/fontawesome/css/all.css";
 
 //@import "scss/ng-select/default.theme.scss";
@@ -18,25 +21,31 @@
 // @import "primeflex/primeflex.min.css";
 @import "../../../all-theme/primeflex";
 
-*::-webkit-scrollbar {
-  display: none;
+@import "../src/app/views/zlayout/style";
+
+// *::-webkit-scrollbar { 
+//   display: none;
+// }
+
+body {
+  --body-padding-lr: .5rem;
 }
 
 @media screen and (min-width: 768px) {
 
   .p-dynamic-dialog {
-      // flex: 1 1 auto;
-  
-      &:not(.p-dialog-maximized) {
-        max-width: 60%;
-      }
+    // flex: 1 1 auto;
+
+    &:not(.p-dialog-maximized) {
+      max-width: 60%;
     }
+  }
 }
 
 
 .overlay-container {
   position: absolute;
-  z-index: 9999999;
+  z-index : 9999999;
 }
 
 .p-inputgroup .p-inputwrapper {
@@ -56,8 +65,8 @@
 
 
 .ql-snow .ql-color-picker .ql-picker-item {
-  height: 1.5rem!important;
-  width: 1.5rem!important;
+  height: 1.5rem !important;
+  width : 1.5rem !important;
 }
 
 .borderless {
@@ -70,6 +79,17 @@
       span:not(:empty) {
         padding: 0rem;
       }
+    }
+  }
+}
+
+.p-dropdown {
+  *::-webkit-scrollbar {
+    width           : 5px;
+    background-color: #F5F5F5;
+
+    &-thumb {
+      background-color: var(--primary-color);
     }
   }
 }

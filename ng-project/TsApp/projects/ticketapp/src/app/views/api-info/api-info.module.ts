@@ -13,10 +13,10 @@ import { PasswordModule } from "primeng/password";
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DividerModule } from 'primeng/divider';
-import { FormsModule } from 'ts-ui/forms';
+import { Divider } from 'ts-ui/divider';
+import { FormField, FormsModule } from 'ts-ui/forms';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { Card } from 'ts-ui/card';
+import { Card, CardModule } from 'ts-ui/card';
 import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
@@ -30,7 +30,8 @@ import { TooltipModule } from 'primeng/tooltip';
         CommonModule,
         FormsModule,
         ApiInfoRoutingModule,
-        Card,
+        CardModule,
+        FormField,
         MultiSelectModule,
         DropdownModule,
         ChipsModule,
@@ -42,7 +43,7 @@ import { TooltipModule } from 'primeng/tooltip';
         InputTextareaModule,
         InputGroupAddonModule,
         TooltipModule,
-        DividerModule
+        Divider
     ],
     providers: [DynamicDialogRef]
 })

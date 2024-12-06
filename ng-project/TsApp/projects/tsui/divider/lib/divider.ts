@@ -1,8 +1,10 @@
-import {ChangeDetectionStrategy, Component, ElementRef, inject, Input, OnChanges, OnInit, Renderer2, SimpleChanges, TemplateRef, ViewEncapsulation} from "@angular/core";
+import {ChangeDetectionStrategy, Component, ElementRef, inject, Input, numberAttribute, OnChanges, OnInit, Renderer2, SimpleChanges, TemplateRef, ViewEncapsulation} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {AnyTemplateOutlet} from "ts-ui/common";
+import {AnyTemplateOutlet, DomHandler, Severity, StringTemplate} from "ts-ui/common";
+import { Objects } from "ts-ui/helper";
 
 export const dividerPrefix = 'ts-divider';
+const {isNull} = Objects;
 
 @Component({
   standalone: true,
@@ -38,6 +40,7 @@ export const dividerPrefix = 'ts-divider';
     '[class.ts-divider-with-text-left]': `text && isLeft`,
     '[class.ts-divider-with-text-right]': `text && isRight`,
     '[class.ts-divider-with-text-center]': `text && isCenter`,
+    '[class.pc-0]': `percent === 0`
   }
 })
 export class Divider implements OnChanges, OnInit {
@@ -58,7 +61,13 @@ export class Divider implements OnChanges, OnInit {
    * Alignment of the content.
    * @group Props
    */
-  @Input() align: 'left' | 'right' | 'top' | 'center' | 'bottom';
+  @Input() align: 'left' | 'right' | 'top' | 'center' | 'bottom' | 'first' | 'last';
+
+  /**
+   * severity
+   * @group Props
+   */
+  @Input() severity: Severity;
 
   /**
    * width | height line
@@ -73,10 +82,16 @@ export class Divider implements OnChanges, OnInit {
   @Input() color: string;
 
   /**
+   * percent line
+   * @group Props
+   */
+  @Input({transform: numberAttribute}) percent: number;
+
+  /**
    * color line
    * @group Props
    */  
-  @Input() text: string | TemplateRef<any>;
+  @Input() text: StringTemplate;
 
   get isTemplate(): boolean {
     return this.text instanceof TemplateRef;
@@ -99,17 +114,34 @@ export class Divider implements OnChanges, OnInit {
   }
 
   private renderer = inject(Renderer2);
-  private elementRef = inject(ElementRef);
+  private elementRef: ElementRef<HTMLElement> = inject(ElementRef);
 
   ngOnInit(): void {
     
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const {color, size, type} = changes;
-    const el = this.elementRef.nativeElement;
-    if(color) this.renderer.setStyle(el, '--divider-color', this.color);
-    if (size) this.renderer.setStyle(el, '--divider-size', this.size);
-    if (type) this.renderer.setStyle(el, '--divider-type', this.type);
+    const {color, size, type, percent, severity} = changes;
+    if(color) this.setStyle('--divider-color', this.color);
+    if (size) this.setStyle( '--divider-size', this.size);
+    if (type) this.setStyle( '--divider-type', this.type);
+    if (percent) {
+      const val = isNull(this.percent) ? undefined : `${this.percent}%`;
+      this.setStyle( '--divider-percent', val);    
+    }
+
+    if(severity) {
+      let {previousValue: prev, currentValue: curr} = severity;
+      let element = this.elementRef.nativeElement;
+      let func = (name: Severity) => `ts-divider-${name}`;
+      if (!!prev) DomHandler.removeClass(element, func(prev));
+      if (!!curr) DomHandler.addClass(element, func(curr));
+    }
+
+  }
+
+  private setStyle(property: string, value: any): void {
+    this.elementRef.nativeElement.style.setProperty(property, value);
+
   }
 }

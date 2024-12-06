@@ -1,4 +1,5 @@
-@use 'config' as cfg;
+@use 'config'as cfg;
+@use 'mixins' as mixins;
 @use 'sass:map';
 
 @function get-scale-padding($key, $scales: cfg.$paddingScales) {
@@ -7,4 +8,39 @@
 
 @function get-scale-font($key, $scales: cfg.$fontScales) {
     @return map-get($scales, $key);
+}
+
+
+@mixin make-scale($name, $fontSize, $padding) {
+    @include mixins.scaledPadding($padding, get-scale-padding($name));
+    @include mixins.scaledFontSize($fontSize, get-scale-font($name));
+}
+
+
+@mixin make-scale-all($childCls, $parent:null, $padding, $fontSizeBase:cfg.$fontSize) {
+
+    $allKey: map-keys(cfg.$paddingScales);
+
+    @each $name in $allKey {
+        
+        .#{$childCls} {
+
+            &.#{$name} {
+                @include make-scale($name, $fontSizeBase, $padding);
+            }
+
+            @if($parent !=null) {
+
+                #{$parent}.#{$name} & {
+                    @include make-scale($name, $fontSizeBase, $padding);
+                }
+
+            }
+
+        }
+
+
+
+    }
+
 }

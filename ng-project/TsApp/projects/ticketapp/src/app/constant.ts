@@ -3,16 +3,15 @@ import { TranslateLoader, TranslateModuleConfig } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { ToastConfig } from "ts-ui/toast";
-import { RouterLink } from "@angular/router";
 
-export const routerUrl = {
+export const Urls = {
     signinUrl: '/signin',
     signupUrl: '/signup',
     template: '/templates',
     form_ticket: '/ticket-form',
 };
 
-export const HOME_PAGE = routerUrl.form_ticket;
+export const HOME_PAGE = Urls.form_ticket;
 
 export type Severity =
     'success'
@@ -39,10 +38,11 @@ export const layoutConfig: LayoutConfig = {
     appLogo: '', // assets/images/logo-dark.svg
     appName: '', // ConYeu.Vn
     menuTheme: 'light',
-    menuMode: 'overlay',
+    menuMode: 'static',
     theme: 'aura-light',
     colorScheme: 'lime',
     themeUrlPrefix: '',
+
 
     listTheme: {
         'aura-light': {

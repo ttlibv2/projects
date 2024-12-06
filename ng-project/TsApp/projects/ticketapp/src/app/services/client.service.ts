@@ -111,14 +111,14 @@ export class ClientService {
         errorCode = 'e_server';//'disconnect';
         object.message = 'Lỗi không kết nối được tới máy chủ';
         object.detail = `Vui lòng kiểm tra kết nối: ${baseUrl(' Tại đây ')}`;
-        object.timeOut = 10 * 1000;
+        object.timeOut = 2 * 1000;
         showError = true;
       }
 
       else if(err.status === 500) {
         errorCode = error.code === 'e_500' ? 'e_server' : error.code;
         object.message = `Đã xảy ra lỗi từ ${baseUrl('máy chủ')}`;
-        object.timeOut = 10 * 1000;   
+        object.timeOut = 3 * 1000;   
         showError = true;     
       }
 

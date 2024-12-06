@@ -1,17 +1,25 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
 
+$inputBg: var(--checkbox-box-bg, cfg.$inputBg);
+$textColor: var(--checkbox-box-text-color, cfg.$textColor);
+$chkBoxRadius: 4px;
+
+@mixin checkboxDanger() {
+--checkbox-box-bg: cfg.$dangerButtonBg;
+}
+
 .p-checkbox {
     width: cfg.$checkboxWidth;
     height: cfg.$checkboxHeight;
 
-    .p-checkbox-box {
+    &-box {
         border: cfg.$checkboxBorder;
-        background: cfg.$inputBg;
+        background: $inputBg;
         width: cfg.$checkboxWidth;
         height: cfg.$checkboxHeight;
-        color: cfg.$textColor;
-        border-radius: cfg.$borderRadius;
+        color: $textColor;
+        border-radius: $chkBoxRadius;
         transition: cfg.$formElementTransition;
         outline-color: transparent;
 
@@ -70,6 +78,10 @@
                 }
             }
         }
+    }
+
+    &-danger {
+        @include checkboxDanger();
     }
 }
 

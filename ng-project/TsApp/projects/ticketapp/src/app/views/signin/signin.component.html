@@ -1,69 +1,63 @@
 <div class="login-form" *ngIf="asyncView">
+   <div class="form-wrapper">
     <div class="logo">
         <p-image [src]="'./assets/images/logo.png'"></p-image>
     </div>
-    <ts-card [title]="'Signin to account'"
-             [subtitle]="'Enter your email & password to login'"
-             [contentClass]="'mt-4'">
+    <ts-card [title]="'users.h1_signin' | translate" [subtitle]="'Enter your email & password to login'" [contentClass]="'mt-4'">
         <form [formGroup]="signinForm" (ngSubmit)="onSignIn()" class="grid">
-
+    
             <ts-form-field [label]="'Tên đăng nhập'" class="p-fluid col-12">
-                <ts-inputgroup [prefix]="['pi pi-user']">
-                    <p-autoComplete [suggestions]="searchUser"
-                                    (completeMethod)="onSearchUser($event)"
-                                    (onSelect)="selectUser($event.value)"
-                                    [dropdownIcon]="'pi pi-user'"
-                                    [showEmptyMessage]="false"
-                                    formControlName="username"
-                                    placeholder="administrator@gmail.com"></p-autoComplete>
+                <ts-inputgroup [prefix]="['pi pi-user']" [borderStyle]="'dashed'">
+                    <p-autoComplete [suggestions]="searchUser" (completeMethod)="onSearchUser($event)"
+                        (onSelect)="selectUser($event.value)" [dropdownIcon]="'pi pi-user'" [showEmptyMessage]="false"
+                        formControlName="username" placeholder="administrator@gmail.com"></p-autoComplete>
                 </ts-inputgroup>
             </ts-form-field>
             <ts-form-field [label]="'Mật khẩu'" class="p-fluid col-12 mt-2">
-                <ts-inputgroup [prefix]="['pi pi-lock']">
+                <ts-inputgroup [prefix]="['pi pi-lock']" [borderStyle]="'dashed'">
                     <p-password placeholder="********" formControlName="password" [toggleMask]="true"></p-password>
                 </ts-inputgroup>
             </ts-form-field>
-
+    
             @if (isDev) {
-                <ts-form-field [label]="'URL Dev'" class="p-fluid col-12 mt-2">
-                    <ts-inputgroup [prefix]="['pi pi-code']">
-                        <input pInputText placeholder="https://api.app-web.vn" formControlName="url_dev"/>
-                    </ts-inputgroup>
-                </ts-form-field>
+            <ts-form-field [label]="'URL Dev'" class="p-fluid col-12 mt-2">
+                <ts-inputgroup [prefix]="['pi pi-code']" [borderStyle]="'dashed'">
+                    <input pInputText placeholder="https://api.app-web.vn" formControlName="url_dev" />
+                </ts-inputgroup>
+            </ts-form-field>
             }
-
+    
             <div class="p-fluid col-12 remember mt-2">
                 <p-checkbox id="chk_remember" formControlName="remember" [binary]="true"
-                            label="Ghi nhớ tài khoản"></p-checkbox>
+                    label="Ghi nhớ tài khoản"></p-checkbox>
                 <p-button [link]="true" label="Quên mật khẩu ?"></p-button>
             </div>
             <div class="col-12 flex gap-2 mt-2">
-                <button pButton type="submit" label="Đăng nhập" icon="pi pi-sign-in" size="small" [loading]="asyncLogin"
-                          [disabled]="signinForm.invalid" class="w-full">
-                </button>
-<!--                <p-button label="Đăng ký" icon="pi pi-user-plus" size="small" severity="warning"-->
-<!--                          [routerLink]="signupUrl"></p-button>-->
+                <p-button type="submit" label="Đăng nhập" icon="pi pi-sign-in" size="small" [loading]="asyncLogin"
+                    severity="info" [disabled]="signinForm.invalid" class="w-full p-fluid">
+                </p-button>
             </div>
-
+    
             @if(socialLinks?.length) {
-                <ts-divider [text]="'Hoặc'" align="left" class="col-12"></ts-divider>
-                <div class="col-12 grid socials">
-                    @for (item of socialLinks; track item) {
-                        <div class="col-6">
-                            <button pButton [label]="item.label" [icon]="item.icon"
-                                    [routerLink]="item.link" class="w-full"></button>
-                        </div>
-                    }
+            <ts-divider [text]="'Hoặc đăng nhập'" align="left" class="col-12 or-divider"></ts-divider>
+            <div class="col-12 grid socials">
+                @for (item of socialLinks; track item) {
+                <div tsCol [span]="12" [sm]="6">
+                    <ts-btn-social [item]="item" />
                 </div>
-            }
-
-            <div class="col-12">
-                    <p-button [link]="true" label="Chưa có tài khoản ?"></p-button>
-                    <p-button [link]="true" label="Nhấn tạo"></p-button>
+                }
             </div>
-
-
+            }
+    
+            <div [span]="12" class="mt-2 flex justify-content-center">
+                <p-button [link]="true" label="Bạn chưa có tài khoản ?"></p-button>
+                <p-button [link]="true" label="Tạo tại đây" class="p-new-acc" severity="help"
+                    (onClick)="clickNewAcc()"></p-button>
+            </div>
+    
+    
         </form>
-
+    
     </ts-card>
+   </div>
 </div>

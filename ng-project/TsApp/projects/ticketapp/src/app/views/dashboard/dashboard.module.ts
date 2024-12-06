@@ -8,6 +8,7 @@ import { AnyTemplateOutlet } from 'ts-ui/common';
 import { Card } from 'ts-ui/card';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { SideItemView } from 'ts-ui/layout';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { InputTextModule } from 'primeng/inputtext';
     BorderPanel,
     AnyTemplateOutlet,
     Card,
-    JsonPipe
+    JsonPipe,
+    SideItemView
   ]
 })
 export class DashboardModule { }

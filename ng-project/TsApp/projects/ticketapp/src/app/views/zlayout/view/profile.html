@@ -1,0 +1,26 @@
+<div class="app-profile" (click)="menu.toggle($event)">
+    <p-avatar [image]="image" [icon]="icon"/>
+    <div class="col-wrap">
+        <div class="username">{{name}}</div>
+        <div class="subname">
+            <span>{{subName}}</span>
+            <span class="icon pi pi-angle-down"></span>
+        </div>
+    </div>
+</div>
+
+<p-menu #menu [popup]="true" 
+    [id]="menuId"
+    [model]="items"
+    [styleClass]="menuClass" 
+    [style]="menuStyle"
+    [appendTo]="menuOption?.appendTo"  
+    [autoZIndex]="menuOption?.autoZIndex" 
+    [baseZIndex]="menuOption?.baseZIndex"
+    [showTransitionOptions]="menuOption?.showTransitionOptions" 
+    [hideTransitionOptions]="menuOption?.hideTransitionOptions"
+    [ariaLabel]="menuOption?.ariaLabel" 
+    [ariaLabelledBy]="menuOption?.ariaLabelledBy" 
+    [tabindex]="menuOption?.tabindex"
+    (onShow)="showMenu($event)" 
+    (onHide)="hideMenu($event)"/>

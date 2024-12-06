@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SocialLink} from "../../models/common";
+import {ALL_SOCIAL, SocialLink} from "../../models/common";
 import {ToastService} from "ts-ui/toast";
 import {AuthService} from "../../services/auth.service";
 import {SignUpDto} from "../../models/user";
@@ -22,12 +22,7 @@ export class SignupComponent implements OnInit{
   asyncView: boolean = false;
   i18n = I18N_KEY;
 
-  socials: SocialLink[] = [
-    {label: 'Google', icon: 'pi pi-google google', link: '/auth/google'},
-    {label: 'Facebook', icon: 'pi pi-facebook facebook', link: '/auth/facebook'},
-    {label: 'Instagram', icon: 'pi pi-instagram instagram', link: '/auth/instagram'},
-    {label: 'Github', icon: 'pi pi-github github', link: '/auth/github'},
-  ];
+  socials: SocialLink[] = ALL_SOCIAL;
 
   constructor(private active: ActivatedRoute,
               private fb:FormBuilder,

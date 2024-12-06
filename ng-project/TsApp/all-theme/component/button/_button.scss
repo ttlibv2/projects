@@ -1,44 +1,91 @@
 @use "../../setting/config"as cfg;
 @use "../../setting/mixins"as util;
+@use "../../setting/scales"as sc;
 
 $prefixBtn: ".p-button";
 
-@mixin primary() {
-  --btn-color: cfg.$primaryButtonTextColor;
-  --btn-background: cfg.$primaryButtonBg;
-  --btn-border    : cfg.$primaryButtonBorder;
+@mixin basic() {
+  --btn-color     : #{cfg.$buttonTextColor};
+  --btn-background: #{cfg.$buttonBg};
+  --btn-border    : #{cfg.$buttonBorder};
+  --btn-link-color: #{cfg.$buttonTextColor};
+
+  //hover
+  --btn-hover-background  : #{cfg.$buttonHoverBg};
+  --btn-hover-color       : #{cfg.$buttonTextHoverColor};
+  --btn-hover-border-color: #{cfg.$buttonHoverBorderColor};
+  --btn-hover-link-color  : #{cfg.$buttonTextColor};
+  --btn-hover-bg-opacity: #{cfg.$textButtonHoverBgOpacity};
+
+  //active
+  --btn-active-background  : #{cfg.$buttonActiveBg};
+  --btn-active-color       : #{cfg.$buttonTextActiveColor};
+  --btn-active-border-color: #{cfg.$buttonActiveBorderColor};
+  --btn-active-link-color  : #{cfg.$buttonTextColor};
+
+  //focus
+  --btn-focus-shadow     : none;
+  --btn-focus-link-shadow: none;
+
+  //outlined
+  --btn-outlined-border: #{cfg.$outlinedButtonBorder};
 }
 
-@mixin basic() {
-  --btn-color        : cfg.$buttonTextColor;
-  --btn-background   : cfg.$buttonBg;
-  --btn-border       : cfg.$buttonBorder;
+@mixin btnHelp() {
+  --btn-color     : #{cfg.$helpButtonTextColor};
+  --btn-background: #{cfg.$helpButtonBg};
+  --btn-border    : #{cfg.$helpButtonBorder};
+  --btn-link-color: #{cfg.$helpButtonBg};
+
+  //hover
+  --btn-hover-background  : #{cfg.$helpButtonHoverBg};
+  --btn-hover-color       : #{cfg.$helpButtonTextHoverColor};
+  --btn-hover-border-color: #{cfg.$helpButtonHoverBorderColor};
+  --btn-hover-link-color  : #{cfg.$helpButtonHoverBg};
+
+  //active
+  --btn-active-background  : #{cfg.$helpButtonActiveBg};
+  --btn-active-color       : #{cfg.$helpButtonTextActiveColor};
+  --btn-active-border-color: #{cfg.$helpButtonActiveBorderColor};
+  --btn-active-link-color  : #{cfg.$helpButtonActiveBg};
+
+  //focus
+  --btn-focus-shadow     : #{cfg.$helpButtonFocusShadow};
+  --btn-focus-link-shadow: #{cfg.$helpButtonFocusShadow};
+
 }
+
+$btnBgColor: var(--btn-background);
 
 #{$prefixBtn} {
- // @include basic();
+  @include basic();
 
-  color        : cfg.$buttonTextColor;
-  background   : cfg.$buttonBg;
-  border       : cfg.$buttonBorder;
-  padding      : cfg.$buttonPadding;
-  font-size    : cfg.$fontSize;
-  transition   : cfg.$formElementTransition;
-  border-radius: cfg.$borderRadius;
-  outline-color: transparent;
+  color          : var(--btn-color);
+  background     : $btnBgColor;
+  border         : var(--btn-border);
+  padding        : cfg.$buttonPadding;
+  font-size      : cfg.$fontSize;
+  transition     : cfg.$formElementTransition;
+  border-radius  : cfg.$borderRadius;
+  outline-color  : transparent;
   justify-content: center;
 
   &:not(:disabled) {
+
     &:hover {
-      background  : cfg.$buttonHoverBg;
-      color       : cfg.$buttonTextHoverColor;
-      border-color: cfg.$buttonHoverBorderColor;
+      background  : var(--btn-hover-background);
+      color       : var(--btn-hover-color);
+      border-color: var(--btn-hover-border-color);
     }
 
     &:active {
-      background  : cfg.$buttonActiveBg;
-      color       : cfg.$buttonTextActiveColor;
-      border-color: cfg.$buttonActiveBorderColor;
+      background  : var(--btn-active-background);
+      color       : var(--btn-active-background);
+      border-color: var(--btn-active-background);
+    }
+
+    &:focus {
+      box-shadow: var(--btn-focus-shadow);
     }
   }
 
@@ -48,20 +95,14 @@ $prefixBtn: ".p-button";
 
   &-outlined {
     background-color: transparent;
-    color           : cfg.$buttonBg;
-    border          : cfg.$outlinedButtonBorder;
+    color           : $btnBgColor;
+    border          : var(--btn-outlined-border);
 
     &:not(:disabled) {
-      &:hover {
-        background: rgba(cfg.$buttonBg, cfg.$textButtonHoverBgOpacity);
-        color     : cfg.$buttonBg;
-        border    : cfg.$outlinedButtonBorder;
-      }
-
-      &:active {
-        background: rgba(cfg.$buttonBg, cfg.$textButtonActiveBgOpacity);
-        color     : cfg.$buttonBg;
-        border    : cfg.$outlinedButtonBorder;
+      &:hover, &:active {
+        background: rgba($btnBgColor, var(--btn-hover-bg-opacity));
+        color     : $btnBgColor;
+        border    : var(--btn-outlined-border);
       }
     }
 
@@ -83,19 +124,13 @@ $prefixBtn: ".p-button";
 
   &-text {
     background-color: transparent;
-    color           : cfg.$buttonBg;
+    color           : $btnBgColor;
     border-color    : transparent;
 
     &:not(:disabled) {
-      &:hover {
-        background  : rgba(cfg.$buttonBg, cfg.$textButtonHoverBgOpacity);
-        color       : cfg.$buttonBg;
-        border-color: transparent;
-      }
-
-      &:active {
-        background  : rgba(cfg.$buttonBg, cfg.$textButtonActiveBgOpacity);
-        color       : cfg.$buttonBg;
+      &:hover,  &:active {
+        background  : rgba($btnBgColor, var(--btn-hover-bg-opacity));
+        color       : $btnBgColor;
         border-color: transparent;
       }
     }
@@ -117,8 +152,8 @@ $prefixBtn: ".p-button";
 
   &-label {
     transition-duration: cfg.$transitionDuration;
-    white-space: nowrap;
-    flex: 0!important;
+    white-space        : nowrap;
+    flex               : 0 !important;
   }
 
   &-icon {
@@ -162,6 +197,34 @@ $prefixBtn: ".p-button";
     border-radius: cfg.$roundedButtonBorderRadius;
   }
 
+  &-link {
+    color     : var(--btn-link-color) !important;
+    background: transparent !important;
+    border    : transparent !important;
+
+    &:not(:disabled):hover {
+      background  : transparent;
+      color       : var(--btn-hover-link-color) !important;
+      border-color: transparent;
+
+      .p-button-label {
+        text-decoration: cfg.$linkButtonTextHoverDecoration;
+      }
+    }
+
+    &:not(:disabled):focus {
+      background  : transparent;
+      box-shadow  : var(--btn-focus-link-shadow);
+      border-color: transparent;
+    }
+
+    &:not(:disabled):active {
+      background  : transparent;
+      color       : var(--btn-active-link-color);
+      border-color: transparent;
+    }
+  }
+
   .p-badge {
     margin-left     : cfg.$inlineSpacing;
     min-width       : cfg.$fontSize;
@@ -197,7 +260,10 @@ $prefixBtn: ".p-button";
       }
     }
   }
+
 }
+
+
 
 .p-button.p-button-primary,
 .p-button-group.p-button-primary>.p-button,
@@ -502,61 +568,7 @@ $prefixBtn: ".p-button";
 .p-button.p-button-help,
 .p-button-group.p-button-help>.p-button,
 .p-splitbutton.p-button-help>.p-button {
-  color     : cfg.$helpButtonTextColor;
-  background: cfg.$helpButtonBg;
-  border    : cfg.$helpButtonBorder;
-
-  &:not(:disabled):hover {
-    background  : cfg.$helpButtonHoverBg;
-    color       : cfg.$helpButtonTextHoverColor;
-    border-color: cfg.$helpButtonHoverBorderColor;
-  }
-
-  &:not(:disabled):focus {
-    box-shadow: cfg.$helpButtonFocusShadow;
-  }
-
-  &:not(:disabled):active {
-    background  : cfg.$helpButtonActiveBg;
-    color       : cfg.$helpButtonTextActiveColor;
-    border-color: cfg.$helpButtonActiveBorderColor;
-  }
-
-  &.p-button-outlined {
-    background-color: transparent;
-    color           : cfg.$helpButtonBg;
-    border          : cfg.$outlinedButtonBorder;
-
-    &:not(:disabled):hover {
-      background: rgba(cfg.$helpButtonBg, cfg.$textButtonHoverBgOpacity);
-      color     : cfg.$helpButtonBg;
-      border    : cfg.$outlinedButtonBorder;
-    }
-
-    &:not(:disabled):active {
-      background: rgba(cfg.$helpButtonBg, cfg.$textButtonActiveBgOpacity);
-      color     : cfg.$helpButtonBg;
-      border    : cfg.$outlinedButtonBorder;
-    }
-  }
-
-  &.p-button-text {
-    background-color: transparent;
-    color           : cfg.$helpButtonBg;
-    border-color    : transparent;
-
-    &:not(:disabled):hover {
-      background  : rgba(cfg.$helpButtonBg, cfg.$textButtonHoverBgOpacity);
-      border-color: transparent;
-      color       : cfg.$helpButtonBg;
-    }
-
-    &:not(:disabled):active {
-      background  : rgba(cfg.$helpButtonBg, cfg.$textButtonActiveBgOpacity);
-      border-color: transparent;
-      color       : cfg.$helpButtonBg;
-    }
-  }
+  @include btnHelp();
 }
 
 .p-button.p-button-danger,
@@ -619,33 +631,6 @@ $prefixBtn: ".p-button";
   }
 }
 
-.p-button.p-button-link {
-  color     : cfg.$linkButtonColor;
-  background: transparent;
-  border    : transparent;
-
-  &:not(:disabled):hover {
-    background  : transparent;
-    color       : cfg.$linkButtonHoverColor;
-    border-color: transparent;
-
-    .p-button-label {
-      text-decoration: cfg.$linkButtonTextHoverDecoration;
-    }
-  }
-
-  &:not(:disabled):focus {
-    background  : transparent;
-    box-shadow  : cfg.$linkButtonFocusShadow;
-    border-color: transparent;
-  }
-
-  &:not(:disabled):active {
-    background  : transparent;
-    color       : cfg.$linkButtonColor;
-    border-color: transparent;
-  }
-}
 
 @if variable-exists(contrastButtonTextColor) {
 
@@ -713,31 +698,4 @@ $prefixBtn: ".p-button";
 
 /// button_size
 /// 
-
-// @if variable-exists($name: scales) {
-@each $key,
-$paddingVal in cfg.$paddingScales {
-
-  %css-#{$key} {
-    //$fontVal: map.get(cfg.$fontScales, $key);
-    //@include util.scaledFontSize(cfg.$fontSize, $fontVal);
-    @include util.scaledPadding(cfg.$buttonPadding, $paddingVal);
-  }
-
-  #{$prefixBtn} {
-
-    &-#{$key} {
-      @extend %css-#{$key};
-    }
-
-    form.#{$key} & {
-      @extend %css-#{$key};
-    }
-
-
-  }
-
-
-}
-
-// }
+@include sc.make-scale-all(p-button, form, cfg.$buttonPadding, cfg.$fontSize);

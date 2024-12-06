@@ -1,6 +1,6 @@
 {
-  "editor.fontSize": 14,
-  "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+  "editor.fontSize": 18,
+  "editor.fontFamily": "Jost,'JetBrains Mono', Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
   "editor.smoothScrolling": true,
   "files.autoSave": "off",

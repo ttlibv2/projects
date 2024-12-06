@@ -2,16 +2,24 @@ $primary-color: #0d6efd;
 
 .ts-loader {
 
-    height          : 100%;
-    width           : 100%;
-    position        : fixed;
-    background-color: #fff;
-    z-index         : 1001;
-    top             : 0;
+    height             : 100svh;
+    // width           : 100%;
+    // position        : fixed;
+    background-color   : #fff;
+    z-index            : 1001;
+    // top             : 0;
 
-    display: flex;
+    display        : flex;
+    flex-flow      : column nowrap;
     justify-content: center;
-    align-items: center;
+    align-items    : center;
+
+    .loader {
+        display        : flex;
+        justify-content: center;
+        align-items    : center;
+        flex-flow      : column nowrap;
+    }
 
     &-content0 {
         position  : absolute;
@@ -216,26 +224,15 @@ $primary-color: #0d6efd;
     }
 
     &-lagos .loader {
-        border       : 0 solid transparent;
+        // border       : 0 solid transparent;
         border-radius: 50%;
         width        : 150px;
         height       : 150px;
         position     : absolute;
 
-        &:before {
-            content        : "";
-            border         : 1em solid $primary-color;
-            border-radius  : 50%;
-            width          : inherit;
-            height         : inherit;
-            position       : absolute;
-            top            : 0;
-            left           : 0;
-            animation      : loader 2s linear infinite;
-            opacity        : 0;
-            animation-delay: .5s;
-        }
 
+
+        &:before,
         &:after {
             content      : "";
             border       : 1em solid $primary-color;
@@ -243,10 +240,14 @@ $primary-color: #0d6efd;
             width        : inherit;
             height       : inherit;
             position     : absolute;
-            top          : 0;
-            left         : 0;
+            //top          : 0;
+            //left         : 0;
             animation    : loader 2s linear infinite;
             opacity      : 0;
+        }
+
+        &:before {
+            animation-delay: .5s;
         }
 
     }
@@ -264,6 +265,22 @@ $primary-color: #0d6efd;
         transform: rotate(360deg);
     }
 }
+
+// @keyframes loader {
+//     0% {
+//         transform: scale(0.5);
+//         opacity  : 1
+//     }
+
+//     50% {
+//         opacity: 1
+//     }
+
+//     to {
+//         transform: scale(.5);
+//         opacity  : 1
+//     }
+// }
 
 @keyframes loader {
     0% {

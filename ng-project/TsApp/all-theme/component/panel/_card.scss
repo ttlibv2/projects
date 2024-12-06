@@ -1,6 +1,8 @@
 @use "../../setting/config"as cfg;
 @use "../../mixins/utilities"as util;
 
+$prefix-cls: 'ts-card';
+
 $cardHeight      : var(--card-height, cfg.$cardHeight);
 $cardBorderRadius: var(--card-border-radius, cfg.$cardBorderRadius);
 $cardShadow      : var(--card-shadow, cfg.$cardShadow);
@@ -10,82 +12,191 @@ $cardHeaderMargin     : var(--card-header-margin, cfg.$cardHeaderMargin);
 $cardHeaderBorderWidth: var(--card-header-border-width, cfg.$cardHeaderBorderWidth);
 $cardHeaderBorderColor: var(--card-header-border-color, cfg.$cardHeaderBorderColor);
 $cardHeaderLeftGap    : var(--card-header-left-gap, cfg.$flexGap);
-$cardHeaderIconSize: var(--card-header-icon-size, cfg.$fontSize);
+$cardHeaderIconSize   : var(--card-header-icon-size, cfg.$fontSize);
 
 $cardBodyPadding: var(--card-body-padding, cfg.$cardBodyPadding);
-$cardSectionGap: var(--card-section-gap, cfg.$cardSectionGap);
+$cardSectionGap : var(--card-section-gap, cfg.$cardSectionGap);
+
+$cardBgColor    : var(--card-bg, cfg.$panelContentBg);
+$cardTextColor  : var(--card-text-color, cfg.$panelContentTextColor);
+$cardBorderColor: var(--card-border-color, cfg.$cardBorderColor);
+$cardBorderWidth: var(--card-border-width, cfg.$cardBorderWidth);
+$cardBorderStyle: var(--card-border-style, cfg.$cardBorderStyle);
 
 @mixin headerFlex() {
     @include util.flex-row(nowrap, $cardHeaderLeftGap);
 }
 
-.p-card, .ts-card {
+@mixin dangerCard() {
+    --card-bg          : #{cfg.$cardDangerBgColor};
+    --card-text-color  : #{cfg.$cardDangerTextColor};
+    --card-border-color: #{cfg.$cardDangerBorderColor};
 
+}
+
+@mixin warningCard() {
+    --card-bg          : #{cfg.$cardWarningBgColor};
+    --card-text-color  : #{cfg.$cardWarningTextColor};
+    --card-border-color: #{cfg.$cardWarningBorderColor};
+}
+
+@mixin successCard() {
+    --card-bg          : #{cfg.$cardSuccessBgColor};
+    --card-text-color  : #{cfg.$cardSuccessTextColor};
+    --card-border-color: #{cfg.$cardSuccessBorderColor};
+}
+
+@mixin infoCard() {
+    --card-bg          : #{cfg.$cardInfoBgColor};
+    --card-text-color  : #{cfg.$cardInfoTextColor};
+    --card-border-color: #{cfg.$cardInfoBorderColor};
+}
+
+@mixin primaryCard() {
+    --card-bg          : #{cfg.$cardPrimaryBgColor};
+    --card-text-color  : #{cfg.$cardPrimaryTextColor};
+    --card-border-color: #{cfg.$cardPrimaryBorderColor};
+}
+
+@mixin helpCard() {
+    --card-bg          : #{cfg.$cardHelpBgColor};
+    --card-text-color  : #{cfg.$cardHelpTextColor};
+    --card-border-color: #{cfg.$cardHelpBorderColor};
+}
+
+#{$prefix-cls} {
+    display: block;
+}
+
+.grid:has(.p-card),
+.grid:has(.ts-card) {
+    margin-left : 0;
+    margin-right: 0;
+}
+
+
+.p-card,
+.#{$prefix-cls} {
     @include util.flex-column();
 
     word-wrap      : break-word;
     background-clip: border-box;
 
     height         : $cardHeight;
-    color          : cfg.$panelContentTextColor;
-    background     : cfg.$panelContentBg;
+    color          : $cardTextColor;
+    background     : $cardBgColor;
     box-shadow     : $cardShadow;
     border-radius  : $cardBorderRadius;
     justify-content: space-between;
 
-    &.has-border {
-        border         : cfg.$borderWidth solid cfg.$borderColor;
+    border: $cardBorderWidth $cardBorderStyle $cardBorderColor;
+
+    &-danger {
+        @include dangerCard();
+    }
+
+    &-warning {
+        @include warningCard();
+    }
+
+    &-help {
+        @include helpCard();
+    }
+
+    &-info {
+        @include infoCard();
+    }
+
+    &-success {
+        @include successCard();
+    }
+
+    &-primary {
+        @include primaryCard();
     }
 
     .breakpoint-sm & {
-        --card-border-radius: 0!important;
+        --card-border-radius: 0 !important;
     }
 
     &-header {
         @include headerFlex();
-        padding      : $cardHeaderPadding;
-        margin       : $cardHeaderMargin;
-        border-bottom: $cardHeaderBorderWidth solid $cardHeaderBorderColor;
+        padding        : $cardHeaderPadding;
+        margin         : $cardHeaderMargin;
+        border-bottom  : $cardHeaderBorderWidth solid $cardHeaderBorderColor;
         justify-content: space-between;
 
-        &-left-wrapper, &-right-wrapper {
+        &-left,
+        &-right {
             @include headerFlex();
         }
 
-        &-actions {
-            @include headerFlex();
+        &-icon {
+            --card-header-icon-size: 2rem;
+            .p-button {
+                background: transparent;
+                border-color: transparent;
+            }
+        }
+
+        &-content {
+            flex     : 1 1 auto;
+            display  : flex;
+            flex-flow: column nowrap;
+
+            &.row {
+                flex-flow: row nowrap !important;
+                gap      : .5rem;
+            }
+
+            &.column {
+                flex-flow: column nowrap !important;
+            }
+
+
         }
 
         &-title {
             font-weight: 700;
         }
 
-        .pi, .icon {
+        .pi,
+        .icon {
             font-size: $cardHeaderIconSize;
         }
 
     }
 
     &-body {
-        padding: $cardBodyPadding;
+        padding  : $cardBodyPadding;
+        display  : flex;
+        flex-flow: column nowrap;
+        row-gap  : $cardSectionGap;
     }
 
-    &-body-content .ts-card-section:first-child {
-        margin-top: 0!important;
+    &-content {
+        .ts-card-section:first-child {
+            margin-top: 0 !important;
+        }
     }
 
     &-section {
-        display: flex;
-        flex-flow: column nowrap;
-        row-gap: $cardSectionGap;
+        display   : flex;
+        flex-flow : column nowrap;
+        row-gap   : $cardSectionGap;
         margin-top: $cardSectionGap;
-        
+
         &-header {
-            color       : cfg.$panelHeaderTextColor;
-            font-weight : cfg.$panelHeaderFontWeight;
+            color      : cfg.$panelHeaderTextColor;
+            font-weight: cfg.$panelHeaderFontWeight;
         }
 
 
+    }
+
+    &-subtitle {
+        color      : #9b9b9b;
+        font-weight: 500;
     }
 
 

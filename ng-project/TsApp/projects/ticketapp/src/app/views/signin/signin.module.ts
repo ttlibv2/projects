@@ -13,6 +13,9 @@ import {InputGroupModule} from 'ts-ui/input-group';
 import {ImageModule} from "primeng/image";
 import {FormField} from "ts-ui/forms";
 import {Divider} from "ts-ui/divider";
+import { ColDirective } from 'ts-ui/common';
+import { TranslatePipe } from '@ngx-translate/core';
+import { SocialItem } from '../shared/social-item';
 
 
 @NgModule({
@@ -23,16 +26,19 @@ import {Divider} from "ts-ui/divider";
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        TranslatePipe,
         SigninRouting,
         ImageModule,
         FormField,
+        ColDirective,
         InputGroupModule,
         AutoCompleteModule,
         CheckboxModule,
         ButtonModule,
         CardModule,
         PasswordModule,
-        Divider
+        Divider,
+        SocialItem
     ],
     providers: [
         MessageService

@@ -240,6 +240,8 @@
     "ts_name_holder": "Nguyễn Văn A",
     "ts_email_holder": "ts@email.vn",
     "ts_app_holder": "Vui lòng chọn ứng dụng",
+    "h1_signin": "Đăng nhập vào tài khoản",
+    "h1_signup": "Đăng ký tài khoản",
     "btn": {
       "get_info": "Lấy thông tin tài khoản",
       "get_api": "Lấy danh sách ứng dụng"
@@ -251,7 +253,8 @@
 	  "dob": "Nhập ngày sinh"   ,
 	  "email": "Nhập e-mail"     ,
 	  "password": "Nhập mật khẩu",
-	  "re_password": "Nhập lại mật khẩu"
+	  "re_password": "Nhập lại mật khẩu",
+    "phone": "Nhập SDT"
     }
   },
   "template": {
@@ -265,6 +268,13 @@
       "data": "Nhập nội dung",
       "severity": "Chọn thông tin"
     }
+  },
+  "router": {
+    "ticketform": "Thêm - Sửa ticket",
+    "ticketlist": "Danh sách ticket",
+    "ticketlog": "Lịch sử gửi và nhận",
+    "ticketinfo": "Thông tin chi tiết",
+    "dashboard": "Dashboard"
   },
   "ticket":{
     "chanels": "Kênh - Tình trạng",
@@ -306,7 +316,7 @@
     "other": "Khác",
     "h1_option": "-- Tùy chọn --",
     "h1_support": "-- Thông tin BC --",
-    "h1_email_ticket": "--Thông tin Email Ticket --",
+    "h1_email_ticket": "-- Thông tin Email Ticket --",
     "h1_customer": "-- Thông tin KH --",
     "h1_basic": "-- Thông tin chung --",
     "h1_ts24": "-- Thông tin TS --",

@@ -1,5 +1,9 @@
-<ts-card [style]="{'max-width': '720px'}" id="api-info-fr" [header]="headerLabel">
+<ts-card [style]="{'max-width': '720px'}" id="api-info-fr" [title]="headerLabel">
     <form [formGroup]="form" class="grid sm">
+
+        <ts-divider class="col-12 mb-2" layout="horizontal" align="left" [percent]="0" [text]="'api.api_info' | translate"
+            *ngIf="divider" />
+
         <div class="p-fluid col-12 flex gap-2">
 
             <p-dropdown id="api_info" [options]="lsApi" optionLabel="displayName" dataKey="api_id"
@@ -15,77 +19,58 @@
                 *ngIf="isAllowCopy && state.showAction" pTooltip="{{'actions.copy' | translate}}"></p-button>
         </div>
         <ng-container formGroupName="api_info">
-            <p-divider class="col-12" layout="horizontal" align="left" *ngIf="divider">
-                <span>{{'api.api_info' | translate}}</span>
-            </p-divider>
-            <div class="p-fluid col-12 sm:col-6">
-                <label for="base_url">{{ 'api.base_url'|translate }}</label>
+            <ts-form-field class="p-fluid col-12 sm:col-6"label="@@api.base_url">
                 <input id="base_url" pInputText formControlName="base_url" />
-            </div>
-            <div class="p-fluid col-6 sm:col-3">
-                <label for="app_uid">{{ 'api.app_uid'|translate }}</label>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6 sm:col-3"label="@@api.app_uid">
                 <input id="app_uid" pInputText formControlName="app_uid" />
-            </div>
-            <div class="p-fluid col-6 sm:col-3">
-                <label for="app_name">{{ 'api.app_name'|translate }}</label>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6 sm:col-3"label="@@api.app_name">
                 <input id="app_name" pInputText formControlName="app_name" />
-            </div>
+            </ts-form-field>
             <ng-container *ngIf="!!action">
-                <div class="p-fluid col-6 xxl:col-6">
-                    <label for="title">{{ 'api.title'|translate }}</label>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.title">
                     <input id="title" pInputText formControlName="title" />
-                </div>
-                <div class="p-fluid col-6 xxl:col-6">
-                    <label for="login_path">{{ 'api.login_path'|translate }}</label>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.login_path">
                     <input id="login_path" pInputText formControlName="login_path" />
-                </div>
-                <div class="p-fluid col-6 xxl:col-6">
-                    <label for="headers">{{ 'api.headers'|translate }}</label>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.headers">
                     <input id="headers" pInputText formControlName="headers" />
-                </div>
-                <div class="p-fluid col-6 xxl:col-6">
-                    <label for="queries">{{ 'api.queries'|translate }}</label>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.queries">
                     <input id="queries" pInputText formControlName="queries" />
-                </div>
-                <div class="p-fluid col-6 xxl:col-6">
-                    <label for="summary">{{ 'api.summary'|translate }}</label>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.summary">
                     <textarea id="summary" rows="2" autoResize="false" pInputTextarea
                         formControlName="summary"></textarea>
-                </div>
-                <div class="p-fluid col-6 xxl:col-6">
-                    <label for="summary">{{ 'api.links'|translate }}</label>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6" label="@@api.links">
                     <textarea id="links" rows="2" autoResize="false" pInputTextarea formControlName="links"></textarea>
-                </div>
+                </ts-form-field>
             </ng-container>
         </ng-container>
-        <p-divider class="col-12" layout="horizontal" align="left" *ngIf="!!action">{{'api.user_info' |
-                        translate}}</p-divider>
+        <ts-divider class="col-12 mb-2 mt-2" layout="horizontal" align="left" [percent]="0" sever [text]="'api.user_info' | translate"/>
         <ng-container formGroupName="user_api">
-            <div class="p-fluid col-6">
-                <label for="user_name">{{ 'users.user_name'|translate }} <span class="text-danger">*</span></label>
+            <ts-form-field class="p-fluid col-6"label="@@users.user_name">
                 <input id="user_name" pInputText formControlName="user_name" type="email" />
-            </div>
-            <div class="p-fluid col-6">
-                <label for="password">{{ 'users.password' | translate }} <span class="text-danger">*</span></label>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.password">
                 <p-password id="password" formControlName="password" [toggleMask]="true"></p-password>
-            </div>
-            <div class="p-fluid col-6">
-                <label for="ts_name">{{ 'users.ts_name'|translate }}</label>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.ts_name">
                 <input id="ts_name" pInputText formControlName="ts_name" />
-            </div>
-            <div class="p-fluid col-6">
-                <label for="ts_email">{{ 'users.ts_email'|translate }}</label>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.ts_email">
                 <input id="ts_email" pInputText formControlName="ts_email" />
-            </div>
-            <div class="p-fluid col-6">
-                <label for="csrf_token">{{ 'users.csrf_token'|translate }}</label>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.csrf_token">
                 <input id="csrf_token" pInputText formControlName="csrf_token" />
-            </div>
-            <div class="p-fluid col-6">
-                <label for="cookie_value">{{ 'users.cookie'|translate }}</label>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.cookie">
                 <input id="cookie_value" pInputText formControlName="cookie_value" />
-            </div>
-            <div class="field col-12 flex flex-wrap gap-2">
+            </ts-form-field>
+            <div class="field col-12 flex flex-wrap gap-2 mt-3">
                 <p-checkbox id="auto_login" [binary]="true" formControlName="auto_login"
                     label="{{'api.auto_login'|translate}}"></p-checkbox>
 

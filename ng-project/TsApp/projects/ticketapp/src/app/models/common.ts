@@ -12,7 +12,12 @@ export type ClientParams = HttpParams | {
 };
 
 
-
+export const ALL_SOCIAL: SocialLink[] = [
+  { label: 'Facebook', icon: 'pi pi-facebook', link: '/auth/facebook', iconColor: '#0866ff' },
+  { label: 'Google', icon: 'pi pi-google', link: '/auth/google', iconColor: '#4285f4' },
+  { label: 'LinkedIn', icon: 'pi pi-linkedin', link: '/auth/linkedIn', iconColor: '#0077b5' },
+  { label: 'Twitter', icon: 'pi pi-twitter', link: '/auth/twitter', iconColor: '#009292' },
+];
 
 
 
@@ -52,6 +57,9 @@ export interface SocialLink {
   link: string;
   icon: string;
   label: string;
+  iconColor?: string;
+  iconColorHover?: string;
+  onClick?: (event: any) => void;
 }
 
 export interface ImageObject {

@@ -4,18 +4,16 @@ ts-ticket-form {
 
 .ticket-form {
 
+  .grid {
+      --gutter-gry: .25rem!important;
+  }
+
   .ts-chanels {
     .p-multiselect-label:not(.p-multiselect-label-empty) {
       padding: 0 !important;
     }
 
   }
-
-
-
-
-
-
 
   .p-fieldset {
     border-width: 0;
@@ -88,16 +86,28 @@ ts-ticket-form {
 
   }
 
+  .form-tool {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
+    gap: .5rem;
+  }
+
+
+
   html:not(.is-mobile) & {
     &.template {
-      // display: block;
 
       .col-left {
-        width: 75% !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
 
       .col-right {
-        width: 25% !important;
+        width: 100% !important;
+        max-width: 100% !important;
       }
     }
   }
@@ -107,9 +117,7 @@ ts-ticket-form {
   .ticket-form {
     //padding-top: 3rem;
 
-    .ticket-body,
-    .ticket-note,
-    .ticket-copy {
+    .section-support {
       display: none;
     }
 

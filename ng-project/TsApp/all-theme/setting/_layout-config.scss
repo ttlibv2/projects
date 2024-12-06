@@ -35,7 +35,7 @@ $grid-breakpoints: (
 $grid-row-columns: 6 !default;
 $grid-gutter-width: 1rem !default;
 $grid-gutter-x: calc($grid-gutter-width * .25) !default;
-$grid-gutter-y: calc($grid-gutter-width * .25) !default;
+$grid-gutter-y: calc($grid-gutter-width * .5) !default;
 
 
 $grid-columns: 12 !default;

@@ -26,7 +26,7 @@ import { Question } from "../../models/question";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { Router } from "@angular/router";
 import { TicketService } from "../../services/ticket.service";
-import { routerUrl } from "../../constant";
+import { Urls } from "../../constant";
 import { ViewHtml } from "./email-ticket";
 import { openXslTemplate, ReturnData } from "../shared/select-file/xsl-template";
 import { EmailTemplate, TemplateThread, TicketTemplate, TicketTemplateData } from "../../models/template";
@@ -625,7 +625,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   viewTemplateSetting(thread: TemplateThread): void {
     //console.log(`viewTemplateSetting`, this.router.getCurrentNavigation(), this.router.url);
 
-    this.router.navigate([routerUrl.template], {
+    this.router.navigate([Urls.template], {
       queryParams: {
         thread: thread,
         lastUrl: this.router.url
@@ -697,7 +697,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   }
 
   signout(): void {
-    const signinUrl = routerUrl.signinUrl;
+    const signinUrl = Urls.signinUrl;
     this.clearCache();
     this.authSrv.signout().subscribe({
       error: _ => this.router.navigate([signinUrl]),
@@ -709,6 +709,11 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   //======================
 
   openEmailTemplate(): void {
+    
+    if (this.utils.isPreviewEmailHtml === false) {
+      return;
+    }
+
     if (this.utils.cEmailObject.invalid) {
       this.toast.warning(`Vui lòng nhập thông tin <b>[Email Ticket]</b>`);
     }

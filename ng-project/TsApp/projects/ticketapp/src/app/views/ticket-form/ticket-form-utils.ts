@@ -86,6 +86,9 @@ export class Utils {
         return (emailTicket === false || autoFill === true);
     }
 
+    get subjectHint(): string {
+        return this.is_email_ticket ? 'Nhập tiêu đề email' : '[ROOM-SP]-USER_CODE-MST-TIME';
+    }
     
 
     copyValue() {
@@ -359,26 +362,6 @@ export class Utils {
 
     //------------------
 
-    get r_chanel_cls(): any {
-        const is = this.is_view_all;
-        return {
-            [`xxl:col-${is ? 6 : 4}`]: true,
-        }
-    }
-
-    get r_ghelp_cls(): any {
-        const is = this.is_view_all;
-        return {
-            [`xxl:col-${is ? 6 : 4}`]: true,
-        }
-    }
-
-    get r_software_cls(): any {
-        const is = this.is_view_all;
-        return {
-            [`xxl:col-${is ? 6 : 4}`]: true,
-        }
-    }
 
     get r_steam_cls() {
         const is = this.is_view_all;

@@ -1,21 +1,22 @@
 import {
     AfterContentInit, afterRender, AfterRenderRef, AfterViewChecked, booleanAttribute, ChangeDetectionStrategy, Component, ContentChildren, ElementRef, Input, NgZone,
-    OnChanges, OnDestroy, Optional, QueryList, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation
+    OnChanges, OnDestroy, Optional, QueryList, Renderer2, SimpleChanges, TemplateRef, ViewChild, ViewEncapsulation
 } from "@angular/core";
 import { PrimeTemplate } from "primeng/api";
 import { Subscription } from "rxjs";
-import { Objects } from "ts-ui/helper";
+import { JsonAny, Objects } from "ts-ui/helper";
 import { IconDesc, IconObject } from "./input.interface";
 import { DomHandler } from "primeng/dom";
+import { INgClass, INgStyle } from "ts-ui/common";
 
-const { isString, notNull, notBlank, anyTrue, isArray, isObjectNotEmpty, isStringNotBlank, isNull, allNull, isTrue } = Objects;
-const cls = 'ts-inputgroup';
+const { isString, notNull, notBlank, notEmpty, anyTrue, isArray, isObjectNotEmpty, isStringNotBlank, isNull, allNull, isTrue } = Objects;
+const cls0 = 'ts-inputgroup';
 
 export type InputType = 'calendar' | 'dropdown';
 
 @Component({
     preserveWhitespaces: true,
-    selector: cls,
+    selector: 'ts-inputgroup',
     encapsulation: ViewEncapsulation.None,
     templateUrl: './input-group.html',
     host: {
@@ -24,24 +25,48 @@ export type InputType = 'calendar' | 'dropdown';
 })
 export class InputGroup implements AfterContentInit,  OnChanges, OnDestroy {
 
+    /**
+     * Defined prefix input
+     * @group Props
+     * */
     @Input() set prefix(desc: IconDesc) {
         this.templates.prefix.input = desc;
     }
 
-    @Input() suffix(desc: IconDesc) {
+    /**
+     * Defined suffix input
+     * @group Props
+     * */    
+    @Input() set suffix(desc: IconDesc) {
         this.templates.suffix.input = desc
     }
 
-    @Input() addonAfter(desc: IconDesc) {
+    /**
+     * Defined addon after input
+     * @group Props
+     * */    
+    @Input() set addonAfter(desc: IconDesc) {
         this.templates.addonAfter.input = desc
     }
 
-    @Input() addonBefore(desc: IconDesc) {
+    /**
+     * Defined addon before input
+     * @group Props
+     * */
+    @Input() set addonBefore(desc: IconDesc) {
         this.templates.addonBefore.input = desc
     }
 
-
+    /**
+     * Defined compact input
+     * @group Props
+     * */
     @Input({ transform: booleanAttribute }) compact: boolean = true;
+
+    /**
+     * Defined size input
+     * @group Props
+     * */
     @Input() size: 'small' | 'larger';
 
     /**
@@ -54,13 +79,21 @@ export class InputGroup implements AfterContentInit,  OnChanges, OnDestroy {
      * Class of the element.
      * @group Props
      */
-    @Input() styleClass: string;
+    @Input() set styleClass(cls: INgClass) {
+        this.styleClass2Json(cls);
+    };
 
     /**
      * Class of the element.
      * @group Props
      */
-    @Input() style: { [key: string]: any };
+    @Input() style: INgStyle;
+
+    /**
+     * Defined addon after input
+     * @group Props
+     * */
+    @Input() borderStyle: 'dashed' | 'dotted' | 'none' | 'solid' = 'solid';
 
     @Input() overlayCls: string = undefined;
 
@@ -70,8 +103,10 @@ export class InputGroup implements AfterContentInit,  OnChanges, OnDestroy {
     @Input() fieldTag: string = undefined;
 
     //------
+    styleJsonCls: JsonAny;
     fieldTemplate: TemplateRef<any>;
     templates: Templates = new Templates();
+
 
 
     @ContentChildren(PrimeTemplate)
@@ -81,9 +116,12 @@ export class InputGroup implements AfterContentInit,  OnChanges, OnDestroy {
     @ViewChild('divInput', { static: false })
     divInput: ElementRef<HTMLDivElement>;
 
+    @ViewChild('containerRef', {static: true})
+    containerRef: ElementRef<HTMLDivElement>;
+
     afterRender$: AfterRenderRef;
 
-    constructor(@Optional() private ngZone: NgZone) { 
+    constructor(@Optional() private ngZone: NgZone, private renderer: Renderer2) { 
         this.afterRender$ = afterRender(() => setTimeout(() => this.alignOverlay(), 1));
     }
 
@@ -106,17 +144,22 @@ export class InputGroup implements AfterContentInit,  OnChanges, OnDestroy {
 
 
     ngOnChanges(changes: SimpleChanges): void {
+        const {borderStyle} = changes;
+        if(borderStyle && this.containerRef){
+            Objects.setStyle(this.containerRef, '--input-style', this.borderStyle);
+        }
     }
 
     containerCls(): any {
         return {
-            [cls]: true,
-            [`${cls}-compact`]: this.compact === true,
+            ['ts-inputgroup']: true,
+            [`ts-inputgroup-compact`]: this.compact === true,
+            [`ts-inputgroup-${this.borderStyle}`]: !!this.borderStyle,
             [`has-addon-before`]: this.templates.hasAddonBefore(),
             [`has-addon-after`]: this.templates.hasAddonAfter(),
             [`has-prefix`]: this.templates.hasPrefix(),
             [`has-suffix`]: this.templates.hasSuffix(),
-            [this.styleClass]: notBlank(this.styleClass),
+            ...this.styleJsonCls
 
         };
     }
@@ -137,7 +180,7 @@ export class InputGroup implements AfterContentInit,  OnChanges, OnDestroy {
 
     styleInputCls(): any {
         return {
-            [`column-gap`]: this.flexAffix
+            [`column-gap`]: this.flexAffix,
         }
     }
 
@@ -190,6 +233,10 @@ export class InputGroup implements AfterContentInit,  OnChanges, OnDestroy {
             }
         });
 
+    }
+
+    private styleClass2Json(cls: INgClass) {
+        this.styleJsonCls = Objects.ngClassToJson(cls);
     }
 
     private alignOverlay(): void {

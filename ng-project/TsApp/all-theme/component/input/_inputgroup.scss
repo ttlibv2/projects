@@ -9,9 +9,10 @@
 }
 
 $cls: '.ts-inputgroup';
+$inputPadding: var(--input-padding, cfg.$inputPadding);
+$borderStyle: var(--input-style, cfg.$borderStyle);
 
 #{$cls} {
-    --input-padding: #{cfg.$inputPadding};
 
     @include displayFlex(var(--input-flex-addon));
     transition: all .3s;
@@ -29,10 +30,12 @@ $cls: '.ts-inputgroup';
         transition: cfg.$formElementTransition;
         appearance: none;
         border-radius: cfg.$borderRadius;
-        padding: var(--input-padding);
+        padding: $inputPadding;
+        border-style: $borderStyle;
 
         &:focus-within {
             @include util.focused-input();
+            outline-style: $borderStyle;
         }
 
         &:hover {
@@ -204,6 +207,10 @@ $cls: '.ts-inputgroup';
 
 
 
+
+    }
+
+    &-dashed {
 
     }
 

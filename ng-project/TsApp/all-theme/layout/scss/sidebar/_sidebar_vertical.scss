@@ -2,11 +2,11 @@
     top: 0!important;
 }
 
-.layout-sidebar {
+.layout-sidebar0 {
     position: fixed;
     height: 100%;
     left: 0;
-    top: $topbarHeight;
+    //top: $topbarHeight;
     width: $sidebarWidth;
     background: var(--menu-bg);
     display: flex;

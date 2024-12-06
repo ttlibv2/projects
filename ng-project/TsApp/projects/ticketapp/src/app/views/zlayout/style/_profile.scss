@@ -1,0 +1,27 @@
+@use "../../../../../../../all-theme/mixins/utilities"as util;
+
+%flexRow {
+    @include util.flex-row($gap: .5rem);
+}
+
+.app-profile {
+    @extend %flexRow;
+    cursor: pointer;
+    user-select: none;
+
+    .username {
+        font-weight: 500;
+    }
+
+    .subname {
+        color: #3d434ab3;
+        display: flex;
+        align-items: center;
+
+        .icon {
+            padding-top: 6px;
+            margin-left: 3px;
+            font-size  : .75rem;
+        }
+    }
+}

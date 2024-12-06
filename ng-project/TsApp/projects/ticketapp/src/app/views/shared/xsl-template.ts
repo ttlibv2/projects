@@ -46,7 +46,7 @@ export interface InputOption {
 
 @Component({
     standalone: true,
-    selector: 'ts-xsl-template',
+    selector: 'ts-xsl-template5',
     templateUrl: './xsl-template.html',
     imports: [
         ReactiveFormsModule, DropdownModule,

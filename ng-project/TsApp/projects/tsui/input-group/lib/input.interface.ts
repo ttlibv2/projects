@@ -14,6 +14,9 @@ export function hasBool(input: IconDesc, template: TemplateRef<any>): boolean {
 
 export interface IconObject {
     name: string;
+    color?: string;
+    hoverColor?: string;
+    focusColor?: string;
     onClick?: () => void;
 }
 

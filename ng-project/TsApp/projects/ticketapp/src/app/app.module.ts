@@ -30,6 +30,7 @@ import {DBService, LocalDbModule} from "ts-ui/local-db";
 import { FormsModule } from 'ts-ui/forms';
 import { ErrorInterceptor } from './services/error-interceptor';
 import { AppLayoutModule2 } from 'ts-ui/layout';
+import { LayoutModule } from "./views/zlayout/zlayout.module";
 
 class ErrorHandlerBasic implements ErrorHandler {
 
@@ -74,7 +75,8 @@ function LOAD_DB(service: DBService) {
         AppLayoutModule.forRoot(layoutConfig),
         ToastModule.forRoot(toastConfig),
         TranslateModule.forRoot(translateConfig),
-        LocalDbModule.forRoot(databaseConfig)
+        LocalDbModule.forRoot(databaseConfig),
+        LayoutModule
 
     ],
     providers: [

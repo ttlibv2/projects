@@ -76,6 +76,7 @@ export interface State {
   visibleComp?: boolean;
   visibleNewEmail?: boolean;
   hasDialog?: boolean;
+  isViewAdd?: boolean;
 }
 
 export interface InputOption extends DynamicDialogConfig {

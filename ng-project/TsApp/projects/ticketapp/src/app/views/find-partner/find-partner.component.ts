@@ -102,7 +102,7 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
   }
 
   get visibleAllowNew(): boolean {
-    return Objects.anyTrue(this.state.visibleComp,
+    return !!this.state.isViewAdd && Objects.anyTrue(this.state.visibleComp,
       this.state.visiblePerson, this.state.visibleNewEmail);
   }
 
@@ -188,6 +188,10 @@ export class FindPartnerComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  clickViewAdd(chk: boolean): void {
+      this.state.isViewAdd = chk;
   }
 
   clickResetForm(): void {

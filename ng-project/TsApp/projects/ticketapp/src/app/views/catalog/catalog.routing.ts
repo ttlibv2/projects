@@ -6,7 +6,7 @@ import { CatalogModule } from './catalog.module';
 const routes: Routes = [{ path: '', component: CatalogComponent }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes), CatalogModule],
   exports: [RouterModule]
 })
-export class CatalogRoutingModule { }
+export class CatalogRouting { }

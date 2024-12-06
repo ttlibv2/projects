@@ -10,7 +10,9 @@ import { Router, Event as RouterEvent,
   NavigationStart,
   NavigationEnd,
   NavigationCancel,
-  NavigationError
+  NavigationError,
+  RouterLinkActive,
+  RouterLink
  } from '@angular/router';
 import { AppLoader } from 'ts-ui/layout';
 
@@ -80,15 +82,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   private setVisibleLoader(visible: boolean): void {
-      this.appLoader.visible(visible);
+     this.appLoader.visible(visible);
   }
 
   private setupConfigApp() {
-    const pl = !!this.platform.ANDROID ? 'is-mobile' : this.platform.IOS ? 'is-mobile' : 'pc';
-    DomHandler.addClass(this.document.documentElement, pl);
+    //const pl = !!this.platform.ANDROID ? 'is-mobile' : this.platform.IOS ? 'is-mobile' : 'pc';
+    //DomHandler.addClass(this.document.documentElement, pl);
 
     if (!!this.platform.ANDROID) {
-      this.toast.globalConfig.position = 'bottom-right';
+      this.toast.globalConfig.position = 'top-center';
     }
 
     this.layoutService?.tryAddTheme();

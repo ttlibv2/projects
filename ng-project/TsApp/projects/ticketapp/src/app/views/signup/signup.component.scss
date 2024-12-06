@@ -1,18 +1,16 @@
-.signup-form > form {
-  max-width: 800px;
+.signup-form { 
+  background: url(/assets/images/login_bg.jpg);
 
-  .p-divider-horizontal {
-    margin-bottom: 0;
+  .p-card {
+    max-width: 767px;
   }
+  
+  form {
+     
 
-  .socials {
-
-    .p-button-icon {
-      font-size: 2.5rem;
-      color: var(--blue-600);
+    .p-divider-horizontal {
+      margin-bottom: 0;
     }
 
-
   }
-
 }

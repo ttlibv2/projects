@@ -1,33 +1,37 @@
-@use "../../setting/config" as cfg;
-@use "../../setting/mixins" as util;
+@use "../../setting/config"as cfg;
+@use "../../setting/mixins"as util;
 
-.p-dropdown {
-    background: cfg.$inputBg;
-    border: cfg.$inputBorder;
-    transition: cfg.$formElementTransition;
+$prefix: 'p-dropdown';
+
+.#{$prefix} {
+    background   : cfg.$inputBg;
+    border       : cfg.$inputBorder;
+    transition   : cfg.$formElementTransition;
     border-radius: cfg.$borderRadius;
 
-    .p-fluid & {
-        //height: 100%;
+    &:not(.p-disabled) {
+        &:hover {
+            border-color: cfg.$inputHoverBorderColor;
+        }
+
+        &.p-focus {
+            @include util.focused-input();
+        }
     }
 
-    &:not(.p-disabled):hover {
-        border-color: cfg.$inputHoverBorderColor;
-    }
 
-    &:not(.p-disabled).p-focus {
-        @include util.focused-input();
-    }
-
-    &.p-dropdown-clearable {
-        .p-dropdown-label {
+    &-clearable {
+        .#{$prefix}-label {
             padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
         }
     }
 
-    .p-dropdown-label {
+    &-label {
         background: transparent;
-        border: 0 none;
+
+        &.p-inputtext {
+            border: 0 none;
+        }
 
         &.p-placeholder {
             color: cfg.$inputPlaceholderTextColor;
@@ -35,20 +39,20 @@
 
         &:focus,
         &:enabled:focus {
-            outline: 0 none;
+            outline   : 0 none;
             box-shadow: none;
         }
     }
 
-    .p-dropdown-trigger {
-        background: transparent;
-        color: cfg.$inputIconColor;
-        width: cfg.$inputGroupAddOnMinWidth;
-        border-top-right-radius: cfg.$borderRadius;
+    &-trigger {
+        background                : transparent;
+        color                     : cfg.$inputIconColor;
+        width                     : cfg.$inputGroupAddOnMinWidth;
+        border-top-right-radius   : cfg.$borderRadius;
         border-bottom-right-radius: cfg.$borderRadius;
     }
 
-    .p-dropdown-clear-icon {
+    &-clear-icon {
         color: cfg.$inputIconColor;
         right: cfg.$inputGroupAddOnMinWidth;
     }
@@ -60,105 +64,113 @@
     &.p-variant-filled {
         background-color: cfg.$inputFilledBg;
 
-        &:enabled:hover {
-            background-color: cfg.$inputFilledHoverBg;
+        &:enabled {
+            &:hover {
+                background-color: cfg.$inputFilledHoverBg;
+            }
+
+            &:focus {
+                background-color: cfg.$inputFilledFocusBg;
+            }
         }
 
-        &:enabled:focus {
-            background-color: cfg.$inputFilledFocusBg;
+    }
+
+    &--panel {
+        background   : cfg.$inputOverlayBg;
+        color        : cfg.$inputListTextColor;
+        border       : cfg.$inputOverlayBorder;
+        border-radius: cfg.$borderRadius;
+        box-shadow   : cfg.$inputOverlayShadow;
+
+        .#{$prefix}-header {
+            padding                : cfg.$inputListHeaderPadding;
+            border-bottom          : cfg.$inputListHeaderBorder;
+            color                  : cfg.$inputListHeaderTextColor;
+            background             : cfg.$inputOverlayHeaderBg;
+            margin                 : cfg.$inputListHeaderMargin;
+            border-top-right-radius: cfg.$borderRadius;
+            border-top-left-radius : cfg.$borderRadius;
+
+            .#{$prefix}-filter {
+                padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+                margin-right : -1 * (nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize);
+
+                &--icon {
+                    right: nth(cfg.$inputPadding, 2);
+                    color: cfg.$inputIconColor;
+                }
+
+            }
+        }
+
+        .#{$prefix}-items {
+            padding: cfg.$inputListPadding;
+
+            .#{$prefix}-item {
+                margin       : cfg.$inputListItemMargin;
+                padding      : cfg.$inputListItemPadding;
+                border       : cfg.$inputListItemBorder;
+                color        : cfg.$inputListItemTextColor;
+                background   : cfg.$inputListItemBg;
+                transition   : cfg.$listItemTransition;
+                border-radius: cfg.$inputListItemBorderRadius;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+
+                &.p-highlight {
+                    color     : cfg.$highlightTextColor;
+                    background: cfg.$highlightBg;
+
+                    &.p-focus {
+                        background: cfg.$highlightFocusBg;
+                    }
+                }
+
+                &:not(.p-highlight):not(.p-disabled) {
+                    &.p-focus {
+                        color     : cfg.$inputListItemTextFocusColor;
+                        background: cfg.$inputListItemFocusBg;
+                    }
+
+                    &:hover {
+                        color     : cfg.$inputListItemTextHoverColor;
+                        background: cfg.$inputListItemHoverBg;
+                    }
+                }
+
+                &-group {
+                    margin     : cfg.$submenuHeaderMargin;
+                    padding    : cfg.$submenuHeaderPadding;
+                    color      : cfg.$submenuHeaderTextColor;
+                    background : cfg.$submenuHeaderBg;
+                    font-weight: cfg.$submenuHeaderFontWeight;
+                }
+            }
+
+
+            .#{$prefix}-empty-message {
+                padding   : cfg.$inputListItemPadding;
+                color     : cfg.$inputListItemTextColor;
+                background: cfg.$inputListItemBg;
+            }
         }
     }
+
 }
 
-.p-dropdown-panel {
-    background: cfg.$inputOverlayBg;
-    color: cfg.$inputListTextColor;
-    border: cfg.$inputOverlayBorder;
-    border-radius: cfg.$borderRadius;
-    box-shadow: cfg.$inputOverlayShadow;
-
-    .p-dropdown-header {
-        padding: cfg.$inputListHeaderPadding;
-        border-bottom: cfg.$inputListHeaderBorder;
-        color: cfg.$inputListHeaderTextColor;
-        background: cfg.$inputOverlayHeaderBg;
-        margin: cfg.$inputListHeaderMargin;
-        border-top-right-radius: cfg.$borderRadius;
-        border-top-left-radius: cfg.$borderRadius;
-
-        .p-dropdown-filter {
-            padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
-            margin-right: -1 * (nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize);
-        }
-
-        .p-dropdown-filter-icon {
-            right: nth(cfg.$inputPadding, 2);
-            color: cfg.$inputIconColor;
-        }
-    }
-
-    .p-dropdown-items {
-        padding: cfg.$inputListPadding;
-
-        .p-dropdown-item {
-            margin: cfg.$inputListItemMargin;
-            padding: cfg.$inputListItemPadding;
-            border: cfg.$inputListItemBorder;
-            color: cfg.$inputListItemTextColor;
-            background: cfg.$inputListItemBg;
-            transition: cfg.$listItemTransition;
-            border-radius: cfg.$inputListItemBorderRadius;
-
-            &:first-child {
-                margin-top: 0;
-            }
-
-            &.p-highlight {
-                color: cfg.$highlightTextColor;
-                background: cfg.$highlightBg;
-
-                &.p-focus {
-                    background: cfg.$highlightFocusBg;
-                }
-            }
-
-            &:not(.p-highlight):not(.p-disabled) {
-                &.p-focus {
-                    color: cfg.$inputListItemTextFocusColor;
-                    background: cfg.$inputListItemFocusBg;
-                }
-
-                &:hover {
-                    color: cfg.$inputListItemTextHoverColor;
-                    background: cfg.$inputListItemHoverBg;
-                }
-            }
-        }
-
-        .p-dropdown-item-group {
-            margin: cfg.$submenuHeaderMargin;
-            padding: cfg.$submenuHeaderPadding;
-            color: cfg.$submenuHeaderTextColor;
-            background: cfg.$submenuHeaderBg;
-            font-weight: cfg.$submenuHeaderFontWeight;
-        }
-
-        .p-dropdown-empty-message {
-            padding: cfg.$inputListItemPadding;
-            color: cfg.$inputListItemTextColor;
-            background: cfg.$inputListItemBg;
-        }
-    }
-}
 
 .p-input-filled {
-    .p-dropdown {
+
+    .#{$prefix} {
         background: cfg.$inputFilledBg;
 
         &:not(.p-disabled):hover {
             background-color: cfg.$inputFilledHoverBg;
         }
-    
+
         &:not(.p-disabled).p-focus {
             background-color: cfg.$inputFilledFocusBg;
 
@@ -169,6 +181,6 @@
     }
 }
 
-p-dropdown.ng-dirty.ng-invalid > .p-dropdown {
+p-dropdown.ng-dirty.ng-invalid>.p-dropdown {
     @include util.invalid-input();
 }

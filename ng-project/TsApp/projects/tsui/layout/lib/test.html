@@ -1,0 +1,12 @@
+<div class="ts-side-item">
+    <span [ngClass]="item.iconClass" [ngStyle]="item.iconStyle"></span>
+    <span class="text">{{item.label | uppercase}}</span>
+    <p-badge [value]="item.badge" 
+        [styleClass]="item.badgeOptions?.styleClass" 
+        [style]="item.badgeOptions?.style"
+        [badgeSize]="item.badgeOptions?.badgeSize"
+        [severity]="item.badgeOptions?.severity"
+        [badgeDisabled]="item.badgeOptions?.badgeDisabled"
+    />
+    <span class="pi " [ngClass]="item.pinnedClass" [ngStyle]="item.pinnedStyle"></span>
+</div>

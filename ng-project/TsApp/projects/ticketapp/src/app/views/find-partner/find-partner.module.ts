@@ -7,7 +7,7 @@ import { ChipsModule } from "primeng/chips";
 import { CheckboxModule } from "primeng/checkbox";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ButtonModule } from "primeng/button";
-import { CardModule } from "primeng/card";
+import { CardModule } from "ts-ui/card";
 import { FieldsetModule } from "primeng/fieldset";
 import { DialogModule } from "primeng/dialog";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";

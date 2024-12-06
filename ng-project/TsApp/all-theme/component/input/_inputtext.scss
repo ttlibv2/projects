@@ -1,9 +1,8 @@
 @use "../../setting/config" as cfg;
 @use "../../setting/mixins" as util;
-@use "../../setting/prefix" as pf;
 @use "../../setting/scales" as sc;
 
-#{pf.$inputText} {
+.p-inputtext {
     font-family: cfg.$fontFamily;
     font-feature-settings: cfg.$fontFeatureSettings;// var(--font-feature-settings, normal);
     font-variation-settings: cfg.$fontVariationSettings;
@@ -50,18 +49,26 @@
 
     }
 
-    form.sm &, &-sm {
-        //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
-        @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(sm));
-    }
 
-    form.lg &, &-lg {
-        //@include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
-        @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(lg));
-    }
+
+    // form.sm &, &-sm {
+    //     @include util.scaledFontSize(cfg.$inputTextFontSize, sc.get-scale-font(sm));
+    //     @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(sm));
+    // }
+
+    // form.lg &, &-lg {
+    //     @include util.scaledFontSize(cfg.$inputTextFontSize, sc.get-scale-font(lg));
+    //     @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(lg));
+    // }
 
 
 }
+
+
+// size
+@include sc.make-scale-all(p-inputtext, form, cfg.$inputPadding, cfg.$inputTextFontSize);
+
+
 
 .p-float-label > label {
     left: nth(cfg.$inputPadding, 2);

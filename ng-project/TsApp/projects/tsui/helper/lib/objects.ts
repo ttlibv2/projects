@@ -1,5 +1,5 @@
 import crypto from 'crypto-js';
-import { TemplateRef, Type } from "@angular/core";
+import { ElementRef, TemplateRef, Type } from "@angular/core";
 import { BiFunction, Callback } from './function';
 import { JsonAny, JsonKeyType } from "./common";
 
@@ -428,6 +428,10 @@ export class Objects {
     else return prop;
   }
 
+  static setStyle(ref: ElementRef<HTMLElement> | HTMLElement, cssName: string, cssValue: any, priority?: 'important' | '' | undefined): void {
+    const element = ref instanceof ElementRef ? ref.nativeElement : ref;
+    element?.style?.setProperty(cssName, cssValue, priority);
+  }
 
 
 }

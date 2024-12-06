@@ -1,21 +1,24 @@
 import { CommonModule } from "@angular/common";
-import { AfterContentInit, booleanAttribute, Component, ContentChildren, Input, OnDestroy, QueryList, TemplateRef, ViewEncapsulation } from "@angular/core";
+import { AfterContentInit, booleanAttribute, Component, ContentChildren, ElementRef, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, TemplateRef, ViewEncapsulation } from "@angular/core";
 import { CardAction } from "./card.interface";
-import {AnyTemplateOutlet, INgClass, INgStyle, QueryPTemplate, StringTemplate} from "ts-ui/common";
+import { AnyTemplateOutlet, INgClass, INgStyle, QueryPTemplate, Severity, StringTemplate } from "ts-ui/common";
 import { ButtonModule } from "primeng/button";
 import { PrimeTemplate } from "primeng/api";
 import { Objects } from "ts-ui/helper";
 
+const { isString, isArray } = Objects;
+
 interface PTemplate {
-     header?: TemplateRef<any>;
-     headerIcon?: TemplateRef<any>;
-     headerLeft?: TemplateRef<any>;
-     headerRight?: TemplateRef<any>;
-     title?: TemplateRef<any>;
-     subtitle?: TemplateRef<any>;
-     content?: TemplateRef<any>;
-     footer?: TemplateRef<any>;
-     action?: TemplateRef<any>;
+    header?: TemplateRef<any>;
+    subheader?: TemplateRef<any>;
+    headerIcon?: TemplateRef<any>;
+    headerLeft?: TemplateRef<any>;
+    headerRight?: TemplateRef<any>;
+    title?: TemplateRef<any>;
+    subtitle?: TemplateRef<any>;
+    content?: TemplateRef<any>;
+    footer?: TemplateRef<any>;
+    action?: TemplateRef<any>;
 }
 
 @Component({
@@ -25,12 +28,12 @@ interface PTemplate {
     imports: [CommonModule, AnyTemplateOutlet, ButtonModule],
     templateUrl: 'card-view.html',
 })
-export class Card implements AfterContentInit, OnDestroy {
+export class Card implements OnChanges, AfterContentInit, OnDestroy {
 
     /**
      * Defined ngClass 
      * @group Props 
-     * */    
+     * */
     @Input() styleClass: INgClass;
 
     /**
@@ -40,10 +43,16 @@ export class Card implements AfterContentInit, OnDestroy {
     @Input() style: INgStyle;
 
     /**
-     * Defined title header
+     * Defined header
      * @group Props 
-     * */    
+     * */
     @Input() header: StringTemplate;
+
+    /**
+     * Defined sub-header
+     * @group Props 
+     * */
+    @Input() subheader: StringTemplate;
 
     /**
      * Defined icon header
@@ -54,13 +63,13 @@ export class Card implements AfterContentInit, OnDestroy {
     /**
      * Defined area header right
      * @group Props 
-     * */    
+     * */
     @Input() headerRight: TemplateRef<any>;
 
     /**
      * Defined area header left
      * @group Props 
-     * */    
+     * */
     @Input() headerLeft: TemplateRef<any>;
 
     /**
@@ -79,15 +88,41 @@ export class Card implements AfterContentInit, OnDestroy {
      * Defined card content
      * @group Props 
      * */
-    @Input() content: TemplateRef<any>;    
+    @Input() content: TemplateRef<any>;
 
     /**
      * Defined card footer
      * @group Props 
      * */
-    @Input() footer: TemplateRef<any>;   
-    
+    @Input() footer: TemplateRef<any>;
+
     @Input() action: TemplateRef<any>;
+
+    /**
+     * Defined card severity
+     * @group Props 
+     * */
+    @Input() severity: Severity;
+
+    /**
+     * Defined card text + background severity
+     * @argument string[bgColor, textColor]
+     * @group Props 
+     * */
+    @Input() textBg: Severity | [string, string];
+
+    /**
+     * Defined card text + background severity
+     * @argument string[bgColor, textColor]
+     * @group Props 
+     * */
+    @Input() borderColor: Severity | [string, string];
+
+    /**
+     * Defined card severity
+     * @group Props 
+     * */
+    @Input({ transform: booleanAttribute }) useBg: boolean = true;
 
     /**
      * footer actions
@@ -99,8 +134,13 @@ export class Card implements AfterContentInit, OnDestroy {
      * visible header
      * @group Props 
      * */
-    @Input({transform: booleanAttribute})
-    visibleHeader: boolean = true;
+    @Input({ transform: booleanAttribute }) visibleHeader: boolean = true;
+
+    @Input() headerClass: INgClass;
+    @Input() headerStyle: INgStyle;
+
+    @Input() bodyClass: INgClass;
+    @Input() bodyStyle: INgStyle;
 
     @Input() contentClass: INgClass;
     @Input() contentStyle: INgStyle;
@@ -114,16 +154,49 @@ export class Card implements AfterContentInit, OnDestroy {
         return this.action || this.pTemplate?.action;
     }
 
+    get headerTemplate() {
+        return this.header || this.pTemplate?.header;
+    }
+
+    get subheaderTemplate() {
+        return this.subheader || this.pTemplate?.subheader;
+    }
+
+    get headerIconTemplate() {
+        return this.headerIcon || this.pTemplate?.headerIcon;
+    }
+
+    get headerLeftTemplate() {
+        return this.headerLeft || this.pTemplate?.headerLeft;
+    }
+
+    get headerRightTemplate() {
+        return this.headerRight || this.pTemplate?.headerRight;
+    }
+
     //-------------
     @ContentChildren(PrimeTemplate)
-    private templates!:QueryList<PrimeTemplate>;
+    private templates!: QueryList<PrimeTemplate>;
     private query$: QueryPTemplate;
 
     pTemplate: PTemplate = {};
 
+    constructor(private elementRef: ElementRef<HTMLDivElement>) { }
+
     hasHeader(): boolean {
-        return Objects.anyNotNull(this.header, this.headerIcon, this.headerLeft, this.headerRight,
-                this.pTemplate?.headerIcon, this.pTemplate?.header, this.pTemplate?.headerLeft, this.pTemplate?.headerRight)
+        return Objects.anyNotNull(this.headerTemplate, this.subheaderTemplate, 
+                this.headerIconTemplate, this.headerLeftTemplate, this.headerRightTemplate)
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        const { textBg } = changes;
+
+        if (textBg) {
+            let arr = isArray(this.textBg) && this.textBg.length == 2 ? this.textBg : [undefined, undefined];
+            this.elementRef.nativeElement.style.setProperty('--card-bg', arr[0]);
+            this.elementRef.nativeElement.style.setProperty('--card-text-color', arr[1]);
+        }
+
     }
 
     ngAfterContentInit(): void {
@@ -134,7 +207,7 @@ export class Card implements AfterContentInit, OnDestroy {
         })
 
     }
-    
+
     ngOnDestroy(): void {
         this.query$?.destroy();
     }
@@ -150,6 +223,18 @@ export class Card implements AfterContentInit, OnDestroy {
             [`justify-content-${this.footerAlign}`]: !!this.footerAlign,
             ...Objects.ngClassToJson(this.footerClass)
         };
+    }
+
+    containerCls(): any {
+
+
+
+
+
+        return {
+            [`text-bg-${this.severity}`]: this.textBg && typeof this.textBg === 'string',
+            ...Objects.ngClassToJson(this.styleClass)
+        }
     }
 
 }

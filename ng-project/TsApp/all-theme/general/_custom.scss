@@ -1,43 +1,64 @@
-@use "../setting/config" as cfg;
+@use "../setting/config"as cfg;
 
-@layer primeng  {
-    
+@layer primeng {
+
     .p-inputgroup .p-inputtext,
     .p-fluid .p-inputgroup .p-inputtext,
     .p-inputgroup .p-inputwrapper,
-    .p-inputgroup .p-inputwrapper > .p-component {
-        flex: 1 1 auto;
+    .p-inputgroup .p-inputwrapper>.p-component {
+        flex   : 1 1 auto;
         //width: unset;
     }
 
-    .p-fluid > p-iconfield {
+    .p-fluid>p-iconfield {
         display: block;
-    } 
+    }
 
     .p-text-danger {
         color: cfg.$dangerButtonBg;
     }
 
     .p-multiselect-token-label {
-        max-width: unset!important;
+        max-width: unset !important;
     }
 
     .overlay-container {
         position: absolute;
-        z-index: 999999;
+        z-index : 999999;
     }
 
     .font-weight-bold {
         font-weight: bold;
     }
- 
+
     p-fieldset {
         display: block;
     }
-	
-	.p-dropdown-label  {
-		//white-space: pre-wrap!important;
-	}
 
- 
+    .p-dropdown-label {
+        //white-space: pre-wrap!important;
+    }
+
+    .center {
+        display        : flex !important;
+        flex-flow      : column nowrap;
+        justify-content: center;
+        align-items    : center;
+        height         : calc(100svh - var(--body-padding-lr, .5rem) * 2);
+    }
+
+    hr {
+        border-top  : solid var(--surface-border);
+        border-width: 1px 0 0 0;
+        margin      : 1rem 0;
+    }
+
+    p {
+        margin     : 0 0 1rem 0;
+        line-height: 1.5;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
 }

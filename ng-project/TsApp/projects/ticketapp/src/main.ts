@@ -53,7 +53,8 @@ ModuleRegistry.registerModules([
 
 platformBrowserDynamic().bootstrapModule(AppModule, {
   ngZoneEventCoalescing: true,
-  defaultEncapsulation: ViewEncapsulation.None
+  defaultEncapsulation: ViewEncapsulation.None,
+  preserveWhitespaces: true,
 })
   .catch(err => console.error(err));
 

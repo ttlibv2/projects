@@ -8,6 +8,7 @@ import { Color } from 'ts-ui/color-picker';
 import { FormsBuilder } from 'ts-ui/forms';
 import { gridResponsiveMap, NzBreakpointService } from './breakpoint';
 import { Subject, takeUntil } from 'rxjs';
+import { SideItem } from 'ts-ui/layout';
 
 
 
@@ -89,6 +90,13 @@ export class DashboardComponent implements OnInit {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  menuItem: SideItem = {
+    label: 'General',
+    hasMain: true,
+    iconClass: 'pi pi-home',
+    badge: 'new'
   }
 }
 

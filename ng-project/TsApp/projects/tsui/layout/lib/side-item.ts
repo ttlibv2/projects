@@ -2,6 +2,9 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, ViewEncapsulation } from "@angular/core";
 import { IsActiveMatchOptions, QueryParamsHandling } from "@angular/router";
 import { MenuItem, TooltipOptions } from "primeng/api";
+import { BadgeModule } from "primeng/badge";
+import { RippleModule } from "primeng/ripple";
+import { TooltipModule } from "primeng/tooltip";
 import { INgClass, INgStyle, TooltipPos } from "ts-ui/common";
 
 /**
@@ -148,10 +151,13 @@ export interface SideItem  {
      */
     badge?: string;
 
-    /**
-     * Style class of the badge.
-     */
-    badgeClass?: INgClass;    
+    badgeOptions?: {
+        styleClass?:string	;
+        style?:INgStyle;
+        badgeSize?:	"large" | "xlarge"	;
+        severity?:	"success" | "info" | "warning" | "primary" | "help" | "danger" | "secondary" | "contrast"	;
+        badgeDisabled?:	boolean;
+    }
 
     //==================================
     //  TOOLTIP
@@ -236,7 +242,7 @@ export interface SideItem  {
     standalone: true,
     selector: 'ts-side-item',
     encapsulation: ViewEncapsulation.None,
-    imports: [CommonModule],
+    imports: [CommonModule, BadgeModule, TooltipModule, RippleModule],
     templateUrl: './test.html'
 })
 export class SideItemView {

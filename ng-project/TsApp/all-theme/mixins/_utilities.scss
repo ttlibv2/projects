@@ -19,13 +19,19 @@
     }
 }
 
+@mixin flex-center($wrap: nowrap) {
+    display : flex;
+    flex-flow: column $wrap;
+    justify-content: center;
+    align-items: center;
+}
 
 @mixin flex-column($wrap: nowrap) {
     display  : flex;
     flex-flow: column $wrap;
 }
 
-@mixin flex-row($wrap: wrap, $gap: cfg.$flexGap) {
+@mixin flex-row($wrap: nowrap, $gap: cfg.$flexGap) {
     display  : flex;
     flex-flow: row $wrap;
     align-items: center;

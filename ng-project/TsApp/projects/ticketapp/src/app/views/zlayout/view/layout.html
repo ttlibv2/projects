@@ -1,0 +1,20 @@
+<div class="layout-container" [ngClass]="containerCls()">
+    <div class="layout-sidebar">
+        <ts-side-panel></ts-side-panel>
+    </div>
+    <div class="layout-content-wrapper">
+        <div class="layout-topbar" *ngIf="visibleTopbar">
+            <ts-app-header></ts-app-header>
+        </div>     
+        <p-breadcrumb [home]="homeBcMenu" [model]="breadcrumbs$ | async">
+            <ng-template pTemplate="separator">/</ng-template>
+            <ng-template pTemplate="item" let-item>
+                {{item.label | i18n}}
+            </ng-template>
+        </p-breadcrumb>
+        <div class="layout-content">
+            <router-outlet></router-outlet>
+        </div>
+        <div class="layout-footer" *ngIf="visibleFooter">footer</div>
+    </div>
+</div>
