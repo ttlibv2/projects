@@ -67,7 +67,7 @@ export class SigninComponent implements OnInit {
     }
 
     clickNewAcc(): void {
-        this.router.navigateByUrl(Urls.signupUrl);
+        this.router.navigateByUrl(Urls.signupUrl).then();
     }
 
     onSearchUser(event: AutoCompleteCompleteEvent) {

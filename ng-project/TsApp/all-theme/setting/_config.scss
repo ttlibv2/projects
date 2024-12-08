@@ -1048,5 +1048,13 @@ $status-error-s403             : linear-gradient(to right, #29d155 0%, #1b8d39 5
 $status-error-s404             : linear-gradient(to right, #ff7c92 0%, #ff2a4e 51%, #ff7c92 100%) !default;
 $status-error-s500             : linear-gradient(to right, #6a85f5 0%, #1e47ef 51%, #6a85f5 100%) !default;
 
+//ribbon
+$ribbon-text-color: #fff;
+$ribbon-h-padding:0 20px;
+$ribbon-v-padding: 0 5px;
+$ribbon-bg: var(--help-color);
+
+
+//
 $status-error-s503: linear-gradient(to right, #44b5ef 0%, #128fd0 51%, #44b5ef 100%) !default;
 $status-error-hover-s503:linear-gradient(to right, #44b5ef 0%, #128fd0 51%, #44b5ef 100%) !default;

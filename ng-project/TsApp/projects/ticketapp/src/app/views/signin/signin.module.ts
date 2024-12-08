@@ -16,6 +16,7 @@ import {Divider} from "ts-ui/divider";
 import { ColDirective } from 'ts-ui/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SocialItem } from '../shared/social-item';
+import {Ribbon} from "ts-ui/ribbon";
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { SocialItem } from '../shared/social-item';
         CardModule,
         PasswordModule,
         Divider,
-        SocialItem
+        SocialItem,
+        Ribbon
     ],
     providers: [
         MessageService

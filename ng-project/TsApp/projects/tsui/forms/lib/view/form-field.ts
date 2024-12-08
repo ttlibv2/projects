@@ -7,12 +7,14 @@ import { Objects } from "ts-ui/helper";
 import {INgClass} from "ts-ui/common";
 import { TranslateModule } from "@ngx-translate/core";
 import { Subject } from "rxjs";
+import {ReactiveFormsModule} from "@angular/forms";
 const { isTemplateRef, isString, isNull, parseI18N } = Objects;
 
 @Component({
     standalone: true,
     selector: 'ts-form-field',
-    imports: [CommonModule, FormLabel, TranslateModule, PrimeTemplate],
+    imports: [CommonModule, FormLabel, TranslateModule,
+        PrimeTemplate, ReactiveFormsModule,],
     encapsulation: ViewEncapsulation.None,
     templateUrl: './form-field.html'
 })

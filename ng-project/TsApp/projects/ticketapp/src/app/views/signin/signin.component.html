@@ -1,63 +1,82 @@
-<div class="login-form" *ngIf="asyncView">
-   <div class="form-wrapper">
-    <div class="logo">
-        <p-image [src]="'./assets/images/logo.png'"></p-image>
+<div class="login-form p-4" *ngIf="asyncView">
+    <div class="form-wrapper">
+        <div class="logo">
+            <p-image [src]="'./assets/images/logo.png'"></p-image>
+            <h3>ConYeuApp</h3>
+        </div>
+
+        <ts-ribbon text="SALE 50%"
+                   [clip]="true"
+                   [bookmark]="false"
+                   [orientation]="'horizontal'"
+                   [ribbonHeight]="'30px'"
+                   [position]="'right-top'"
+        >
+
+            <ts-card [title]="'users.h1_signin' | translate" [subtitle]="'signin.h1_subtitle'|translate"
+                     [contentClass]="'mt-3'">
+                <form [formGroup]="signinForm" (ngSubmit)="onSignIn()" class="grid">
+
+                    <ts-form-field [label]="'users.user_name'|translate" class="p-fluid col-12">
+                        <ts-inputgroup [prefix]="['pi pi-user']" [borderStyle]="'dashed'">
+                            <p-autoComplete [suggestions]="searchUser" (completeMethod)="onSearchUser($event)"
+                                            (onSelect)="selectUser($event.value)" [dropdownIcon]="'pi pi-user'"
+                                            [showEmptyMessage]="false"
+                                            formControlName="username"
+                                            [placeholder]="'signin.holder.user_name'|translate"></p-autoComplete>
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ts-form-field [label]="'users.password'|translate" class="p-fluid col-12 mt-2">
+                        <ts-inputgroup [prefix]="['pi pi-lock']" [borderStyle]="'dashed'">
+                            <p-password [placeholder]="'signin.holder.password'|translate" formControlName="password"
+                                        [toggleMask]="true"></p-password>
+                        </ts-inputgroup>
+                    </ts-form-field>
+
+                    @if (isDev) {
+                        <ts-form-field [label]="'URL Dev'" class="p-fluid col-12 mt-2">
+                            <ts-inputgroup [prefix]="['pi pi-code']" [borderStyle]="'dashed'">
+                                <input pInputText placeholder="https://api.app-web.vn" formControlName="url_dev"/>
+                            </ts-inputgroup>
+                        </ts-form-field>
+                    }
+
+                    <ng-content select="ts-form-field"></ng-content>
+
+                    <div class="p-fluid col-12 remember mt-2">
+                        <p-checkbox id="chk_remember" formControlName="remember" [binary]="true"
+                                    [label]="'signin.remember'|translate"></p-checkbox>
+                        <p-button [link]="true" [label]="'signin.forget_pwd'|translate"></p-button>
+                    </div>
+                    <div class="col-12 flex gap-2 mt-2">
+                        <p-button type="submit" [label]="'signin.btnlogin'|translate" icon="pi pi-sign-in" size="small"
+                                  [loading]="asyncLogin"
+                                  severity="info" [disabled]="signinForm.invalid" class="w-full p-fluid">
+                        </p-button>
+                    </div>
+
+                    @if (socialLinks?.length) {
+                        <ts-divider [text]="'signin.login_or' | translate" align="left"
+                                    class="col-12 or-divider"></ts-divider>
+                        <div class="col-12 grid socials">
+                            @for (item of socialLinks; track item) {
+                                <ts-btn-social [item]="item"/>
+                            }
+                        </div>
+                    }
+
+                    <div [span]="12" class="mt-2 flex justify-content-center">
+                        <p-button [link]="true" [label]="'signin.account404'|translate"></p-button>
+                        <p-button [link]="true" [label]="'signin.click_new'|translate" styleClass="p-new-acc"
+                                  severity="help"
+                                  (onClick)="clickNewAcc()"></p-button>
+                    </div>
+
+
+                </form>
+
+            </ts-card>
+        </ts-ribbon>
+
     </div>
-    <ts-card [title]="'users.h1_signin' | translate" [subtitle]="'Enter your email & password to login'" [contentClass]="'mt-4'">
-        <form [formGroup]="signinForm" (ngSubmit)="onSignIn()" class="grid">
-    
-            <ts-form-field [label]="'Tên đăng nhập'" class="p-fluid col-12">
-                <ts-inputgroup [prefix]="['pi pi-user']" [borderStyle]="'dashed'">
-                    <p-autoComplete [suggestions]="searchUser" (completeMethod)="onSearchUser($event)"
-                        (onSelect)="selectUser($event.value)" [dropdownIcon]="'pi pi-user'" [showEmptyMessage]="false"
-                        formControlName="username" placeholder="administrator@gmail.com"></p-autoComplete>
-                </ts-inputgroup>
-            </ts-form-field>
-            <ts-form-field [label]="'Mật khẩu'" class="p-fluid col-12 mt-2">
-                <ts-inputgroup [prefix]="['pi pi-lock']" [borderStyle]="'dashed'">
-                    <p-password placeholder="********" formControlName="password" [toggleMask]="true"></p-password>
-                </ts-inputgroup>
-            </ts-form-field>
-    
-            @if (isDev) {
-            <ts-form-field [label]="'URL Dev'" class="p-fluid col-12 mt-2">
-                <ts-inputgroup [prefix]="['pi pi-code']" [borderStyle]="'dashed'">
-                    <input pInputText placeholder="https://api.app-web.vn" formControlName="url_dev" />
-                </ts-inputgroup>
-            </ts-form-field>
-            }
-    
-            <div class="p-fluid col-12 remember mt-2">
-                <p-checkbox id="chk_remember" formControlName="remember" [binary]="true"
-                    label="Ghi nhớ tài khoản"></p-checkbox>
-                <p-button [link]="true" label="Quên mật khẩu ?"></p-button>
-            </div>
-            <div class="col-12 flex gap-2 mt-2">
-                <p-button type="submit" label="Đăng nhập" icon="pi pi-sign-in" size="small" [loading]="asyncLogin"
-                    severity="info" [disabled]="signinForm.invalid" class="w-full p-fluid">
-                </p-button>
-            </div>
-    
-            @if(socialLinks?.length) {
-            <ts-divider [text]="'Hoặc đăng nhập'" align="left" class="col-12 or-divider"></ts-divider>
-            <div class="col-12 grid socials">
-                @for (item of socialLinks; track item) {
-                <div tsCol [span]="12" [sm]="6">
-                    <ts-btn-social [item]="item" />
-                </div>
-                }
-            </div>
-            }
-    
-            <div [span]="12" class="mt-2 flex justify-content-center">
-                <p-button [link]="true" label="Bạn chưa có tài khoản ?"></p-button>
-                <p-button [link]="true" label="Tạo tại đây" class="p-new-acc" severity="help"
-                    (onClick)="clickNewAcc()"></p-button>
-            </div>
-    
-    
-        </form>
-    
-    </ts-card>
-   </div>
 </div>

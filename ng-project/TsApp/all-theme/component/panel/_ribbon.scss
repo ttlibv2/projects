@@ -1,185 +1,171 @@
-@use "../../setting/config"as cfg;
+@use "../../setting/config" as cfg;
 @use "sass:list";
 
-$prefix: 'ribbon';
+$ribbon-cls: 'ribbon';
+$ribbon-text-color: var(--ribbon-text-color, cfg.$ribbon-text-color);
+$ribbon-bg: var(--ribbon-bg, cfg.$ribbon-bg);
+$ribbon-clip-bg: var(--ribbon-clip-bg, cfg.$ribbon-bg);
+$ribbon-gap: var(--ribbon-gap, 1rem);
 
-//--
-$ribbon-bg             : var(--ribbon-bg, --primary-color);
-$ribbon-color          : var(--ribbon-color, #fff);
-$ribbon-height         : 30px; //var(--ribbon-height, 30px);
-$ribbon-wrapper-padding:58px 18px 28px; // var(--ribbon-wrapper-padding, 58px 18px 28px);
-$ribbon-padding        : var(--ribbon-padding, 0 20px);
+$ribbon-h-padding: var(--ribbon-padding, cfg.$ribbon-h-padding);
+$ribbon-v-padding: var(--ribbon-padding, cfg.$ribbon-v-padding);
 
-//--
-$ribbon-clip-bg         : var(--ribbon-clip-bg, $ribbon-bg);
-$ribbon-clip-border-size: 1rem;
-$ribbon-clip-border     : calc($ribbon-clip-border-size / 2) dashed transparent;
+$ribbon-height: var(--ribbon-height, 30px);
 
+//clip
+$ribbon-clip-size: 1rem;
+$ribbon-clip-border: calc($ribbon-clip-size / 2) dashed transparent;
 
-//--calc
-$cardBodyPadding: calc(.85rem + 4px);
-$clip-spacing   : calc($cardBodyPadding * -1);
-
-//
-$ribbon-top-gap: 10px;
-
-.#{$prefix} {
-
-    &-wrapper {
-        position: relative;
-    }
-
-    &-primary {
-        --ribbon-bg     : var(--danger-color);
-        --ribbon-clip-bg: var(--danger-color);
-    }
-
-    &-item {
-        position   : absolute;
-        clear      : left;
-        padding    : $ribbon-padding;
-        height     : $ribbon-height;
-        line-height: $ribbon-height;
-        color      : $ribbon-color;
-        background : $ribbon-bg;
-        z-index    : 2;
-    }
-
-    &-left-top {
-        top : $ribbon-top-gap;
-        left: calc(($ribbon-height/2 - var(--gutter-grx, 0.25rem)) * -1);
-
-        &:before {
-            position: absolute;
-            width   : 0;
-            height  : 0;
-            content : "";
-            border  : $ribbon-clip-border;
-
-            top               : $ribbon-height;
-            left              : 0;
-            border-top-color  : $ribbon-bg;
-            border-right-color: $ribbon-bg;
-
-        }
-
-    }
-
+@mixin clipBefore() {
+  position: absolute;
+  width: 0;
+  height: 0;
+  content: "";
+  border: $ribbon-clip-border;
 }
 
 
+.#{$ribbon-cls} {
+  position: absolute;
+  z-index: 2;
+  color: $ribbon-text-color;
+  background: $ribbon-bg;
 
-.#{$prefix}2 {
+
+  &-wrapper {
     position: relative;
-    padding : $ribbon-wrapper-padding;
+  }
 
-    &.p-card-body {
-        &:has(.ribbon-item-clip-lt) {
-            padding-top: calc($ribbon-height + $ribbon-top-gap);
-        }
+  &-horizontal {
+    padding: $ribbon-h-padding;
+    height: calc(var(--ribbon-height));
+    line-height: calc(var(--ribbon-height));
+    clear: left;
+  }
 
-        &:has(.ribbon-item-clip-lb) {
-            padding-bottom: calc($ribbon-height + $ribbon-top-gap);
-        }
+  &-vertical {
+    clear: none;
+    padding: $ribbon-v-padding;
+    height: calc(var(--ribbon-height));
+    line-height: calc(var(--ribbon-height));
+    text-align: center;
+  }
 
-        &:has(.ribbon-item-clip-rt) {
-            padding-top: $ribbon-top-gap;
-        }
+  &-left-top {
+    left: 0;
+    top: $ribbon-gap;
+  }
 
-        &:has(.ribbon-item-clip-rb) {
-            padding-top   : 0;
-            padding-bottom: calc($ribbon-height + $ribbon-top-gap + 10px);
-        }
+  &-left-bottom {
+    left: 0;
+    bottom: $ribbon-gap;
+  }
+
+  &-right-top {
+    right: 0;
+    top: $ribbon-gap;
+  }
+
+  &-right-bottom {
+    right: 0;
+    bottom: $ribbon-gap;
+  }
+
+  &-clip {
+
+    &:is(&.ribbon-bookmark)::after {
+        @include clipBefore();
     }
 
-    &-item {
-        position   : absolute;
-        clear      : left;
-        padding    : $ribbon-padding;
-        height     : $ribbon-height;
-        line-height: $ribbon-height;
-        color      : $ribbon-color;
-        background : $ribbon-bg;
-        z-index    : 2;
+    &:not(&.ribbon-bookmark)::before {
+      @include clipBefore();
+    }
 
+    &.#{$ribbon-cls} {
 
-        &-clip {
+      &-left-top {
+        left: calc($ribbon-clip-size * -1);
 
-            &:before {
-                position: absolute;
-                width   : 0;
-                height  : 0;
-                content : "";
-                border  : $ribbon-clip-border;
-            }
+        &:before {
+          left: 0;
+          top: calc(var(--ribbon-height));
+          border-color: transparent !important;
+          border-top-color: $ribbon-clip-bg !important;
+          border-right-color: $ribbon-clip-bg !important;
+        }
+      }
 
-            &-left-top,
-            &-lt {
+      &-left-bottom {
+        left: calc($ribbon-clip-size * -1);
 
-                top : $ribbon-top-gap;
-                left: $clip-spacing;
-
-                &:before {
-                    top               : $ribbon-height;
-                    left              : 0;
-                    border-top-color  : $ribbon-bg;
-                    border-right-color: $ribbon-bg;
-                }
-
-            }
-
-            &-left-bottom,
-            &-lb {
-                bottom: .5rem;
-                left  : $clip-spacing;
-
-                &:before {
-                    left               : 0;
-                    bottom             : $ribbon-height;
-                    border-top-color   : transparent;
-                    border-right-color : $ribbon-bg;
-                    border-bottom-color: $ribbon-bg;
-                }
-
-            }
-
-            &-right-top,
-            &-rt {
-                right: $clip-spacing;
-
-                &:before {
-                    right             : 0;
-                    top               : $ribbon-height;
-                    border-right-color: transparent;
-                    border-top-color  : $ribbon-clip-bg;
-                    border-left-color : $ribbon-clip-bg;
-                }
-            }
-
-            &-right-bottom,
-            &-rb {
-                inset: auto $clip-spacing 12px auto;
-
-                &:before {
-                    right              : 0;
-                    bottom             : $ribbon-height;
-                    border-color       : transparent;
-                    border-left-color  : $ribbon-clip-bg;
-                    border-bottom-color: $ribbon-clip-bg;
-                }
-            }
+        &:before {
+          left: 0;
+          bottom: calc(var(--ribbon-height));
+          border-top-color: transparent !important;
+          border-bottom-color: $ribbon-clip-bg !important;
+          border-right-color: $ribbon-clip-bg !important;
         }
 
 
+      }
 
+      &-right-top {
+        right: calc($ribbon-clip-size * -1);
 
+        &:before {
+          top: $ribbon-height;
+          right: 0;
 
+          border-right-color: transparent !important;
+          border-top-color: $ribbon-clip-bg !important;
+          border-left-color: $ribbon-clip-bg !important;
+        }
 
+      }
 
+      &-right-bottom {
+        right: calc($ribbon-clip-size * -1);
+
+        &:before {
+          bottom: $ribbon-height;
+          right: 0;
+
+          border-top-color: transparent !important;
+          border-bottom-color: $ribbon-clip-bg !important;
+          border-right-color: transparent !important;
+          border-left-color: $ribbon-clip-bg !important;
+        }
+
+      }
+    }
+
+  }
+
+  &-bookmark {
+
+    &:before {
+      position: absolute;
+      top: 0;
+      display: block;
+      width: 0;
+      height: 0;
+      content: "";
+      border: 15px dashed $ribbon-bg;
+    }
+
+    &-left:before {
+      left: 100%;
+      border-right: 10px dashed transparent;
+    }
+
+    &-right:before {
+      right: 100%;
+      left: auto;
+      border-right: 15px dashed $ribbon-bg;
+      border-left: 10px dashed transparent;
     }
 
 
-
-
+  }
 
 }

@@ -427,12 +427,12 @@ export class DomHandler {
         return { width: w, height: h };
     }
 
-    public static getOffset(el) {
-        var rect = el.getBoundingClientRect();
+    public static getOffset(el: HTMLElement) {
+        const rect = el.getBoundingClientRect();
 
         return {
-            top: rect.top + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0),
-            left: rect.left + (window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0)
+            top: rect.top + (window.screenY || document.documentElement.scrollTop || document.body.scrollTop || 0),
+            left: rect.left + (window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft || 0)
         };
     }
 
@@ -446,25 +446,26 @@ export class DomHandler {
         if (navigator && DomHandler.isClient()) {
             return navigator.userAgent;
         }
+        return undefined;
     }
 
     public static isIE() {
-        var ua = window.navigator.userAgent;
+        const ua = window.navigator.userAgent;
 
-        var msie = ua.indexOf('MSIE ');
+        const msie = ua.indexOf('MSIE ');
         if (msie > 0) {
             // IE 10 or older => return version number
             return true;
         }
 
-        var trident = ua.indexOf('Trident/');
+        const trident = ua.indexOf('Trident/');
         if (trident > 0) {
             // IE 11 => return version number
-            var rv = ua.indexOf('rv:');
+            const rv = ua.indexOf('rv:');
             return true;
         }
 
-        var edge = ua.indexOf('Edge/');
+        const edge = ua.indexOf('Edge/');
         if (edge > 0) {
             // Edge (IE 12+) => return version number
             return true;
@@ -504,7 +505,7 @@ export class DomHandler {
     }
 
     public static isElement(obj: any) {
-        return typeof HTMLElement === 'object' ? obj instanceof HTMLElement : obj && typeof obj === 'object' && obj !== null && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+        return typeof HTMLElement === 'object' ? obj instanceof HTMLElement : obj.nodeType === 1 && typeof obj.nodeName === 'string';
     }
 
     public static calculateScrollbarWidth(el?: HTMLElement): number {

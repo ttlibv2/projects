@@ -12,6 +12,10 @@ interface Options {
 }
 
 export class QueryPTemplate {
+    private _destroy$ = new Subject<boolean>();
+    private _onClear: Consumer<void>;
+    private _onUpdate: Consumer<TemplateItem>;
+    private _hasInitialize: boolean = false;
 
     static register(options: Options) {
         Asserts.notNull(options.templates, "@QueryList<PrimeTemplate>");
@@ -25,11 +29,6 @@ export class QueryPTemplate {
 
         return cls;
     }
-
-    private _destroy$ = new Subject<boolean>();
-    private _onClear: Consumer<void>;
-    private _onUpdate: Consumer<TemplateItem>;
-    private _hasinitialize: boolean = false;
 
     constructor(private readonly templates: QueryList<PrimeTemplate>) {
     }
@@ -56,8 +55,8 @@ export class QueryPTemplate {
     }
 
     initialize(): void {
-        if (this._hasinitialize === false) {
-            this._hasinitialize = true;
+        if (this._hasInitialize === false) {
+            this._hasInitialize = true;
             this.showWarning();
             this.extractTemplates(this.templates, true);
             this.templates.changes.pipe(takeUntil(this._destroy$))

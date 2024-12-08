@@ -5,7 +5,7 @@
   align-items: center;
   height: calc(100svh - 1rem);
 
-  background: url(/assets/images/login_bg.jpg);
+  background: url('/assets/images/login_bg.jpg');
 
   .form-wrapper {
     max-width      : 384px;
@@ -17,6 +17,7 @@
       display        : flex;
       justify-content: center;
       margin-bottom: .75rem;
+      column-gap: 1rem;
 
     }
 

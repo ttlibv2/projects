@@ -242,6 +242,7 @@
     "ts_app_holder": "Vui lòng chọn ứng dụng",
     "h1_signin": "Đăng nhập vào tài khoản",
     "h1_signup": "Đăng ký tài khoản",
+    "signup_sub": "Enter your personal details to create account",
     "btn": {
       "get_info": "Lấy thông tin tài khoản",
       "get_api": "Lấy danh sách ứng dụng"
@@ -254,6 +255,7 @@
 	  "email": "Nhập e-mail"     ,
 	  "password": "Nhập mật khẩu",
 	  "re_password": "Nhập lại mật khẩu",
+
     "phone": "Nhập SDT"
     }
   },
@@ -348,6 +350,23 @@
   "style": {
     "text_color": "Màu chữ",
     "bg_color": "Màu nền"
+  },
+  "signin": {
+    "h1_subtitle": "Enter your email & password to login",
+    "remember": "Ghi nhớ tài khoản",
+    "forget_pwd": "Quên mật khẩu ?",
+    "btnlogin": "Đăng nhập",
+    "login_or": "Hoặc đăng nhập",
+    "account404": "Bạn chưa có tài khoản ?",
+    "click_new": "Nhấn tạo tại đây",
+    "holder": {
+      "user_name": "administrator@gmail.com",
+      "password": "********"
+    }
+  },
+  "signup": {
+    "exist_account": "Bạn đã có tài khoản ?",
+    "click_signin": "Đăng nhập tại đây"
   },
   "upload": {
     "invalidSizeDetail": "kích thước tệp tối đa là {0}",

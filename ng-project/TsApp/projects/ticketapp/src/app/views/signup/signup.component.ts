@@ -8,6 +8,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { Objects } from 'ts-ui/helper';
 import { I18N_KEY } from '../../models/constant';
 import {StorageService} from "../../services/storage.service";
+import {Urls} from "../../constant";
 
 @Component({
   selector: 'ts-signup',
@@ -17,12 +18,17 @@ import {StorageService} from "../../services/storage.service";
 })
 export class SignupComponent implements OnInit{
   @Input() lastUrl: string = '/';
+  @Input() termsUrl: string = '/terms-url';
+  @Input() policyUrl: string = '/policy';
+
   formSignup: FormGroup;
   asyncSignup: boolean = false;
   asyncView: boolean = false;
   i18n = I18N_KEY;
 
-  socials: SocialLink[] = ALL_SOCIAL;
+  socials: SocialLink[] = ALL_SOCIAL.map(s => ({
+    ...s, responsive: {span: 6, sm: 3}
+  }));
 
   constructor(private active: ActivatedRoute,
               private fb:FormBuilder,
@@ -80,5 +86,9 @@ export class SignupComponent implements OnInit{
       complete: () => this.asyncSignup = false
     });
 
+  }
+
+  clickSignin():void {
+    this.router.navigateByUrl(Urls.signinUrl).then();
   }
 }
