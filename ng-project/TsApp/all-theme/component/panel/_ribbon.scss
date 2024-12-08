@@ -24,12 +24,47 @@ $ribbon-clip-border: calc($ribbon-clip-size / 2) dashed transparent;
   border: $ribbon-clip-border;
 }
 
+@mixin clipLeftTop() {
+  left: 0;
+  top: calc(var(--ribbon-height));
+  border-color: transparent !important;
+  border-top-color: $ribbon-clip-bg !important;
+  border-right-color: $ribbon-clip-bg !important;
+}
+
+@mixin clipLeftBottom() {
+  left: 0;
+  bottom: calc(var(--ribbon-height));
+  border-top-color: transparent !important;
+  border-bottom-color: $ribbon-clip-bg !important;
+  border-right-color: $ribbon-clip-bg !important;
+}
+
+@mixin clipRightTop() {
+  right: 0;
+  top: $ribbon-height;
+  border-right-color: transparent !important;
+  border-top-color: $ribbon-clip-bg !important;
+  border-left-color: $ribbon-clip-bg !important;
+}
+
+@mixin clipRightBottom() {
+  right: 0;
+  bottom: $ribbon-height;
+  border-top-color: transparent !important;
+  border-bottom-color: $ribbon-clip-bg !important;
+  border-right-color: transparent !important;
+  border-left-color: $ribbon-clip-bg !important;
+}
+
 
 .#{$ribbon-cls} {
   position: absolute;
   z-index: 2;
   color: $ribbon-text-color;
   background: $ribbon-bg;
+
+  --has-bookmark: true;
 
 
   &-wrapper {
@@ -41,6 +76,120 @@ $ribbon-clip-border: calc($ribbon-clip-size / 2) dashed transparent;
     height: calc(var(--ribbon-height));
     line-height: calc(var(--ribbon-height));
     clear: left;
+
+    &.has-bookmark {
+
+      &:before {
+        position: absolute;
+        top: 0;
+        display: block;
+        width: 0;
+        height: 0;
+        content: "";
+        border: 15px dashed $ribbon-bg;
+      }
+
+      &-left:before {
+        left: 100%;
+        border-right: 10px dashed transparent;
+      }
+
+      &-right:before {
+        right: 100%;
+        left: auto;
+        border-right: 15px dashed $ribbon-bg;
+        border-left: 10px dashed transparent;
+      }
+
+
+    }
+
+
+    &-left-top {
+      left: 0;
+      top: $ribbon-gap;
+    }
+
+    &-left-bottom {
+      left: 0;
+      bottom: $ribbon-gap;
+    }
+
+    &-right-top {
+      right: 0;
+      top: $ribbon-gap;
+    }
+
+    &-right-bottom {
+      right: 0;
+      bottom: $ribbon-gap;
+    }
+
+    &-clip {
+
+      &-left {
+        left: calc($ribbon-clip-size * -1);
+      }
+
+      &-right {
+        right: calc($ribbon-clip-size * -1);
+      }
+    }
+
+    &-clip:is(.has-bookmark) {
+
+      &:after {
+        @include clipBefore();
+      }
+
+      &.#{$ribbon-cls} {
+
+        &-left-top:after {
+          @include clipLeftTop();
+        }
+
+        &-left-bottom:after {
+          @include clipLeftBottom();
+        }
+
+        &-right-top:after {
+          @include clipRightTop();
+        }
+
+        &-right-bottom:after {
+          @include clipRightBottom();
+        }
+      }
+
+    }
+
+    &-clip:not(.has-bookmark) {
+
+      &:before {
+        @include clipBefore();
+      }
+
+      &.#{$ribbon-cls} {
+
+        &-left-top:before {
+          @include clipLeftTop();
+        }
+
+        &-left-bottom:before {
+          @include clipLeftBottom();
+        }
+
+        &-right-top:before {
+          @include clipRightTop();
+        }
+
+        &-right-bottom:before {
+          @include clipRightBottom();
+        }
+
+      }
+
+    }
   }
 
   &-vertical {
@@ -49,123 +198,20 @@ $ribbon-clip-border: calc($ribbon-clip-size / 2) dashed transparent;
     height: calc(var(--ribbon-height));
     line-height: calc(var(--ribbon-height));
     text-align: center;
-  }
 
-  &-left-top {
-    left: 0;
-    top: $ribbon-gap;
-  }
-
-  &-left-bottom {
-    left: 0;
-    bottom: $ribbon-gap;
-  }
-
-  &-right-top {
-    right: 0;
-    top: $ribbon-gap;
-  }
-
-  &-right-bottom {
-    right: 0;
-    bottom: $ribbon-gap;
-  }
-
-  &-clip {
-
-    &:is(&.ribbon-bookmark)::after {
-        @include clipBefore();
-    }
-
-    &:not(&.ribbon-bookmark)::before {
-      @include clipBefore();
-    }
-
-    &.#{$ribbon-cls} {
-
-      &-left-top {
-        left: calc($ribbon-clip-size * -1);
-
-        &:before {
-          left: 0;
-          top: calc(var(--ribbon-height));
-          border-color: transparent !important;
-          border-top-color: $ribbon-clip-bg !important;
-          border-right-color: $ribbon-clip-bg !important;
-        }
-      }
-
-      &-left-bottom {
-        left: calc($ribbon-clip-size * -1);
-
-        &:before {
-          left: 0;
-          bottom: calc(var(--ribbon-height));
-          border-top-color: transparent !important;
-          border-bottom-color: $ribbon-clip-bg !important;
-          border-right-color: $ribbon-clip-bg !important;
-        }
-
-
-      }
-
-      &-right-top {
-        right: calc($ribbon-clip-size * -1);
-
-        &:before {
-          top: $ribbon-height;
-          right: 0;
-
-          border-right-color: transparent !important;
-          border-top-color: $ribbon-clip-bg !important;
-          border-left-color: $ribbon-clip-bg !important;
-        }
-
-      }
-
-      &-right-bottom {
-        right: calc($ribbon-clip-size * -1);
-
-        &:before {
-          bottom: $ribbon-height;
-          right: 0;
-
-          border-top-color: transparent !important;
-          border-bottom-color: $ribbon-clip-bg !important;
-          border-right-color: transparent !important;
-          border-left-color: $ribbon-clip-bg !important;
-        }
-
-      }
+    &-left {
+      clear: none;
+      padding: 0 5px;
+      height: 70px;
+      width: 30px;
+      line-height: 70px;
+      text-align: center;
+      left: 12px;
+      top: -2px;
     }
 
   }
 
-  &-bookmark {
 
-    &:before {
-      position: absolute;
-      top: 0;
-      display: block;
-      width: 0;
-      height: 0;
-      content: "";
-      border: 15px dashed $ribbon-bg;
-    }
-
-    &-left:before {
-      left: 100%;
-      border-right: 10px dashed transparent;
-    }
-
-    &-right:before {
-      right: 100%;
-      left: auto;
-      border-right: 15px dashed $ribbon-bg;
-      border-left: 10px dashed transparent;
-    }
-
-
-  }
 
 }

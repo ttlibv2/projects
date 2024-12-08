@@ -73,8 +73,7 @@ export class Ribbon implements AfterContentInit, OnChanges, OnDestroy, AfterView
     ribbonCls(): any {
         return {
             [`ribbon`]: true,
-            [`ribbon-horizontal`]: isBlank(this.orientation) || this.orientation === 'horizontal',
-            [`ribbon-vertical`]: this.orientation === 'vertical',
+            [`ribbon-horizontal`]: this.isHorizontal(),
             [`ribbon-${this.severity}`]: !!this.severity,
 
             [`ribbon-left-top`]: isBlank(this.position) || this.position === 'left-top',
@@ -82,13 +81,19 @@ export class Ribbon implements AfterContentInit, OnChanges, OnDestroy, AfterView
             [`ribbon-right-top`]: this.position === 'right-top',
             [`ribbon-right-bottom`]: this.position === 'right-bottom',
 
-            [`ribbon-clip`]: !!this.clip,
-            [`ribbon-clip-left`]: !!this.clip && this.isLeft(),
-            [`ribbon-clip-right`]: !!this.clip && this.isRight(),
+            [`ribbon-clip has-clip`]: !!this.clip && this.isHorizontal(),
+            [`ribbon-clip-left`]: !!this.clip && this.isHorizontal() && this.isLeft(),
+            [`ribbon-clip-right`]: !!this.clip && this.isHorizontal() && this.isRight(),
 
-            [`ribbon-bookmark`]: !!this.bookmark,
+            [`ribbon-bookmark has-bookmark`]: !!this.bookmark,
             [`ribbon-bookmark-left`]: !!this.bookmark && this.isLeft(),
             [`ribbon-bookmark-right`]: !!this.bookmark && this.isRight(),
+
+            [`ribbon-vertical`]: !this.isHorizontal(),
+            [`ribbon-vertical-left`]: !this.isHorizontal() && this.isLeft(),
+            [`ribbon-vertical-right`]: !this.isHorizontal() && this.isRight(),
+
+
 
             [this.ribbonClass]: !!this.ribbonClass,
         }
@@ -116,6 +121,9 @@ export class Ribbon implements AfterContentInit, OnChanges, OnDestroy, AfterView
         this.templatesQuery?.destroy();
     }
 
+    private isHorizontal(): boolean {
+        return isBlank(this.orientation) || this.orientation === 'horizontal';
+    }
     private isLeft(): boolean {
         return this.position === 'left-top' || this.position === 'left-bottom' || isBlank(this.position);
     }
