@@ -1,4 +1,4 @@
-import { TableColumn } from "ts-ui/ag-table";
+import { TableColumn } from "ts-ui/agtable";
 import { BaseModel } from "./base-model";
 import { MenuItem } from "primeng/api";
 import { AssignObject, Objects } from "ts-ui/helper";

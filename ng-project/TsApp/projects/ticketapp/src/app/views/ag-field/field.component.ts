@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TableColumn } from 'ts-ui/ag-table';
+import { TableColumn } from 'ts-ui/agtable';
 import { FormGroup, FormsBuilder } from 'ts-ui/forms';
 import { ModalService } from 'ts-ui/modal';
 import { ToastService } from 'ts-ui/toast';

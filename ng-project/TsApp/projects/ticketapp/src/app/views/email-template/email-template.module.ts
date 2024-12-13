@@ -10,7 +10,7 @@ import { DropdownModule } from "primeng/dropdown";
 import { CardModule } from "primeng/card";
 import { FieldsetModule } from "primeng/fieldset";
 import { DividerModule } from "primeng/divider";
-import { AgTableModule } from "ts-ui/ag-table";
+import { AgTableModule } from "ts-ui/agtable";
 import { DynamicDialogRef } from "primeng/dynamicdialog";
 import { ToolBar } from "ts-ui/toolbar";
 
@@ -21,7 +21,7 @@ import { ToolBar } from "ts-ui/toolbar";
     imports: [
         CommonModule, 
         FormsModule,
-        AgTableModule,
+        AgTableModule, 
         EditorModule, 
         ButtonModule, 
         InputTextModule,

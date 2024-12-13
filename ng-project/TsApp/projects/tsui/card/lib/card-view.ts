@@ -1,10 +1,11 @@
 import { CommonModule } from "@angular/common";
-import { AfterContentInit, booleanAttribute, Component, ContentChildren, ElementRef, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, TemplateRef, ViewEncapsulation } from "@angular/core";
+import { AfterContentInit, booleanAttribute, Component, ContentChildren, DoCheck, ElementRef, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, TemplateRef, ViewEncapsulation } from "@angular/core";
 import { CardAction } from "./card.interface";
 import { AnyTemplateOutlet, INgClass, INgStyle, QueryPTemplate, Severity, StringTemplate } from "ts-ui/common";
 import { ButtonModule } from "primeng/button";
 import { PrimeTemplate } from "primeng/api";
 import { Objects } from "ts-ui/helper";
+import { DomHandler } from "primeng/dom";
 
 const { isString, isArray } = Objects;
 
@@ -27,20 +28,25 @@ interface PTemplate {
     encapsulation: ViewEncapsulation.None,
     imports: [CommonModule, AnyTemplateOutlet, ButtonModule],
     templateUrl: 'card-view.html',
+    styles: [`:host { display: block;}`],
+    host: {
+        '[class.p-card]': 'true',
+        '[class.p-component]': 'true',
+    }
 })
-export class Card implements OnChanges, AfterContentInit, OnDestroy {
+export class Card implements OnChanges, AfterContentInit, OnDestroy, DoCheck {
 
-    /**
-     * Defined ngClass 
-     * @group Props 
-     * */
-    @Input() styleClass: INgClass;
+    // /**
+    //  * Defined ngClass 
+    //  * @group Props 
+    //  * */
+    // @Input() styleClass: INgClass;
 
-    /**
-     * Defined ngStyle
-     * @group Props 
-     * */
-    @Input() style: INgStyle;
+    // /**
+    //  * Defined ngStyle
+    //  * @group Props 
+    //  * */
+    // @Input() style: INgStyle;
 
     /**
      * Defined header
@@ -189,7 +195,12 @@ export class Card implements OnChanges, AfterContentInit, OnDestroy {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        const { textBg } = changes;
+        const { textBg, severity } = changes;
+
+
+
+
+
 
         if (textBg) {
             let arr = isArray(this.textBg) && this.textBg.length == 2 ? this.textBg : [undefined, undefined];
@@ -206,6 +217,10 @@ export class Card implements OnChanges, AfterContentInit, OnDestroy {
             onUpdate: v => this.pTemplate = v
         })
 
+    }
+
+    ngDoCheck(): void {
+        
     }
 
     ngOnDestroy(): void {
@@ -225,16 +240,11 @@ export class Card implements OnChanges, AfterContentInit, OnDestroy {
         };
     }
 
-    containerCls(): any {
-
-
-
-
-
-        return {
-            [`text-bg-${this.severity}`]: this.textBg && typeof this.textBg === 'string',
-            ...Objects.ngClassToJson(this.styleClass)
-        }
-    }
+    // containerCls(): any {
+    //     return {
+    //         [`text-bg-${this.severity}`]: this.textBg && typeof this.textBg === 'string',
+    //         ...Objects.ngClassToJson(this.styleClass)
+    //     }
+    // }
 
 }

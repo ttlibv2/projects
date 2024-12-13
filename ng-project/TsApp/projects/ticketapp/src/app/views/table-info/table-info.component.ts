@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TableColumn, TableOption } from 'ts-ui/ag-table';
+import { TableColumn, TableOption } from 'ts-ui/agtable';
 
 @Component({
   selector: 'ts-table-info',

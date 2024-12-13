@@ -13,7 +13,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TreeModule } from 'primeng/tree';
 import { FieldsetModule } from 'primeng/fieldset';
-import { AgTableModule } from 'ts-ui/ag-table';
+import { AgTableModule } from 'ts-ui/agtable';
 import { AgFieldComponent } from './field.component';
 import { MvcModule } from '../shared/mvc/mvc.module';
 import { AllView } from './all.component';

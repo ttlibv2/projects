@@ -4,7 +4,7 @@ import { DropdownChangeEvent, DropdownModule } from "primeng/dropdown";
 import { InputNumberModule } from "primeng/inputnumber";
 import { FormGroup, FormsBuilder, FormsModule } from "ts-ui/forms";
 import { ChangeFormatEvent, ColorFormatType } from "../interface";
-import { InputGroupModule } from "ts-ui/input-group";
+import { InputGroupModule } from "ts-ui/inputgroup";
 import { Subject } from "rxjs";
 import { Utils } from '../utils'
 import { Color } from "../color";

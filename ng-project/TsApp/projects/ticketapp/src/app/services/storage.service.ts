@@ -1,7 +1,7 @@
 import {Injectable, signal} from "@angular/core";
 import {EMPTY, forkJoin, from, map, Observable, of, switchMap, tap} from "rxjs";
 import {AuthToken, ChkUser, RememberUser, User} from "../models/user";
-import {DBConfig, DBService, LocalTable} from "ts-ui/local-db";
+import {DBConfig, DBService, LocalTable} from "ts-ui/localdb";
 import {AssignObject, Callback, JsonAny, Objects} from "ts-ui/helper";
 import {Chanel} from "../models/chanel";
 import {Software} from "../models/software";

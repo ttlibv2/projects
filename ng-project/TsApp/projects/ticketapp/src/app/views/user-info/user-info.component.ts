@@ -4,12 +4,11 @@ import { ToastService } from "ts-ui/toast";
 import { FormGroup, FormsBuilder } from "ts-ui/forms";
 import { Objects } from "ts-ui/helper";
 import { UserService } from "../../services/user.service";
-import { User } from "../../models/user";
-import { ApiInfo } from "../../models/api-info";
 import { ApiInfoService } from "../../services/api-info.service";
 import { ModalService } from 'ts-ui/modal';
 import { ApiInfoComponent } from '../api-info/api-info.component';
 import { delay } from 'rxjs';
+import { ApiInfo } from '../../models/api-info';
 
 const { notNull, isNull } = Objects;
 

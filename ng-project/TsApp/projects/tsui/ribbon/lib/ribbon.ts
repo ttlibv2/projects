@@ -21,16 +21,23 @@ const  {isTrue, isFalse, isBlank, isNull} = Objects;
     encapsulation:ViewEncapsulation.None,
     imports: [CommonModule, AnyTemplateOutlet],
     styles: ':host { display: block; }',
-    host: { 'class': 'ribbon-wrapper' },
+    host: {
+         'class': 'ribbon-wrapper' ,
+         '[class.has-left]': 'isLeft()',
+         '[class.has-right]': 'isRight()',         
+    },
     template: `
         <div class="ribbon" [ngClass]="ribbonCls()" [ngStyle]="ribbonStyle" #ribbonRef>
             <ng-container *anyTemplate="textTemplate">
                 @if(text) {
-                    <span [innerText]="text"></span>
+                    <span class="text" [innerText]="text"></span>
                 }
             </ng-container>
         </div>
-        <ng-content></ng-content>
+        <div class="ribbon-content"  #ngContent>
+            <ng-content></ng-content>
+        </div>
+        
     `
 })
 export class Ribbon implements AfterContentInit, OnChanges, OnDestroy, AfterViewInit {
@@ -42,6 +49,7 @@ export class Ribbon implements AfterContentInit, OnChanges, OnDestroy, AfterView
     @Input({transform: booleanAttribute}) bookmark: boolean;
     @Input() ribbonWidth: string;
     @Input() ribbonHeight: string;
+    @Input() spacingPadding: string;
     @Input() ribbonStyle: INgStyle;
     @Input() ribbonClass: string;
 
@@ -60,15 +68,12 @@ export class Ribbon implements AfterContentInit, OnChanges, OnDestroy, AfterView
     constructor(private renderer: Renderer2) {
     }
 
-    ngOnInit() {
-    }
-
     ngOnChanges(changes: SimpleChanges) {
-        const {ribbonHeight, ribbonWidth} = changes;
+        const { ribbonHeight, ribbonWidth, spacingPadding } = changes;
         if(ribbonWidth) this.setRibbonStyle('--ribbon-width', this.ribbonWidth);
         if(ribbonHeight) this.setRibbonStyle('--ribbon-height', this.ribbonHeight);
+        if (spacingPadding) this.setRibbonStyle('--ribbon-spacing-padding', this.spacingPadding);
     }
-
 
     ribbonCls(): any {
         return {
@@ -80,12 +85,14 @@ export class Ribbon implements AfterContentInit, OnChanges, OnDestroy, AfterView
             [`ribbon-left-bottom`]: this.position === 'left-bottom',
             [`ribbon-right-top`]: this.position === 'right-top',
             [`ribbon-right-bottom`]: this.position === 'right-bottom',
+            [`ribbon-left`]: this.isLeft(),
+            [`ribbon-right`]: this.isRight(),
 
-            [`ribbon-clip has-clip`]: !!this.clip && this.isHorizontal(),
+            [`ribbon-clip`]: !!this.clip && this.isHorizontal(),
             [`ribbon-clip-left`]: !!this.clip && this.isHorizontal() && this.isLeft(),
             [`ribbon-clip-right`]: !!this.clip && this.isHorizontal() && this.isRight(),
 
-            [`ribbon-bookmark has-bookmark`]: !!this.bookmark,
+            [`ribbon-bookmark`]: !!this.bookmark,
             [`ribbon-bookmark-left`]: !!this.bookmark && this.isLeft(),
             [`ribbon-bookmark-right`]: !!this.bookmark && this.isRight(),
 

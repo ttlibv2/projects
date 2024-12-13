@@ -10,7 +10,7 @@ import { DropdownModule } from "primeng/dropdown";
 import { InputTextModule } from "primeng/inputtext";
 import { InputTextareaModule } from "primeng/inputtextarea";
 import { RippleModule } from "primeng/ripple";
-import { AgTableModule, TableColumn, TableOption } from "ts-ui/ag-table";
+import { AgTableModule, TableColumn, TableOption } from "ts-ui/agtable";
 import { AgTable } from "../../models/ag-table";
 import { DynamicDialogComponent, DynamicDialogRef } from "primeng/dynamicdialog";
 import { ModalService } from "ts-ui/modal";

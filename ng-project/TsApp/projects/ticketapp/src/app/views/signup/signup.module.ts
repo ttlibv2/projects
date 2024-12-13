@@ -18,11 +18,12 @@ import { TranslateModule } from "@ngx-translate/core";
 import { BlockUIModule } from "primeng/blockui";
 import { PasswordModule } from "primeng/password";
 import { DropdownModule } from "primeng/dropdown";
-import { InputGroupModule } from 'ts-ui/input-group';
+import { InputGroupModule } from 'ts-ui/inputgroup';
 import { FormField } from 'ts-ui/forms';
 import { Divider } from 'ts-ui/divider';
 import { SocialItem } from '../shared/social-item';
 import { ColDirective } from 'ts-ui/common';
+import { ImageModule } from 'primeng/image';
 
 
 @NgModule({
@@ -49,6 +50,7 @@ import { ColDirective } from 'ts-ui/common';
     BlockUIModule,
     PasswordModule,
     DropdownModule,
+    ImageModule,
     SocialItem,
     ColDirective
   ]

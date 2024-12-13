@@ -163,3 +163,9 @@
 2024-12-04 14:44:36.463 [E] [proxy/proxy.go:206] [aea9bc28200646da] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
 2024-12-04 14:44:52.857 [E] [proxy/proxy.go:206] [aea9bc28200646da] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
 2024-12-04 14:45:49.293 [E] [proxy/proxy.go:206] [aea9bc28200646da] [tsapi] connect to local service [127.0.0.1:8888] error: dial tcp 127.0.0.1:8888: connectex: No connection could be made because the target machine actively refused it.
+2024-12-09 14:41:40.221 [I] [sub/root.go:144] Starting Konect24 service with configuration file [./k24svr.ini]
+2024-12-09 14:41:40.232 [I] [client/service.go:295] try to connect to Konect24 server...
+2024-12-09 14:41:40.323 [I] [client/service.go:287] [24e5382d2a0ee9c8] login to server success, get run id [24e5382d2a0ee9c8]
+2024-12-09 14:41:40.324 [I] [proxy/proxy_manager.go:173] [24e5382d2a0ee9c8] Konect24 service added: [tsweb tsapi]
+2024-12-09 14:41:40.332 [I] [client/control.go:168] [24e5382d2a0ee9c8] [tsweb] start Konect24 service success
+2024-12-09 14:41:40.332 [I] [client/control.go:168] [24e5382d2a0ee9c8] [tsapi] start Konect24 service success

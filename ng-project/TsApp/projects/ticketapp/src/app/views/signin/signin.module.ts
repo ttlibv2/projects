@@ -9,7 +9,7 @@ import {ButtonModule} from "primeng/button";
 import {CardModule} from "ts-ui/card";
 import {MessageService} from "primeng/api";
 import {PasswordModule} from "primeng/password";
-import {InputGroupModule} from 'ts-ui/input-group';
+import {InputGroupModule} from 'ts-ui/inputgroup';
 import {ImageModule} from "primeng/image";
 import {FormField} from "ts-ui/forms";
 import {Divider} from "ts-ui/divider";
@@ -17,6 +17,7 @@ import { ColDirective } from 'ts-ui/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SocialItem } from '../shared/social-item';
 import {Ribbon} from "ts-ui/ribbon";
+import { Drawer } from 'ts-ui/drawer';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import {Ribbon} from "ts-ui/ribbon";
         PasswordModule,
         Divider,
         SocialItem,
-        Ribbon
+        Ribbon,
+        Drawer
     ],
     providers: [
         MessageService

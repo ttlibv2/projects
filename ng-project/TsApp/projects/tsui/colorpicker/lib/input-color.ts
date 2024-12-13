@@ -1,6 +1,6 @@
 import { booleanAttribute,  Component, ElementRef, EventEmitter, forwardRef, inject, Input, OnInit, Output, TemplateRef, ViewChild, ViewEncapsulation } from "@angular/core";
 import { ColorPickerPanel } from "./picker-panel";
-import { InputGroupModule } from "ts-ui/input-group";
+import { InputGroupModule } from "ts-ui/inputgroup";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { Color, ColorValue, HsbaColorType } from "./color";
 import { ChangeFormatEvent, ColorFormatType, CopyColorEvent, OVERLAY_OPTION_DEFAULT, OverlayOptions } from "./interface";

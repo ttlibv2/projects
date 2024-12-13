@@ -1,6 +1,6 @@
 import { AfterContentInit, AfterViewInit, ChangeDetectorRef, Component, computed, HostListener, Inject, Input, OnInit, signal, Signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { LoggerService } from 'ts-ui/logger';
-import { AgTable as Table, TableOption } from 'ts-ui/ag-table';
+import { AgTable as Table, TableOption } from 'ts-ui/agtable';
 import { Ticket } from '../../models/ticket';
 import { Validators } from '@angular/forms';
 import { MenuItem, OverlayOptions } from 'primeng/api';

@@ -1,4 +1,4 @@
-import { LayoutConfig } from "ts-ui/app-layout";
+import { LayoutConfig } from "ts-ui/applayout";
 import { TranslateLoader, TranslateModuleConfig } from "@ngx-translate/core";
 import { HttpClient } from "@angular/common/http";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";

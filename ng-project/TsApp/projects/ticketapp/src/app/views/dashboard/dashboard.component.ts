@@ -4,11 +4,12 @@ import { ViewEncapsulation } from '@angular/core';
 import { PrimeTemplate } from 'primeng/api';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { CardAction } from 'ts-ui/card';
-import { Color } from 'ts-ui/color-picker';
+import { Color } from 'ts-ui/colorpicker';
 import { FormsBuilder } from 'ts-ui/forms';
 import { gridResponsiveMap, NzBreakpointService } from './breakpoint';
 import { Subject, takeUntil } from 'rxjs';
 import { SideItem } from 'ts-ui/layout';
+import { data } from '../../test';
 
 
 
@@ -54,8 +55,17 @@ export class DashboardComponent implements OnInit {
     color: [null]
   });
 
+  
   ngOnInit(): void {
     this.form.formChange(val => console.log(val))
+
+
+    console.log('11111: ', data);
+    data.user = '1111111111';
+
+
+
+
   }
 
   toggle($event: MouseEvent, overlay: OverlayPanel) {

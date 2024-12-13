@@ -10,7 +10,7 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import { AgTable, ExportXslOption, TableColumn, TableOption } from "ts-ui/ag-table";
+import { AgTable, ExportXslOption, TableColumn, TableOption } from "ts-ui/agtable";
 import { FormGroup, FormsBuilder } from "ts-ui/forms";
 import { ToastService } from "ts-ui/toast";
 import { ModalService } from "ts-ui/modal";

@@ -4,7 +4,6 @@ import { FormsBuilder } from 'ts-ui/forms';
 import { Field, MvcOption } from '../shared/mvc/mvc.component';
 import { Objects } from 'ts-ui/helper';
 import { ChanelService } from '../../services/chanel.service';
-import { TableColumn } from 'ts-ui/ag-table';
 
 @Component({
   selector: 'ts-chanel',

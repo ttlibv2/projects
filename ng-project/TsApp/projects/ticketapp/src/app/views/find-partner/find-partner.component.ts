@@ -14,7 +14,7 @@ import { ToastService } from 'ts-ui/toast';
 import { OdPartnerService } from '../../services/od-partner.service';
 import { ClsPartner, ClsSearch } from '../../models/od-cls';
 import { LoggerService } from 'ts-ui/logger';
-import { AgTable, TableColumn, TableOption } from 'ts-ui/ag-table';
+import { AgTable, TableColumn, TableOption } from 'ts-ui/agtable';
 import { StorageService } from "../../services/storage.service";
 import { ModalService } from "ts-ui/modal";
 import { FormGroup, FormsBuilder } from 'ts-ui/forms';

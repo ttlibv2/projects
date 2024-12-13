@@ -91,4 +91,10 @@ export class SignupComponent implements OnInit{
   clickSignin():void {
     this.router.navigateByUrl(Urls.signinUrl).then();
   }
+
+  dobMaxDate(): Date {
+    const now = new Date();
+    now.setFullYear(now.getFullYear() - 15);
+    return now;
+  }
 }

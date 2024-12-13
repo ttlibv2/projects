@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, computed, ElementRef, HostListener, inject, NgZone, OnInit, Renderer2, Signal, signal, ViewChild } from '@angular/core';
 import { OverlayOptions, PrimeNGConfig } from "primeng/api";
 import { TranslateService } from "@ngx-translate/core";
-import { LayoutService } from 'ts-ui/app-layout';
+import { LayoutService } from 'ts-ui/applayout';
 import { Platform } from '@angular/cdk/platform';
 import { ToastService } from 'ts-ui/toast';
 import { DOCUMENT } from '@angular/common';
@@ -15,6 +15,7 @@ import { Router, Event as RouterEvent,
   RouterLink
  } from '@angular/router';
 import { AppLoader } from 'ts-ui/layout';
+import { TestService } from './services/test.service';
 
 @Component({
   selector: 'ts-root',
@@ -41,6 +42,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   windowWidth = signal<number>(0);
 
   private layoutService = inject(LayoutService);
+  private testSrv = inject(TestService);
   
   constructor(
     private ngZone: NgZone,
@@ -57,6 +59,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     //this.setupRouterLoader();
     this.setupConfigApp();
+    this.testSrv.name.update(c => {
+      console.log('init1: ', c);
+      return '00001';
+    })
   }
 
   private setupRouterLoader() {
@@ -89,9 +95,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     //const pl = !!this.platform.ANDROID ? 'is-mobile' : this.platform.IOS ? 'is-mobile' : 'pc';
     //DomHandler.addClass(this.document.documentElement, pl);
 
-    if (!!this.platform.ANDROID) {
+   // if (!!this.platform.ANDROID) {
       this.toast.globalConfig.position = 'top-center';
-    }
+   // }
 
     this.layoutService?.tryAddTheme();
 

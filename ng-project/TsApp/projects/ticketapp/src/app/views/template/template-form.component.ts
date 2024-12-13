@@ -6,7 +6,7 @@ import { LoggerService } from "ts-ui/logger";
 import { Objects } from "ts-ui/helper";
 import { StorageService } from "../../services/storage.service";
 import { JsonObject, Severity } from "../../models/common";
-import { AgTable, TableColumn, TableOption } from "ts-ui/ag-table";
+import { AgTable, TableColumn, TableOption } from "ts-ui/agtable";
 import { AgCellColor } from "./renderer";
 import { GetRowIdParams } from "@ag-grid-community/core";
 import { TicketFormComponent } from "../ticket-form/ticket-form.component";

@@ -18,7 +18,7 @@ function isAbstractControlOptions(
 
 type ControlType<T> = T | FormControlState<T> | ControlConfig<T> | FormControl<T> | AbstractControl<T>;
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class FormsBuilder extends FormBuilder2 {
 
     /**

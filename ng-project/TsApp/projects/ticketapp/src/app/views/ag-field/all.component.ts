@@ -1,13 +1,7 @@
 import { ChangeDetectionStrategy, Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TableColumn, TableOption } from 'ts-ui/ag-table';
+import { TableColumn, TableOption } from 'ts-ui/agtable';
 import { FormGroup, FormsBuilder } from 'ts-ui/forms';
-import { ModalService } from 'ts-ui/modal';
-import { ToastService } from 'ts-ui/toast';
-import { MvcOption } from '../shared/mvc/mvc.component';
-import { ColDef } from '@ag-grid-community/core';
 import { TreeNode } from 'primeng/api';
-import { PrimeNgCellEditor } from './cell-editor';
 
 @Component({
   selector: 'ts-ag-field-all',

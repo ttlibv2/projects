@@ -1,12 +1,26 @@
-.signup-form { 
+.signup-form {
   background: url(/assets/images/login_bg.jpg);
+
+  .form-wrapper {
+    display        : flex;
+    flex-flow      : column nowrap;
+    justify-content: center;
+
+    .logo {
+      display        : flex;
+      justify-content: center;
+      margin-bottom  : .75rem;
+      column-gap     : 1rem;
+
+    }
+  }
 
   .p-card {
     max-width: 767px;
   }
-  
+
   form {
-     
+
 
     .p-divider-horizontal {
       margin-bottom: 0;

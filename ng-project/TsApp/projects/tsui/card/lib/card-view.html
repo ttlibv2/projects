@@ -1,4 +1,4 @@
-<div class="p-card p-component" [ngClass]="containerCls()" [ngStyle]="style">
+<!-- <div class="p-card p-component" [ngClass]="containerCls()" [ngStyle]="style"> -->
     <ng-content></ng-content>
 
     @if(visibleHeader && hasHeader()) {
@@ -75,7 +75,7 @@
     </div>
     }
 
-</div>
+<!-- </div> -->
 
 <ng-template #defaultAction let-btn>
     <button pButton [label]="btn.label" [icon]="btn.icon" [loading]="btn.loading" [loadingIcon]="btn.loadingIcon"

@@ -8,12 +8,10 @@ export class Objects {
   static assign<E>(objectClass: Type<E>, source: any, excludeFields?: string[]): E;
   static assign<E>(target: E, source: any, excludeFields?: string[]): E
   static assign<E>(object: E | Type<E>, source: any, excludeFields: string[] = []): E {
-    //console.log(`\n\n--------------------------\n\n`)
     const target: any = object instanceof Type ? new object() : object;
     if (Objects.isObject(target) && Objects.isObject(source)) {
       for (const key of Object.keys(source)) {
         if (!excludeFields.includes(key)) {
-          // console.log(key);
           const get = `get_${key}`, set = `set_${key}`;
           const srcVal = typeof source[get] === 'function' ? source[get]() : source[key];
           if (typeof target[set] === 'function') target[set](srcVal);
@@ -25,7 +23,6 @@ export class Objects {
     }
     return target;
   }
-
 
   static parseI18N(str: any, prefix: string = '@@'): string | undefined {
     return Objects.isString(str) && str.startsWith(prefix) && !str.includes(' ') ? str.replace(prefix, '') : undefined;
@@ -39,7 +36,6 @@ export class Objects {
     else return null;
   }
 
-
   static booleanValue(value: any, defaultNull?: boolean): boolean {
     if (Objects.isNull(value)) return defaultNull;
     else if (typeof value === 'boolean') return value;
@@ -47,14 +43,6 @@ export class Objects {
     else if (["1", "0"].includes(value)) return value === "1";
     else return null;
   }
-
-
-  // static booleanValue(value: any, def: boolean = false, str: string = 'true', num: number = 1): boolean {
-  //   if (typeof value === 'boolean') return value;
-  //   else if (typeof value === 'string') return value === str;
-  //   else if (typeof value === 'number') return value === num;
-  //   else return def;
-  // }
 
   static allNotNull(...values: any[]): boolean {
     return !values.some(value => Objects.isNull(value));
@@ -136,20 +124,28 @@ export class Objects {
     return Objects.isObject(value);
   }
 
-  static isString(value: any): value is string {
-    return Objects.notNull(value) && typeof value === 'string';
+  static isScalar(value: any): boolean {
+    return value != null && (typeof value === 'string' || typeof value === 'number' || typeof value === 'bigint' || typeof value === 'boolean');
+  }
+
+  static isString(value: any, empty: boolean = true): value is string {
+    return Objects.notNull(value) && typeof value === 'string' && (empty || value !== '');
+  }
+
+  static isPrintableCharacter(char: string = ''): boolean {
+    return Objects.notEmpty(char) && char.length === 1 && !!char.match(/\S| /);
   }
 
   static isNumber(value: any): value is number {
-    return Objects.notNull(value) && typeof value === 'number';
+    return Objects.notNull(value) && typeof value === 'number' && !isNaN(value);
   }
 
   static isStringNotBlank(value: any): value is string {
     return Objects.isString(value) && value.length > 0;
   }
 
-  static isObject<T=object>(value: any): value is T {
-    return Objects.notNull(value) && !Objects.isArray(value) && typeof value == 'object' ;
+  static isObject<T = object>(value: any): value is T {
+    return Objects.notNull(value) && !Objects.isArray(value) && typeof value == 'object';
   }
 
   static isObjectNotEmpty(value: any): boolean {
@@ -164,12 +160,113 @@ export class Objects {
     catch (_) { return false; }
   }
 
-  static isDate(input: any) {
+  static isLetter(char: string): boolean {
+    return /^[a-zA-Z\u00C0-\u017F]$/.test(char);
+  }
+
+  static isDate(input: any): input is Date {
     return Object.prototype.toString.call(input) === '[object Date]';
   }
 
   static isFunction(object: any): object is Function {
     return Objects.notNull(object) && typeof object === 'function'
+  }
+
+  static localeComparator(): (val1: string, val2: string) => number {
+    //performance gain using Int.Collator. It is not recommended to use localeCompare against large arrays.
+    return new Intl.Collator(undefined, { numeric: true }).compare;
+  }
+
+  static matchRegex(str: string, regex?: RegExp): boolean {
+    if (!!regex) {
+      const match = regex.test(str);
+      regex.lastIndex = 0;
+      return match;
+    }
+    return false;
+  }
+
+  static minifyCSS(css?: string): string | undefined {
+    return css ? css
+      .replace(/\/\*(?:(?!\*\/)[\s\S])*\*\/|[\r\n\t]+/g, '')
+      .replace(/ {2,}/g, ' ')
+      .replace(/ ([{:}]) /g, '$1')
+      .replace(/([;,]) /g, '$1')
+      .replace(/ !/g, '!')
+      .replace(/: /g, ':') : css;
+  }
+
+  static removeAccents(str: string): string {
+    // Regular expression to check for any accented characters 'Latin-1 Supplement' and 'Latin Extended-A'
+    const accentCheckRegex = /[\xC0-\xFF\u0100-\u017E]/;
+
+    if (str && accentCheckRegex.test(str)) {
+      const accentsMap: { [key: string]: RegExp } = {
+        A: /[\xC0-\xC5\u0100\u0102\u0104]/g,
+        AE: /[\xC6]/g,
+        C: /[\xC7\u0106\u0108\u010A\u010C]/g,
+        D: /[\xD0\u010E\u0110]/g,
+        E: /[\xC8-\xCB\u0112\u0114\u0116\u0118\u011A]/g,
+        G: /[\u011C\u011E\u0120\u0122]/g,
+        H: /[\u0124\u0126]/g,
+        I: /[\xCC-\xCF\u0128\u012A\u012C\u012E\u0130]/g,
+        IJ: /[\u0132]/g,
+        J: /[\u0134]/g,
+        K: /[\u0136]/g,
+        L: /[\u0139\u013B\u013D\u013F\u0141]/g,
+        N: /[\xD1\u0143\u0145\u0147\u014A]/g,
+        O: /[\xD2-\xD6\xD8\u014C\u014E\u0150]/g,
+        OE: /[\u0152]/g,
+        R: /[\u0154\u0156\u0158]/g,
+        S: /[\u015A\u015C\u015E\u0160]/g,
+        T: /[\u0162\u0164\u0166]/g,
+        U: /[\xD9-\xDC\u0168\u016A\u016C\u016E\u0170\u0172]/g,
+        W: /[\u0174]/g,
+        Y: /[\xDD\u0176\u0178]/g,
+        Z: /[\u0179\u017B\u017D]/g,
+
+        a: /[\xE0-\xE5\u0101\u0103\u0105]/g,
+        ae: /[\xE6]/g,
+        c: /[\xE7\u0107\u0109\u010B\u010D]/g,
+        d: /[\u010F\u0111]/g,
+        e: /[\xE8-\xEB\u0113\u0115\u0117\u0119\u011B]/g,
+        g: /[\u011D\u011F\u0121\u0123]/g,
+        i: /[\xEC-\xEF\u0129\u012B\u012D\u012F\u0131]/g,
+        ij: /[\u0133]/g,
+        j: /[\u0135]/g,
+        k: /[\u0137,\u0138]/g,
+        l: /[\u013A\u013C\u013E\u0140\u0142]/g,
+        n: /[\xF1\u0144\u0146\u0148\u014B]/g,
+        p: /[\xFE]/g,
+        o: /[\xF2-\xF6\xF8\u014D\u014F\u0151]/g,
+        oe: /[\u0153]/g,
+        r: /[\u0155\u0157\u0159]/g,
+        s: /[\u015B\u015D\u015F\u0161]/g,
+        t: /[\u0163\u0165\u0167]/g,
+        u: /[\xF9-\xFC\u0169\u016B\u016D\u016F\u0171\u0173]/g,
+        w: /[\u0175]/g,
+        y: /[\xFD\xFF\u0177]/g,
+        z: /[\u017A\u017C\u017E]/g
+      };
+
+      for (let key in accentsMap) {
+        str = str.replace(accentsMap[key], key);
+      }
+    }
+
+    return str;
+  }
+
+  static sort<T>(value1: T, value2: T, order: number = 1, comparator: (val1: T, val2: T) => number, nullSortOrder: number = 1): number {
+    const result = Objects.compare(value1, value2, comparator, order);
+    let finalSortOrder = order;
+
+    // nullSortOrder == 1 means Excel like sort nulls at bottom
+    if (Objects.isEmpty(value1) || Objects.isEmpty(value2)) {
+      finalSortOrder = nullSortOrder === 1 ? order : nullSortOrder;
+    }
+
+    return finalSortOrder * result;
   }
 
   static getNotBlank(...strings: string[]): string {
@@ -410,9 +507,9 @@ export class Objects {
   }
 
   static parseFlex(flex: number | string): string {
-    const {isNull, isString, isNumber} = Objects;
-    if(isNull(flex)) return undefined;
-    else if(isNumber(flex)) return `${flex} ${flex}`;
+    const { isNull, isString, isNumber } = Objects;
+    if (isNull(flex)) return undefined;
+    else if (isNumber(flex)) return `${flex} ${flex}`;
     else {
       if (/^\d+(\.\d+)?(px|em|rem|%)$/.test(flex)) {
         return `0 0 ${flex}`;
@@ -422,9 +519,9 @@ export class Objects {
   }
 
   static ngClassToJson(prop: string | string[] | Set<string> | { [klass: string]: any; }) {
-    if(Objects.isString(prop)) return { [prop] : true};
-    else if(Objects.isArray(prop)) return Objects.arrayToJson(prop, i => [i, true]);
-    else if(prop instanceof Set) return Objects.arrayToJson([...prop], i => [i, true]);
+    if (Objects.isString(prop)) return { [prop]: true };
+    else if (Objects.isArray(prop)) return Objects.arrayToJson(prop, i => [i, true]);
+    else if (prop instanceof Set) return Objects.arrayToJson([...prop], i => [i, true]);
     else return prop;
   }
 
@@ -432,6 +529,32 @@ export class Objects {
     const element = ref instanceof ElementRef ? ref.nativeElement : ref;
     element?.style?.setProperty(cssName, cssValue, priority);
   }
+
+  /**
+   * Resovle data
+   * @param object {<T> | Function}
+   * @param params the params use for function
+   *  */
+  static resolve<T>(object: T | ((...params: any[]) => T), ...params: any[]): T {
+    return Objects.isFunction(object) ? object(...params) : object;
+  }
+
+  /**
+   * Compare object
+   * @param object1
+   * @param object2
+   * @param order
+   * */
+  static compare<T = any>(object1: T, object2: T, comparator: (val1: T, val2: T) => number, order: number = 1): number {
+    const { isEmpty, isString } = Objects;
+    const emptyValue1 = isEmpty(object1), emptyValue2 = isEmpty(object2);
+    if (emptyValue1 && emptyValue2) return 0;
+    else if (emptyValue1) return order;
+    else if (emptyValue2) return -order;
+    else if (isString(object1) && isString(object2)) return comparator(object1, object2);
+    else return object1 < object2 ? -1 : object1 > object2 ? 1 : 0;
+  }
+
 
 
 }

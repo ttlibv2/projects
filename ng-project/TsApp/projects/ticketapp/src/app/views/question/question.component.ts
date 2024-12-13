@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { FormsBuilder } from 'ts-ui/forms';
 import { Field, MvcOption } from '../shared/mvc/mvc.component';
-import { Objects } from 'ts-ui/helper';
-import { TableColumn } from 'ts-ui/ag-table';
 import { QuestionService } from '../../services/question.service';
 import { StorageService } from '../../services/storage.service';
 import { Question } from '../../models/question';

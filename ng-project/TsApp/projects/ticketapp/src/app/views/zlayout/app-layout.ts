@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { booleanAttribute, Component, Input, ViewEncapsulation } from "@angular/core";
 import { AppHeader } from "./app-header";
 import { RouterModule } from "@angular/router";
-import { InputGroupModule } from "ts-ui/input-group";
+import { InputGroupModule } from "ts-ui/inputgroup";
 import { InputTextModule } from "primeng/inputtext"; 
 import { SidePanel } from "./side-pane";
 import { I18NPipe, INgStyle } from "ts-ui/common";

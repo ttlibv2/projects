@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { TableColumn } from "ts-ui/ag-table";
 import { FormsBuilder } from "ts-ui/forms";
 import { Validators } from "@angular/forms";
 import { Field, MvcOption } from "../shared/mvc/mvc.component";

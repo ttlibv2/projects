@@ -4,7 +4,7 @@ import { Observable, forkJoin, map, of, switchMap, tap } from "rxjs";
 import { Catalog } from "../models/catalog";
 import { JsonObject } from '../models/common';
 import { ClsAssign } from '../models/od-cls';
-import {LocalTable} from "ts-ui/local-db";
+import {LocalTable} from "ts-ui/localdb";
 import {StorageService} from "./storage.service";
 
 export const CATALOG_MAP: { [key: string]: (db: StorageService) => LocalTable } = {

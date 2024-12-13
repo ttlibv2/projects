@@ -1,84 +1,100 @@
-<ts-card [title]="'users.h1_signup' | translate" class="signup-form center" [subtitle]="'users.signup_sub' | translate">
-    <form [formGroup]="formSignup" (ngSubmit)="onSignUp()" class="grid">
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.first_name">
-            <ts-inputgroup [prefix]="['pi pi-user']">
-                <input id="first_name" type="text" pInputText placeholder="{{ 'users.holder.fisrt_name' | translate}}"
-                       formControlName="first_name"/>
-            </ts-inputgroup>
-        </ts-form-field>
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.last_name">
-            <ts-inputgroup [prefix]="['pi pi-user']">
-                <input id="last_name" type="text" pInputText placeholder="{{'users.holder.last_name' | translate}}"
-                       formControlName="last_name"/>
-            </ts-inputgroup>
-        </ts-form-field>
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.email">
-            <ts-inputgroup [prefix]="['pi pi-at']">
-                <input id="email" type="text" pInputText placeholder="{{'users.holder.email' | translate}}"
-                       formControlName="email"/>
-            </ts-inputgroup>
-        </ts-form-field>
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.phone">
-            <ts-inputgroup [prefix]="['pi pi-phone']">
-                <input id="phone" type="text" pInputText placeholder="{{'users.holder.phone' | translate}}"
-                       formControlName="phone"/>
-            </ts-inputgroup>
-        </ts-form-field>
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.password">
-            <ts-inputgroup [prefix]="['pi pi-key']">
-                <p-password [minlength]="8" [toggleMask]="true" placeholder="{{ 'users.holder.password' | translate}}"
-                            [feedback]="false" formControlName="password"></p-password>
-            </ts-inputgroup>
-        </ts-form-field>
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.re_password">
-            <ts-inputgroup [prefix]="['pi pi-key']">
-                <p-password id="re_password" [minlength]="8" placeholder="{{'users.holder.re_password' | translate}}"
-                            [toggleMask]="true" [feedback]="false" formControlName="re_password">
-                </p-password>
-            </ts-inputgroup>
-        </ts-form-field>
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.dob">
-            <ts-inputgroup prefix="pi pi-calendar">
-                <p-calendar id="dob" formControlName="dob" dateFormat="yy-mm-dd"
-                            placeholder="{{'users.holder.dob' | translate}}" [showIcon]="false"
-                            hideOnDateTimeSelect="false"></p-calendar>
-            </ts-inputgroup>
-        </ts-form-field>
-        <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.gender">
-            <ts-inputgroup>
-                <p-dropdown id="gender" formControlName="gender"
-                            placeholder="{{'users.holder.gender' | translate}}"></p-dropdown>
-            </ts-inputgroup>
+<div class="signup-form p-4" *ngIf="asyncView">
+    <div class="form-wrapper">
+        <div class="logo">
+            <p-image [src]="'./assets/images/logo.png'"></p-image>
+            <h3>ConYeuApp</h3>
+        </div>
+        <ts-card [title]="'users.h1_signup' | translate" class="" [subtitle]="'users.signup_sub' | translate">
+            <form [formGroup]="formSignup" (ngSubmit)="onSignUp()" class="grid">
+                <ts-card-section header="-- Thông tin đăng nhập " contentClass="grid" class="col-12">
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.email">
+                        <ts-inputgroup [prefix]="['pi pi-at']">
+                            <input id="email" type="text" pInputText placeholder="{{'users.holder.email' | translate}}"
+                                formControlName="email" />
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.phone">
+                        <ts-inputgroup [prefix]="['pi pi-phone']">
+                            <input id="phone" type="text" pInputText placeholder="{{'users.holder.phone' | translate}}"
+                                formControlName="phone" />
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.password">
+                        <ts-inputgroup [prefix]="['pi pi-key']">
+                            <p-password [minlength]="8" [toggleMask]="true"
+                                placeholder="{{ 'users.holder.password' | translate}}" [feedback]="false"
+                                formControlName="password"></p-password>
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.re_password">
+                        <ts-inputgroup [prefix]="['pi pi-key']">
+                            <p-password id="re_password" [minlength]="8"
+                                placeholder="{{'users.holder.re_password' | translate}}" [toggleMask]="true"
+                                [feedback]="false" formControlName="re_password">
+                            </p-password>
+                        </ts-inputgroup>
+                    </ts-form-field>
+                </ts-card-section>
+                <ts-card-section header="-- Thông tin người dùng " contentClass="grid" class="col-12">
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.first_name">
+                        <ts-inputgroup [prefix]="['pi pi-user']">
+                            <input id="first_name" type="text" pInputText
+                                placeholder="{{ 'users.holder.fisrt_name' | translate}}" formControlName="first_name" />
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.last_name">
+                        <ts-inputgroup [prefix]="['pi pi-user']">
+                            <input id="last_name" type="text" pInputText
+                                placeholder="{{'users.holder.last_name' | translate}}" formControlName="last_name" />
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.dob">
+                        <ts-inputgroup prefix="pi pi-calendar">
+                            <p-calendar id="dob" formControlName="dob" dateFormat="yy-mm-dd"
+                                placeholder="{{'users.holder.dob' | translate}}" [showIcon]="false"
+                                hideOnDateTimeSelect="false" (onSelect)="pdob.toggle()" #pdob></p-calendar>
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.gender">
+                        <ts-inputgroup>
+                            <p-dropdown id="gender" formControlName="gender"
+                                placeholder="{{'users.holder.gender' | translate}}"></p-dropdown>
+                        </ts-inputgroup>
 
-        </ts-form-field>
+                    </ts-form-field>
 
-        <ng-content select="ts-form-field"></ng-content>
+                    <ng-content select="ts-form-field"></ng-content>
+                </ts-card-section>
 
-        <div [span]="12">
-            <p-checkbox [binary]="true" id="read_terms" formControlName="allow_term"
+
+                <div [span]="12">
+                    <p-checkbox [binary]="true" id="read_terms" formControlName="allow_term"
                         styleClass="p-checkbox-danger"></p-checkbox>
-            <label for="read_terms" class="ml-2">Tôi đã đọc và đồng ý với <a [routerLink]="termsUrl">Điều khoản sử dụng dịch
-                vụ</a> và <a [routerLink]="policyUrl">Chính sách bảo mật</a> của ứng dụng</label>
-        </div>
+                    <label for="read_terms" class="ml-2">Tôi đã đọc và đồng ý với <a [routerLink]="termsUrl">Điều khoản
+                            sử dụng dịch
+                            vụ</a> và <a [routerLink]="policyUrl">Chính sách bảo mật</a> của ứng dụng</label>
+                </div>
 
-        <div [span]="12" class="mt-3">
-            <p-button label="Đăng ký tài khoản" icon="pi pi-user-plus" size="small" [loading]="asyncSignup"
-                      type="submit" [disabled]="formSignup.invalid" severity="warning"></p-button>
-        </div>
+                <div [span]="12" class="mt-3">
+                    <p-button label="Đăng ký tài khoản" icon="pi pi-user-plus" size="small" [loading]="asyncSignup"
+                        type="submit" [disabled]="formSignup.invalid" severity="warning"></p-button>
+                </div>
 
-        <ts-divider align="left" class="col-12" [text]="'Hoặc đăng ký qua MXH'"/>
-        <div class="col-12 socials grid">
-            @for (item of socials; track item) {
-                <ts-btn-social [item]="item"/>
-            }
-        </div>
+                <ts-divider align="left" class="col-12" [text]="'Hoặc đăng ký qua MXH'" />
+                <div class="col-12 socials grid">
+                    @for (item of socials; track item) {
+                    <ts-btn-social [item]="item" />
+                    }
+                </div>
 
-        <div [span]="12" class="mt-2 flex justify-content-center">
-            <p-button [link]="true" [label]="'signup.exist_account'|translate"></p-button>
-            <p-button [link]="true" [label]="'signup.click_signin'|translate" styleClass="p-new-acc" severity="help"
-                      (onClick)="clickSignin()"></p-button>
-        </div>
+                <div [span]="12" class="mt-2 flex justify-content-center">
+                    <p-button [link]="true" [label]="'signup.exist_account'|translate"></p-button>
+                    <p-button [link]="true" [label]="'signup.click_signin'|translate" styleClass="p-new-acc"
+                        severity="help" (onClick)="clickSignin()"></p-button>
+                </div>
 
 
-    </form>
-</ts-card>
+            </form>
+        </ts-card>
+    </div>
+</div>

@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
 import {MvcComponent} from './mvc.component';
-import {AgTableModule} from "ts-ui/ag-table";
+import {AgTableModule} from "ts-ui/agtable";
 import {FormsBuilder, FormsModule} from "ts-ui/forms";
 import {ButtonModule} from "primeng/button";
 import {InputTextModule} from "primeng/inputtext";
