@@ -1,3 +1,7 @@
-<div class="ts-drawer-content-wrapper" cdkScrollable #content>
+<!-- @if(mask && isOpen) {
+    <div class="ts-drawer-mask" (click)="maskClick()" [ngStyle]="maskStyle" [ngClass]="maskClass"></div>
+} -->
+
+<div class="ts-drawer-inner-container" cdkScrollable #content>
     <ng-content></ng-content>
 </div>

@@ -1,9 +1,14 @@
+@import '@angular/material';
+@import '@angular/cdk/overlay-prebuilt.css';
+
+ts-signin { display: block;}
+
 .login-form {
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
+  //justify-content: center;
   align-items: center;
-  height: calc(100svh - 1rem);
+  height: calc(100svh - 0px);
 
   background: url('/assets/images/login_bg.jpg');
 

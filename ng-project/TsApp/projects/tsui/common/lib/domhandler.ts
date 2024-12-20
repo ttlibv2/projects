@@ -1,3 +1,7 @@
+import { E } from "@angular/cdk/keycodes";
+import { ElementRef } from "@angular/core";
+import { Objects } from "ts-ui/helper";
+
 /**
  * @dynamic is for runtime initializing DomHandler.browser
  *
@@ -11,6 +15,16 @@ export class DomHandler {
     private static calculatedScrollbarWidth: number = null;
     private static calculatedScrollbarHeight: number = null;
     private static browser: any;
+
+    static editStyle(element: ElementRef | HTMLElement, styleName: string, styleValue: any): void {
+        const el: HTMLElement = element instanceof ElementRef ? element.nativeElement : element;
+        Objects.isNull(styleValue) ? el.style.removeProperty(styleName) : el.style.setProperty(styleName, styleValue);
+    }
+
+    static editClass(element: ElementRef | Element, isAdd: boolean, className: string) {
+        const el = element instanceof ElementRef ? element.nativeElement : element;
+        isAdd ? DomHandler.addClass(el, className) : DomHandler.removeClass(el, className);
+    }
 
     public static addClass(element: any, className: string): void {
         if (element && className) {

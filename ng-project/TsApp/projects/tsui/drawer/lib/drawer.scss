@@ -1,77 +1,124 @@
-ts-drawer {
+$drawer-cls: 'ts-drawer';
+
+#{$drawer-cls},
+#{$drawer-cls}-content,
+#{$drawer-cls}-container {
     display: block;
 }
 
-$prefix-cls   : 'ts-drawer';
-$modal-zindex : 1000;
-$modal-mask-bg: #00000073;
-$drawer-bg    : #fff;
-$shadow-left  : 6px 0 16px -8px #00000014,
-9px 0 28px #0000000d,
-12px 0 48px 16px #00000008;
-$shadow-top:0 6px 16px -8px #00000014,
-0 9px 28px #0000000d,
-0 12px 48px 16px #00000008;
-$shadow-right: -6px 0 16px -8px #00000014,
--9px 0 28px #0000000d,
--12px 0 48px 16px #00000008;
-$shadow-bottom: 0 -6px 16px -8px #00000014,
-0 -9px 28px #0000000d,
-0 -12px 48px 16px #00000008;
+.#{$drawer-cls} {
+
+    & {
+        z-index : 1000;
+        color   : #44474e;
+        width   : 100%;
+        height  : 100%;
+        display : block;
+        position: fixed;
+
+        outline   : 0;
+        box-sizing: border-box;
+        overflow-y: auto;
 
 
-.#{$prefix-cls} {
-    position        : absolute;
-    display         : block;
-    inset           : 0 auto;
-    outline         : 0;
-    box-sizing      : border-box;
-    overflow-y      : auto;
-    width           : 360px;
-    background-color: #fff;
+        &[style*='visibility: hidden'] {
+            display: none;
+        }
 
-    &-inline {
-        position: absolute;
+        &-inner-container {
+            width   : 360px;
+            height  : 100%;
+            overflow: auto;
+            position: absolute;
+            background: #fff;
+            z-index : 2;
+        }
+
+        &-mask {
+            position: absolute;
+            inset   : 0;
+            z-index : 1;
+            background-color: var(--mat-sidenav-scrim-color,
+                    color-mix(in srgb, #2d3038 40%, transparent));
+            pointer-events: auto;
+        }
+
+        &-left {
+            transform: translate3d(-100%, 0, 0);
+            inset    : 0 auto;
+        }
+
+        &-right {
+            transform: translate3d(100%, 0, 0);
+            inset    : 0 0 0 auto;
+        }
+
+        &-top {
+            transform: translate3d(0, -100%, 0);
+            inset    : 0 0 auto 0;
+            width    : 100%;
+            height   : 360px;
+        }
+
+        &-bottom {
+            transform: translate3d(0, 100%, 0);
+            inset    : auto 0 auto 0;
+            width    : 100%;
+            height   : 360px;
+        }
+
+
     }
 
-    &-mask {
-        position      : absolute;
-        inset         : 0;
-        z-index       : $modal-zindex;
-        background    : $modal-mask-bg;
-        pointer-events: auto;
+    &-backdrop {
+        inset     : 0;
+        position  : fixed;
+        display   : block;
+        z-index   : 3;
+        visibility: hidden;
+
+        .#{$drawer-cls}-transition & {
+            transition-duration       : 400ms;
+            transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition-property       : background-color,
+                visibility;
+        }
+
+        &.#{$drawer-cls}-shown {
+            visibility: visible;
+            background-color: var(--mat-sidenav-scrim-color,
+                    color-mix(in srgb, #2d3038 40%, transparent));
+        }
+    }
+
+    &-container {
+        position  : relative;
+        z-index   : 1;
+        box-sizing: border-box;
+        display   : block;
+        overflow  : hidden;
+        color     : #1a1b1f;
+        background: #faf9fd;
     }
 
     &-content {
-        width         : 100%;
-        height        : 100%;
-        overflow      : auto;
-        background    : $drawer-bg;
-        pointer-events: auto;
-    }
+        display : block;
+        position: relative;
+        z-index : 1;
+        height  : 100%;
+        overflow: auto;
 
-    &-content-wrapper {
-
-        .#{$prefix-cls}-left>& {
-            inset     : 0 auto 0 0;
-            box-shadow: $shadow-left;
+        &-hidden {
+            opacity: 0;
         }
 
-        .#{$prefix-cls}-right>& {
-            inset     : 0 0 0 auto;
-            box-shadow: $shadow-right;
+        .#{$drawer-cls}-transition & {
+            transition: {
+                duration       : 400ms;
+                timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+                property       : transform, margin-left, margin-right;
+            }
         }
-
-        .#{$prefix-cls}-top>& {
-            inset     : 0 0 auto 0;
-            box-shadow: $shadow-top;
-        }
-
-        .#{$prefix-cls}-bottom>& {
-            inset     : auto 0 0 0;
-            box-shadow: $shadow-bottom;
-        }
-
     }
 
 

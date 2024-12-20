@@ -1,15 +1,19 @@
-import {Component, Input, OnInit, ViewEncapsulation, booleanAttribute} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {AutoCompleteCompleteEvent} from "primeng/autocomplete";
-import {Objects} from 'ts-ui/helper';
-import {ChkUser, RememberUser, User} from "../../models/user";
-import {AuthService} from "../../services/auth.service";
-import {Router} from "@angular/router";
-import {ToastService} from "ts-ui/toast";
-import {TranslateService} from "@ngx-translate/core";
-import {StorageService} from "../../services/storage.service";
-import {HOME_PAGE, Urls} from "../../constant";
-import {ALL_SOCIAL, SocialLink} from "../../models/common";
+import { Component, ElementRef, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef, ViewEncapsulation, booleanAttribute } from '@angular/core';
+import { Overlay, OverlayOutsideClickDispatcher, OverlayRef } from '@angular/cdk/overlay';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AutoCompleteCompleteEvent } from "primeng/autocomplete";
+import { Objects } from 'ts-ui/helper';
+import { ChkUser, RememberUser, User } from "../../models/user";
+import { AuthService } from "../../services/auth.service";
+import { Router } from "@angular/router";
+import { ToastService } from "ts-ui/toast";
+import { TranslateService } from "@ngx-translate/core";
+import { StorageService } from "../../services/storage.service";
+import { HOME_PAGE, Urls } from "../../constant";
+import { ALL_SOCIAL, SocialLink } from "../../models/common";
+import { Drawer } from './drawer/drawer';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { CdkOverlay } from './cdk-overlay';
 
 @Component({
     selector: 'ts-signin',
@@ -18,8 +22,7 @@ import {ALL_SOCIAL, SocialLink} from "../../models/common";
     encapsulation: ViewEncapsulation.None
 })
 export class SigninComponent implements OnInit {
-
-    @Input({transform: booleanAttribute, alias: 'dev'})
+    @Input({ transform: booleanAttribute, alias: 'dev' })
     isDev: boolean = false;
 
     @Input() lastUrl: string;
@@ -32,18 +35,78 @@ export class SigninComponent implements OnInit {
 
     cacheUsers: string[] = [];
     socialLinks: SocialLink[] = ALL_SOCIAL;
+    visibleDrawer: boolean = true;
 
     get signupUrl(): string {
         return Urls.signupUrl;
     }
 
+    @ViewChild('appendTo', { read: ElementRef })
+    private appendTo: ElementRef;
+
+    @ViewChild('drawerContent', { static: true })
+    private drawerContent!: TemplateRef<any>;
+
     constructor(private fb: FormBuilder,
-                private translate: TranslateService,
-                private router: Router,
-                private cfg: StorageService,
-                private auth: AuthService,
-                private toast: ToastService) {
+        private translate: TranslateService,
+        private router: Router,
+        private cfg: StorageService,
+        private auth: AuthService,
+        private toast: ToastService,
+        private overlay: Overlay,
+        private overlayOutsideClickDispatcher: OverlayOutsideClickDispatcher,
+        private elementRef: ElementRef<HTMLElement>,
+        private viewContainerRef: ViewContainerRef) {
     }
+
+    //++++++++++++++
+    overlayRef: OverlayRef = null;
+    portal: TemplatePortal;
+    isOpen: boolean = false;
+    scrollStrategy: any;
+    
+    clickTest(): void {
+        if (this.overlayRef === null) {
+            this.portal = new TemplatePortal(this.drawerContent, this.viewContainerRef);
+            this.overlayRef = this.overlay.create({
+                hasBackdrop: false,
+                disposeOnNavigation: true,
+                scrollStrategy: this.overlay.scrollStrategies.block()
+            });
+
+            this.scrollStrategy = this.overlay.scrollStrategies.reposition();
+
+            this.overlayRef.backdropClick().subscribe(s => {
+                console.log(`backdropClick`, s);
+                this.overlayRef.detach();
+            });
+
+            this.overlayRef.outsidePointerEvents().subscribe(s => {
+                console.log(`outsidePointerEvents`, s);
+                this.overlayRef.detach();
+            })
+
+            this.overlayRef.attachments().subscribe(_ => {
+                const cr = this.overlayRef.overlayElement.getClientRects();
+                this.elementRef.nativeElement.style.marginLeft = cr.item(0).width + 'px';
+                this.isOpen = true;
+                console.log(cr.item(0).width);
+            });
+
+            this.overlayRef.detachments().subscribe(_ => {
+                this.elementRef.nativeElement.style.marginLeft = null;
+                this.isOpen = false;
+            });
+            
+            
+            
+        }
+
+        if (!this.overlayRef.hasAttached()) {
+            this.overlayRef.attach(this.portal);
+        }
+    }
+
 
     ngOnInit() {
         if (this.cfg.isLogin) this.router.navigate([this.lastUrl ?? '/']).then();

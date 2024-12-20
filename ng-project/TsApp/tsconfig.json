@@ -25,9 +25,9 @@
       "ts-logger": [
         "./dist/ts-logger"
       ],
-      "ts-ui/*": [
+      "ts-ui/*": [ 
         "./dist/ts-ui/*"
-      ]
+      ],
     },
     "lib": [
       "ES2022",

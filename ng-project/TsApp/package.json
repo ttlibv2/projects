@@ -9,10 +9,10 @@
     "build:tskpi": "ng build tskpi --base-href / --ssr false --prerender false --source-map false",
     "watch": "ng build --watch --configuration development",
     "build:ui": "ng build ts-ui --watch",
+    "build:libtheme": "ng build libtheme --watch",
     "build:scss": "gulp grid",
     "build:css:local": "sass --watch D:\\Angular_CLI\\projects\\ng-project\\TsApp\\all-theme\\primeflex\\_index.scss D:\\Angular_CLI\\projects\\ng-project\\TsApp\\projects\\ticketapp\\public\\css\\primeflex.css",
     "run-all": "run-p build:ui start"
-
   },
   "private": true,
   "dependencies": {
@@ -48,6 +48,7 @@
     "@angular/compiler": "^18.0.3",
     "@angular/core": "^18.0.3",
     "@angular/forms": "^18.0.3",
+    "@angular/material": "^18.2.14",
     "@angular/platform-browser": "^18.0.3",
     "@angular/platform-browser-dynamic": "^18.0.3",
     "@angular/platform-server": "^18.0.3",
