@@ -16,11 +16,7 @@ import {Divider} from "ts-ui/divider";
 import { ColDirective } from 'ts-ui/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SocialItem } from '../shared/social-item';
-import { Drawer } from './drawer/drawer';
-import { Overlay, OverlayContainer, OverlayModule, ScrollDispatcher } from '@angular/cdk/overlay';
-import { CdkOverlayContainer } from './cdk-overlay-container';
-import { CdkOverlay } from './cdk-overlay';
-import { CdkScrollable, CdkScrollableModule } from '@angular/cdk/scrolling';
+import { Drawer } from 'ts-ui/drawer';
 
 
 @NgModule({
@@ -44,13 +40,10 @@ import { CdkScrollable, CdkScrollableModule } from '@angular/cdk/scrolling';
         PasswordModule,
         Divider,
         SocialItem,
-        Drawer,
-        OverlayModule,
+        Drawer
     ],
     providers: [
-        MessageService,
-        { provide: Overlay, useClass: CdkOverlay},
-        {provide: OverlayContainer, useClass: CdkOverlayContainer}
+        MessageService
     ]
 })
 export class SigninModule {
