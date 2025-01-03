@@ -11,9 +11,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { StorageService } from "../../services/storage.service";
 import { HOME_PAGE, Urls } from "../../constant";
 import { ALL_SOCIAL, SocialLink } from "../../models/common";
-import { Drawer } from './drawer/drawer';
-import { TemplatePortal } from '@angular/cdk/portal';
-import { CdkOverlay } from './cdk-overlay';
 
 @Component({
     selector: 'ts-signin',

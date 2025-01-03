@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { AfterContentInit, booleanAttribute, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Input, numberAttribute, OnChanges, OnDestroy, OnInit, Output, QueryList, SimpleChanges, TemplateRef, ViewEncapsulation } from "@angular/core";
+import { AfterContentInit, booleanAttribute, ChangeDetectionStrategy, Component, ContentChildren, EventEmitter, Injectable, Input, numberAttribute, OnChanges, OnDestroy, OnInit, Output, QueryList, SimpleChanges, TemplateRef, ViewEncapsulation } from "@angular/core";
 import { AnyTemplateOutlet, ButtonProps, INgClass, INgStyle, pButtonCustom, QueryPTemplate, StringTemplate } from "ts-ui/common";
 import { DrawerMode, DrawerPos, HeaderContext } from "./idrawer";
 import { animate, animation, AnimationEvent, style, transition, trigger, useAnimation } from "@angular/animations";
@@ -7,6 +7,7 @@ import { Direction } from "@angular/cdk/bidi";
 import { coerceCssPixelValue } from "@angular/cdk/coercion";
 import { PrimeTemplate } from "primeng/api";
 import { ButtonDirective } from "primeng/button";
+import { Overlay, OverlayConfig, OverlayRef } from "@angular/cdk/overlay";
 
 export const drawerMaskMotion = trigger('drawerMaskMotion', [
     transition(':enter', [style({ opacity: 0 }), animate(`0.3s`, style({ opacity: 1 }))]),
@@ -17,11 +18,35 @@ const showAnimation = animation([style({ transform: '{{transform}}', opacity: 0 
 const hideAnimation = animation([animate('{{transition}}', style({ transform: '{{transform}}', opacity: 0 }))]);
 const triggerAnimation = trigger('panelState', [transition('hide => visible', [useAnimation(showAnimation)]), transition('visible => hide', [useAnimation(hideAnimation)])]);
 
+class DrawerOverlayConfig extends OverlayConfig {
+    appendTo: HTMLElement;
+}
+
+@Injectable({ providedIn: 'root' })
+class DrawerOverlay extends Overlay {
+
+    override create(config?: DrawerOverlayConfig): OverlayRef {
+        super['_createHostElement'] = () => this.createHostElement(config);
+        return super.create(config);
+    }
+
+    private createHostElement(config?: DrawerOverlayConfig): any {
+        const hasOverride = !!config && !!config.appendTo;
+        if (hasOverride === false) return super['_createHostElement'];
+        else {
+            const host = this['_document'].createElement('div');
+            config.appendTo.appendChild(host);
+            return host;
+        }
+    }
+}
+
 @Component({
     standalone: true,
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CommonModule, AnyTemplateOutlet, ButtonDirective, pButtonCustom],
+    providers: [{ provide: Overlay, useClass: DrawerOverlay }],
     animations: [triggerAnimation, drawerMaskMotion],
     styles: [`ts-drawer { display: block; } `],
     selector: 'ts-drawer',
@@ -147,7 +172,14 @@ export class Drawer implements OnInit, OnChanges, AfterContentInit, OnDestroy {
      * Specifies the visibility of the dialog.
      * @group Props
      * */
-    @Input({ transform: booleanAttribute }) visible: boolean;
+    @Input({ transform: booleanAttribute }) 
+    set visible(vs: boolean) {
+        this.toggle(vs);
+    }
+
+    get visible(): boolean {
+        return this.isOpen;
+    }
 
     @Input({ transform: booleanAttribute }) visibleHeader: boolean = true;
 
@@ -206,7 +238,7 @@ export class Drawer implements OnInit, OnChanges, AfterContentInit, OnDestroy {
 
     @Output() readonly onMask = new EventEmitter<MouseEvent>();
     @Output() readonly onClose = new EventEmitter<MouseEvent>();
-    @Output() readonly onVisible = new EventEmitter<boolean>();
+    @Output() readonly visibleChange = new EventEmitter<boolean>();
 
     @ContentChildren(PrimeTemplate)
     private _templates: QueryList<PrimeTemplate>;
@@ -260,6 +292,15 @@ export class Drawer implements OnInit, OnChanges, AfterContentInit, OnDestroy {
 
     maskClick(): void {
         this.onMask.emit();
+    }
+
+    show(): void {}
+
+    hide(): void {} 
+
+    toggle(opened: boolean = !this.isOpen): void {
+        this.isOpen = opened;
+        this.visibleChange.emit(opened);
     }
 
     close(event: any): void {

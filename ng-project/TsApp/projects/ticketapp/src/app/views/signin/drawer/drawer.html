@@ -1,8 +1,0 @@
-<div [ngClass]="containerCls()" [ngStyle]="style" *ngIf="visible"    
-            [@panelState]="{ value: 'visible', params: { transform: transformOptions, transition: transitionOptions } }"
-            (@panelState.start)="animationStarted.next($event)"
-            (@panelState.done)="animationEnd.next($event)">
-    <div class="ts-drawer-content" >
-        <ng-content></ng-content>
-    </div>
-</div>

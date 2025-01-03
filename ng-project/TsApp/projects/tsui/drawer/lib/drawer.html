@@ -1,5 +1,5 @@
 @if(mode === 'modal' && mask && isOpen) {
-<div @drawerMaskMotion class="ts-drawer-mask" [ngClass]="maskClass" [ngStyle]="maskStyle" (click)="maskClick()"></div>
+    <div @drawerMaskMotion class="ts-drawer-mask" [ngClass]="maskClass" [ngStyle]="maskStyle" (click)="maskClick()"></div>
 }
 
 <div class="ts-drawer-content-wrapper" [ngClass]="contentWrapperClass" [style.width]="width" [style.height]="height"
@@ -26,6 +26,11 @@
 
         </div>
         }
+
+        <!-- drawer-body-->
+        <div class="ts-drawer-body">
+            <ng-content></ng-content>
+        </div>
 
 
     </div>
