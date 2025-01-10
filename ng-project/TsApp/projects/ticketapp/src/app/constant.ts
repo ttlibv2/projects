@@ -9,6 +9,10 @@ export const Urls = {
     signupUrl: '/signup',
     template: '/templates',
     form_ticket: '/ticket-form',
+    chanels: '/chanels',
+    ghelp: '/ghelp',
+    gsoft: '/gsoft',
+    question: '/question'
 };
 
 export const HOME_PAGE = Urls.form_ticket;

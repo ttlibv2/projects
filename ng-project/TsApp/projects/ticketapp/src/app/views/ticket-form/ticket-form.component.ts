@@ -168,6 +168,71 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     return this.utils?.options?.viewAll ?? this.inputViewAll;
   }
 
+  readonly qlDanhMuc: MenuItem[] = [
+    {
+      label: 'Tải danh mục',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+    { separator: true, },
+    {
+      label: 'Kênh - Tình trạng',
+      icon: 'pi pi-home',
+      command: _ => this.router.navigateByUrl(Urls.chanels)
+    },
+    {
+      label: 'Nhóm hỗ trợ',
+      icon: 'pi pi-home',
+      command: _ => this.router.navigateByUrl(Urls.ghelp)
+    },
+    {
+      label: 'Nhóm Phần mềm',
+      icon: 'pi pi-home',
+      command: _ => this.router.navigateByUrl(Urls.gsoft)
+    },
+    {
+      label: 'Nội dung mẫu',
+      icon: 'pi pi-home',
+      command: _ => this.router.navigateByUrl(Urls.question)
+    },
+    { separator: true },
+    {
+      label: 'Support Team',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+    {
+      label: 'Phân công cho',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+    {
+      label: 'Ticket type',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+    {
+      label: 'Ticket Sub_type',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+    {
+      label: 'Danh mục',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+    {
+      label: 'Danh mục phụ',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+    {
+      label: 'Thẻ -- Tags',
+      icon: 'pi pi-home',
+      command: _ => this.asyncLoadCatalogs()
+    },
+  ];
+
   readonly toolActions: MenuItem[] = [
     {
       label: "Ticket mẫu",
@@ -179,24 +244,19 @@ export class TicketFormComponent implements OnInit, OnDestroy {
       icon: "pi pi-at",
       command: _ => this.viewTemplateSetting('email_template'),
     },
-    { separator: true, label: '1111' },
+    { separator: true },
     {
       label: "Nạp danh sách lỗi",
       icon: "pi pi-file-excel",
       command: _ => this.openDialogImportXsl(),
     },
-    { separator: true, label: '1111' },
+    { separator: true},
     {
       label: 'Sao chép ticket',
       icon: 'pi pi-clone',
       command: _ => this.copyTicket()
     },
-    {
-      label: 'Tải danh mục',
-      icon: 'pi pi-home',
-      command: _ => this.asyncLoadCatalogs()
-    },
-    { separator: true, label: '1111' },
+    { separator: true,},
     {
       label: "Xóa cache",
       icon: "pi pi-trash",
@@ -501,13 +561,13 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     this.state.asyncSaveTicket = true;
     const waitRef = this.toast.loading('Đang lưu thông tin. Vui lòng đợi....');
 
-
     const data: Partial<Ticket> = this.form.getRawValue();
     data.chanel_ids = data.chanels?.map(c => c.id);
     data.company_name = data.od_partner?.company_name;
     data.template_id = this.ticketTemplate?.template_id;
     data.email_template = data.email_template;
     data.source = data.source ?? 'tsweb';
+    data.images = this.fixImages(data.images);
 
     const isNew = isNull(data.ticket_id);
     const prefixLabel = isNew ? 'Tạo' : 'Cập nhật';
@@ -560,6 +620,11 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  private fixImages(img: string) {
+    if(isBlank(img)) return null;
+    else return img.split(',').map(n => n.includes('.') ? n : `${n}.png`).join(',');
+  }
+
   private handleAfterSearch(dialogRef: DynamicDialogRef, page: Page<cls.ClsPartner>): void {
     console.log(`handleAfterSearch: `, page);
   }
@@ -607,6 +672,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
   }
 
   onSelectChanel(data: Chanel[] = []): void {
+   // console.log(`onSelectChanel`, data);
     if (this.utils.auto_fill) {
       this.pathValue({ support_help: isEmpty(data) ? undefined : data[0] });
     }
@@ -655,6 +721,7 @@ export class TicketFormComponent implements OnInit, OnDestroy {
     return this.loadMemberOfTeam(clsTeam, false).pipe(map((members: cls.ClsAssign[]) => {
       const software = this.catalog.ls_software.find(s => data.software_id === s.id);
       const chanels = this.catalog.ls_chanel.filter(c => data.chanel_ids?.includes(c.id));
+
       const support_help = chanels?.find(c => data.support_help_id === c.id) ?? chanels[0];
       const assign = members?.find(s => data.assign_id === s.id);
       const emailTemplate = this.catalog.get_email().find(e => e.template_id === data.email_template_id);

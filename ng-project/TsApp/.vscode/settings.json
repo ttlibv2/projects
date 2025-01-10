@@ -1,9 +1,9 @@
 {
-  "editor.fontSize": 16,
+  "editor.fontSize": 18,
   "editor.fontFamily": "jost,'Jetbrains Mono',Jost,Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
   "editor.smoothScrolling": true,
-  "files.autoSave": "afterDelay",
+  "files.autoSave": "off",
   "prettier.endOfLine": "auto",
   "html.autoClosingTags": true,
   "editor.formatOnPaste": true,

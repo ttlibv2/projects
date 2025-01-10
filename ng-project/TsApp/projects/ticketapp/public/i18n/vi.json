@@ -248,15 +248,14 @@
       "get_api": "Lấy danh sách ứng dụng"
     },
     "holder": {
-      "gender": "Nhập giới tính"    ,
-	  "fisrt_name": "Nhập tên",
-	  "last_name": "Nhập tên"  ,
-	  "dob": "Nhập ngày sinh"   ,
-	  "email": "Nhập e-mail"     ,
-	  "password": "Nhập mật khẩu",
-	  "re_password": "Nhập lại mật khẩu",
-
-    "phone": "Nhập SDT"
+      "gender": "Nhập giới tính",
+      "fisrt_name": "Nhập tên",
+      "last_name": "Nhập tên",
+      "dob": "Nhập ngày sinh",
+      "email": "Nhập e-mail",
+      "password": "Nhập mật khẩu",
+      "re_password": "Nhập lại mật khẩu",
+      "phone": "Nhập SDT"
     }
   },
   "template": {
@@ -278,7 +277,7 @@
     "ticketinfo": "Thông tin chi tiết",
     "dashboard": "Dashboard"
   },
-  "ticket":{
+  "ticket": {
     "chanels": "Kênh - Tình trạng",
     "software": "Nhóm Phần mềm",
     "ghelp": "Nhóm hỗ trợ",
@@ -288,15 +287,15 @@
     "create_new": "Tạo mới",
     "get_cate": "Tải danh mục",
     "view_result": "Xem kết quả",
-    "od_team":"Support Team",
+    "od_team": "Support Team",
     "od_tag": "Thẻ -- Tags",
     "od_priority": "Độ ưu tiên",
     "od_team_head": "Team Head",
     "od_replied": "Replied Status",
     "od_category_sub": "Danh mục phụ",
     "od_category": "Danh mục",
-    "od_subtype":"Ticket Sub_type",
-    "od_ticket_type":"Ticket type",
+    "od_subtype": "Ticket Sub_type",
+    "od_ticket_type": "Ticket type",
     "od_assign": "Phân công cho",
     "question": "Nội dung mẫu",
     "customer_name": "Tên khách hàng",
@@ -311,10 +310,10 @@
     "image_name": "DS_HINH",
     "tax_code": "Mã số thuế",
     "subject": "Hỗ trợ => Subject <-> (Y/C nhập mã số thuế)",
-    "body":"Hỗ trợ => Body",
+    "body": "Hỗ trợ => Body",
     "note": "Hỗ trợ => Note",
     "content_copy": "Hỗ trợ => Copy",
-    "copy":"Sao chép",
+    "copy": "Sao chép",
     "other": "Khác",
     "h1_option": "-- Tùy chọn --",
     "h1_support": "-- Thông tin BC --",
@@ -352,7 +351,7 @@
     "bg_color": "Màu nền"
   },
   "signin": {
-    "h1_subtitle": "Enter your email & password to login",
+    "h1_subtitle": "Vui lòng nhập thông tin tài khoản của bạn để đăng nhập ứng dụng",
     "remember": "Ghi nhớ tài khoản",
     "forget_pwd": "Quên mật khẩu ?",
     "btnlogin": "Đăng nhập",
@@ -365,8 +364,16 @@
     }
   },
   "signup": {
+    "h1_subtitle":"Vui lòng nhập đầy đủ thông tin để đăng ký tài khoản của bạn",
+    "info_login": "-- Thông tin đăng nhập",
+    "info_user": "-- Thông tin người dùng",
     "exist_account": "Bạn đã có tài khoản ?",
-    "click_signin": "Đăng nhập tại đây"
+    "click_signin": "Đăng nhập tại đây",
+    "submit": "Đăng ký tài khoản",
+    "policy_url_text": "Chính sách bảo mật",
+    "policy_suffix": "của ứng dụng",
+    "policy_accept": "Tôi đã đọc và đồng ý với",
+    "policy_dk": "Điều khoản sử dụng dịch vụ"
   },
   "upload": {
     "invalidSizeDetail": "kích thước tệp tối đa là {0}",

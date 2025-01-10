@@ -1,0 +1,101 @@
+$clsitem: 'side-item';
+
+$side-width       : 252px;
+$side-bg          : #170f28;
+$side-text-color  : #fff;
+$side-link-padding: 14px 20px;
+$side-icon-size   : 1.2rem;
+
+.sidemenu {
+    box-shadow: 6px 0 16px -8px #00000014, 9px 0 28px #0000000d, 12px 0 48px 16px #00000008;
+    background: $side-bg;
+    color     : $side-text-color;
+    height    : calc(100vh - 6.5rem);
+    width     : $side-width;
+
+    list-style-type: none;
+    padding-left   : 0;
+    margin-top     : 0;
+    margin-bottom  : 2rem;
+
+    display   : flex;
+    flex-flow : column nowrap;
+    overflow  : auto;
+    transition: color 1s ease;
+
+    li {
+        list-style: none;
+    }
+
+    &::-webkit-scrollbar {
+        width             : 2px;
+        height            : 5px;
+        background        : #4466f226;
+        -webkit-box-shadow: inset 0 0 6px rgba(106, 113, 133, .3);
+    }
+}
+
+.#{$clsitem} {
+
+
+
+    &-pinned {
+        order: -1;
+
+    }
+
+    &-icon {
+        font-size: $side-icon-size;
+    }
+
+    &-main {
+        padding: 20px 0 12px 20px;
+
+        h6 {
+            font-size            : 14px;
+            font-weight          : 600;
+            color                : #aa89ee;
+            text-transform       : uppercase;
+            margin-bottom        : 0;
+            letter-spacing       : .4px;
+            text-decoration      : underline;
+            text-underline-offset: 4px;
+        }
+
+    }
+
+    >.side-link {
+        display    : flex;
+        flex-flow  : row nowrap;
+        column-gap : .5rem;
+        align-items: center;
+        padding    : $side-link-padding;
+        color      : inherit;
+
+        &:hover {
+            background-color: #2c253b;
+            transition      : all .3s ease;
+        }
+
+        .#{$clsitem} {
+
+            &-title {
+                flex          : 1 auto;
+                letter-spacing: .7px;
+                text-transform: capitalize;
+                overflow      : hidden;
+                text-overflow : ellipsis;
+                white-space   : nowrap;
+                font-size     : 1rem;
+                line-height   : 1;
+            }
+
+
+
+        }
+
+
+    }
+
+
+}

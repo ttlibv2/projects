@@ -44,17 +44,22 @@ public final class MapperHelper {
                 : mapper.disable(SerializationFeature.INDENT_OUTPUT);
     }
 
+    public static <T> T update(T valueToUpdate, Object overrides, boolean includeAlways) {
+        try {
+            ObjectMapper mapper2 = includeAlways ? defaultBuilder().serializationInclusion(JsonInclude.Include.ALWAYS).build() : mapper;
+            return mapper2.updateValue(valueToUpdate, overrides);
+        } catch (JsonMappingException ex) {
+            throw new IllegalArgumentException(ex);
+        }
+    }
+
     /**
      * @param valueToUpdate Object to update
      * @param overrides     Object to conceptually serialize and merge into value to update
      * @throws IllegalArgumentException if there are structural incompatibilities that prevent update.
      */
     public static <T> T update(T valueToUpdate, Object overrides) {
-        try {
-            return mapper.updateValue(valueToUpdate, overrides);
-        } catch (JsonMappingException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+        return update(valueToUpdate, overrides, false);
     }
 
     public static <T> T updateToMap(T valueToUpdate, Object overrides, List<String> excludeField) {
@@ -66,7 +71,7 @@ public final class MapperHelper {
     public static <T> T updateToMap(T valueToUpdate, Object overrides, String... excludeField) {
         ObjectMap mapOverride = overrides instanceof  ObjectMap map ? map : ObjectMap.fromJson(overrides);
         if (Objects.notEmpty(excludeField)) mapOverride.deleteKeys(excludeField);
-        return update(valueToUpdate, mapOverride);
+        return update(valueToUpdate, mapOverride, overrides instanceof ObjectMap);
     }
 
     /**

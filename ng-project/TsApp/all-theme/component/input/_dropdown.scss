@@ -19,64 +19,7 @@ $prefix: 'p-dropdown';
         }
     }
 
-
-    &-clearable {
-        .#{$prefix}-label {
-            padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
-        }
-    }
-
-    &-label {
-        background: transparent;
-
-        &.p-inputtext {
-            border: 0 none;
-        }
-
-        &.p-placeholder {
-            color: cfg.$inputPlaceholderTextColor;
-        }
-
-        &:focus,
-        &:enabled:focus {
-            outline   : 0 none;
-            box-shadow: none;
-        }
-    }
-
-    &-trigger {
-        background                : transparent;
-        color                     : cfg.$inputIconColor;
-        width                     : cfg.$inputGroupAddOnMinWidth;
-        border-top-right-radius   : cfg.$borderRadius;
-        border-bottom-right-radius: cfg.$borderRadius;
-    }
-
-    &-clear-icon {
-        color: cfg.$inputIconColor;
-        right: cfg.$inputGroupAddOnMinWidth;
-    }
-
-    &.p-invalid.p-component {
-        @include util.invalid-input();
-    }
-
-    &.p-variant-filled {
-        background-color: cfg.$inputFilledBg;
-
-        &:enabled {
-            &:hover {
-                background-color: cfg.$inputFilledHoverBg;
-            }
-
-            &:focus {
-                background-color: cfg.$inputFilledFocusBg;
-            }
-        }
-
-    }
-
-    &--panel {
+     &-panel {
         background   : cfg.$inputOverlayBg;
         color        : cfg.$inputListTextColor;
         border       : cfg.$inputOverlayBorder;
@@ -158,6 +101,64 @@ $prefix: 'p-dropdown';
             }
         }
     }
+
+    &-clearable {
+        .#{$prefix}-label {
+            padding-right: nth(cfg.$inputPadding, 2) + cfg.$primeIconFontSize;
+        }
+    }
+
+    &-label {
+        background: transparent;
+
+        &.p-inputtext {
+            border: 0 none;
+        }
+
+        &.p-placeholder {
+            color: cfg.$inputPlaceholderTextColor;
+        }
+
+        &:focus,
+        &:enabled:focus {
+            outline   : 0 none;
+            box-shadow: none;
+        }
+    }
+
+    &-trigger {
+        background                : transparent;
+        color                     : cfg.$inputIconColor;
+        width                     : cfg.$inputGroupAddOnMinWidth;
+        border-top-right-radius   : cfg.$borderRadius;
+        border-bottom-right-radius: cfg.$borderRadius;
+    }
+
+    &-clear-icon {
+        color: cfg.$inputIconColor;
+        right: cfg.$inputGroupAddOnMinWidth;
+    }
+
+    &.p-invalid.p-component {
+        @include util.invalid-input();
+    }
+
+    &.p-variant-filled {
+        background-color: cfg.$inputFilledBg;
+
+        &:enabled {
+            &:hover {
+                background-color: cfg.$inputFilledHoverBg;
+            }
+
+            &:focus {
+                background-color: cfg.$inputFilledFocusBg;
+            }
+        }
+
+    }
+
+
 
 }
 

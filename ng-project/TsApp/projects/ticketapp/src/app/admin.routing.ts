@@ -6,14 +6,13 @@ import { AppLayout } from './views/zlayout/app-layout';
 const appRoutes: Route[] = [
     {
         path: '',
-        component: AppLayout,
+       //component: AppLayout,
         canActivate: [userGuard],
         children: [
             {
                 path: 'ticket-list',
                 loadChildren: () => import('./views/ticket-list/ticket-list.module').then(m => m.TicketListModule),
                 data: { breadcrumb: '@@ticketlist' },
-                title: '@@ticketlist'
             },
             {
                 path: 'ticket-form',
@@ -41,23 +40,28 @@ const appRoutes: Route[] = [
                 data: { breadcrumb: '@@chanels' }
             },
             {
-                path: 'questions',
+                path: 'chanel2s',
+                loadChildren: () => import('./views/chanel2/chanel-routing.module').then(m => m.ChanelRoutingModule),
+                data: { breadcrumb: '@@chanels' }
+            },
+            {
+                path: 'question',
                 loadChildren: () => import('./views/question/question.module').then(m => m.QuestionModule),
                 data: { breadcrumb: '@@questions' }
             },
             {
-                path: 'softwares',
+                path: 'gsoft',
                 loadChildren: () => import('./views/software/software.module').then(m => m.SoftwareModule),
                 data: { breadcrumb: '@@softwares' }
             },
             {
-                path: 'ghelps',
+                path: 'ghelp',
                 loadChildren: () => import('./views/group-help/group-help.module').then(m => m.GroupHelpModule),
                 data: { breadcrumb: '@@ghelps' }
             },
             {
                 path: 'templates',
-                loadChildren: () => import('./views/template/template-form.module').then(m => m.TemplateFormModule),
+                loadChildren: () => import('./views/template/template-routing.module').then(m => m.TemplateRouting),
                 data: { breadcrumb: '@@templates' }
             },
             {

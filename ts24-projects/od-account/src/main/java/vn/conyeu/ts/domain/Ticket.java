@@ -361,6 +361,12 @@ public class Ticket extends LongUIdDate<Ticket> {
         TicketDetail detail = getDetail();
 
         super.assignFromMap(map);
+
+        if(map.containsKey("images")) {
+          //  setImages(map.getString("images"));
+        }
+
+
         detail.assignFromMap(map);
         setDetail(detail);
     }

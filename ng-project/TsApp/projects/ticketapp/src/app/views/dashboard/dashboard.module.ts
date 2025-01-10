@@ -9,6 +9,7 @@ import { Card } from 'ts-ui/card';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SideItemView } from 'ts-ui/layout';
+import { SideMenu } from './side/side-menu';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { SideItemView } from 'ts-ui/layout';
     AnyTemplateOutlet,
     Card,
     JsonPipe,
-    SideItemView
+    SideMenu
   ]
 })
 export class DashboardModule { }

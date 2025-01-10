@@ -31,6 +31,8 @@ import { FormsModule } from 'ts-ui/forms';
 import { ErrorInterceptor } from './services/error-interceptor';
 import { AppLayoutModule2 } from 'ts-ui/layout';
 import { LayoutModule } from "./views/zlayout/zlayout.module";
+import { FormlyPrimeNGModule } from '@ngx-formly/primeng';
+import { FormlyModule } from '@ngx-formly/core';
 
 class ErrorHandlerBasic implements ErrorHandler {
 
@@ -70,6 +72,8 @@ function LOAD_DB(service: DBService) {
         InputIconModule,
         DialogModule,
         AppLayoutModule2,
+        FormlyPrimeNGModule, 
+        FormlyModule.forRoot(),
         AgTableModule.forRoot(),
         TsLoggerModule.forRoot(),
         AppLayoutModule.forRoot(layoutConfig),

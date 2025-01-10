@@ -38,8 +38,9 @@ export class Catalog extends BaseModel {
    }
 
 
-   set_ls_chanel(data: AssignObject<Chanel>[]) {
+   set_ls_chanel(data: AssignObject<Chanel>[]) {      
       this.ls_chanel = (data || []).map(item => Chanel.from(item));
+      console.log(`set_ls_chanel`, this.ls_chanel);
    }
 
    set_ls_software(data: AssignObject<Software>[]) {

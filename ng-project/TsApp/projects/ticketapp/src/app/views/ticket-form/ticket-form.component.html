@@ -1,30 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="saveTicket()" class="ticket-form grid sm" [ngClass]="formCls()">
 
-    <div class="ribbon-wrapper col-left"[span]="12" [lg]="{span:7,order:1}" [order]="2">
-
-        <!-- <ts-card class="col-left" [span]="12" [lg]="{span:7,order:1}" [order]="2"> -->
+    <div class="col-left" [span]="12" [lg]="{span:7,order:1}" [order]="2">
         <ts-card>
-
-            <!-- <div class="ribbon-item ribbon-item-clip0 ribbon-item-clip-rb0 ribbon-item-primary">SAVE 10%</div> -->
-
-            <!-- <ng-template pTemplate="headerLeft"> 
-            <span class="pi pi-user-plus"></span>
-            <span class="pi pi-stop"></span>
-        </ng-template> -->
-            <!-- <ng-template pTemplate="headerRight">
-            <span class="pi pi-ellipsis-v"></span>
-            <span class="pi pi-times"></span>
-        </ng-template> -->
-
-
             <ts-card-section header="@@ticket.h1_basic">
                 <div class="grid">
                     <ts-form-field class="p-fluid" inputId="chanels" label="@@ticket.chanels" [required]="true"
                         [span]="12" [x2l]="utils.is_view_all || viewTemplate ? 6: 4">
-                        <p-multiSelect field #ms id="chanels" class="required" [showHeader]="false"
-                            [options]="catalog.ls_chanel" formControlName="chanels" optionLabel="value" display="chip"
-                            dataKey="id" styleClass="ts-chanels" (onClear)="onSelectChanel()"
-                            (onChange)="onSelectChanel($event.value)">
+                        <p-multiSelect field id="chanels" class="required" [showHeader]="false" [maxSelectedLabels]="5"
+                            [options]="catalog.ls_chanel" formControlName="chanels" optionLabel="display_name"
+                            [optionValue]="null" dataKey="id" styleClass="ts-chanels" (onClear)="onSelectChanel()"
+                            (onChange)="onSelectChanel($event.value)" [showClear]="true">
                         </p-multiSelect>
                     </ts-form-field>
                     <ts-form-field class="p-fluid" label="@@ticket.ghelp" [required]="true" [span]="6"
@@ -40,7 +25,7 @@
                     </ts-form-field>
                     <ts-form-field class="p-fluid" label="@@ticket.shelp" [required]="true" [span]="6" [x2l]="3"
                         *ngIf="utils.is_view_all || viewTemplate">
-                        <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="value" [filter]="false"
+                        <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="display_name" [filter]="false"
                             dataKey="id" formControlName="support_help"></p-dropdown>
                     </ts-form-field>
                     <ts-form-field class="p-fluid" label="@@ticket.soft_name" [required]="true" [span]="6" [x2l]="3"
@@ -76,7 +61,7 @@
                             optionLabel="display_name"></p-dropdown>
                     </ts-form-field>
                     <ts-form-field class="p-fluid" label="@@ticket.od_category" [span]="6" [required]="true"
-                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
+                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4" *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
                         <p-dropdown formControlName="od_category" id="od_category" [overlayOptions]="overlayOptions"
                             [options]="catalog.ls_category" dataKey="id" optionLabel="display_name"></p-dropdown>
                     </ts-form-field>
@@ -101,8 +86,7 @@
                         <p-dropdown formControlName="od_priority" id="od_priority" [overlayOptions]="overlayOptions"
                             [options]="catalog.ls_priority" dataKey="id" optionLabel="display_name"></p-dropdown>
                     </ts-form-field>
-                    <ts-form-field class="p-fluid" label="@@ticket.od_tag" [x2l]="3" [span]="6"
-                        *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
+                    <ts-form-field class="p-fluid" label="@@ticket.od_tag" [span]="6" [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
                         <p-multiSelect formControlName="od_tags" id="od_tags" [overlayOptions]="overlayOptions"
                             optionLabel="display_name" [showToggleAll]="false" [showHeader]="false" [filter]="false"
                             dataKey="id" [options]="catalog.ls_ticket_tag"></p-multiSelect>
@@ -191,82 +175,77 @@
             }
             <!-- END: email ticket info -->
         </ts-card><!-- END: COl_LEFT -->
-
-        <div class="ribbon-primary ribbon-item ribbon-left-top">
-            SALE 50%
-        </div>
-
-
     </div>
 
+    <div class="col-right" [lg]="{span: 5, order:2}" [span]="12" [order]="1">
+        <ts-card>
 
+            @if (!viewTemplate) {
+            <ts-card-section header="@@ticket.h1_support" class="section-support">
+                <div class="grid">
+                    <ts-form-field class="p-fluid col-12 f-email-ticket" label="@@ticket.subject">
+                        <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
+                            [placeholder]="utils.subjectHint" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid col-12 ticket-body" label="@@ticket.body" *ngIf="utils.is_view_all">
+                        <textarea pInputTextarea id="body" formControlName="body" [autoResize]="true"
+                            [style.min-height]="'39px'"></textarea>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid col-12 ticket-note" label="@@ticket.note" *ngIf="utils.is_view_all">
+                        <textarea pInputTextarea id="note" formControlName="note" [autoResize]="true"
+                            [style.min-height]="'39px'"></textarea>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid col-12 ticket-copy" label="@@ticket.content_copy"
+                        *ngIf="!utils.is_view_all">
+                        <textarea pInputTextarea id="content_copy" formControlName="content_copy" [rows]="7"
+                            [style.max-height]="'230px'" [autoResize]="true" [style.min-height]="'130px'"></textarea>
+                    </ts-form-field>
+                </div>
+            </ts-card-section>
+            }
 
-    <ts-card class="col-right" [lg]="{span: 5, order:2}" [span]="12" [order]="1">
-
-        @if (!viewTemplate) {
-        <ts-card-section header="@@ticket.h1_support" class="section-support">
-            <div class="grid">
-                <ts-form-field class="p-fluid col-12 f-email-ticket" label="@@ticket.subject">
-                    <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
-                        [placeholder]="utils.subjectHint" />
-                </ts-form-field>
-                <ts-form-field class="p-fluid col-12 ticket-body" label="@@ticket.body" *ngIf="utils.is_view_all">
-                    <textarea pInputTextarea id="body" formControlName="body" [autoResize]="true"
-                        [style.min-height]="'39px'"></textarea>
-                </ts-form-field>
-                <ts-form-field class="p-fluid col-12 ticket-note" label="@@ticket.note" *ngIf="utils.is_view_all">
-                    <textarea pInputTextarea id="note" formControlName="note" [autoResize]="true"
-                        [style.min-height]="'39px'"></textarea>
-                </ts-form-field>
-                <ts-form-field class="p-fluid col-12 ticket-copy" label="@@ticket.content_copy"
-                    *ngIf="!utils.is_view_all">
-                    <textarea pInputTextarea id="content_copy" formControlName="content_copy" [rows]="7"
-                        [style.max-height]="'230px'" [autoResize]="true" [style.min-height]="'130px'"></textarea>
-                </ts-form-field>
-            </div>
-        </ts-card-section>
-        }
-
-        <ts-card-section class="col-option" header="@@ticket.h1_option">
-            <div class="grid" formGroupName="options" [gutterY]="'.5rem'">
-                <ng-template ngFor let-item [ngForOf]="labelOptions">
-                    <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
-                        (onChange)="item.command && item.command($event.checked)" tsCol [span]="6" [xl]="4"
-                        [x3l]="3"></p-checkbox>
-                </ng-template>
-            </div>
-        </ts-card-section>
-
-
-
-        @if (!viewTemplate) {
-        <ts-card-section class="template-list mt-2" header="@@ticket.h1_templates">
-            <div class="grid">
-                <ts-toolbar class="col-12">
-                    <ng-template pTemplate="left">
-                        @for (item of catalog.get_ticket(); track $index) {
-                        <ts-tag [value]="item" [label]="item.title" (click)="selectTemplate(item)"
-                            [styleClass]="tagSelectClass(item)"></ts-tag>
-                        }
-
-                        @if(catalog.get_ticket()?.length == 0){
-                        <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b class="text-danger">[Khác
-                                >
-                                Cập
-                                nhật mẫu mặc định]</b>).</span>
-
-                        <span> Hoặc <a class="here" [routerLink]="['/templates']"
-                                [queryParams]="{thread: 'ticket_template'}"
-                                (click)="viewTemplateSetting('ticket_template')">{{'actions.click_here'|translate}}</a></span>
-                        }
+            <ts-card-section class="col-option" header="@@ticket.h1_option">
+                <div class="grid" formGroupName="options" [gutterY]="'.5rem'">
+                    <ng-template ngFor let-item [ngForOf]="labelOptions">
+                        <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
+                            (onChange)="item.command && item.command($event.checked)" tsCol [span]="6" [xl]="4"
+                            [x3l]="3"></p-checkbox>
                     </ng-template>
-                </ts-toolbar>
-            </div>
-        </ts-card-section>
+                </div>
+            </ts-card-section>
 
-        }
 
-    </ts-card><!-- END: COl_RIGHT -->
+
+            @if (!viewTemplate) {
+            <ts-card-section class="template-list mt-2" header="@@ticket.h1_templates">
+                <div class="grid">
+                    <ts-toolbar class="col-12">
+                        <ng-template pTemplate="left">
+                            @for (item of catalog.get_ticket(); track $index) {
+                            <ts-tag [value]="item" [label]="item.title" (click)="selectTemplate(item)"
+                                [styleClass]="tagSelectClass(item)"></ts-tag>
+                            }
+
+                            @if(catalog.get_ticket()?.length == 0){
+                            <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b
+                                    class="text-danger">[Khác
+                                    >
+                                    Cập
+                                    nhật mẫu mặc định]</b>).</span>
+
+                            <span> Hoặc <a class="here" [routerLink]="['/templates']"
+                                    [queryParams]="{thread: 'ticket_template'}"
+                                    (click)="viewTemplateSetting('ticket_template')">{{'actions.click_here'|translate}}</a></span>
+                            }
+                        </ng-template>
+                    </ts-toolbar>
+                </div>
+            </ts-card-section>
+
+            }
+
+        </ts-card><!-- END: COl_RIGHT -->
+    </div>
 
     <!-- BEGIN: form_tool -->
     <div class="form-tool" [lg]="{order:3}" [span]="12" [order]="3">
@@ -323,16 +302,14 @@
 
         <p-button icon="pi pi-search" (click)="searchUser()" label="{{'ticket.search_user' | translate}}"></p-button>
 
-        <!-- <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="{{'ticket.get_cate' | translate}}"></p-button> -->
-
         <p-button icon="pi pi-result" (click)="viewResultTicket()" label="{{'ticket.view_result' | translate}}"
             *ngIf="visibleResult"></p-button>
 
-        <!-- <p-button icon="pi pi-clone" (click)="copyTicket()" label="{{'ticket.copy' | translate}}"></p-button> -->
-        <!-- <p-divider [layout]="'vertical'"></p-divider> -->
-
         <p-button severity="danger" icon="pi pi-folder-plus" (onClick)="deleteTicket()"
             label="{{'actions.delete_ticket' | translate}}" *ngIf="isEditTicket"></p-button>
+
+            <ts-splitButton  iconPos="right" label="QL Danh mục"
+                [model]="qlDanhMuc" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
 
         <ts-splitButton icon="pi pi-ellipsis-h" iconPos="right" label="{{'ticket.other' | translate}}" severity="help"
             [model]="toolActions" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
@@ -342,6 +319,7 @@
             label="{{'actions.save' | translate}}"></p-button>
 
         <p-button icon="pi pi-shield" (onClick)="resetTemplate()" label="{{'actions.reset' | translate}}"></p-button>
+        <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="{{'ticket.get_cate' | translate}}"></p-button>
         <p-button icon="pi pi-times" (onClick)="closeDialog()" label="{{'actions.close' | translate}}"></p-button>
         }
     </div>

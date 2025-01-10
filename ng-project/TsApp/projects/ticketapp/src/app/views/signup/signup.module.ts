@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterOutlet, RouterModule } from '@angular/router';
 
 import { SignupRoutingModule } from './signup-routing.module';
 import { SignupComponent } from './signup.component';
@@ -25,13 +26,14 @@ import { SocialItem } from '../shared/social-item';
 import { ColDirective } from 'ts-ui/common';
 import { ImageModule } from 'primeng/image';
 
-
 @NgModule({
   declarations: [
     SignupComponent
   ],
   imports: [
     CommonModule,
+    RouterModule,
+    TranslateModule,
     SignupRoutingModule,
     CheckboxModule,
     InputTextModule,

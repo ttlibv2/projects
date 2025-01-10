@@ -7,10 +7,20 @@ export class Chanel extends BaseModel {
   extend_code?: string;
   has_image?: boolean;
   support?: string;
-  value?: string;
+  value2?: string;
+
+  override update(object: any): this {
+    if('value' in object) {
+      object['value2'] = object['value'];
+      delete object['value'];
+    }
+    super.update(object);
+    return this;
+  }
+  
 
   get display_name(): string {
-    return this.value;
+    return this.value2;
   }
 
   static from(data: AssignObject<Chanel>): Chanel {

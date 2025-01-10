@@ -35,23 +35,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('appLoader', {static: false})
   appLoader: AppLoader;
 
-
-
-
   document = inject(DOCUMENT);
   windowWidth = signal<number>(0);
 
   private layoutService = inject(LayoutService);
-  private testSrv = inject(TestService);
   
   constructor(
-    private ngZone: NgZone,
-    private renderer: Renderer2,
     private router: Router,
-    private platform: Platform,
     private toast: ToastService,
     private primengConfig: PrimeNGConfig,
-   // private layoutService: LayoutService,
     private translateService: TranslateService) {
     this.setupRouterLoader();
   }
@@ -59,10 +51,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     //this.setupRouterLoader();
     this.setupConfigApp();
-    this.testSrv.name.update(c => {
-      console.log('init1: ', c);
-      return '00001';
-    })
   }
 
   private setupRouterLoader() {
@@ -117,21 +105,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     return this.windowWidth() <= 575.98;
   }
 
-  private get computedOverlayOption(): Signal<OverlayOptions> {
-    return computed(() => {
-      const appendTo = this.isMobile ? 'body' : undefined;
-      const options: OverlayOptions = {
-        appendTo,
-        onShow: evt => DomHandler.alignOverlay(evt.overlay, evt.target, appendTo)
-      };
-      return options;
-    });
-  }
 
 
-  @HostListener('window:resize', ['$event'])
-  private onWindowResize(event: any) {
-    this.windowWidth.set(window.innerWidth);
-  }
 
 }

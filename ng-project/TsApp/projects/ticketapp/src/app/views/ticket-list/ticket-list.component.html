@@ -4,9 +4,9 @@
         (onSave)="saveTicket($event)"></ts-ticket-form>
 </div>
 
-<div class="ticket-list grid mt-1">
-    <p-divider id="r-divider" class="r-divider col-12" *ngIf="visibleForm"></p-divider>
-    <div id="ticketListTool" class="tool-r1 col-12">
+<div class="ticket-list flex flex-column gap-2 mt-1 pl-2 pr-2">
+    <p-divider id="r-divider" class="r-divider" *ngIf="visibleForm"></p-divider>
+    <div id="ticketListTool" class="tool-r1">
         <form [formGroup]="searchForm" (ngSubmit)="searchTicket()" class="grid sm sm:gap-2 sm:grx-0">
             <p-calendar class="p-col-dateon sm:col-auto sm:col-order-1" placeholder="Lấy dữ liệu từ ngày ?" selectionMode="range" showIcon="true"
                 iconDisplay="input" dateFormat="yy-mm-dd" [numberOfMonths]="1" formControlName="dateOn"
@@ -45,7 +45,7 @@
 
         </form>
     </div>
-    <div id="ticketListReportTool" class="col-12 tool-r2" *ngIf="visibleReportMenu">
+    <div id="ticketListReportTool" class="tool-r2" *ngIf="visibleReportMenu">
         <div class="result ml-2">
 
             <div class="send">>> KQ Gửi:</div>

@@ -23,17 +23,20 @@
   &-label {
     padding   : cfg.$inputPadding;
     transition: cfg.$formElementTransition;
+    display: flex;
+    flex-flow: row wrap;
+    gap: cfg.$inlineSpacing;
 
     &.p-placeholder {
       color: cfg.$inputPlaceholderTextColor;
     }
   }
-
+ 
   &-chip {
 
     .p-multiselect-token {
       padding      : math.div(nth(cfg.$inputPadding, 1), 2) nth(cfg.$inputPadding, 2);
-      margin-right : cfg.$inlineSpacing;
+      margin-right : 0;//cfg.$inlineSpacing;
       background   : cfg.$chipBg;
       color        : cfg.$chipTextColor;
       border-radius: cfg.$chipBorderRadius;

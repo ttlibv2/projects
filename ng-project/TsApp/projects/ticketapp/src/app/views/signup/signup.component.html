@@ -4,9 +4,9 @@
             <p-image [src]="'./assets/images/logo.png'"></p-image>
             <h3>ConYeuApp</h3>
         </div>
-        <ts-card [title]="'users.h1_signup' | translate" class="" [subtitle]="'users.signup_sub' | translate">
+        <ts-card [title]="'users.h1_signup' | translate" class="" [subtitle]="'signup.h1_subtitle' | translate">
             <form [formGroup]="formSignup" (ngSubmit)="onSignUp()" class="grid">
-                <ts-card-section header="-- Thông tin đăng nhập " contentClass="grid" class="col-12">
+                <ts-card-section [header]="'signup.info_login' | translate" contentClass="grid" class="col-12">
                     <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.email">
                         <ts-inputgroup [prefix]="['pi pi-at']">
                             <input id="email" type="text" pInputText placeholder="{{'users.holder.email' | translate}}"
@@ -35,7 +35,7 @@
                         </ts-inputgroup>
                     </ts-form-field>
                 </ts-card-section>
-                <ts-card-section header="-- Thông tin người dùng " contentClass="grid" class="col-12">
+                <ts-card-section [header]="'signup.info_user' | translate " contentClass="grid" class="col-12">
                     <ts-form-field class="p-fluid" [span]="12" [sm]="6" label="@@users.first_name">
                         <ts-inputgroup [prefix]="['pi pi-user']">
                             <input id="first_name" type="text" pInputText
@@ -70,14 +70,16 @@
                 <div [span]="12">
                     <p-checkbox [binary]="true" id="read_terms" formControlName="allow_term"
                         styleClass="p-checkbox-danger"></p-checkbox>
-                    <label for="read_terms" class="ml-2">Tôi đã đọc và đồng ý với <a [routerLink]="termsUrl">Điều khoản
-                            sử dụng dịch
-                            vụ</a> và <a [routerLink]="policyUrl">Chính sách bảo mật</a> của ứng dụng</label>
+                    <label for="read_terms" class="ml-2">{{'signup.policy_accept' | translate}} <a
+                            [routerLink]="[termsUrl]">{{'signup.policy_dk'|translate}}</a> và <a
+                            [routerLink]="[policyUrl]">{{'signup.policy_url_text' | translate}}</a>
+                        {{'signup.policy_suffix' | translate}}</label>
                 </div>
 
                 <div [span]="12" class="mt-3">
-                    <p-button label="Đăng ký tài khoản" icon="pi pi-user-plus" size="small" [loading]="asyncSignup"
-                        type="submit" [disabled]="formSignup.invalid" severity="warning"></p-button>
+                    <p-button [label]="'signup.submit' | translate" icon="pi pi-user-plus" size="small"
+                        [loading]="asyncSignup" type="submit" [disabled]="formSignup.invalid"
+                        severity="warning"></p-button>
                 </div>
 
                 <ts-divider align="left" class="col-12" [text]="'Hoặc đăng ký qua MXH'" />

@@ -28,7 +28,7 @@ import { DomHandler } from "primeng/dom";
 import { MenuItem } from "primeng/api";
 import { Objects } from "ts-ui/helper";
 
-const {notEmpty, notNull} = Objects;
+const { notEmpty, notNull } = Objects;
 
 @Component({
     selector: "[ts-app-menuitem]",
@@ -60,8 +60,12 @@ export class AppMenuItemComponent implements OnInit, OnDestroy, AfterViewChecked
     menuResetSubscription: Subscription;
     key: string = "";
 
-    matchOptions: IsActiveMatchOptions = { paths: 'exact', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' };
-
+    matchOptions: IsActiveMatchOptions = {
+        paths: 'exact',
+        queryParams: 'ignored',
+        matrixParams: 'ignored',
+        fragment: 'ignored'
+    };
 
     get tooltipDisabled(): boolean {
         return !(this.root && this.layoutService.isSlim() && !this.active);
@@ -103,8 +107,8 @@ export class AppMenuItemComponent implements OnInit, OnDestroy, AfterViewChecked
         this.menuSourceSubscription = this.menuService.menuSource$.subscribe(value => {
             Promise.resolve(null).then(() => {
                 const hasNotBegin = !value.key.startsWith(`${this.key}-`);
-                if(value.routeEvent) this.active = value.key == this.key || !hasNotBegin;
-                else if(value.key !== this.key && hasNotBegin) this.active = false;
+                if (value.routeEvent) this.active = value.key == this.key || !hasNotBegin;
+                else if (value.key !== this.key && hasNotBegin) this.active = false;
             });
         });
 
@@ -166,29 +170,29 @@ export class AppMenuItemComponent implements OnInit, OnDestroy, AfterViewChecked
             return;
         }
 
-        if(this.root && this.isSlimOrHorizontal) {
+        if (this.root && this.isSlimOrHorizontal) {
             this.layoutService.toggleMenuHoverActive();
         }
 
-        if(notNull(this.item.command)) {
+        if (notNull(this.item.command)) {
             this.item.command({
-                originalEvent: event, 
+                originalEvent: event,
                 item: this.item
             })
         }
 
         //
-        if(notEmpty(this.item.items)) {
+        if (notEmpty(this.item.items)) {
             this.active = !this.active;
-            if(this.active && this.root && this.isSlimOrHorizontal) {
+            if (this.active && this.root && this.isSlimOrHorizontal) {
                 this.layoutService.onOverlaySubmenuOpen();
             }
         }
         //
         else {
 
-            if(this.isMobile)this.layoutService.state.staticMenuMobileActive = false;
-            if(this.isSlimOrHorizontal) {
+            if (this.isMobile) this.layoutService.state.staticMenuMobileActive = false;
+            if (this.isSlimOrHorizontal) {
                 this.menuService.reset();
                 this.layoutService.state.menuHoverActive = false;
             }

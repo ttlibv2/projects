@@ -177,7 +177,7 @@ export class TicketListComponent implements OnInit, AfterContentInit {
   }
 
   get visibleReportMenu(): boolean {
-    return this.currentTemplateCode === 'send_ticket';
+    return this.currentTemplateCode === 'send_ticket' && !this.visibleForm;
   }
 
   get totalFile(): number {

@@ -1,5 +1,5 @@
 <div class="grid" [style.width]="options?.pageWidth">
-    <p-card class="col-12" header="Thông tin dữ liệu">
+    <ts-card class="col-12" title="Thông tin dữ liệu">
         <form [formGroup]="formGroup" class="grid sm">
             @for (field of formFields; track $index) {
             <div class="p-fluid" [ngClass]="field?.class">
@@ -50,7 +50,7 @@
                 <ng-container *ngTemplateOutlet="formAction"></ng-container>
             </div>
         </form>
-    </p-card>
+    </ts-card>
     <div class="col-12">
         <ts-ag-table #agTable [tableHeight]="options.tbHeight" [option]="options.tbOption" [columns]="options.tbColumns"
             [rows]="allData" (rowClicked)="clickRow($event.data)"></ts-ag-table>

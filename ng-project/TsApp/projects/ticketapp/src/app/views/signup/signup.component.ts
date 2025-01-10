@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ALL_SOCIAL, SocialLink} from "../../models/common";
 import {ToastService} from "ts-ui/toast";
@@ -16,7 +16,7 @@ import {Urls} from "../../constant";
   styleUrl: './signup.component.scss',
   encapsulation:ViewEncapsulation.None
 })
-export class SignupComponent implements OnInit{
+export class SignupComponent implements OnInit, OnChanges {
   @Input() lastUrl: string = '/';
   @Input() termsUrl: string = '/terms-url';
   @Input() policyUrl: string = '/policy';
@@ -36,6 +36,12 @@ export class SignupComponent implements OnInit{
               private cfg: StorageService,
               private toast:ToastService,
               private auth: AuthService) {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const { termsUrl, policyUrl } = changes;
+    if (termsUrl) this.termsUrl = this.termsUrl ?? '/terms-url';
+    if (policyUrl) this.policyUrl = this.policyUrl ?? '/policy';
   }
 
   ngOnInit() {
