@@ -1,101 +1,177 @@
-$clsitem: 'side-item';
+$clsitem                 : 'side-item';
+$side-height             : calc(100vh - 90px);
+$side-width              : 252px;
+$side-bg                 : #170f28;
+$side-color              : #fff;
+$side-text-letter-spacing: .05rem;
 
-$side-width       : 252px;
-$side-bg          : #170f28;
-$side-text-color  : #fff;
-$side-link-padding: 14px 20px;
-$side-icon-size   : 1.2rem;
+$side-main-padding     : 20px 0 12px 20px;
+$side-item-padding     : 14px 20px;
+$side-item-color       : $side-color;
+$side-item-fweight     : 500;
+$side-item-fsize       : 1.1rem;
+$side-item-line-height : 1;
+$side-item-gap         : .5rem;
 
-.sidemenu {
-    box-shadow: 6px 0 16px -8px #00000014, 9px 0 28px #0000000d, 12px 0 48px 16px #00000008;
-    background: $side-bg;
-    color     : $side-text-color;
-    height    : calc(100vh - 6.5rem);
-    width     : $side-width;
+$side-item-icon-color : $side-item-color;
+$side-item-icon-size: 1.2rem;
 
-    list-style-type: none;
-    padding-left   : 0;
-    margin-top     : 0;
-    margin-bottom  : 2rem;
+$side-item-active-bg   : #2c253b;
+$side-item-hover-bg: #2c253b;
+$side-item-hover-color: $side-color;
 
-    display   : flex;
-    flex-flow : column nowrap;
-    overflow  : auto;
-    transition: color 1s ease;
+$side-submenu-line-bg: #6f5a99;
+$side-subitem-color: #cbccce91;
+$side-subitem-dot-color: #cbccce91;
+$side-subitem-hover-color: #fff;
+$side-subitem-fsize: 1rem;
 
-    li {
-        list-style: none;
+.side {
+
+    &--menu {
+        height    : $side-height;
+        width     : $side-width;
+        color     : $side-color;
+        background: $side-bg;
+        display   : flex;
+        flex-flow : column nowrap;
+        transition: color 1s ease;
+        overflow  : auto;
+
+        &::-webkit-scrollbar {
+            width             : 2px;
+            height            : 5px;
+            background        : transparent;
+            -webkit-box-shadow: none;//inset 0 0 6px rgba(106, 113, 133, .3);
+        }
     }
 
-    &::-webkit-scrollbar {
-        width             : 2px;
-        height            : 5px;
-        background        : #4466f226;
-        -webkit-box-shadow: inset 0 0 6px rgba(106, 113, 133, .3);
-    }
-}
+    &--item {
 
-.#{$clsitem} {
+        &-main {
+            padding: $side-main-padding;
 
-
-
-    &-pinned {
-        order: -1;
-
-    }
-
-    &-icon {
-        font-size: $side-icon-size;
-    }
-
-    &-main {
-        padding: 20px 0 12px 20px;
-
-        h6 {
-            font-size            : 14px;
-            font-weight          : 600;
-            color                : #aa89ee;
-            text-transform       : uppercase;
-            margin-bottom        : 0;
-            letter-spacing       : .4px;
-            text-decoration      : underline;
-            text-underline-offset: 4px;
+            .side--item-title {
+                font-weight          : 600;
+                color                : #aa89ee;
+                text-transform       : uppercase;
+                text-decoration      : underline;
+                text-underline-offset: 4px;
+                overflow             : visible;
+            }
         }
 
-    }
+        &-link {
+            padding       : $side-item-padding;
+            font-weight   : $side-item-fweight;
+            font-size     : $side-item-fsize;
+            line-height   : $side-item-line-height;
+            color         : $side-item-color;
+            cursor        : pointer;
+            transition    : all .5s ease;
+            text-transform: capitalize;
 
-    >.side-link {
-        display    : flex;
-        flex-flow  : row nowrap;
-        column-gap : .5rem;
-        align-items: center;
-        padding    : $side-link-padding;
-        color      : inherit;
+            display    : flex;
+            flex-flow  : row nowrap;
+            column-gap : $side-item-gap;
+            align-items: center;
 
-        &:hover {
-            background-color: #2c253b;
-            transition      : all .3s ease;
-        }
-
-        .#{$clsitem} {
-
-            &-title {
-                flex          : 1 auto;
-                letter-spacing: .7px;
-                text-transform: capitalize;
-                overflow      : hidden;
-                text-overflow : ellipsis;
-                white-space   : nowrap;
-                font-size     : 1rem;
-                line-height   : 1;
+            &.active {
+                background-color: $side-item-active-bg;
             }
 
+            &:hover {
+                background-color: $side-item-hover-bg;
+                color: $side-item-hover-color;
+                transition      : all .3s ease;
 
+                .pinned-icon {
+                    visibility: visible;
+                }
+            }
 
+        }
+
+        &-title {
+            letter-spacing   : $side-text-letter-spacing;
+            overflow         : hidden;
+            text-overflow    : ellipsis;
+            white-space      : nowrap;
+            flex             : 1 auto;
+        }
+
+        &-icon {
+            font-size: $side-item-icon-size;
+            color    : $side-item-icon-color;
+
+            &.pinned-icon {
+                font-size: .8rem;
+                visibility: hidden;
+            }
+
+        }
+
+        &.has-sub .pinned-icon {
+            visibility: hidden !important;
+        }
+
+        &-submenu {
+            position: relative !important;
+
+            &::before {
+                position    : absolute;
+                content     : "";
+                width       : 1px;
+                height      : calc(100% - 12px);
+                background  : $side-submenu-line-bg;
+                top         : 6px;
+                left        : 27px;
+                transition  : height .5s;
+            }
+
+            .side--item-link {
+                padding       : 7px 25px;
+                font-size     : $side-subitem-fsize;
+                color         : $side-subitem-color;
+                letter-spacing: .06em;
+                font-weight   : $side-item-fweight;
+                transition    : all .3s ease;
+                white-space   : nowrap;
+                overflow      : hidden;
+                text-overflow : ellipsis;
+                padding-left  : 50px !important;
+
+                &::before {
+                    position     : absolute;
+                    content      : "";
+                    width        : 5px;
+                    height       : 5px;
+                    top          : 50%;
+                    transform    : translateY(-50%);
+                    left         : 43px;
+                    border-radius: 100%;
+                    background   : $side-subitem-dot-color;
+                }
+
+                &:hover {
+                    color: $side-subitem-hover-color;
+                    background: initial;
+                }
+
+            }
+
+            .side--item.level-2 {
+
+                .side--item-link {
+                    padding-left: 55px !important;
+
+                    &::before {
+                        height: 1px;
+                    }
+                }
+            }
         }
 
 
     }
-
-
 }

@@ -1,14 +1,14 @@
 import { ActivatedRoute, IsActiveMatchOptions, Params, QueryParamsHandling, RouterLink, RouterLinkActive, RouterModule } from "@angular/router";
-import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, inject, Input, numberAttribute, OnChanges, Renderer2, SimpleChanges, ViewEncapsulation } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { TooltipOptions } from "primeng/api";
-import { INgStyle, Severity, TooltipPos } from "ts-ui/common";
+import { DomHandler, INgStyle, Severity, TooltipPos } from "ts-ui/common";
 import { JsonAny, Objects } from "ts-ui/helper";
 import { BadgeModule } from "primeng/badge";
 import { LinkTarget, SideItem, SideItemCommand } from "./side.interface";
 import { TooltipModule } from "primeng/tooltip";
 import { RippleModule } from "primeng/ripple";
-const { isNull } = Objects;
+const { isNull, isBlank } = Objects;
 
 const matchOptions: IsActiveMatchOptions = {
   paths: 'exact',
@@ -25,30 +25,27 @@ const matchOptions: IsActiveMatchOptions = {
   selector: '[ts-side-item]',
   templateUrl: './view/side-item.html',
   host: {
-    'class': 'side-item',
-    '[class.side-item-main]': `item.main`,
-    '[class.side-item-pined]': 'pinned',
-    '(mouseover)': 'mouseover($event)',
-    '(mouseleave)': 'mouseleave($event)'
+    'class': 'side--item',
+    '[class.side--item-main]': `item.main`,
+    '[class.side--item-pined]': 'pinned',
+
   },
 })
 export class SideItemView implements OnChanges {
   @Input() item: SideItem;
-  @Input() index: number;
+  @Input({transform: numberAttribute}) index: number;
+  @Input({transform: numberAttribute}) level: number = 0;
 
-  isHover: boolean = false;
-
-  mouseover(evt: any): void {
-    this.isHover = true;
-  }
-
-  mouseleave(evt: any): void {
-    this.isHover = false;
-  }
+  private _elementRef = inject(ElementRef);
+  private _renderer = inject(Renderer2);
 
   ngOnChanges(changes: SimpleChanges): void {
     Object.keys(changes).filter(k => !['item', 'index'].includes(k))
       .forEach(key => this.item[key] = changes[key].currentValue);
+
+      if(changes['level']) {
+        DomHandler.addClass(this._elementRef.nativeElement, 'level-'+this.level);
+      }
   }
 
   /**
@@ -145,7 +142,7 @@ export class SideItemView implements OnChanges {
    * */
   get iconClass() {
     return {
-      ['side-item-icon']: true,
+      [this.icon]: !isBlank(this.icon),
       [this.item.iconClass]: !!this.item.iconClass
     }
   }
@@ -166,7 +163,9 @@ export class SideItemView implements OnChanges {
    * Style class pinned of the item.
    * @group Props
    * */
-  get pinnedClass(): string { return this.item.pinnedClass ?? 'pi pi-thumbtack'; }
+  get pinnedClass(): any {
+    return this.item.pinnedClass ?? 'pi pi-thumbtack';
+  }
 
   get visiblePinned(): boolean { return isNull(this.item.visiblePinned) || this.item.visiblePinned; }
 
@@ -178,13 +177,17 @@ export class SideItemView implements OnChanges {
    * Tooltip of the item.
    * @group Props
    * */
-  get tooltip(): string { return this.item.tooltip ?? this.item.title; }
+  get tooltip(): string { 
+    return this.item.tooltip; 
+  }
 
   /**
    * Position of the tooltip item.
    * @group Props
    * */
-  get tooltipPosition(): TooltipPos { return this.item.tooltipPosition; }
+  get tooltipPosition(): TooltipPos { 
+    return this.item.tooltipPosition ?? this.tooltipProp?.tooltipPosition ?? 'right'; 
+  }
 
   /**
    * Options of the item's tooltip.

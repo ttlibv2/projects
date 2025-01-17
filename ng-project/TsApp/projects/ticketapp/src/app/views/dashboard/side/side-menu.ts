@@ -3,12 +3,13 @@ import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from "@a
 import { SideItemView } from "./side-item";
 import { SideItem } from "./side.interface";
 import { CdkScrollable } from "@angular/cdk/scrolling";
+import { TooltipModule } from "primeng/tooltip";
 
 @Component({
     standalone: true,
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CommonModule, SideItemView],
+    imports: [CommonModule, SideItemView, TooltipModule],
     styles: [`ts-side-menu {display: block}`],
     styleUrls: ['./view/side-menu.scss'],
     selector: 'ts-side-menu',
@@ -17,37 +18,39 @@ import { CdkScrollable } from "@angular/cdk/scrolling";
 export class SideMenu extends CdkScrollable {
     @Input() items: SideItem[] = [
         {
-            title: "General", main: true
-        }, {
+            title: "General",
+            main: true
+        },
+        {
             title: "Dashboard",
             icon: "pi pi-home",
-            items: [{
-                routerLink: "/dashboard/default",
-                title: "Default",
-            }, {
-                routerLink: "/dashboard/ecommerce",
-                title: "Ecommerce",
-            }]
-        }, {
+            items: [
+                {
+                    routerLink: "/dashboard/default",
+                    title: "Default",
+                },
+                {
+                    routerLink: "/dashboard/ecommerce",
+                    title: "Ecommerce",
+                }
+            ]
+        },
+        {
             title: "Widgets",
             icon: "pi pi-microsoft",
-            ////type: "sub",
-            //active: !1,
-            items: [{
-                routerLink: "/widgets/general",
-                title: "General",
-                //type: "link"
-            }, {
-                routerLink: "/widgets/chart",
-                title: "Chart",
-                //type: "link"
-            }]
+            items: [
+                {
+                    routerLink: "/widgets/general",
+                    title: "General",
+                }, {
+                    routerLink: "/widgets/chart",
+                    title: "Chart",
+                }
+            ]
         }, {
-            //level: 1,
+
             title: "Page Layout",
             icon: "pi pi-table",
-            ////type: "sub",
-            //active: !1,
             items: [{
                 routerLink: "/page-layout/hide-nav-scroll",
                 title: "Hide Nav Scroll",
@@ -68,33 +71,30 @@ export class SideMenu extends CdkScrollable {
         }, {
             title: "Applications", main: true
         }, {
-            //level: 1,
+
             title: "Project",
             icon: "pi pi-folder",
-            ////type: "sub",
-            //active: !1,
-            items: [{
+            items: [
+                {
                 routerLink: "/project/list",
                 title: "Project List",
-                //type: "link"
             }, {
                 routerLink: "/project/create",
                 title: "Create New",
-                //type: "link"
             }]
         }, {
-            //level: 1,
+
             routerLink: "/file-manager",
             title: "File Manager",
             icon: "pi pi-file",
             //bookmark: !0,
             //type: "link"
         }, {
-            //level: 1,
+
             title: "Ecommerce",
-            ////type: "sub",
+
             icon: "pi pi-paypal",
-            //active: !1,
+
             items: [{
                 routerLink: "/ecommerce/add-products",
                 title: "Add Product",
@@ -122,8 +122,8 @@ export class SideMenu extends CdkScrollable {
             }, {
                 //level: 2,
                 title: "Invoice",
-                ////type: "sub",
-                //active: !1,
+
+
                 items: [{
                     routerLink: "/invoice/invoice-1",
                     title: "Invoice-1",
@@ -167,17 +167,17 @@ export class SideMenu extends CdkScrollable {
                 //type: "link"
             }]
         }, {
-            //level: 1,
+
             routerLink: "/letter-box",
             title: "Letter Box",
             icon: "pi pi-envelope",
             //type: "link"
         }, {
-            //level: 1,
+
             title: "Chat",
-            ////type: "sub",
+
             icon: "pi pi-comment",
-            //active: !1,
+
             items: [{
                 routerLink: "/chat/private-chat",
                 title: "Private Chat",
@@ -188,11 +188,11 @@ export class SideMenu extends CdkScrollable {
                 //type: "link"
             }]
         }, {
-            //level: 1,
+
             title: "Users",
             icon: "pi pi-user",
-            ////type: "sub",
-            //active: !1,
+
+
             items: [{
                 routerLink: "/user/users-profile",
                 title: "Users Profile",
@@ -207,45 +207,45 @@ export class SideMenu extends CdkScrollable {
                 //type: "link"
             }]
         }, {
-            //level: 1,
+
             routerLink: "/bookmarks",
             title: "Bookmarks",
             icon: "pi pi-bookmark",
             //type: "link"
         }, {
-            //level: 1,
+
             routerLink: "/contacts",
             title: "Contact",
             icon: "pi pi-address-book",
             //type: "link",
             //bookmark: !0
         }, {
-            //level: 1,
+
             routerLink: "/tasks",
             title: "Tasks",
             icon: "pi pi-list-check",
             //type: "link"
         }, {
-            //level: 1,
+
             routerLink: "/calender",
             title: "Calender",
             icon: "pi pi-calendar",
             //type: "link"
         }, {
-            //level: 1,
+
             routerLink: "/social-app",
             title: "Social App",
             icon: "pi pi-share-alt",
             //bookmark: !0,
             //type: "link"
         }, {
-            //level: 1,
+
             routerLink: "/todo",
             title: "To-Do",
             icon: "pi pi-list",
             //type: "link"
         }, {
-            //level: 1,
+
             routerLink: "/search-result",
             title: "Search Result",
             icon: "pi pi-search",

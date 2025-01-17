@@ -1,5 +1,5 @@
 @if(main) {
-<h6>{{title | uppercase}}</h6>
+<h6 class="side--item-title">{{title | uppercase}}</h6>
 }
 @else if(routerLink && !hasChildren && isVisible) {
 <ng-container *ngTemplateOutlet="routerItem"></ng-container>
@@ -9,9 +9,9 @@
     <ng-container *ngTemplateOutlet="collapseItem"></ng-container>
 }
 
-<ul #submenu *ngIf="hasChildren">
+<ul #submenu *ngIf="hasChildren" class="side--item-submenu">
     <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
-        <li ts-side-item [item]="child" [index]="i"></li>
+        <li class="has-sub" ts-side-item [item]="child" [index]="i" [level]="level + 1"></li>
     </ng-template>
 </ul>
 
@@ -19,30 +19,32 @@
 
 
 <ng-template #collapseItem>
-    <a class="side-link" [ngClass]="styleClass" [ngStyle]="style" [attr.target]="target" [attr.tabindex]="0"
+    <a class="side--item-link" [ngClass]="styleClass" [ngStyle]="style" [attr.target]="target" [attr.tabindex]="0"
         [attr.disbaled]="disabled" [routerLink]="routerLink" [routerLinkActive]="'active'"
         [routerLinkActiveOptions]="routerLinkActiveOptions" [fragment]="fragment" [queryParams]="queryParams"
         [queryParamsHandling]="queryParamsHandling" [relativeTo]="relativeTo" [preserveFragment]="preserveFragment"
         [replaceUrl]="replaceUrl" [skipLocationChange]="skipLocationChange" [state]="state" pRipple [pTooltip]="tooltip"
         [tooltipPosition]="tooltipPosition" [tooltipOptions]="tooltipProp">
     
-        <span [class]="icon" [ngClass]="iconClass" [ngStyle]="iconStyle"></span>
-        <span class="side-item-title">{{title}}</span>
+        <span class="side--item-icon" [ngClass]="iconClass" [ngStyle]="iconStyle"></span>
+        <span class="side--item-title">{{title}}</span>
     
         @if (!!badge) {
         <p-badge [value]="badge" [styleClass]="badgeClass" [style]="badgeStyle" [badgeSize]="badgeSize"
             [severity]="badgeSeverity" [badgeDisabled]="badgeDisabled"></p-badge>
         }
     
-        @if(hasPinned && isHover) {
-        <span class="side-item-icon" [ngClass]="pinnedClass" [ngStyle]="pinnedStyle"></span>
+        @if(hasPinned) { 
+        <span class="side--item-icon pinned-icon" [ngClass]="pinnedClass" [ngStyle]="pinnedStyle"></span>
         }
+
+        <span class="side--item-icon collapse-icon pi pi-angle-down"></span>
     
     </a>
 </ng-template>
 
 <ng-template #routerItem let-item>
-    <a class="side-link" [ngClass]="styleClass" [ngStyle]="style"
+    <a class="side--item-link" [ngClass]="styleClass" [ngStyle]="style"
         [attr.target]="target" [attr.tabindex]="0" [attr.disbaled]="disabled" [routerLink]="routerLink"
         [routerLinkActive]="'active'" [routerLinkActiveOptions]="routerLinkActiveOptions" [fragment]="fragment"
         [queryParams]="queryParams" [queryParamsHandling]="queryParamsHandling" [relativeTo]="relativeTo"
@@ -50,16 +52,16 @@
         [skipLocationChange]="skipLocationChange" [state]="state" pRipple
         [pTooltip]="tooltip" [tooltipPosition]="tooltipPosition" [tooltipOptions]="tooltipProp">
 
-        <span [class]="icon" [ngClass]="iconClass" [ngStyle]="iconStyle"></span>
-        <span class="side-item-title">{{title}}</span>
+        <span class="side--item-icon" [ngClass]="iconClass" [ngStyle]="iconStyle"></span>
+        <span class="side--item-title">{{title}}</span>
 
         @if (!!badge) {
         <p-badge [value]="badge" [styleClass]="badgeClass" [style]="badgeStyle" [badgeSize]="badgeSize"
             [severity]="badgeSeverity" [badgeDisabled]="badgeDisabled"></p-badge>
         }
 
-        @if(hasPinned && isHover) {
-            <span class="side-item-icon" [ngClass]="pinnedClass" [ngStyle]="pinnedStyle"></span>
+        @if(hasPinned) {
+            <span class="side--item-icon pinned-icon" [ngClass]="pinnedClass" [ngStyle]="pinnedStyle"></span>
         }
 
     </a>
