@@ -63,5 +63,8 @@ public class TsUser extends LongIdDate<TsUser> {
         return super.getId();
     }
 
-
+    @Override
+    public void setId(Long id) {
+        super.setId(id);
+    }
 }

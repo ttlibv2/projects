@@ -1,3 +1,5 @@
+
+
 @if(main) {
 <h6 class="side--item-title">{{title | uppercase}}</h6>
 }
@@ -26,6 +28,10 @@
         [replaceUrl]="replaceUrl" [skipLocationChange]="skipLocationChange" [state]="state" pRipple [pTooltip]="tooltip"
         [tooltipPosition]="tooltipPosition" [tooltipOptions]="tooltipProp">
     
+        @if(level > 0 && !!bullet) {
+        <span class="bullet" [ngClass]="bullet" [style.font-size]="'.5rem'"></span>
+        }
+
         <span class="side--item-icon" [ngClass]="iconClass" [ngStyle]="iconStyle"></span>
         <span class="side--item-title">{{title}}</span>
     
@@ -51,6 +57,10 @@
         [preserveFragment]="preserveFragment" [replaceUrl]="replaceUrl"
         [skipLocationChange]="skipLocationChange" [state]="state" pRipple
         [pTooltip]="tooltip" [tooltipPosition]="tooltipPosition" [tooltipOptions]="tooltipProp">
+
+        @if(level > 0 && !!bullet) {
+        <span class="bullet" [ngClass]="bullet" [style.font-size]="'.5rem'"></span>
+        }
 
         <span class="side--item-icon" [ngClass]="iconClass" [ngStyle]="iconStyle"></span>
         <span class="side--item-title">{{title}}</span>

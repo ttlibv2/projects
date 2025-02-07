@@ -9,25 +9,14 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>od-account</artifactId>
+    <groupId>vn.conyeu</groupId>
+    <artifactId>friend</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
-
         <dependency>
             <groupId>vn.conyeu</groupId>
             <artifactId>sm-identity</artifactId>
         </dependency>
-        <dependency>
-            <groupId>vn.conyeu.ts</groupId>
-            <artifactId>od-ticket</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor.netty</groupId>
-            <artifactId>reactor-netty</artifactId>
-        </dependency>
-
     </dependencies>
-
-
 </project>

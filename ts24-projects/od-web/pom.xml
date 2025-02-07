@@ -14,9 +14,14 @@
 
     <dependencies>
 
+<!--        <dependency>-->
+<!--            <groupId>vn.conyeu.ts</groupId>-->
+<!--            <artifactId>od-account</artifactId>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>vn.conyeu.ts</groupId>
-            <artifactId>od-account</artifactId>
+            <groupId>vn.conyeu</groupId>
+            <artifactId>friend</artifactId>
         </dependency>
 
         <dependency>

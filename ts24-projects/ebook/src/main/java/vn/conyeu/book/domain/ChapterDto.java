@@ -21,13 +21,21 @@ public class ChapterDto extends LongUId<ChapterDto> {
     @JoinColumn(name = "bookId", nullable = false)
     private BookDto book;
 
+    @Column(length = 300)
     private String title;
-
-    private String seoUrl;
-    private String fullUrl;
 
     @Column(columnDefinition = "longtext")
     private String contentHtml;
+
+    private Integer position;
+
+    @Column(length = 100)
+    private String seoUrl;
+
+    private String fullUrl;
+
+    @Column(length = 100)
+    private String author;
 
     @ColumnDefault("0")
     private Boolean getHtml;

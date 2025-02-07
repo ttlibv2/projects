@@ -21,6 +21,7 @@
         <module name="sm-sheetdb" />
         <module name="sm-client2" />
         <module name="sm-client" />
+        <module name="friend" />
         <module name="sm-exception" />
         <module name="od-demo" />
         <module name="sm-dslquery" />
@@ -48,6 +49,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ebook" options="-parameters" />
+      <module name="friend" options="-parameters" />
       <module name="od-account" options="-parameters" />
       <module name="od-client" options="-parameters" />
       <module name="od-demo" options="-parameters" />

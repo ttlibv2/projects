@@ -26,7 +26,9 @@ const matchOptions: IsActiveMatchOptions = {
   templateUrl: './view/side-item.html',
   host: {
     'class': 'side--item',
-    '[class.side--item-main]': `item.main`,
+    '[class.main]': `item.main`,
+    '[class.use-bullet]': `level > 0 && !!bullet`,
+    '[class.side--item-main]': `item.main`,  
     '[class.side--item-pined]': 'pinned',
 
   },
@@ -35,6 +37,7 @@ export class SideItemView implements OnChanges {
   @Input() item: SideItem;
   @Input({transform: numberAttribute}) index: number;
   @Input({transform: numberAttribute}) level: number = 0;
+  @Input() bullet: string;
 
   private _elementRef = inject(ElementRef);
   private _renderer = inject(Renderer2);
@@ -43,7 +46,7 @@ export class SideItemView implements OnChanges {
     Object.keys(changes).filter(k => !['item', 'index'].includes(k))
       .forEach(key => this.item[key] = changes[key].currentValue);
 
-      if(changes['level']) {
+      if(changes['level'] && this.level > 0) {
         DomHandler.addClass(this._elementRef.nativeElement, 'level-'+this.level);
       }
   }

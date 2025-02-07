@@ -11,8 +11,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>23</maven.compiler.source>
+        <maven.compiler.target>23</maven.compiler.target>
         <commons.io.version>2.15.1</commons.io.version>
         <commons.io.lang3>3.14.0</commons.io.lang3>
         <commons.io.validator>1.8.0</commons.io.validator>
@@ -33,17 +33,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons.io.lang3}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>commons-validator</groupId>-->
-<!--            <artifactId>commons-validator</artifactId>-->
-<!--            <version>${commons.io.validator}</version>-->
-<!--                  <exclusions>-->
-<!--                    <exclusion>-->
-<!--                      <groupId> commons-collections</groupId>-->
-<!--                      <artifactId>commons-collections</artifactId>-->
-<!--                    </exclusion>-->
-<!--                  </exclusions>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
