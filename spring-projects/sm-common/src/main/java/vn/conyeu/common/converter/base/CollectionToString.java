@@ -2,7 +2,7 @@ package vn.conyeu.common.converter.base;
 
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 import vn.conyeu.commons.utils.Objects;
 
 import java.util.Collection;
@@ -38,12 +38,12 @@ public abstract class CollectionToString<C extends Collection<T>, T> extends Con
 
     protected Function<T, String> itemToString() {
         return object -> fields.isEmpty()
-                ? MapperHelper.serializeToString(object)
+                ? Jsons.serializeToString(object)
                 : ObjectMap.toJsonString(object, fields);
     }
 
     protected Function<String, T> stringToItem() {
-        return str -> MapperHelper.convert(str, objectCls);
+        return str -> Jsons.convert(str, objectCls);
     }
 
 

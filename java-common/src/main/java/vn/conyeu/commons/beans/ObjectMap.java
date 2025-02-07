@@ -45,12 +45,12 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
      * @throws ConvertException if error
      */
     public static ObjectMap fromJson(String jsonString) {
-        return MapperHelper.convert(jsonString, ObjectMap.class);
+        return Jsons.convert(jsonString, ObjectMap.class);
     }
 
     public static ObjectMap fromJson(Object object) {
         if (object instanceof Map map) return fromMap(map);
-        return MapperHelper.convert(object, ObjectMap.class);
+        return Jsons.convert(object, ObjectMap.class);
     }
 
     /**
@@ -229,13 +229,13 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
      * @return json string
      */
     public String toJson(boolean inline) {
-        final ObjectMapper mapper = MapperHelper.enablePretty(!inline);
-        return MapperHelper.serializeToString(mapper, this);
+        final ObjectMapper mapper = Jsons.enablePretty(!inline);
+        return Jsons.serializeToString(mapper, this);
     }
 
 //    public MultiValueMap<String, String> asMultiValueMap() {
 //        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-//        super.forEach((key, value) -> valueMap.put(key, MapperHelper.toStringList(value)));
+//        super.forEach((key, value) -> valueMap.put(key, Jsons.toStringList(value)));
 //        return valueMap;
 //    }
 
@@ -284,7 +284,7 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
         Asserts.notNull(clazz, "@clazz must be not null.");
         Object value = detectObjectValue(key, def);
         super.entrySet().removeIf(e -> Objects.equals(e.getKey(), key));
-        return MapperHelper.convert(value, clazz, def);
+        return Jsons.convert(value, clazz, def);
     }
 
     /**
@@ -357,7 +357,7 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
             Object value = mapper.apply(targetValue);
             targetValue = Objects.firstNotNull(value, targetValue);
         }
-        return MapperHelper.convert(targetValue, classTarget, defaultValue);
+        return Jsons.convert(targetValue, classTarget, defaultValue);
     }
 
 
@@ -883,7 +883,7 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
     }
 
     public <T> T asObject(Class<T> objectClass) {
-        return MapperHelper.convert(this, objectClass);
+        return Jsons.convert(this, objectClass);
     }
 
 
@@ -904,7 +904,7 @@ public class ObjectMap extends LinkedHashMap<String, Object> {
 //    }
 
     public <T> T updateTo(T object) {
-        MapperHelper.updateToMap(object, this);
+        Jsons.updateToMap(object, this);
         return object;
     }
 

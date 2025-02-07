@@ -524,7 +524,7 @@ public final class Objects {
     }
 
     public static String toString(Object object) {
-        return MapperHelper.serializeToString(object);
+        return Jsons.serializeToString(object);
     }
 
     /**

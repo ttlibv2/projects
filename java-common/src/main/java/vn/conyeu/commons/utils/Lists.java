@@ -412,7 +412,7 @@ public final class Lists {
      * Convert object to list
      */
     public static <T> List<T> toList(Object object, Class<T> classType) {
-        return toList(object, o -> MapperHelper.convert(o, classType));
+        return toList(object, o -> Jsons.convert(o, classType));
     }
 
 

@@ -3,7 +3,7 @@ package vn.conyeu.google.sheet;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.model.*;
 import lombok.extern.slf4j.Slf4j;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.google.core.GoogleException;
 import vn.conyeu.google.sheet.builder.*;
@@ -333,7 +333,7 @@ public class XslService {
     public XslUpdateResponse batchUpdate(String fileId, BatchUpdateBuilder builder) {
         return XslUpdateResponse.from(simple(() -> {
             BatchUpdateSpreadsheetRequest request = builder.build().clone();
-            log.warn("batchUpdate({}, {})", fileId, MapperHelper.serializeToString(request, true));
+            log.warn("batchUpdate({}, {})", fileId, Jsons.serializeToString(request, true));
             return sheets.spreadsheets().batchUpdate(fileId, request).setFields(builder.getFields());
         }));
     }

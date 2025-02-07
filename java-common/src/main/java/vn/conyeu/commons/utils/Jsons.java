@@ -18,10 +18,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public final class MapperHelper {
+public final class Jsons {
     static ObjectMapper mapper = defaultBuilder().build();
 
     public static void install(Consumer<JsonMapper.Builder> consumer) {
@@ -90,6 +91,16 @@ public final class MapperHelper {
      * @param obj the object to string
      * @see #serializeToString(ObjectMapper, Object)
      */
+    public static String serializeToString(Object obj, Set<String> onlyFields) {
+        return serializeToString(mapper, obj, onlyFields);
+    }
+
+    /**
+     * Convert object to string
+     *
+     * @param obj the object to string
+     * @see #serializeToString(ObjectMapper, Object)
+     */
     public static String serializeToString(Object obj, boolean pretty) {
         ObjectMapper mapperNew;
         if(pretty) mapperNew = mapper.copy().enable(SerializationFeature.INDENT_OUTPUT);
@@ -104,6 +115,16 @@ public final class MapperHelper {
      * @param obj    the object to string
      */
     public static String serializeToString(ObjectMapper mapper, Object obj) {
+        return serializeToString(mapper, obj, null);
+    }
+
+    /**
+     * Convert object to string
+     *
+     * @param mapper the object mapper
+     * @param obj    the object to string
+     */
+    private static String serializeToString(ObjectMapper mapper, Object obj, Set<String> onlyFields) {
         try {
             if (obj == null) return null;
             else if (obj instanceof String str) return str;
@@ -111,10 +132,14 @@ public final class MapperHelper {
             else if(obj instanceof LocalDate ld) return DateHelper.toStringIso(ld);
             else if(obj instanceof LocalDateTime ld) return DateHelper.toStringIso(ld);
             else if(obj instanceof LocalTime ld) return DateHelper.toStringIso(ld);
-            else return mapper.writeValueAsString(obj);
+            else if(Objects.isEmpty(onlyFields))return mapper.writeValueAsString(obj);
+            else {
+                obj = ObjectMap.fromJson(obj).get(onlyFields, true);
+                return mapper.writeValueAsString(obj);
+            }
         }//
         catch (JsonProcessingException e) {
-            throw new ConvertException("MapperHelper.asText(Object)", e);
+            throw new ConvertException("Jsons.asText(Object)", e);
         }
     }
 

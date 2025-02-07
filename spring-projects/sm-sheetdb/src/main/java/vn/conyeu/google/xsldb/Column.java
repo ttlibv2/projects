@@ -3,7 +3,7 @@ package vn.conyeu.google.xsldb;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 import vn.conyeu.google.sheet.builder.SheetUtil;
 
 @Getter
@@ -175,6 +175,6 @@ public class Column {
     }
 
     public String toString() {
-       return MapperHelper.serializeToString(this, false);
+       return Jsons.serializeToString(this, false);
     }
 }

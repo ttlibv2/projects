@@ -6,11 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import vn.conyeu.common.domain.I18N;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 
 import java.util.List;
 import java.util.Locale;
@@ -20,7 +19,7 @@ public class CommonConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return MapperHelper.mapper();
+        return Jsons.mapper();
     }
 
 //    @Bean

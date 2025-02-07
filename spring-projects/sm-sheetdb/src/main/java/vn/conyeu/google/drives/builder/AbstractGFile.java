@@ -6,7 +6,7 @@ import com.google.api.services.drive.model.Permission;
 import com.google.api.services.drive.model.User;
 import vn.conyeu.commons.utils.Asserts;
 import vn.conyeu.commons.utils.DateHelper;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 import vn.conyeu.commons.utils.Objects;
 import vn.conyeu.google.drives.DriveService;
 
@@ -190,7 +190,7 @@ public abstract class AbstractGFile {
 
 
     protected AbstractGFile updateModel(File updateModel) {
-        MapperHelper.update(this.fileModel, updateModel);
+        Jsons.update(this.fileModel, updateModel);
         return this;
     }
 

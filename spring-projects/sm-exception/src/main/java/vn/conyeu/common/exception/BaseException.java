@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import vn.conyeu.common.domain.LogDetail;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
-import vn.conyeu.commons.utils.MapperHelper;
 
 import java.util.Map;
 
@@ -160,6 +159,6 @@ public class BaseException extends RuntimeException {
 
 //    @Override
 //    public String getMessage() {
-//        return MapperHelper.serializeToString(object);
+//        return Jsons.serializeToString(object);
 //    }
 }

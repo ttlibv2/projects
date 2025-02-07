@@ -5,11 +5,9 @@ import jakarta.persistence.MappedSuperclass;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import vn.conyeu.commons.beans.ObjectMap;
-import vn.conyeu.commons.utils.Lists;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * @param <E> the entity type
@@ -44,7 +42,7 @@ public abstract class DomainId<E extends DomainId<E, Id>, Id extends Serializabl
     }
 
     public void assignFromMap(ObjectMap map, String...excludeFields) {
-        MapperHelper.updateToMap(this, map, excludeFields);
+        Jsons.updateToMap(this, map, excludeFields);
     }
 
 

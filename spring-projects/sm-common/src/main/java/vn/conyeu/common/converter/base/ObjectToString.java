@@ -3,7 +3,7 @@ package vn.conyeu.common.converter.base;
 import jakarta.persistence.Converter;
 import vn.conyeu.commons.beans.ObjectMap;
 import vn.conyeu.commons.utils.Asserts;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -37,8 +37,8 @@ public abstract class ObjectToString<X> extends ConvertAttrDb<X> {
 
     protected Function<X, String> objectToString() {
         return object -> onlyFields.isEmpty()
-                ? MapperHelper.serializeToString(object)
-                : ObjectMap.toJsonString(object, onlyFields);
+                ? Jsons.serializeToString(object)
+                : Jsons.serializeToString(object, onlyFields);
     }
 
     /**
@@ -49,6 +49,6 @@ public abstract class ObjectToString<X> extends ConvertAttrDb<X> {
     }
 
     protected Function<String, X> stringToObject() {
-        return str -> MapperHelper.convert(str, objectClass);
+        return str -> Jsons.convert(str, objectClass);
     }
 }

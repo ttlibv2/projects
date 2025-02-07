@@ -2,7 +2,7 @@ package vn.conyeu.identity.dtocls;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.servlet.http.HttpServletRequest;
-import vn.conyeu.commons.utils.MapperHelper;
+import vn.conyeu.commons.utils.Jsons;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,7 +16,7 @@ public class SignInDto implements Serializable {
     private String signinType = "email";
 
     public static SignInDto readRequest(HttpServletRequest request) throws IOException {
-        return MapperHelper.readValue(request.getInputStream(), SignInDto.class);
+        return Jsons.readValue(request.getInputStream(), SignInDto.class);
     }
 
     /**
