@@ -1,0 +1,19 @@
+import { Injectable } from "@angular/core";
+import { BaseStyle } from "primeng/base";
+
+type TAny =  (dt: any) => string;
+
+const theme: TAny = ({ dt }) => `
+    .<%= selector %> { }
+`;
+
+const classes = {
+    root: '<%= selector %> p-page'
+};
+
+@Injectable()
+export class <%= classify(name) %>Style extends BaseStyle {
+    override name: string = '<%= dasherize(name) %>';
+    override theme: (dt: any) => string = theme;
+    override classes = classes;
+}

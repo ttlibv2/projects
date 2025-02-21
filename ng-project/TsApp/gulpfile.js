@@ -1,6 +1,6 @@
 'use strict';
 
-const destCss = './projects/ticketapp/public/css/';
+const destCss = './packages/ticketapp/public/css/';
 const gulp = require('gulp'),
     rename = require('gulp-rename'),
     sass = require('gulp-sass')(require('sass'));

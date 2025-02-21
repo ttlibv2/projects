@@ -1,0 +1,22 @@
+{
+  "name": "@tuants/ngcli",
+  "version": "0.0.0",
+  "description": "A blank schematics",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "schematics"
+  ],
+  "author": "",
+  "license": "MIT",
+  "schematics": "./src/collection.json",
+  "dependencies": {
+    "@angular-devkit/core": "^19.0.4",
+    "@angular-devkit/schematics": "^19.0.4",
+    "typescript": "~5.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.18.0"
+  }
+}

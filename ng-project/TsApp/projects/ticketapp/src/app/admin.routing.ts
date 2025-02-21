@@ -39,11 +39,11 @@ const appRoutes: Route[] = [
                 loadChildren: () => import('./views/chanel/chanel.module').then(m => m.ChanelModule),
                 data: { breadcrumb: '@@chanels' }
             },
-            {
-                path: 'chanel2s',
-                loadChildren: () => import('./views/chanel2/chanel-routing.module').then(m => m.ChanelRoutingModule),
-                data: { breadcrumb: '@@chanels' }
-            },
+            // {
+            //     path: 'chanel2s',
+            //     loadChildren: () => import('./views/chanel2/chanel-routing.module').then(m => m.ChanelRoutingModule),
+            //     data: { breadcrumb: '@@chanels' }
+            // },
             {
                 path: 'question',
                 loadChildren: () => import('./views/question/question.module').then(m => m.QuestionModule),
