@@ -343,7 +343,7 @@ export class DomHandler {
         return (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
     }
 
-    public static matches(element:any, selector: string): boolean {
+    public static matches(element, selector: string): boolean {
         var p = Element.prototype;
         var f =
             p['matches'] ||

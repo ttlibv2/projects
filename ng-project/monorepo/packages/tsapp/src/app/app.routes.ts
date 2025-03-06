@@ -7,9 +7,9 @@ export const routes: Routes = [
         title: 'Hệ thống báo cáo',
         component: DashboardPage,
     },
-    {
-        path: "**",
-        redirectTo: "/dashboard",
-        pathMatch: 'full'
+   {
+       path: "**",
+       redirectTo: "/dashboard",
+       pathMatch: 'full'
     }
 ];

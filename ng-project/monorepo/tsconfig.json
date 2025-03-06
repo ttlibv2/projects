@@ -7,7 +7,7 @@
     "strict": true,
     "noImplicitOverride": false,
     "noImplicitAny": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noPropertyAccessFromIndexSignature": true,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,

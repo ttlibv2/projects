@@ -1,30 +1,30 @@
 import {SafeUrl} from "@angular/platform-browser";
 import {ElementRef, TemplateRef} from "@angular/core";
-import {PropCls, StyleCls} from "./interface";
+import {INgClass, INgStyle} from "./interface";
 
 export interface ImageObject {
   /**
    * Style class of the image element.
    * @group Props
    */
-  imageClass?: PropCls;
+  imageClass?: INgClass;
 
   /**
    * Inline style of the image element.
    * @group Props
    */
-  imageStyle?: StyleCls;
+  imageStyle?: INgStyle;
   /**
    * Class of the element.
    * @group Props
    */
-  styleClass?: PropCls;
+  styleClass?: INgClass;
 
   /**
    * Inline style of the element.
    * @group Props
    */
-  style?: PropCls;
+  style?: INgStyle;
 
   /**
    * The source path for the main image.

@@ -1,0 +1,15 @@
+@import "tailwindcss";
+/* @import 'tailwindcss/components'; */
+@import 'tailwindcss/utilities';
+
+@theme {
+	--col-s-12: 100%; 
+}
+
+@utility row {
+	@apply grid grid-cols-12;
+}
+
+@utility col-* {
+	@apply col-span-[--value(integer)];
+}

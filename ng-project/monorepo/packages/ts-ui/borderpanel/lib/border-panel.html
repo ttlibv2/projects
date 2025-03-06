@@ -1,0 +1,33 @@
+@if(topTemplate){
+<div class="ts-border-panel-top" [ngClass]="topStyleClass" [ngStyle]="topStyle">
+    <ng-container *ngTemplateOutlet="topTemplate"></ng-container>
+</div>
+}
+
+@if(leftTemplate || rightTemplate || centerTemplate){
+<div class="ts-border-panel-middle">
+
+    @if(leftTemplate){
+    <div class="ts-border-panel-left" [ngClass]="leftStyleClass" [ngStyle]="leftStyle">
+        <ng-container *ngTemplateOutlet="leftTemplate"></ng-container>
+    </div>
+    }
+
+    @if(centerTemplate){
+    <div class="ts-border-panel-center" [ngClass]="centerStyleClass" [ngStyle]="centerStyle">
+        <ng-container *ngTemplateOutlet="centerTemplate"></ng-container>
+    </div>
+    }
+    @if(rightTemplate){
+    <div class="ts-border-panel-right" [ngClass]="rightStyleClass" [ngStyle]="rightStyle">
+        <ng-container *ngTemplateOutlet="rightTemplate"></ng-container>
+    </div>
+    }
+</div>
+}
+
+@if(bottomTemplate){
+<div class="ts-border-panel-bottom" [ngClass]="bottomStyleClass" [ngStyle]="bottomStyle">
+    <ng-container *ngTemplateOutlet="bottomTemplate"></ng-container>
+</div>
+}

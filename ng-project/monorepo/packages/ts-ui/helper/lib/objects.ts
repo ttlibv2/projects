@@ -28,15 +28,15 @@ export class Objects {
     return Objects.isString(str) && str.startsWith(prefix) && !str.includes(' ') ? str.replace(prefix, '') : undefined;
   }
 
-  static parseDate(value: any): Date | undefined {
-    if (Objects.isNull(value)) return undefined;
+  static parseDate(value: any): Date {
+    if (Objects.isNull(value)) return null;
     else if (value instanceof Date) return value;
     else if (typeof value === 'string') return new Date(value);
     else if (typeof value == 'number') return new Date(value);
-    else return undefined;
+    else return null;
   }
 
-  static booleanValue(value: any, defaultNull?: boolean): boolean | undefined {
+  static booleanValue(value: any, defaultNull?: boolean): boolean {
     if (Objects.isNull(value)) return defaultNull;
     else if (typeof value === 'boolean') return value;
     else if ([1, 0].includes(value)) return value === 1;
@@ -364,13 +364,11 @@ export class Objects {
     if (Objects.notEmpty(array)) callback(array);
   }
 
-  /**@deprecated */
   static encodeBase64(string: string): string {
     const wa = crypto.enc.Utf8.parse(string);
     return crypto.enc.Base64.stringify(wa);
   }
 
-  /**@deprecated */
   static decodeBase64(string: string): string {
     const wa = crypto.enc.Base64.parse(string);
     return wa.toString(CryptoJS.enc.Utf8);

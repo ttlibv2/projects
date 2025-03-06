@@ -56,7 +56,7 @@
               }
             ],
             "styles": [
-              "packages/tsapp/src/styles.scss"
+              "packages/tsapp/src/input.css"
             ],
             "scripts": []
           },

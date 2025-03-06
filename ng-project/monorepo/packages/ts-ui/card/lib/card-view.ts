@@ -1,14 +1,15 @@
 import { CommonModule } from "@angular/common";
-import {AfterContentInit, booleanAttribute, Component, ContentChildren, DoCheck, ElementRef, inject, Injectable, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, TemplateRef, ViewEncapsulation} from "@angular/core";
-import { CardAction } from "./card.interface";
+import { AfterContentInit, booleanAttribute, Component, ContentChildren, DoCheck, ElementRef, inject, Injectable, Input, OnChanges, OnDestroy, QueryList, SimpleChanges, TemplateRef, ViewEncapsulation } from "@angular/core";
 import { AnyTemplateOutlet, INgClass, INgStyle, QueryPTemplate, Severity, StringTemplate } from "ts-ui/common";
-import { ButtonModule } from "primeng/button";
+import { ButtonModule, ButtonProps } from "primeng/button";
 import { PrimeTemplate } from "primeng/api";
 import { Objects } from "ts-ui/helper";
-import {BaseComponent} from "primeng/basecomponent";
-import {BaseStyle} from "primeng/base";
+import { BaseComponent, BaseComponentStyle } from "primeng/basecomponent";
 
-const { isArray } = Objects;
+const { isString, isArray } = Objects;
+
+export interface CardAction extends ButtonProps {
+}
 
 interface PTemplate {
     header?: TemplateRef<any>;
@@ -23,23 +24,18 @@ interface PTemplate {
     action?: TemplateRef<any>;
 }
 
-const theme = ({dt}) => ``;
-const classes = {
-    root: 'ts-card p-card'
-};
-
 @Injectable()
-export class CardStyle extends  BaseStyle {
-    name: string = 'card';
-    theme = theme;
-    classes = classes;
+export class CardStyle extends BaseComponentStyle {
+    name = 'card';
+    classes = {root: 'ts-card'};
+    theme: any = ({dt}) => ``;
 }
+
 @Component({
     standalone: true,
     selector: 'ts-card',
     encapsulation: ViewEncapsulation.None,
-    providers: [CardStyle],
-  imports: [CommonModule, AnyTemplateOutlet, ButtonModule],
+    imports: [CommonModule, ButtonModule, AnyTemplateOutlet],
     templateUrl: 'card-view.html',
     styles: [`ts-card { display: block;}`],
     host: {
@@ -48,59 +44,58 @@ export class CardStyle extends  BaseStyle {
     }
 })
 export class Card extends BaseComponent implements OnChanges, AfterContentInit, OnDestroy, DoCheck {
-    _componentStyle = inject(CardStyle);
-
+    _component = inject(CardStyle);
     /**
      * Defined header
-     * @group Props
+     * @group Props 
      * */
     @Input() header: StringTemplate;
 
     /**
      * Defined sub-header
-     * @group Props
+     * @group Props 
      * */
     @Input() subheader: StringTemplate;
 
     /**
      * Defined icon header
-     * @group Props
+     * @group Props 
      * */
     @Input() headerIcon: StringTemplate;
 
     /**
      * Defined area header right
-     * @group Props
+     * @group Props 
      * */
     @Input() headerRight: TemplateRef<any>;
 
     /**
      * Defined area header left
-     * @group Props
+     * @group Props 
      * */
     @Input() headerLeft: TemplateRef<any>;
 
     /**
      * Defined card title
-     * @group Props
+     * @group Props 
      * */
     @Input() title: StringTemplate;
 
     /**
      * Defined card subtitle
-     * @group Props
+     * @group Props 
      * */
     @Input() subtitle: StringTemplate;
 
     /**
      * Defined card content
-     * @group Props
+     * @group Props 
      * */
     @Input() content: TemplateRef<any>;
 
     /**
      * Defined card footer
-     * @group Props
+     * @group Props 
      * */
     @Input() footer: TemplateRef<any>;
 
@@ -108,39 +103,39 @@ export class Card extends BaseComponent implements OnChanges, AfterContentInit, 
 
     /**
      * Defined card severity
-     * @group Props
+     * @group Props 
      * */
     @Input() severity: Severity;
 
     /**
      * Defined card text + background severity
      * @argument string[bgColor, textColor]
-     * @group Props
+     * @group Props 
      * */
     @Input() textBg: Severity | [string, string];
 
     /**
      * Defined card text + background severity
      * @argument string[bgColor, textColor]
-     * @group Props
+     * @group Props 
      * */
     @Input() borderColor: Severity | [string, string];
 
     /**
      * Defined card severity
-     * @group Props
+     * @group Props 
      * */
     @Input({ transform: booleanAttribute }) useBg: boolean = true;
 
     /**
      * footer actions
-     * @group Props
+     * @group Props 
      * */
     @Input() actions: CardAction[] = [];
 
     /**
      * visible header
-     * @group Props
+     * @group Props 
      * */
     @Input({ transform: booleanAttribute }) visibleHeader: boolean = true;
 
@@ -191,15 +186,21 @@ export class Card extends BaseComponent implements OnChanges, AfterContentInit, 
 
     constructor(private elementRef: ElementRef<HTMLDivElement>) {
         super();
-    }
+     }
 
     hasHeader(): boolean {
-        return Objects.anyNotNull(this.headerTemplate, this.subheaderTemplate,
+        return Objects.anyNotNull(this.headerTemplate, this.subheaderTemplate, 
                 this.headerIconTemplate, this.headerLeftTemplate, this.headerRightTemplate)
     }
 
-    override ngOnChanges(changes: SimpleChanges): void {
+    ngOnChanges(changes: SimpleChanges): void {
         const { textBg, severity } = changes;
+
+
+
+
+
+
         if (textBg) {
             let arr = isArray(this.textBg) && this.textBg.length == 2 ? this.textBg : [undefined, undefined];
             this.elementRef.nativeElement.style.setProperty('--card-bg', arr[0]);
@@ -218,10 +219,10 @@ export class Card extends BaseComponent implements OnChanges, AfterContentInit, 
     }
 
     ngDoCheck(): void {
-
+        
     }
 
-    override ngOnDestroy(): void {
+    ngOnDestroy(): void {
         this.query$?.destroy();
     }
 

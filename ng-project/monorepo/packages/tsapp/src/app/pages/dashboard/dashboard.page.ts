@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, ViewEncapsulation } from '@
 import { BaseComponent } from 'primeng/basecomponent';
 import { DashboardStyle } from './dashboard.style';
 import { CommonModule } from '@angular/common';
+import {Button, ButtonModule} from 'primeng/button';
 
 @Component({
   selector: 'ts-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, ButtonModule],
   templateUrl: './dashboard.page.html',
   styles: `ts-dashboard { display: block}`,
   encapsulation: ViewEncapsulation.None,

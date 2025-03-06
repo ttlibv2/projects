@@ -1,0 +1,24 @@
+<div class="ts-formfield" [ngClass]="fieldClass">
+
+    @if(label || labelTemplate || required) {
+        <ts-label class="ts-formfield-label" [attr.for]="inputId"
+            [content]="labelTemplate ?? label">
+        
+            <ng-template pTemplate="suffix">
+                @if(required){
+                    <div class="ts-formfield-required" 
+                        [ngClass]="requiredClass" [ngStyle]="requiredStyle">{{requiredText}}</div>
+                }
+            </ng-template>
+
+        </ts-label>
+    }
+
+   
+
+    <div class="ts-formfield-input">
+        @if(fieldTag) { <ng-content [select]="fieldTag"></ng-content>}
+        @else { <ng-content></ng-content>}
+    </div>
+
+</div>
