@@ -4,15 +4,15 @@
   "description": "A schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json --watch",
-    "postbuild": "copyfiles ./src/*/schema.json ./src/*/files/**  ./src/collection.json ./package.json dist --watch",
-    "test": "npm run build && jasmine src/**/*_spec.js"
+    "postbuild": "copyfiles ./schematics/*/schema.json ./schematics/*/files/**  ./schematics/collection.json ./package.json dist --watch",
+    "test": "npm run build && jasmine schematics/**/*_spec.js"
   },
   "keywords": [
     "schematics"
   ],
   "author": "",
   "license": "MIT",
-  "schematics": "./src/collection.json",
+  "schematics": "./schematics/collection.json",
   "dependencies": {
     "@angular-devkit/core": "^19.0.4",
     "@angular-devkit/schematics": "^19.0.4",

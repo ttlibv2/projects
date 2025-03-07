@@ -1,0 +1,28 @@
+{
+  "name": "@tsui/cli",
+  "version": "1",
+  "description": "TSUI CLI",
+  "main": "bin/cli.js",
+  "bin": {
+    "ngx": "./bin/cli.js"
+  },
+  "scripts": { 
+    "build": "tsc --watch",
+    "clean": "rimraf ../../dist/cli",
+    "copy": "copyfiles package.json ../../dist/cli"
+  },
+  "dependencies": {
+    "@angular/cli": "^19.2.1",
+    "ansis": "^3.17.0",
+    "commander": "13.1.0",
+    "semver": "^7.7.1",
+    "typescript": "^5.8.2",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.5.8",
+    "@types/yargs": "^17.0.33",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^6.0.1"
+  }
+}
