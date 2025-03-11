@@ -1,1 +1,0 @@
-export type App_UID = 'TSApp' | 'SaluteApp';

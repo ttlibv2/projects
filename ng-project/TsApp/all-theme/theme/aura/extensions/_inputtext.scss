@@ -1,9 +1,0 @@
-@use "../../../setting/config" as cfg;.p-inputtext {
-    box-shadow: cfg.$inputShadow;
-}
-
-.p-inputtext:disabled {
-    opacity: 1;
-    background-color: cfg.$disabledInputBg;
-    color: cfg.$textSecondaryColor;
-}

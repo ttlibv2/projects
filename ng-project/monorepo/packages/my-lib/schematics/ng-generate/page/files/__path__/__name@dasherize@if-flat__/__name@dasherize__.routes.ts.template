@@ -1,2 +1,0 @@
-import { <%= classify(name) %>Page } from "./<%= dasherize(name) %>.page";
-export default {path: '', component: <%= classify(name) %>Page}
