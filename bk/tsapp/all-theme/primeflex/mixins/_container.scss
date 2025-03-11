@@ -1,0 +1,22 @@
+@use "breakpoints"as bp;
+@use "../../setting/layout-config"as cfg;
+
+$prefix: cfg.$prefix;
+$gx    : cfg.$container-gutter-x;
+$gy    :cfg.$container-gutter-y;
+
+@mixin make-container-fluid($gutter-x: $gx, $gutter-y: $gy) {
+    $rx: var(--#{$prefix}gutter-rx, #{$gutter-x});
+    $ry: var(--#{$prefix}gutter-ry, #{$gutter-y});
+
+    --#{$prefix}gutter-rx            : #{$gutter-x};
+    --#{$prefix}gutter-ry            : #{$gutter-x};
+
+    width: 100%;
+   // padding-top: var(--#{$prefix}gutter-ry, cfg.$container-gutter-x);
+
+    //padding-right: $rx;
+    //padding-left: $rx;
+    margin-right: auto;
+    margin-left : auto;
+}

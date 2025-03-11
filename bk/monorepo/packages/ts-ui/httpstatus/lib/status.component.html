@@ -1,0 +1,63 @@
+<div class="page-status" [ngClass]="pageCls" [ngStyle]="style">
+    @if (header) {
+        <div class="page-status-header">
+            @if (isTemplateRef(header)) {
+                <ng-container *ngTemplateOutlet="header"></ng-container>
+            } @else {
+                <ng-container *ngTemplateOutlet="imageHeader"></ng-container>
+            }
+        </div>
+    }
+
+    @if (status) {
+        <div class="page-status-number">
+            <ng-container *anyTemplate="status">
+                <h2 class="text">{{ status }}</h2>
+            </ng-container>
+        </div>
+    }
+
+    @if (title) {
+        <div class="page-status-title">
+            <ng-container *anyTemplate="title">
+                <h2 class="text">{{ title }}</h2>
+            </ng-container>
+        </div>
+    }
+
+    @if (description) {
+        <div class="page-status-summary">
+            <ng-container *anyTemplate="description">
+                <h2 class="text">{{ description }}</h2>
+            </ng-container>
+        </div>
+    }
+
+    @if(homeButton) {
+        <div class="page-status-back-home">
+            @if (isTemplateRef(homeButton)) {
+                <ng-container *ngTemplateOutlet="homeButton"></ng-container>
+            } @else {
+                <ng-container *ngTemplateOutlet="homeBtn"></ng-container>
+            }
+        </div>
+    }
+</div>
+
+<ng-template #homeBtn>
+    <button pButton [buttonProps]="homeObject"
+            (click)="onClickHomeBtn($event)"></button>
+</ng-template>
+
+<ng-template #imageHeader>
+    <p-image [loading]="headerObject.loading" 
+             [imageStyle]="headerObject.imageStyle" 
+             [style]="headerObject.style" [src]="headerObject.src" [srcSet]="headerObject.srcSet"
+             [sizes]="headerObject.sizes" [preview]="headerObject.preview"
+             [previewImageSizes]="headerObject.previewImageSizes"
+             [previewImageSrc]="headerObject.previewImageSizes" [previewImageSrcSet]="headerObject.previewImageSizes"
+             [alt]="headerObject.alt" [width]="headerObject.width" [height]="headerObject.height"
+             [appendTo]="headerObject.appendTo" [showTransitionOptions]="headerObject.showTransitionOptions"
+             [hideTransitionOptions]="headerObject.hideTransitionOptions" (onShow)="onShowHeaderImage()"
+             (onHide)="onHideHeaderImage()" (onImageError)="onHeaderImageError($event)"></p-image>
+</ng-template>

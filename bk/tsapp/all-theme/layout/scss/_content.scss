@@ -1,0 +1,18 @@
+.layout-content-wrapper {
+   // padding-top: calc($topbarHeight + .5rem);
+   // margin-left: calc($sidebarWidth + 1px);
+    
+    
+    .layout-content {
+        //min-height: calc(100vh - 13.5rem);
+        //padding: 0 1rem;
+    }
+}
+
+.layout-horizontal .layout-content-wrapper {
+    margin-left: 0!important;
+}
+
+.layout-topbar-inactive .layout-content-wrapper {
+    padding-top: 1rem!important;
+}

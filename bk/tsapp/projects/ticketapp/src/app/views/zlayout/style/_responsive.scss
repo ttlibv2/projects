@@ -1,0 +1,30 @@
+@use "../../../../../../../all-theme/mixins/breakpoint"as bp;
+
+@include bp.media-breakpoint-down(sm) {
+    .app-header {
+        --app-header-logo-width: 50px;
+        --app-header-padding   : 0 .5rem;
+
+        justify-content: space-between;
+
+        &-logo .name {
+            display: none;
+        }
+
+        &-toggle {
+            display: none;
+        }
+
+        &-left-pane {
+            display: none !important;
+        }
+    }
+
+    .app-profile {
+
+        .col-wrap {
+            display: none;
+        }
+
+    }
+}

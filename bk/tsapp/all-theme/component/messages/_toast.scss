@@ -1,0 +1,123 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-toast {
+  opacity: cfg.$toastOpacity;
+
+  .p-toast-message {
+    margin: cfg.$toastMargin;
+    box-shadow: cfg.$toastShadow; 
+    border-radius: cfg.$borderRadius;
+
+
+    &-content {
+      padding: cfg.$toastPadding;
+      border-width: cfg.$toastBorderWidth;
+
+      .p-toast-message-text {
+        margin: cfg.$toastMessageTextMargin;
+      }
+
+      .p-toast-message-icon {
+        font-size: cfg.$toastMessageIconFontSize;
+      }
+
+      .p-icon:not(.p-toast-icon-close-icon) {
+        width: cfg.$toastMessageIconFontSize;
+        height: cfg.$toastMessageIconFontSize;
+      }
+
+      .p-toast-summary {
+        font-weight: cfg.$toastTitleFontWeight;
+        font-size: 1.2rem;
+      }
+
+      .p-toast-detail {
+        margin: cfg.$toastDetailMargin;
+      }
+    }
+
+    .p-toast-icon-close {
+      width: cfg.$toastCloseIconFontSize;
+      height: cfg.$toastCloseIconFontSize;
+      border-radius: cfg.$actionIconBorderRadius;
+      background: transparent;
+      transition: cfg.$actionIconTransition;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      &:focus-visible {
+        @include util.focused();
+      }
+    }
+
+    &-info {
+      background: cfg.$infoMessageBg;
+      border: cfg.$infoMessageBorder;
+      color: cfg.$infoMessageTextColor;
+
+      .p-toast-message-icon,
+      .p-toast-icon-close {
+        color: cfg.$infoMessageIconColor;
+      }
+    }
+
+    &-success {
+      background: cfg.$successMessageBg;
+      border: cfg.$successMessageBorder;
+      color: cfg.$successMessageTextColor;
+
+      .p-toast-message-icon,
+      .p-toast-icon-close {
+        color: cfg.$successMessageIconColor;
+      }
+    }
+
+    &-warn, &-warning {
+      background: cfg.$warningMessageBg;
+      border: cfg.$warningMessageBorder;
+      color: cfg.$warningMessageTextColor;
+
+      .p-toast-message-icon,
+      .p-toast-icon-close {
+        color: cfg.$warningMessageIconColor;
+      }
+    }
+
+    &-danger, &-error {
+      background: cfg.$errorMessageBg;
+      border: cfg.$errorMessageBorder;
+      color: cfg.$errorMessageTextColor;
+
+      .p-toast-message-icon,
+      .p-toast-icon-close {
+        color: cfg.$errorMessageIconColor;
+      }
+    }
+
+    &-secondary {
+      background: cfg.$secondaryMessageBg;
+      border: cfg.$secondaryMessageBorder;
+      color: cfg.$secondaryMessageTextColor;
+
+      .p-toast-message-icon,
+      .p-toast-icon-close {
+        color: cfg.$secondaryMessageIconColor;
+      }
+    }
+
+    &-contrast {
+      background: cfg.$contrastMessageBg;
+      border: cfg.$contrastMessageBorder;
+      color: cfg.$contrastMessageTextColor;
+
+      .p-toast-message-icon,
+      .p-toast-icon-close {
+        color: cfg.$contrastMessageIconColor;
+      }
+    }
+  }
+
+}

@@ -1,0 +1,68 @@
+@use 'sass:math';
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-rating {
+    gap: cfg.$inlineSpacing;
+
+    .p-rating-item {
+        border-radius: 50%;
+        outline-color: transparent;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+
+        .p-rating-icon {
+            color: cfg.$ratingStarIconOffColor;
+            transition: cfg.$formElementTransition;   
+            font-size: cfg.$ratingIconFontSize;
+
+            &.p-icon {
+                width: cfg.$ratingIconFontSize;
+                height: cfg.$ratingIconFontSize;
+            }
+    
+            &.p-rating-cancel {
+                color: cfg.$ratingCancelIconColor;
+            }
+        }
+
+        &.p-focus {
+            @include util.focused();
+        }
+
+        &.p-rating-item-active {
+            .p-rating-icon {
+                color: cfg.$ratingStarIconOnColor;
+            }
+        }
+    }
+
+    &:not(.p-disabled):not(.p-readonly) {
+        .p-rating-item {
+            &:hover {
+                .p-rating-icon {
+                    color: cfg.$ratingStarIconHoverColor;
+
+                    &.p-rating-cancel {
+                        color: cfg.$ratingCancelIconHoverColor;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@if (cfg.$highlightBg == cfg.$ratingStarIconOnColor) {
+    .p-highlight {
+        .p-rating {
+            .p-rating-item {
+                &.p-rating-item-active {
+                    .p-rating-icon {
+                        color: cfg.$highlightTextColor;
+                    }
+                }
+            }
+        }
+    }
+}

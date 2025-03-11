@@ -1,0 +1,54 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+@use 'sass:math';
+
+.p-tag {
+    background: cfg.$badgeBg;
+    color: cfg.$badgeTextColor;
+    font-size: cfg.$badgeFontSize;
+    font-weight: cfg.$badgeFontWeight;
+    padding: cfg.$tagPadding;
+    border-radius: cfg.$borderRadius;
+
+    &.p-tag-success {
+        background-color: cfg.$successButtonBg;
+        color: cfg.$successButtonTextColor;
+    }
+
+    &.p-tag-info {
+        background-color: cfg.$infoButtonBg;
+        color: cfg.$infoButtonTextColor;
+    }
+
+    &.p-tag-warning {
+        background-color: cfg.$warningButtonBg;
+        color: cfg.$warningButtonTextColor;
+    }
+
+    &.p-tag-danger {
+        background-color: cfg.$dangerButtonBg;
+        color: cfg.$dangerButtonTextColor;
+    }
+
+    .p-tag-icon {
+        margin-right: math.div(cfg.$inlineSpacing, 2);
+        font-size: cfg.$badgeFontSize;
+    }
+
+    .p-icon {
+        width: cfg.$badgeFontSize;
+        height: cfg.$badgeFontSize;
+    }
+
+    @if variable-exists(secondaryMessageBg) {
+        &.p-tag-secondary {
+            background-color: cfg.$secondaryButtonBg;
+            color: cfg.$secondaryButtonTextColor;
+        }
+    
+        &.p-tag-contrast {
+            background-color: cfg.$contrastButtonBg;
+            color: cfg.$contrastButtonTextColor;
+        }
+    }
+}

@@ -1,0 +1,26 @@
+@use "../../../setting/config" as cfg;.p-radiobutton {
+    .p-radiobutton-box {
+        box-shadow: cfg.$inputShadow;
+
+        &.p-focus {
+            outline-offset: cfg.$focusOutlineOffset;
+
+            &.p-highlight {
+                border-color: cfg.$checkboxActiveBorderColor;
+            }
+        }
+    }
+
+    &.p-radiobutton-disabled {
+        opacity: 1;
+
+        .p-radiobutton-box {
+            border: cfg.$inputBorder;
+            background-color: cfg.$disabledInputBg;
+
+            .p-radiobutton-icon {
+                background-color: cfg.$textSecondaryColor;
+            }
+        }
+    }
+}

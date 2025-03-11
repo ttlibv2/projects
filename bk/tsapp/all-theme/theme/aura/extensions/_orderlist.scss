@@ -1,0 +1,44 @@
+@use "../../../setting/config" as cfg;
+@use "../../../setting/mixins" as util;
+
+.p-orderlist-controls .p-button {
+  transition: opacity cfg.$transitionDuration, outline-color cfg.$transitionDuration, background-color cfg.$transitionDuration, color cfg.$transitionDuration, border-color cfg.$transitionDuration, box-shadow cfg.$transitionDuration;
+
+  @include util.secondary-button();
+}
+
+.p-orderlist {
+  .p-orderlist-header {
+    background: cfg.$inputListHeaderBg;
+    color: cfg.$inputListHeaderTextColor;
+    border: 0 none;
+    // border-bottom: 0 none;
+    padding: .75rem 1rem .5rem 1rem;
+    font-weight: 600;
+    //color: cfg.$textSecondaryColor;
+    border-top-right-radius: cfg.$borderRadius;
+    border-top-left-radius: cfg.$borderRadius;
+  }
+
+  .p-orderlist-list {
+    border: cfg.$inputListBorder;
+    border: 0 none;
+    background: cfg.$inputListBg;
+    color: cfg.$inputListTextColor;
+    padding: cfg.$inputListPadding;
+    border-bottom-right-radius: cfg.$borderRadius;
+    border-bottom-left-radius: cfg.$borderRadius;
+
+    .p-orderlist-item {
+      border-radius: cfg.$borderRadius;
+    }
+
+    &:not(:first-child) {
+      border: 0 none;
+    }
+  }
+
+  .p-orderlist-filter-container {
+    border: 0 none;
+  }
+}

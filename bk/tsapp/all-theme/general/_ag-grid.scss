@@ -1,0 +1,10 @@
+@layer primeng {
+    .ag-paging-panel {
+        justify-content: flex-start!important;
+    }
+
+    .ag-theme-quartz {
+        --ag-wrapper-border-radius: 0px!important;
+        --ag-header-background-color: 0px !important;
+    }
+}

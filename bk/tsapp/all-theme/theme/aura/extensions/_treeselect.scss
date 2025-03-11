@@ -1,0 +1,26 @@
+@use "../../../setting/config" as cfg;.p-treeselect-panel {
+    .p-tree {
+        padding: cfg.$inputListPadding;
+    }
+}
+
+.p-treeselect {
+    box-shadow: cfg.$inputShadow;
+
+    &.p-disabled {
+        opacity: 1;
+        background-color: cfg.$disabledInputBg;
+
+        .p-treeselect-label {
+            color: cfg.$textSecondaryColor;
+        }
+    }
+
+    &.p-treeselect-chip {
+        .p-treeselect-label-container {
+            .p-treeselect-token {
+                border-radius: cfg.$inputChipBorderRadius;
+            }   
+        }
+    }
+}

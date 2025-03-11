@@ -1,0 +1,281 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+@use "../../setting/scales" as sc;
+.p-treetable {
+    .p-paginator-top {
+        border-width: cfg.$tableTopPaginatorBorderWidth;
+        border-radius: 0;
+    }
+
+    .p-paginator-bottom {
+        border-width: cfg.$tableBottomPaginatorBorderWidth;
+        border-radius: 0;
+    }
+
+    .p-treetable-header {
+        background: cfg.$tableHeaderBg;
+        color: cfg.$tableHeaderTextColor;
+        border: cfg.$tableHeaderBorder;
+        border-width: cfg.$tableHeaderBorderWidth;
+        padding: cfg.$tableHeaderPadding;
+        font-weight: cfg.$tableHeaderFontWeight;
+    }
+
+    .p-treetable-footer {
+        background: cfg.$tableFooterBg;
+        color: cfg.$tableFooterTextColor;
+        border: cfg.$tableFooterBorder;
+        border-width: cfg.$tableFooterBorderWidth;
+        padding: cfg.$tableFooterPadding;
+        font-weight: cfg.$tableFooterFontWeight;
+    }
+
+    .p-treetable-thead > tr > th {
+        text-align: cfg.$tableCellContentAlignment;
+        padding: cfg.$tableHeaderCellPadding;
+        border: cfg.$tableHeaderCellBorder;
+        border-width: cfg.$tableHeaderCellBorderWidth;
+        font-weight: cfg.$tableHeaderCellFontWeight;
+        color: cfg.$tableHeaderCellTextColor;
+        background: cfg.$tableHeaderCellBg;
+        transition: cfg.$listItemTransition;
+    }
+
+    .p-treetable-tfoot > tr > td {
+        text-align: cfg.$tableCellContentAlignment;
+        padding: cfg.$tableFooterCellPadding;
+        border: cfg.$tableFooterCellBorder;
+        border-width: cfg.$tableFooterCellBorderWidth;
+        font-weight: cfg.$tableFooterCellFontWeight;
+        color: cfg.$tableFooterCellTextColor;
+        background: cfg.$tableFooterCellBg;
+    }
+
+    .p-sortable-column {
+        outline-color: cfg.$focusOutlineColor;
+
+        .p-sortable-column-icon {
+            color: cfg.$tableHeaderCellIconColor;
+            margin-left: cfg.$inlineSpacing;
+        }
+
+        .p-sortable-column-badge {
+            border-radius: 50%;
+            height: cfg.$tableSortableColumnBadgeSize;
+            min-width: cfg.$tableSortableColumnBadgeSize;
+            line-height: cfg.$tableSortableColumnBadgeSize;
+            color: cfg.$highlightTextColor;
+            background: cfg.$highlightBg;
+            margin-left: cfg.$inlineSpacing;
+        }
+
+        &:not(.p-highlight):hover {
+            background: cfg.$tableHeaderCellHoverBg;
+            color: cfg.$tableHeaderCellTextHoverColor;
+
+            .p-sortable-column-icon {
+                color: cfg.$tableHeaderCellIconHoverColor;
+            }
+        }
+
+        &.p-highlight {
+            background: cfg.$tableHeaderCellHighlightBg;
+            color: cfg.$tableHeaderCellHighlightTextColor;
+
+            .p-sortable-column-icon {
+                color: cfg.$tableHeaderCellHighlightTextColor;
+            }
+        }
+    }
+
+    .p-treetable-tbody {
+        > tr {
+            background: cfg.$tableBodyRowBg;
+            color: cfg.$tableBodyRowTextColor;
+            transition: cfg.$listItemTransition;
+
+            > td {
+                text-align: cfg.$tableCellContentAlignment;
+                border: cfg.$tableBodyCellBorder;
+                border-width: cfg.$tableBodyCellBorderWidth;
+                padding: cfg.$tableBodyCellPadding;
+
+                .p-treetable-toggler {
+                    margin-right: cfg.$inlineSpacing;
+                    @include util.action-icon();
+
+                    &.p-icon {
+                        width: cfg.$loadingIconFontSize;
+                        height: cfg.$loadingIconFontSize;
+                    }
+                }
+
+                p-treetablecheckbox .p-checkbox {
+                    margin-right: cfg.$inlineSpacing;
+                    
+                    .p-indeterminate {
+                        .p-checkbox-icon {
+                            color: cfg.$textColor;
+                        }
+                    }
+
+                    &.p-variant-filled {
+                        .p-checkbox-box {
+                            background-color: cfg.$inputFilledBg;
+                
+                            &.p-highlight {
+                                background: cfg.$checkboxActiveBg;
+                            }
+                        }
+                
+                        &:not(.p-disabled) {
+                            .p-checkbox-box {
+                                &:hover {
+                                    background-color: cfg.$inputFilledHoverBg;
+                                }
+                
+                                &.p-highlight:hover {
+                                    background: cfg.$checkboxActiveHoverBg;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &:focus-visible {
+                outline: 0.15rem solid cfg.$focusOutlineColor;
+                outline-offset: -0.15rem;
+            }
+
+            &.p-highlight {
+                background: cfg.$highlightBg;
+                color: cfg.$highlightTextColor;
+
+                .p-treetable-toggler {
+                    color: cfg.$highlightTextColor;
+
+                    &:hover {
+                        color: cfg.$highlightTextColor;
+                    }
+                    
+                }
+            }
+        }
+    }
+
+    &.p-treetable-hoverable-rows {
+        .p-treetable-tbody > tr:not(.p-highlight):hover {
+            background: cfg.$tableBodyRowHoverBg;
+            color: cfg.$tableBodyRowTextHoverColor;
+
+            .p-treetable-toggler {
+                color: cfg.$tableBodyRowTextHoverColor;
+            }
+        }
+    }
+
+    .p-column-resizer-helper {
+        background: cfg.$tableResizerHelperBg;
+    }
+
+    .p-treetable-scrollable-header,
+    .p-treetable-scrollable-footer {
+        background: cfg.$panelHeaderBg;
+    }
+
+    .p-treetable-loading-icon {
+        font-size: cfg.$loadingIconFontSize;
+
+        &.p-icon {
+            width: cfg.$loadingIconFontSize;
+            height: cfg.$loadingIconFontSize;
+        }
+    }
+
+    &.p-treetable-gridlines {
+        .p-datatable-header {
+            border-width: 1px 1px 0 1px;
+        }
+
+        .p-treetable-footer {
+            border-width: 0 1px 1px 1px;
+        }
+
+        .p-treetable-top {
+            border-width: 0 1px 0 1px;
+        }
+
+        .p-treetable-bottom {
+            border-width: 0 1px 1px 1px;
+        }
+
+        .p-treetable-thead {
+            > tr {
+                > th {
+                    border-width: 1px;
+                }
+            }
+        }
+
+        .p-treetable-tbody {
+            > tr {
+                > td {
+                    border-width: 1px;
+                }
+            }
+        }
+
+        .p-treetable-tfoot {
+            > tr {
+                > td {
+                    border-width: 1px;
+                }
+            }
+        }
+    }
+
+    &.p-treetable-sm {
+        .p-treetable-header {
+            @include util.scaledPadding(cfg.$tableHeaderPadding, sc.get-scale-padding(sm));
+        }
+
+        .p-treetable-thead > tr > th {
+            @include util.scaledPadding(cfg.$tableHeaderCellPadding, cfg.$tableScaleSM);
+        }
+
+        .p-treetable-tbody > tr > td {
+            @include util.scaledPadding(cfg.$tableBodyCellPadding, cfg.$tableScaleSM);
+        }
+
+        .p-treetable-tfoot > tr > td {
+            @include util.scaledPadding(cfg.$tableFooterPadding, cfg.$tableScaleSM);
+        }
+
+        .p-treetable-footer {
+            @include util.scaledPadding(cfg.$tableFooterPadding, cfg.$tableScaleSM);
+        }
+    }
+
+    &.p-treetable-lg {
+        .p-treetable-header {
+            @include util.scaledPadding(cfg.$tableHeaderPadding, cfg.$tableScaleLG);
+        }
+
+        .p-treetable-thead > tr > th {
+            @include util.scaledPadding(cfg.$tableHeaderCellPadding, cfg.$tableScaleLG);
+        }
+
+        .p-treetable-tbody > tr > td {
+            @include util.scaledPadding(cfg.$tableBodyCellPadding, cfg.$tableScaleLG);
+        }
+
+        .p-treetable-tfoot > tr > td {
+            @include util.scaledPadding(cfg.$tableFooterPadding, cfg.$tableScaleLG);
+        }
+
+        .p-treetable-footer {
+            @include util.scaledPadding(cfg.$tableFooterPadding, cfg.$tableScaleLG);
+        }
+    }
+}

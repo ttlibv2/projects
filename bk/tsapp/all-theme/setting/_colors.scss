@@ -1,0 +1,113 @@
+$surface-0: #ffffff!default;
+$surface-50: #f8fafc!default;
+$surface-100: #f1f5f9!default;
+$surface-200: #e2e8f0!default;
+$surface-300: #cbd5e1!default;
+$surface-400: #94a3b8!default;
+$surface-500: #64748b!default;
+$surface-600: #475569!default;
+$surface-700: #334155!default;
+$surface-800: #1e293b!default;
+$surface-900: #0f172a!default;
+$surface-950: #020617!default;
+
+$surfaceColors: (
+"surface-0": $surface-0,
+"surface-50": $surface-50,
+"surface-100": $surface-100,
+"surface-200": $surface-200,
+"surface-300": $surface-300,
+"surface-400": $surface-400,
+"surface-500": $surface-500,
+"surface-600": $surface-600,
+"surface-700": $surface-700,
+"surface-800": $surface-800,
+"surface-900": $surface-900,
+"surface-950": $surface-950
+);
+
+$gray-0: #ffffff!default;
+$gray-50: #f8fafc!default;
+$gray-100: #f1f5f9!default;
+$gray-200: #e2e8f0!default;
+$gray-300: #cbd5e1!default;
+$gray-400: #94a3b8!default;
+$gray-500: #64748b!default;
+$gray-600: #475569!default;
+$gray-700: #334155!default;
+$gray-800: #1e293b!default;
+$gray-900: #0f172a!default;
+$gray-950: #020617!default;
+
+$grayColors: (
+        "gray-0": $gray-0,
+        "gray-50": $gray-50,
+        "gray-100": $gray-100,
+        "gray-200": $gray-200,
+        "gray-300": $gray-300,
+        "gray-400": $gray-400,
+        "gray-500": $gray-500,
+        "gray-600": $gray-600,
+        "gray-700": $gray-700,
+        "gray-800": $gray-800,
+        "gray-900": $gray-900,
+        "gray-950": $gray-950
+);
+
+//reused color variables
+$shade000: #ffffff !default;
+$shade50: #f8fafc !default;
+$shade100: #f1f5f9 !default;
+$shade200: #e2e8f0 !default;
+$shade300: #cbd5e1 !default;
+$shade400: #94a3b8 !default;
+$shade500: #64748b !default;
+$shade600: #475569 !default;
+$shade700: #334155 !default;
+$shade800: #1e293b !default;
+$shade900: #0f172a !default;
+$shade950: #020617 !default;
+
+$blue: #3b82f6 !default;
+$green: #22c55e !default;
+$yellow: #eab308 !default;
+$cyan: #06b6d4 !default;
+$pink: #ec4899 !default;
+$indigo: #6366f1 !default;
+$teal: #14b8a6 !default;
+$orange: #f97316 !default;
+$bluegray: #64748b !default;
+$purple: #a855f7 !default;
+$red: #ff3d32 !default;
+
+$colors: (
+        "blue": $blue,
+        "green": $green,
+        "yellow": $yellow,
+        "cyan": $cyan,
+        "pink": $pink,
+        "indigo": $indigo,
+        "teal": $teal,
+        "orange": $orange,
+        "bluegray": $bluegray,
+        "purple": $purple,
+        "red": $red
+);
+
+$primary: $blue !default;
+$secondary: $shade100 !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $yellow !default;
+$danger: $red !default;
+$help: $purple !default;
+
+$severityColors: (
+        "primary":    $primary,
+        "secondary":  $secondary,
+        "success":    $success,
+        "info":       $info,
+        "warning":    $warning,
+        "danger":     $danger,
+        "help":$help
+) !default;

@@ -1,0 +1,41 @@
+<div #container [ngClass]="containerClass" [ngStyle]="style">
+    <p-button styleClass="p-splitbutton-defaultbutton" [pAutoFocus]="true"
+            [severity]="severity"  [text]="text"
+            [outlined]="outlined" [size]="size"
+            [icon]="icon"  [iconPos]="iconPos"  
+            [label]="buttonLabel" [disabled]="disabled"
+            [loading]="loading" [loadingIcon]="loadingIcon"
+            [attr.tabindex]="tabindex"
+            [ariaLabel]="buttonProps?.['ariaLabel'] || label"
+            [autofocus]="autofocus" [pTooltip]="tooltip"
+            [tooltipOptions]="tooltipOptions"
+            (onClick)="onDefaultButtonClick($event)">
+        @if(contentTemplate){
+            <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+        }
+    </p-button>
+
+        <p-button *ngIf="visibleMenuButton"
+            styleClass="p-splitbutton-menubutton p-button-icon-only"
+            [size]="size" [severity]="severity" [text]="text"
+            [outlined]="outlined" [disabled]="menuButtonDisabled"
+            [ariaLabel]="menuButtonProps?.['ariaLabel'] || expandAriaLabel"
+            [attr.aria-haspopup]="menuButtonProps?.['ariaHasPopup'] || true"
+            [attr.aria-expanded]="menuButtonProps?.['ariaExpanded'] || isExpanded()"
+            [attr.aria-controls]="menuButtonProps?.['ariaControls'] || ariaId"
+            (click)="onDropdownButtonClick($event)"
+            (keydown)="onDropdownButtonKeydown($event)" >
+            <ChevronDownIcon *ngIf="!dropdownIconTemplate" />
+            <ng-template *ngTemplateOutlet="dropdownIconTemplate"></ng-template>
+        </p-button>
+
+    <ng-container *ngTemplateOutlet="tieredMenu"></ng-container>
+    
+</div>
+
+
+<ng-template #tieredMenu>
+    <p-tieredMenu [id]="ariaId" #menu [popup]="true" [model]="model" [appendTo]="'body'" [style]="menuStyle"
+        [styleClass]="menuStyleClass" [showTransitionOptions]="showTransitionOptions"
+        [hideTransitionOptions]="hideTransitionOptions" (onHide)="onHide()" (onShow)="onShow()"></p-tieredMenu>
+</ng-template>

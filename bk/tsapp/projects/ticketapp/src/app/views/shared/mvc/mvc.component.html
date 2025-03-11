@@ -1,0 +1,58 @@
+<div class="grid" [style.width]="options?.pageWidth">
+    <ts-card class="col-12" title="Thông tin dữ liệu">
+        <form [formGroup]="formGroup" class="grid sm">
+            @for (field of formFields; track $index) {
+            <div class="p-fluid" [ngClass]="field?.class">
+
+                @switch (field.type) {
+                @case ('input') {
+                <label [attr.for]="field.fieldId">{{field.label | translate}}</label>
+                <input pInputText placeholder="{{field.placeholder | translate}}" [attr.id]="field.fieldId"
+                    [formControlName]="field.fieldId">
+                }
+                @case ('area') {
+                <label [attr.for]="field.fieldId">{{field.label | translate}}</label>
+                <textarea pInputTextarea placeholder="{{field.placeholder | translate}}" [attr.id]="field.fieldId"
+                    [formControlName]="field.fieldId" [autoResize]="field.options?.autoResize"
+                    [rows]="field.options?.rows" [cols]="field.options?.cols"></textarea>
+                }
+                @case ('checked') {
+                <p-checkbox label="{{field.label | translate}}" [binary]="true" [attr.id]="field.fieldId"
+                    [formControlName]="field.fieldId"></p-checkbox>
+                }
+                }
+            </div>
+
+            }
+            <div class="col-12 flex gap-2">
+
+                <p-button severity="info" icon="pi pi-save" label="{{submitLabel | translate}}" [loading]="state.save"
+                    (onClick)="clickSave()" [disabled]="formGroup.invalid || formGroup.pristine"></p-button>
+
+                <p-button icon="pi pi-folder-plus" label="{{'actions.create' | translate}}"
+                    (onClick)="clickNew()"></p-button>
+
+                <p-button severity="danger" label="{{'actions.delete_all' | translate}}" icon="pi pi-trash"
+                    [loading]="state.delete" (onClick)="clickDelete()" *ngIf="visibleDel"></p-button>
+
+                <p-divider layout="vertical"></p-divider>
+
+                <p-button icon="pi pi-bullseye" label="{{'actions.get_all' | translate}}" [loading]="state.lsDs"
+                    (onClick)="clickLoadData()"></p-button>
+
+                <p-button icon="pi pi-cloud-upload" label="{{'actions.import_xsl' | translate}}" [loading]="state.lsDs"
+                    (onClick)="clickImport()" *ngIf="options?.visibleImport"></p-button>
+
+                <p-button icon="pi pi-cloud-download" label="{{'actions.export_xsl' | translate}}"
+                    [loading]="state.lsDs" (onClick)="clickExport()" *ngIf="options?.visibleExport"></p-button>
+
+                <!-- custom button action -->
+                <ng-container *ngTemplateOutlet="formAction"></ng-container>
+            </div>
+        </form>
+    </ts-card>
+    <div class="col-12">
+        <ts-ag-table #agTable [tableHeight]="options.tbHeight" [option]="options.tbOption" [columns]="options.tbColumns"
+            [rows]="allData" (rowClicked)="clickRow($event.data)"></ts-ag-table>
+    </div>
+</div>

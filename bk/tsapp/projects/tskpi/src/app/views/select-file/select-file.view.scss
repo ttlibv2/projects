@@ -1,0 +1,17 @@
+.select-file {
+    width: 500px;
+
+    .p-fileupload .p-button {
+        padding: .65rem 0.5rem;
+        width: 100%;
+        border-radius: none;
+        border: none;
+        color: #e50808;
+        background-color: #e5d7d7;
+
+        .p-button-label {
+            flex: unset;
+        }
+
+    }
+}

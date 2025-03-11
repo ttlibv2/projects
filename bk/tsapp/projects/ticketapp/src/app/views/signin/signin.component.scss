@@ -1,0 +1,66 @@
+@import '@angular/material';
+@import '@angular/cdk/overlay-prebuilt.css';
+
+ts-signin { display: block;}
+
+.login-form {
+  display: flex;
+  flex-flow: column nowrap;
+  //justify-content: center;
+  align-items: center;
+  height: calc(100svh - 0px);
+  // border: 15px solid var(--info-color);
+
+  background: url('/assets/images/login_bg.jpg');
+
+  .form-wrapper {
+    max-width      : 384px;
+    display        : flex;
+    flex-flow      : column nowrap;
+    justify-content: center;
+
+    .logo {
+      display        : flex;
+      justify-content: center;
+      margin-bottom: .75rem;
+      column-gap: 1rem;
+
+    }
+
+    .or-divider {
+      margin: .75rem 0;
+      padding: 0 .75rem;
+    }
+
+    form.grid {
+      --gutter-gry: .5rem;
+
+      .remember {
+        display        : flex;
+        flex-flow      : row wrap;
+        justify-content: space-between;
+        align-items    : center;
+        row-gap        : .25rem;
+
+        .p-button-link {
+          padding: 0;
+        }
+      }
+
+      .socials {
+        // display: flex;
+        // flex-flow: row wrap;
+
+        .social-icon {
+          font-size: 1.5rem;
+        }
+      }
+
+      .p-new-acc {
+        text-decoration: underline;
+
+      }
+
+    }
+  }
+}

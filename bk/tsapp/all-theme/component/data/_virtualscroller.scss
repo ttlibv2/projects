@@ -1,0 +1,31 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-virtualscroller {
+    .p-virtualscroller-header {
+        background: cfg.$tableHeaderBg;
+        color: cfg.$tableHeaderTextColor;
+        border: cfg.$tableHeaderBorder;
+        border-width: cfg.$tableHeaderBorderWidth;
+        padding: cfg.$tableHeaderPadding;
+        font-weight: cfg.$tableHeaderFontWeight;
+    }
+
+    .p-virtualscroller-content {
+        background: cfg.$tableBodyRowBg;
+        color: cfg.$tableBodyRowTextColor;
+        border: cfg.$dataViewContentBorder;
+        padding: cfg.$dataViewContentPadding;
+    }
+
+    .p-virtualscroller-footer {
+        background: cfg.$tableFooterBg;
+        color: cfg.$tableFooterTextColor;
+        border: cfg.$tableFooterBorder;
+        //border-width: cfg.$tableFooterBorderWidth;
+        padding: cfg.$tableFooterPadding;
+        font-weight: cfg.$tableFooterFontWeight;
+        border-bottom-left-radius: cfg.$borderRadius;
+        border-bottom-right-radius: cfg.$borderRadius;
+    }
+}

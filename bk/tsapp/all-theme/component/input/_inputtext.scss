@@ -1,0 +1,149 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+@use "../../setting/scales" as sc;
+
+.p-inputtext {
+    font-family: cfg.$fontFamily;
+    font-feature-settings: cfg.$fontFeatureSettings;// var(--font-feature-settings, normal);
+    font-variation-settings: cfg.$fontVariationSettings;
+    font-size: cfg.$inputTextFontSize;
+    color: cfg.$inputTextColor;
+    background: cfg.$inputBg;
+    padding: cfg.$inputPadding;
+    border: cfg.$inputBorder;
+    transition: cfg.$formElementTransition;
+    appearance: none;
+    border-radius: cfg.$borderRadius;
+
+    &:enabled {
+
+        &:hover {
+            border-color: cfg.$inputHoverBorderColor;
+        }
+
+        &:focus {
+            @include util.focused-input();
+        }
+
+    }
+
+    &.ng-dirty.ng-invalid {
+        @include util.invalid-input();
+    }
+
+    &.ng-invalid {
+        @include util.invalid-input();
+    }
+
+    &.p-variant-filled {
+        background-color: cfg.$inputFilledBg;
+
+        &:enabled {
+            &:hover {
+                background-color: cfg.$inputFilledHoverBg;
+            }
+            &:focus {
+                background-color: cfg.$inputFilledFocusBg;
+            }
+        }
+
+    }
+
+
+
+    // form.sm &, &-sm {
+    //     @include util.scaledFontSize(cfg.$inputTextFontSize, sc.get-scale-font(sm));
+    //     @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(sm));
+    // }
+
+    // form.lg &, &-lg {
+    //     @include util.scaledFontSize(cfg.$inputTextFontSize, sc.get-scale-font(lg));
+    //     @include util.scaledPadding(cfg.$inputPadding, sc.get-scale-padding(lg));
+    // }
+
+
+}
+
+
+// size
+@include sc.make-scale-all(p-inputtext, form, cfg.$inputPadding, cfg.$inputTextFontSize);
+
+
+
+.p-float-label > label {
+    left: nth(cfg.$inputPadding, 2);
+    color: cfg.$inputPlaceholderTextColor;
+    transition-duration: cfg.$transitionDuration;
+}
+
+.p-float-label > .ng-invalid.ng-dirty + label {
+    color: cfg.$inputErrorBorderColor;
+}
+
+.p-input-icon-left > .p-icon-wrapper.p-icon,
+.p-input-icon-left > i:first-of-type {
+    left: nth(cfg.$inputPadding, 2);
+    color: cfg.$inputIconColor;
+}
+
+.p-input-icon-left > .p-inputtext {
+    padding-left: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
+}
+
+.p-input-icon-left.p-float-label > label {
+    left: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
+}
+
+.p-input-icon-right > .p-icon-wrapper,
+.p-input-icon-right > i:last-of-type {
+    right: nth(cfg.$inputPadding, 2);
+    color: cfg.$inputIconColor;
+}
+
+.p-input-icon-right > .p-inputtext {
+    padding-right: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
+}
+
+.p-icon-field-left > .p-inputtext {
+    padding-left: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
+}
+
+.p-icon-field-left.p-float-label > label {
+    left: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
+}
+
+.p-icon-field-right > .p-inputtext {
+    padding-right: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
+}
+
+@include util.placeholder {
+    color: cfg.$inputPlaceholderTextColor
+};
+
+.p-input-filled {
+    .p-inputtext {
+        background-color: cfg.$inputFilledBg;
+
+        &:enabled:hover {
+            background-color: cfg.$inputFilledHoverBg;
+        }
+
+        &:enabled:focus {
+            background-color: cfg.$inputFilledFocusBg;
+        }
+    }
+}
+
+// .p-inputtext-sm {
+//     .p-inputtext {
+//         @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleSM);
+//         @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleSM);
+//     }
+// }
+
+// .p-inputtext-lg {
+//     .p-inputtext {
+//         @include util.scaledFontSize(cfg.$inputTextFontSize, cfg.$scaleLG);
+//         @include util.scaledPadding(cfg.$inputPadding, cfg.$scaleLG);
+//     }
+// }

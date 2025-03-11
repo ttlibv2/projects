@@ -1,0 +1,251 @@
+@use "../../setting/config"as cfg;
+@use "sass:list";
+
+$ribbon-cls       : 'ribbon';
+$ribbon-text-color: var(--ribbon-text-color, cfg.$ribbon-text-color);
+$ribbon-bg        : var(--ribbon-bg, cfg.$ribbon-bg);
+$ribbon-clip-bg   : var(--ribbon-clip-bg, cfg.$ribbon-bg);
+
+$ribbon-height         : var(--ribbon-height, 30px);
+$ribbon-width          : var(--ribbon-width, 40px);
+$ribbon-gap            : var(--ribbon-gap, 1rem); // left-top => top, left-bottom => bottom,...
+$ribbon-spacing-padding: var(--ribbon-spacing-padding, calc($ribbon-gap + $ribbon-height));
+
+$ribbon-h-padding: var(--ribbon-padding, cfg.$ribbon-h-padding);
+$ribbon-v-padding: var(--ribbon-padding, cfg.$ribbon-v-padding);
+
+//clip
+$ribbon-clip-size  : 1rem;
+$ribbon-clip-border: calc($ribbon-clip-size / 2) dashed transparent;
+
+@mixin clipBefore() {
+  position: absolute;
+  width   : 0;
+  height  : 0;
+  content : "";
+  border  : $ribbon-clip-border;
+}
+
+@mixin clipLeftTop() {
+  left              : 0;
+  top               : calc(var(--ribbon-height));
+  border-color      : transparent !important;
+  border-top-color  : $ribbon-clip-bg !important;
+  border-right-color: $ribbon-clip-bg !important;
+}
+
+@mixin clipLeftBottom() {
+  left               : 0;
+  bottom             : calc(var(--ribbon-height));
+  border-top-color   : transparent !important;
+  border-bottom-color: $ribbon-clip-bg !important;
+  border-right-color : $ribbon-clip-bg !important;
+}
+
+@mixin clipRightTop() {
+  right             : 0;
+  top               : $ribbon-height;
+  border-right-color: transparent !important;
+  border-top-color  : $ribbon-clip-bg !important;
+  border-left-color : $ribbon-clip-bg !important;
+}
+
+@mixin clipRightBottom() {
+  right              : 0;
+  bottom             : $ribbon-height;
+  border-top-color   : transparent !important;
+  border-bottom-color: $ribbon-clip-bg !important;
+  border-right-color : transparent !important;
+  border-left-color  : $ribbon-clip-bg !important;
+}
+
+@mixin contentPaddingTop() {
+  +.#{$ribbon-cls}-content>* {
+    padding-top: $ribbon-spacing-padding;
+  }
+}
+
+@mixin contentPaddingBottom () {
+  +.#{$ribbon-cls}-content>* {
+    padding-bottom: $ribbon-spacing-padding;
+  }
+}
+
+.#{$ribbon-cls} {
+  position  : absolute;
+  z-index   : 2;
+  color     : $ribbon-text-color;
+  background: $ribbon-bg;
+
+  &-wrapper {
+    position: relative;
+  }
+
+  &-bookmark:before {
+    position: absolute;
+    display : block;
+    width   : 0;
+    height  : 0;
+    content : "";
+
+  }
+
+
+  &-horizontal {
+    padding    : $ribbon-h-padding;
+    height     : var(--ribbon-height);
+    line-height: var(--ribbon-height);
+    clear      : left;
+
+    &.#{$ribbon-cls} {
+
+      &-left-top {
+        left: 0;
+        top : $ribbon-gap;
+        @include contentPaddingTop();
+      }
+
+      &-left-bottom {
+        left  : 0;
+        bottom: $ribbon-gap;
+        @include contentPaddingBottom();
+      }
+
+      &-right-top {
+        right: 0;
+        top  : $ribbon-gap;
+        @include contentPaddingTop();
+      }
+
+      &-right-bottom {
+        right : 0;
+        bottom: $ribbon-gap;
+        @include contentPaddingBottom();
+      }
+
+      &-bookmark {
+
+        &:before {
+          top          : 0;
+          border       : calc($ribbon-width/2) dashed $ribbon-bg;
+        }
+
+        &-left:before {
+          left        : 100%;
+          border-right: calc($ribbon-width/2) dashed transparent;
+        }
+
+        &-right:before {
+          right       : 100%;
+          left        : auto;
+          border-right: calc($ribbon-width/2) dashed $ribbon-bg;
+          border-left : calc($ribbon-width/2) dashed transparent;
+        }
+
+
+      }
+
+      &-clip {
+
+        &-left {
+          left: calc($ribbon-clip-size * -1);
+        }
+
+        &-right {
+          right: calc($ribbon-clip-size * -1);
+        }
+
+        &:is(.ribbon-bookmark) {
+
+          &:after {
+            @include clipBefore();
+          }
+
+          &.#{$ribbon-cls} {
+
+            &-left-top:after {
+              @include clipLeftTop();
+            }
+
+            &-left-bottom:after {
+              @include clipLeftBottom();
+            }
+
+            &-right-top:after {
+              @include clipRightTop();
+            }
+
+            &-right-bottom:after {
+              @include clipRightBottom();
+            }
+          }
+
+        }
+
+        &:not(.ribbon-bookmark) {
+
+          &:before {
+            @include clipBefore();
+          }
+
+          &.#{$ribbon-cls} {
+
+            &-left-top:before {
+              @include clipLeftTop();
+            }
+
+            &-left-bottom:before {
+              @include clipLeftBottom();
+            }
+
+            &-right-top:before {
+              @include clipRightTop();
+            }
+
+            &-right-bottom:before {
+              @include clipRightBottom();
+            }
+
+          }
+
+        }
+      }
+    }
+
+  }
+
+  &-vertical {
+    clear     : none;
+    padding   : $ribbon-v-padding;
+    height    : $ribbon-height;
+    width     : $ribbon-width;
+    text-align: center;
+
+    >span.text {
+      display      : -webkit-box;
+      white-space  : pre-wrap;
+      text-overflow: ellipsis;
+      overflow     : hidden;
+    }
+
+    &-left {
+      left: $ribbon-gap;
+      top : -2px;
+    }
+
+    &-right {
+      right: $ribbon-gap;
+      top  : -2px;
+    }
+
+    &.ribbon-bookmark:before {
+      top          : 100%;
+      left         : 0;
+      margin-top   : calc($ribbon-gap * -1);
+      border       : calc($ribbon-width/2) dashed $ribbon-bg;
+      border-right :  calc($ribbon-width/2) dashed $ribbon-bg;
+      border-bottom: calc($ribbon-width/2) dashed transparent;
+    }
+  }
+
+}

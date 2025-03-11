@@ -1,0 +1,20 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-progressbar {
+    border: cfg.$progressBarBorder;
+    height: cfg.$progressBarHeight;
+    background: cfg.$progressBarBg;
+    border-radius: cfg.$borderRadius;
+
+    .p-progressbar-value {
+        border: 0 none;
+        margin: 0;
+        background: cfg.$progressBarValueBg;
+    }
+
+    .p-progressbar-label {
+        color: cfg.$progressBarValueTextColor;
+        line-height: cfg.$progressBarHeight;
+    }
+}

@@ -1,0 +1,145 @@
+ts-ticket-form {
+  display: block;
+}
+
+.ticket-form {
+
+  .grid {
+      --gutter-gry: .25rem!important;
+  }
+
+  .ts-chanels {
+    .p-multiselect-label:not(.p-multiselect-label-empty) {
+     // padding: 0 !important;
+    }
+
+  }
+
+  .p-fieldset {
+    border-width: 0;
+
+    .p-fieldset-legend {
+      border-width: 0;
+
+      span:not(:empty) {
+        padding: 0rem;
+      }
+    }
+  }
+
+  .ct_email .p-dropdown-label {
+    text-wrap: wrap;
+  }
+
+  .template-list {
+    .p-chip {
+      cursor: pointer;
+    }
+
+    a.here {
+      text-decoration: underline;
+      color: var(--info-color);
+    }
+
+    .ts-tag.select {
+      background: var(--danger-color);
+      color: var(--tag-active-color);
+      border-color: var(--danger-color);
+    }
+  }
+
+  .toolbar.border-end {
+    border-bottom: 5px solid var(--primary-color);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .r-import {
+    font-weight: bold;
+
+    .current {
+      color: var(--danger-color);
+    }
+
+    .total {
+      color: var(--help-color);
+    }
+
+    .sep {
+      color: var(--info-color);
+    }
+
+    .p-click .pi {
+      font-size: 1.5rem;
+    }
+
+    .p-abort {
+      text-decoration: underline;
+      color: var(--danger-color);
+    }
+  }
+
+  .is-mobile & {
+    .col-right {
+      margin-top: .5rem;
+    }
+
+  }
+
+  .form-tool {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
+    gap: .5rem;
+  }
+
+
+
+  html:not(.is-mobile) & {
+    &.template {
+
+      .col-left {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .col-right {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 575.98px) {
+  .ticket-form {
+    //padding-top: 3rem;
+
+    .section-support {
+      display: none;
+    }
+
+    .form-tool {
+      // position: fixed;
+      // background: var(--bluegray-100);
+      // padding: .5rem;
+      // inset: 0 0 0 0;
+      // bottom: initial;
+      // justify-content: space-between;
+    }
+
+    .col-left {
+      //margin-bottom: 40px;
+    }
+
+    &:has(.is-email-ticket) .f-email-ticket  {
+      display: initial;
+    }
+
+    &:not(.is-email-ticket) .f-email-ticket {
+      display: none;
+    }
+  }
+}

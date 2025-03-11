@@ -1,0 +1,327 @@
+<form [formGroup]="form" (ngSubmit)="saveTicket()" class="ticket-form grid sm" [ngClass]="formCls()">
+
+    <div class="col-left" [span]="12" [lg]="{span:7,order:1}" [order]="2">
+        <ts-card>
+            <ts-card-section header="@@ticket.h1_basic">
+                <div class="grid">
+                    <ts-form-field class="p-fluid" inputId="chanels" label="@@ticket.chanels" [required]="true"
+                        [span]="12" [x2l]="utils.is_view_all || viewTemplate ? 6: 4">
+                        <p-multiSelect field id="chanels" class="required" [showHeader]="false" [maxSelectedLabels]="5"
+                            [options]="catalog.ls_chanel" formControlName="chanels" optionLabel="display_name"
+                            [optionValue]="null" dataKey="id" styleClass="ts-chanels" (onClear)="onSelectChanel()"
+                            (onChange)="onSelectChanel($event.value)" [showClear]="true">
+                        </p-multiSelect>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.ghelp" [required]="true" [span]="6"
+                        [x2l]="utils.is_view_all || viewTemplate ? 6: 4">
+                        <p-dropdown id="group-help" class="required" [options]="catalog.ls_group_help"
+                            optionLabel="value" dataKey="id" formControlName="group_help"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.software" [required]="true" [span]="6"
+                        [x2l]="utils.is_view_all || viewTemplate ? 6: 4">
+                        <p-dropdown id="software" class="required" [options]="catalog.ls_software" dataKey="id"
+                            optionLabel="value" (onChange)="onSelectSoftware($event.value)"
+                            formControlName="software"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.shelp" [required]="true" [span]="6" [x2l]="3"
+                        *ngIf="utils.is_view_all || viewTemplate">
+                        <p-dropdown id="support_help" [options]="catalog.ls_chanel" optionLabel="display_name" [filter]="false"
+                            dataKey="id" formControlName="support_help"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.soft_name" [required]="true" [span]="6" [x2l]="3"
+                        *ngIf="utils.is_view_all || viewTemplate">
+                        <p-dropdown id="soft_names" [options]="lsSoftName" [filter]="false" dataKey="id"
+                            formControlName="soft_name" emptyMessage="Vui lòng chọn [Nhóm Phần mềm]"></p-dropdown>
+                    </ts-form-field>
+                </div>
+            </ts-card-section>
+            <ts-card-section header="@@ticket.h1_ts24">
+                <div class="grid">
+                    <ts-form-field class="p-fluid" label="@@ticket.od_team" [span]="6" [required]="true"
+                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
+                        <p-dropdown formControlName="od_team" id="od_team" [options]="catalog.ls_helpdesk_team"
+                            optionLabel="display_name" [overlayOptions]="overlayOptions" dataKey="id"
+                            (onChange)="changeOdTeam($event.value)"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_assign" [span]="6" [required]="true"
+                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
+                        <p-dropdown id="od_assign" [options]="catalog.ls_assign" optionLabel="display_name"
+                            [overlayOptions]="overlayOptions" dataKey="id" formControlName="od_assign"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="6" label="@@ticket.od_ticket_type" [required]="true"
+                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
+                        <p-dropdown id="od_ticket_type" [options]="catalog.ls_ticket_type"
+                            [overlayOptions]="overlayOptions" optionLabel="display_name" dataKey="id"
+                            formControlName="od_ticket_type"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_subtype" [required]="true" [span]="6"
+                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
+                        <p-dropdown formControlName="od_subject_type" id="od_subject_type"
+                            [overlayOptions]="overlayOptions" [options]="catalog.ls_subject_type" dataKey="id"
+                            optionLabel="display_name"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_category" [span]="6" [required]="true"
+                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4" *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
+                        <p-dropdown formControlName="od_category" id="od_category" [overlayOptions]="overlayOptions"
+                            [options]="catalog.ls_category" dataKey="id" optionLabel="display_name"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_category_sub" [span]="6" [required]="true"
+                        [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
+                        <p-dropdown formControlName="od_category_sub" id="od_category_sub"
+                            [overlayOptions]="overlayOptions" [options]="catalog.ls_category_sub" dataKey="id"
+                            optionLabel="display_name"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_replied" [span]="6" [x2l]="3" [required]="true"
+                        *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
+                        <p-dropdown formControlName="od_replied" id="od_replied" [overlayOptions]="overlayOptions"
+                            [options]="catalog.ls_replied_status" dataKey="id" optionLabel="name"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_team_head" [x2l]="3" [span]="6"
+                        *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
+                        <p-dropdown id="od_team_head" [options]="catalog.ls_team_head" [overlayOptions]="overlayOptions"
+                            formControlName="od_team_head" dataKey="id" optionLabel="name"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_priority" [x2l]="3" [span]="6"
+                        *ngIf="utils.is_view_all || utils.viewTs24 || viewTemplate">
+                        <p-dropdown formControlName="od_priority" id="od_priority" [overlayOptions]="overlayOptions"
+                            [options]="catalog.ls_priority" dataKey="id" optionLabel="display_name"></p-dropdown>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.od_tag" [span]="6" [x2l]="utils.is_view_all || viewTemplate ? 3: 4">
+                        <p-multiSelect formControlName="od_tags" id="od_tags" [overlayOptions]="overlayOptions"
+                            optionLabel="display_name" [showToggleAll]="false" [showHeader]="false" [filter]="false"
+                            dataKey="id" [options]="catalog.ls_ticket_tag"></p-multiSelect>
+                    </ts-form-field>
+                </div>
+            </ts-card-section>
+            <ts-card-section header="@@ticket.h1_customer" *ngIf="!viewTemplate">
+                <div class="grid">
+                    <ts-form-field class="p-fluid" label="@@ticket.tax_code" [span]="6" [x2l]="3" [xl]="4"
+                        [required]="true">
+                        <input formControlName="tax_code" id="tax_code" class="required" pInputText />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.image_name" [span]="6" [x2l]="3" [xl]="2"
+                        [required]="true">
+                        <input id="image_name" placeholder="(1,2,3...).png" pInputText formControlName="images" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="@@ticket.email" [span]="6" [x2l]="3" [xl]="4"
+                        [required]="true">
+                        <input id="email" class="required" pInputText formControlName="email" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="6" [xl]="2" [x2l]="2" label="@@ticket.od_partner_id">
+                        <input id="od_partner_id" pInputText formControlName="od_partner_id" readonly showClear="true"
+                            class="font-bold text-danger">
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="6" [x2l]="3" label="@@ticket.content_required" [xl]="4"
+                        [required]="true">
+                        <input id="content_required" pInputText formControlName="content_required" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="6" [xl]="3" [x2l]="3" label="@@ticket.reception_time"
+                        [required]="true">
+                        <input id="reception_time" pInputText formControlName="reception_time" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" label="@@ticket.phone" [span]="6"
+                        [required]="true">
+                        <input id="phone" pInputText formControlName="phone" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" label="@@ticket.teamviewer" [span]="6">
+                        <input id="teamviewer" pInputText formControlName="teamviewer" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [span]="6" [x2l]="3" label="@@ticket.content_help" [xl]="4"
+                        [required]="true">
+                        <input id="content_help" pInputText formControlName="content_help" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [x2l]="3" [xl]="3" label="@@ticket.complete_time" [span]="6"
+                        [required]="true">
+                        <input id="complete_time" pInputText formControlName="complete_time" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" [span]="6" label="@@ticket.customer_name">
+                        <input id="customer_name" pInputText formControlName="customer_name" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" [x2l]="3" [xl]="5" label="@@ticket.question" [span]="6">
+                        <p-dropdown id="question" [options]="catalog.ls_question" optionLabel="title" #refQues
+                            [filter]="true" dataKey="id" formControlName="question"
+                            (onChange)="onSelectQuestion($event.value)"></p-dropdown>
+                    </ts-form-field>
+                </div>
+            </ts-card-section>
+
+            <!-- BEGIN: email ticket info -->
+            @if (utils.is_email_ticket) {
+            <ts-card-section header="@@ticket.h1_email_ticket">
+                <div class="grid align-items-center">
+                    <ts-form-field class="p-fluid col-12 f-email-ticket" label="@@ticket.subject">
+                        <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
+                            [placeholder]="utils.subjectHint" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid" label="..." inputId="emailTemplate" [span]="12" [sm]="4">
+                        <ts-inputgroup [compact]="false">
+                            <p-dropdown class="ct_email flex-1" [options]="emailTemplates" optionLabel="title"
+                                dataKey="template_id" formControlName="email_template" showClear="false"></p-dropdown>
+
+                            <ng-template pTemplate="suffix">
+                                <span class="pi pi-eye" (click)="openEmailTemplate()"></span>
+                            </ng-template>
+                        </ts-inputgroup>
+                    </ts-form-field>
+                    <ng-container formGroupName="email_object">
+                        @for (field of utils.emailFields; track $index) {
+                        <ts-form-field class="p-fluid" [label]="field.label" [span]="4" [x2l]="2">
+                            <input pInputText [formControlName]="field.name" />
+                        </ts-form-field>
+                        }
+                    </ng-container>
+                </div>
+            </ts-card-section>
+            }
+            <!-- END: email ticket info -->
+        </ts-card><!-- END: COl_LEFT -->
+    </div>
+
+    <div class="col-right" [lg]="{span: 5, order:2}" [span]="12" [order]="1">
+        <ts-card>
+
+            @if (!viewTemplate) {
+            <ts-card-section header="@@ticket.h1_support" class="section-support">
+                <div class="grid">
+                    <ts-form-field class="p-fluid col-12 f-email-ticket" label="@@ticket.subject">
+                        <input pInputText id="subject" formControlName="subject" [readOnly]="!utils.is_email_ticket"
+                            [placeholder]="utils.subjectHint" />
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid col-12 ticket-body" label="@@ticket.body" *ngIf="utils.is_view_all">
+                        <textarea pInputTextarea id="body" formControlName="body" [autoResize]="true"
+                            [style.min-height]="'39px'"></textarea>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid col-12 ticket-note" label="@@ticket.note" *ngIf="utils.is_view_all">
+                        <textarea pInputTextarea id="note" formControlName="note" [autoResize]="true"
+                            [style.min-height]="'39px'"></textarea>
+                    </ts-form-field>
+                    <ts-form-field class="p-fluid col-12 ticket-copy" label="@@ticket.content_copy"
+                        *ngIf="!utils.is_view_all">
+                        <textarea pInputTextarea id="content_copy" formControlName="content_copy" [rows]="7"
+                            [style.max-height]="'230px'" [autoResize]="true" [style.min-height]="'130px'"></textarea>
+                    </ts-form-field>
+                </div>
+            </ts-card-section>
+            }
+
+            <ts-card-section class="col-option" header="@@ticket.h1_option">
+                <div class="grid" formGroupName="options" [gutterY]="'.5rem'">
+                    <ng-template ngFor let-item [ngForOf]="labelOptions">
+                        <p-checkbox [label]="item.label" [binary]="true" [formControlName]="item.formControl"
+                            (onChange)="item.command && item.command($event.checked)" tsCol [span]="6" [xl]="4"
+                            [x3l]="3"></p-checkbox>
+                    </ng-template>
+                </div>
+            </ts-card-section>
+
+
+
+            @if (!viewTemplate) {
+            <ts-card-section class="template-list mt-2" header="@@ticket.h1_templates">
+                <div class="grid">
+                    <ts-toolbar class="col-12">
+                        <ng-template pTemplate="left">
+                            @for (item of catalog.get_ticket(); track $index) {
+                            <ts-tag [value]="item" [label]="item.title" (click)="selectTemplate(item)"
+                                [styleClass]="tagSelectClass(item)"></ts-tag>
+                            }
+
+                            @if(catalog.get_ticket()?.length == 0){
+                            <span class="text-help">Chưa có cấu hình dữ liệu mặc định (P/S: Vào <b
+                                    class="text-danger">[Khác
+                                    >
+                                    Cập
+                                    nhật mẫu mặc định]</b>).</span>
+
+                            <span> Hoặc <a class="here" [routerLink]="['/templates']"
+                                    [queryParams]="{thread: 'ticket_template'}"
+                                    (click)="viewTemplateSetting('ticket_template')">{{'actions.click_here'|translate}}</a></span>
+                            }
+                        </ng-template>
+                    </ts-toolbar>
+                </div>
+            </ts-card-section>
+
+            }
+
+        </ts-card><!-- END: COl_RIGHT -->
+    </div>
+
+    <!-- BEGIN: form_tool -->
+    <div class="form-tool" [lg]="{order:3}" [span]="12" [order]="3">
+        @if (state.visibleToolImport && idata) {
+
+        <div class="r-import flex gap-2 align-items-center ">
+            <p-button icon="pi pi-save" severity="info" (onClick)="saveTicket()" [loading]="state?.asyncSaveTicket"
+                loadingIcon="pi pi-sync" label="{{newLabel|translate}}" [disabled]="form.invalid"></p-button>
+
+            <p-button icon="pi pi-search" severity="success" (onClick)="searchUser()"
+                label="{{'ticket.search_user' | translate}}"></p-button>
+
+            <p-divider [layout]="'vertical'"></p-divider>
+
+            <p-button severity="warning" icon="pi pi-circle-on" label="{{'actions.import_all' | translate}}"
+                (onClick)="idata.beginRunAll()" *ngIf="idata.isVisibleRunAll"></p-button>
+
+            <p-button severity="danger" icon="pi pi-spin pi-sync" label="{{'actions.stop_import' | translate}}"
+                (onClick)="idata.stopRunAll()" *ngIf="idata.isVisibleStopRunAll"></p-button>
+
+            <p-divider [layout]="'vertical'"></p-divider>
+
+            <p-button label="Lùi" iconPos="left" icon="pi pi-angle-double-left" severity="info" text="true"
+                styleClass="p-click" [disabled]="idata.disableClickPrev" (onClick)="idata.clickPrev()"></p-button>
+
+            <label class="flex gap-1">
+                <span class="current">{{idata?.current}}</span>
+                <span class="sep">/</span>
+                <span class="total">{{idata.size}}</span>
+            </label>
+
+            <p-button label="Tới" iconPos="right" icon="pi pi-angle-double-right" severity="info" text="true"
+                size="large" styleClass="p-click" [disabled]="idata.disableClickNext"
+                (onClick)="idata.clickNext()"></p-button>
+
+            @if (!idata.isRunning) {
+            <p-divider [layout]="'vertical'"></p-divider>
+
+            <p-button link="true" styleClass="p-abort" label="{{'actions.abort_import' | translate}}"
+                (onClick)="idata.abortData()"></p-button>
+
+            <p-button link="true" styleClass="p-abort" label="Chọn tệp khác" (onClick)="idata.chooseFile()"></p-button>
+            }
+
+        </div>
+        }
+
+        @else if (!viewTemplate) {
+        <p-button type="submit" severity="warning" [loading]="state?.asyncSaveTicket" icon="pi pi-save"
+            loadingIcon="pi pi-sync" label="{{newLabel|translate}}" [disabled]="form.invalid"></p-button>
+
+        <p-button severity="info" [loading]="state?.asyncSaveTicket" icon="pi pi-new" loadingIcon="pi pi-sync"
+            label="{{'actions.create'|translate}}" (onClick)="createNew()"></p-button>
+
+        <p-button icon="pi pi-search" (click)="searchUser()" label="{{'ticket.search_user' | translate}}"></p-button>
+
+        <p-button icon="pi pi-result" (click)="viewResultTicket()" label="{{'ticket.view_result' | translate}}"
+            *ngIf="visibleResult"></p-button>
+
+        <p-button severity="danger" icon="pi pi-folder-plus" (onClick)="deleteTicket()"
+            label="{{'actions.delete_ticket' | translate}}" *ngIf="isEditTicket"></p-button>
+
+            <ts-splitButton  iconPos="right" label="QL Danh mục"
+                [model]="qlDanhMuc" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
+
+        <ts-splitButton icon="pi pi-ellipsis-h" iconPos="right" label="{{'ticket.other' | translate}}" severity="help"
+            [model]="toolActions" [size]="'small'" [visibleMenuButton]="false"></ts-splitButton>
+        }
+        @else {
+        <p-button [disabled]="form.invalid" (onClick)="saveTemplate()" icon="pi pi-save" loadingIcon="pi pi-sync"
+            label="{{'actions.save' | translate}}"></p-button>
+
+        <p-button icon="pi pi-shield" (onClick)="resetTemplate()" label="{{'actions.reset' | translate}}"></p-button>
+        <p-button icon="pi pi-home" (click)="asyncLoadCatalogs()" label="{{'ticket.get_cate' | translate}}"></p-button>
+        <p-button icon="pi pi-times" (onClick)="closeDialog()" label="{{'actions.close' | translate}}"></p-button>
+        }
+    </div>
+    <!-- END: form_tool -->
+</form>

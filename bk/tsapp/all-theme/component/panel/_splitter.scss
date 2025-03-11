@@ -1,0 +1,25 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-splitter {
+    border: cfg.$panelContentBorder;
+    background: cfg.$panelContentBg;
+    border-radius: cfg.$borderRadius;
+    color: cfg.$panelContentTextColor;
+
+    .p-splitter-gutter {
+        transition: cfg.$actionIconTransition;
+        background: cfg.$splitterGutterBg;
+
+        .p-splitter-gutter-handle {
+            background: cfg.$splitterGutterHandleBg;
+
+            &:focus-visible {
+                @include util.focused();
+            }
+        }
+    }
+
+    .p-splitter-gutter-resizing {
+        background: cfg.$splitterGutterHandleBg;
+    }
+}

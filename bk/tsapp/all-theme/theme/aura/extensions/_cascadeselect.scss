@@ -1,0 +1,23 @@
+@use "../../../setting/config" as cfg;
+
+.p-cascadeselect {
+  box-shadow: cfg.$inputShadow;
+
+  .p-cascadeselect-label {
+    box-shadow: none;
+  }
+
+  &.p-disabled {
+    opacity: 1;
+    background-color: cfg.$disabledInputBg;
+
+    .p-cascadeselect-label {
+      color: cfg.$textSecondaryColor;
+    }
+  }
+}
+
+div.p-cascadeselect-panel {
+  border: 0 none;
+  box-shadow: none;
+}

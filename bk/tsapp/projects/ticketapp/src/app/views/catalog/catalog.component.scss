@@ -1,0 +1,30 @@
+ts-catalog {
+  display: block;
+
+  .select-all {
+    text-decoration: underline;
+    color: var(--info-color);
+    user-select: none !important;
+
+    .p-checkbox {
+        
+      &-label {
+        cursor: pointer;
+      }
+
+      &-box.p-highlight {
+        border-color: var(--info-color);
+        background: var(--info-color);
+
+        &:hover {
+          border-color: var(--info-color);
+          background: var(--info-color);
+        }
+      }
+    }
+  }
+
+  .p-card-body {
+    gap: 0 !important;
+  }
+}

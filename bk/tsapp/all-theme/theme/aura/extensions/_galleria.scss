@@ -1,0 +1,5 @@
+@use "../../../setting/config" as cfg;.p-galleria {
+    .p-galleria-indicators .p-galleria-indicator.p-highlight button {
+        background-color: cfg.$primaryColor;
+    }
+}

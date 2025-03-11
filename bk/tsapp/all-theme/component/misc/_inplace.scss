@@ -1,0 +1,20 @@
+
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-inplace {
+    .p-inplace-display {
+        padding: cfg.$inplacePadding;
+        border-radius: cfg.$borderRadius;
+        transition: cfg.$formElementTransition;
+
+        &:not(.p-disabled):hover {
+            background: cfg.$inplaceHoverBg;
+            color: cfg.$inplaceTextHoverColor;
+        }
+
+        &:focus {
+            @include util.focused();
+        }
+    }
+}
+

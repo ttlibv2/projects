@@ -1,0 +1,26 @@
+@use "../../../../../../../all-theme/mixins/utilities"as util;
+
+@mixin flexRow($gap: 1.5rem) {
+  @include util.flex-row($gap);
+}
+
+$sidebar-width: 252px !default;
+$sidebar-bg   : #fff !default;
+$sidebar-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
+//topbar
+$topbar-height : 50px;
+$topbar-shadow : rgba(0, 0, 0, 0.15) 0px 2px 2px -1px;
+$topbar-bg     : #fff !default;
+$topbar-padding: 0 2rem !default;
+
+//content
+$content-vertical-rowgap: .5rem !default;
+$content-padding        : .5rem !default;
+$breadcrumb-bg          : #fbfbfd !default;
+$breadcrumb-padding     : .5rem !default;
+
+$breadcrumb-fontsize  : 1.3rem !default;
+$breadcrumb-fontweight: 500 !default;
+$breadcrumb-color     : var(--info-color) !default;

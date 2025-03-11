@@ -1,0 +1,114 @@
+<ts-card [style]="{'max-width': '720px'}" id="api-info-fr" [title]="headerLabel">
+    <form [formGroup]="form" class="grid sm">
+
+        <ts-divider class="col-12 mb-2" layout="horizontal" align="left" [percent]="0" [text]="'api.api_info' | translate"
+            *ngIf="divider" />
+
+        <div class="p-fluid col-12 flex gap-2">
+
+            <p-dropdown id="api_info" [options]="lsApi" optionLabel="displayName" dataKey="api_id"
+                formControlName="api_item" (onChange)="onSelectApi($event.value)" class="flex-1"></p-dropdown>
+
+            <p-button type="button" icon="pi pi-sync" pTooltip="{{'actions.get_all'|translate}}" [disabled]="!!action"
+                [loading]="state.loadDs" (onClick)="clickLoadApiInfo()" *ngIf="state.visibleBtnLoadApi"></p-button>
+
+            <p-button type="button" icon="pi pi-user-edit" (onClick)="clickEditApi()"
+                *ngIf="isEditTT && state.showAction" pTooltip="{{'actions.edit' | translate}}"></p-button>
+
+            <p-button type="button" icon="pi pi-copy" [disabled]="state.disableButton" (onClick)="clickCopyApi()"
+                *ngIf="isAllowCopy && state.showAction" pTooltip="{{'actions.copy' | translate}}"></p-button>
+        </div>
+        <ng-container formGroupName="api_info">
+            <ts-form-field class="p-fluid col-12 sm:col-6"label="@@api.base_url">
+                <input id="base_url" pInputText formControlName="base_url" />
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6 sm:col-3"label="@@api.app_uid">
+                <input id="app_uid" pInputText formControlName="app_uid" />
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6 sm:col-3"label="@@api.app_name">
+                <input id="app_name" pInputText formControlName="app_name" />
+            </ts-form-field>
+            <ng-container *ngIf="!!action">
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.title">
+                    <input id="title" pInputText formControlName="title" />
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.login_path">
+                    <input id="login_path" pInputText formControlName="login_path" />
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.headers">
+                    <input id="headers" pInputText formControlName="headers" />
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.queries">
+                    <input id="queries" pInputText formControlName="queries" />
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6"label="@@api.summary">
+                    <textarea id="summary" rows="2" autoResize="false" pInputTextarea
+                        formControlName="summary"></textarea>
+                </ts-form-field>
+                <ts-form-field class="p-fluid col-6 xxl:col-6" label="@@api.links">
+                    <textarea id="links" rows="2" autoResize="false" pInputTextarea formControlName="links"></textarea>
+                </ts-form-field>
+            </ng-container>
+        </ng-container>
+        <ts-divider class="col-12 mb-2 mt-2" layout="horizontal" align="left" [percent]="0" sever [text]="'api.user_info' | translate"/>
+        <ng-container formGroupName="user_api">
+            <ts-form-field class="p-fluid col-6"label="@@users.user_name">
+                <input id="user_name" pInputText formControlName="user_name" type="email" />
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.password">
+                <p-password id="password" formControlName="password" [toggleMask]="true"></p-password>
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.ts_name">
+                <input id="ts_name" pInputText formControlName="ts_name" />
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.ts_email">
+                <input id="ts_email" pInputText formControlName="ts_email" />
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.csrf_token">
+                <input id="csrf_token" pInputText formControlName="csrf_token" />
+            </ts-form-field>
+            <ts-form-field class="p-fluid col-6"label="@@users.cookie">
+                <input id="cookie_value" pInputText formControlName="cookie_value" />
+            </ts-form-field>
+            <div class="field col-12 flex flex-wrap gap-2 mt-3">
+                <p-checkbox id="auto_login" [binary]="true" formControlName="auto_login"
+                    label="{{'api.auto_login'|translate}}"></p-checkbox>
+
+                <p-checkbox id="editOnly" [binary]="true" formControlName="allow_edit"
+                    label="{{'api.allow_edit'|translate}}"></p-checkbox>
+
+                <p-checkbox id="saveLog" [binary]="true" formControlName="save_log"
+                    label="{{'api.save_log'|translate}}"></p-checkbox>
+            </div>
+        </ng-container>
+        <div class="col-12 flex gap-2 mt-2 justify-content-between">
+            <div class="flex flex-wrap gap-2">
+                <p-button type="submit" icon="pi pi-save" label="{{'actions.save'|translate}}" severity="danger"
+                    (onClick)="clickSaveApi()" [disabled]="!formDirty" [loading]="state.asyncSave"
+                    loadingIcon="pi pi-sync" *ngIf="visibleSaveButton"></p-button>
+
+                <p-button icon="pi pi-save" label="{{'actions.cancel'|translate}}" severity="help"
+                    (onClick)="clickResetApi()" *ngIf="visibleResetButton"></p-button>
+
+                <p-button type="button" icon="pi pi-check" label="{{'actions.check_api' | translate}}"
+                    (onClick)="clickCheckLogin()" [loading]="state.asyncCheck" loadingIcon="pi pi-sync"
+                    *ngIf="visibleCheckButton"></p-button>
+
+                <p-button type="button" icon="pi pi-link" label="{{'actions.update_link' | translate}}"
+                    (onClick)="clickMenuApi()" [loading]="state.asyncMenu" loadingIcon="pi pi-sync"
+                    *ngIf="visibleCheckButton"></p-button>
+            </div>
+            <div class="flex gap-2" *ngIf="state.hasModal">
+                <p-button type="button" severity="info" icon="pi pi-times" label="{{'actions.close' | translate}}"
+                    (onClick)="clickCloseModal()"></p-button>
+            </div>
+
+
+
+        </div>
+    </form>
+
+
+
+
+</ts-card>

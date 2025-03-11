@@ -1,0 +1,122 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+.p-accordion {
+    .p-accordion-header {
+        .p-accordion-header-link {
+            padding: cfg.$accordionHeaderPadding;
+            border: cfg.$accordionHeaderBorder;
+            color: cfg.$accordionHeaderTextColor;
+            background: cfg.$accordionHeaderBg;
+            font-weight: cfg.$accordionHeaderFontWeight;
+            border-radius: cfg.$borderRadius;
+            transition: cfg.$listItemTransition;
+
+            .p-accordion-toggle-icon {
+                margin-right: cfg.$inlineSpacing;
+            }
+        }
+
+        &:not(.p-disabled) {
+            .p-accordion-header-link {
+                &:focus-visible {
+                    @include util.focused-inset();
+                }
+            }
+        }
+
+        &:not(.p-highlight):not(.p-disabled):hover {
+            .p-accordion-header-link {
+                background: cfg.$accordionHeaderHoverBg;
+                border-color: cfg.$accordionHeaderHoverBorderColor;
+                color: cfg.$accordionHeaderTextHoverColor;
+            }
+        }
+
+        &:not(.p-disabled).p-highlight {
+            .p-accordion-header-link {
+                background: cfg.$accordionHeaderActiveBg;
+                border-color: cfg.$accordionHeaderActiveBorderColor;
+                color: cfg.$accordionHeaderTextActiveColor;
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            &:hover {
+                .p-accordion-header-link {
+                    border-color: cfg.$accordionHeaderActiveHoverBorderColor;
+                    background: cfg.$accordionHeaderActiveHoverBg;
+                    color: cfg.$accordionHeaderTextActiveHoverColor;
+                }
+            }
+        }
+    }
+
+    .p-accordion-content {
+        padding: cfg.$accordionContentPadding;
+        border: cfg.$accordionContentBorder;
+        background: cfg.$accordionContentBg;
+        color: cfg.$accordionContentTextColor;
+        //border-top: 0;
+        //border-top-right-radius: 0;
+        //border-top-left-radius: 0;
+        //border-bottom-right-radius: cfg.$borderRadius;
+        //border-bottom-left-radius: cfg.$borderRadius;
+    }
+
+    p-accordiontab {
+        .p-accordion-tab {
+            margin-bottom: cfg.$accordionSpacing;
+        }
+
+        @if cfg.$accordionSpacing ==0 {
+            .p-accordion-header {
+                .p-accordion-header-link {
+                    border-radius: 0;
+                }
+            }
+
+            .p-accordion-content {
+                border-radius: 0;
+            }
+
+            &:not(:first-child) {
+                .p-accordion-header {
+                    .p-accordion-header-link {
+                        border-top: 0 none;
+                    }
+
+                    &:not(.p-highlight):not(.p-disabled):hover,
+                    &:not(.p-disabled).p-highlight:hover {
+                        .p-accordion-header-link {
+                            border-top: 0 none;
+                        }
+                    }
+                }
+            }
+
+            &:first-child {
+                .p-accordion-header {
+                    .p-accordion-header-link {
+                        border-top-right-radius: cfg.$borderRadius;
+                        border-top-left-radius: cfg.$borderRadius;
+                    }
+                }
+            }
+
+            &:last-child {
+                .p-accordion-header:not(.p-highlight) {
+                    .p-accordion-header-link {
+                        border-bottom-right-radius: cfg.$borderRadius;
+                        border-bottom-left-radius: cfg.$borderRadius;
+                    }
+                }
+
+                .p-accordion-content {
+                    border-bottom-right-radius: cfg.$borderRadius;
+                    border-bottom-left-radius: cfg.$borderRadius;
+                }
+            }
+        }
+    }
+}

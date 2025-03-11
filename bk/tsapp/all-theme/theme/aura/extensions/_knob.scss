@@ -1,0 +1,12 @@
+@use "../../../setting/config" as cfg;
+@use "../../../setting/mixins" as util;
+
+.p-knob svg {
+  border-radius: cfg.$borderRadius;
+  outline-color: transparent;
+  transition: outline-color cfg.$transitionDuration;
+
+  &:focus-visible {
+    @include util.focused();
+  }
+}

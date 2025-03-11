@@ -1,0 +1,45 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+
+p-inputnumber.ng-dirty.ng-invalid > .p-inputnumber > .p-inputtext {
+    @include util.invalid-input();
+}
+
+p-inputnumber.p-inputnumber-clearable {
+    .p-inputnumber-input {
+        padding-right: nth(cfg.$inputPadding, 2) * 2 + cfg.$primeIconFontSize;
+    }
+    
+    .p-inputnumber-clear-icon {
+        color: cfg.$inputIconColor;
+        right: nth(cfg.$inputPadding, 2);
+    }
+}
+
+p-inputnumber.p-inputnumber-clearable {
+    .p-inputnumber-buttons-stacked{
+        .p-inputnumber-clear-icon {
+           right: cfg.$buttonIconOnlyWidth + nth(cfg.$inputPadding, 2);
+        }
+    }
+    
+    .p-inputnumber-buttons-horizontal{
+        .p-inputnumber-clear-icon {
+           right: cfg.$buttonIconOnlyWidth + nth(cfg.$inputPadding, 2);
+        }
+    }
+}
+
+p-inputnumber.p-inputnumber {
+    &.p-variant-filled > .p-inputnumber-input {
+        background-color: cfg.$inputFilledBg;
+
+        &:enabled:hover {
+            background-color: cfg.$inputFilledHoverBg;
+        }
+
+        &:enabled:focus {
+            background-color: cfg.$inputFilledFocusBg;
+        }
+    }
+}

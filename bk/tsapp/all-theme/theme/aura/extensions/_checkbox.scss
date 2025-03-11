@@ -1,0 +1,27 @@
+@use "../../../setting/config" as cfg;.p-checkbox {
+    .p-checkbox-box {
+        border-radius: 4px;
+        box-shadow: cfg.$inputShadow;
+
+        &.p-focus {
+            outline-offset: cfg.$focusOutlineOffset;
+
+            &.p-highlight {
+                border-color: cfg.$checkboxActiveBorderColor;
+            }
+        }
+    }
+
+    &.p-checkbox-disabled {
+        opacity: 1;
+
+        .p-checkbox-box {
+            background-color: cfg.$disabledInputBg;
+            border: cfg.$inputBorder;
+
+            .p-checkbox-icon {
+                color: cfg.$textSecondaryColor;
+            }
+        }
+    }
+}

@@ -1,15 +1,23 @@
 {
+  "compileOnSave": false,
     "compilerOptions": {
-      "declaration": true,
-      "module": "commonjs",
-      "target": "ES2024",
+      "strict": true,
+      "noImplicitOverride": true,
+      "noPropertyAccessFromIndexSignature": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
       "skipLibCheck": true,
+      "isolatedModules": true,
+      "esModuleInterop": true,
+      "declaration": true,
+      "experimentalDecorators": true,
+      "moduleResolution": "bundler",
+      "importHelpers": true,
+      "target": "ES2022",
+      "module": "ES2022",
       "sourceMap": false,
       "allowJs": true,
-      "strict": true,
       "useUnknownInCatchVariables": false,
-      "types": [
-        "node", "yargs"
-      ]
+      "types": ["node"]
     }
   }

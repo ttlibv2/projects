@@ -1,0 +1,120 @@
+<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="select-file flex flex-column sm" [style.max-width]="'600px'">
+    <div class="grid">
+        <div class="col-12 flex flex-column gap-2">
+            <label class="font-bold">Chú ý: </label>
+            <label>- Hướng dẫn nhập liệu trong file mẫu.</label>
+            <label class="flex align-items-center">
+                <span>- Tải file mẫu</span>
+                <span class="link" (click)="onDownload()">tại đây</span>
+                <span>nếu chưa có.</span>
+            </label>
+        </div>
+
+        <div class="p-fluid field col-12">
+            <p-fileUpload mode="basic" [multiple]="false" [chooseLabel]="chooseLabel" [accept]="mimeType"
+                [maxFileSize]="maxFileSize" [chooseIcon]="asyncLoading ? 'pi pi-spin pi-sync' : undefined"
+                invalidFileSizeMessageDetail="{{'upload.invalidSizeDetail' | translate}}"
+                invalidFileSizeMessageSummary="{{'upload.invalidSizeSummary' | translate}}"
+                invalidFileTypeMessageDetail="{{'upload.invalidSizeDetail' | translate}}"
+                invalidFileTypeMessageSummary="{{'upload.invalidSizeSummary' | translate}}"
+
+                (onSelect)="chooseFile($event)" [disabled]="asyncLoading">
+            </p-fileUpload>
+            <p-messages [value]="msgs" [enableService]="false"></p-messages>
+        </div>
+
+        <!-- controls [sheets] -->
+        <ng-container formArrayName="sheets" *ngIf="fileSelect">
+            @for (f of cSheets.controls; track $index;let i=$index) {
+                <ng-container [formGroupName]="i">
+                    <div class="p-fluid field col-6">
+                        <label>
+                            <span>Sheet cần lấy dữ liệu </span>
+                            <span class="text-help font-bold">[{{wsSheets[i].sheetName}}]</span>
+                        </label>
+                        <p-dropdown [options]="wbSheetNames" placeholder="Chọn [Sheet]" formControlName="sheetName"
+                            (onChange)="changeSheet(i, $event.value)" [overlayOptions]="overlayOptions"></p-dropdown>
+                    </div>
+                    <div class="p-fluid field col-3">
+                        <label>Từ dòng <span class="text-help font-bold">[{{wsSheets[i].first_row}}]</span></label>
+                        <p-inputNumber [min]="wsSheets[i].first_row" [max]="wsSheets[i].last_row"
+                            [pTooltip]="wsSheets[i].hasError ? '[Từ dòng] <= [Đến dòng]' : null "
+                            formControlName="first_row" (ngModelChange)="changeRowNum(i, f, $event)"></p-inputNumber>
+                    </div>
+                    <div class="p-fluid field col-3">
+                        <label>Đến dòng <span class="text-help font-bold">[{{wsSheets[i].last_row}}]</span></label>
+                        <p-inputNumber [min]="wsSheets[i].first_row" [max]="wsSheets[i].last_row" formControlName="last_row"
+                            (ngModelChange)="changeRowNum(i, f, $event)"></p-inputNumber>
+                    </div>
+                </ng-container>
+            }
+        </ng-container>
+
+        <!-- control [custom field] -->
+        <ng-container *ngIf="fileSelect ">
+            @for (field of xslFields; track $index) {
+            <div class="p-fluid" [ngClass]="field.class">
+                @switch (field.type) {
+
+                @case ('input') {
+                <label [attr.for]="fieldId(field)" class="flex gap-1">
+                    <span class="lbl">{{field.label | translate}}</span>
+                    <span class="text-danger" *ngIf="!!field.required">*</span>
+                </label> 
+                <input pInputText placeholder="{{field.placeholder | translate}}" [attr.id]="fieldId(field)"
+                    [formControlName]="field.name">
+                }
+
+                @case ('number') {
+                    <label [attr.for]="fieldId(field)" class="flex gap-1">
+                        <span class="lbl">{{field.label | translate}}</span>
+                        <span class="text-danger" *ngIf="!!field.required">*</span>
+                    </label> 
+                    <p-inputNumber [attr.id]="fieldId(field)" [formControlName]="field.name"
+                        placeholder="{{field.placeholder | translate}}"
+                        [min]="field.options?.min" [max]="field.options?.max"></p-inputNumber>
+                    }
+
+
+
+
+                @case ('area') {
+                <label [attr.for]="fieldId(field)" class="flex gap-1">
+                    <span class="lbl">{{field.label | translate}}</span>
+                    <span class="text-danger" *ngIf="!!field.required">*</span>
+                </label> <textarea pInputTextarea placeholder="{{field.placeholder | translate}}"
+                    [attr.id]="fieldId(field)" [formControlName]="field.name" [autoResize]="field.options?.autoResize"
+                    [rows]="field.options?.rows" [cols]="field.options?.cols"></textarea>
+                }
+
+                @case ('combo') {
+                <label [attr.for]="fieldId(field)" class="flex gap-1">
+                    <span class="lbl">{{field.label | translate}}</span>
+                    <span class="text-danger" *ngIf="!!field.required">*</span>
+                </label> 
+                <p-dropdown [attr.id]="fieldId(field)" [options]="field.options?.items"
+                    [editable]="field.options?.editable" [dataKey]="field.options?.dataKey"
+                    [optionValue]="field.options?.optionValue" [optionLabel]="field.options?.optionLabel"
+                    [showClear]="field.options?.showClear" [overlayOptions]="overlayOptions"
+                    [formControlName]="field.name"></p-dropdown>
+                }
+
+                @case ('checked') {
+                <p-checkbox label="{{field.label | translate}}" [binary]="true" [attr.id]="fieldId(field)"
+                    [formControlName]="field.name"></p-checkbox>
+                }
+                }
+            </div>
+            }
+        </ng-container>
+
+        <div class="p-fluid col-12 flex gap-2 justify-content-end align-items-center">
+
+            <p-button type="submit" severity="primary" label="Lấy dữ liệu" [loading]="asyncSubmit"
+                [disabled]="disabledSubmit"></p-button>
+
+            <p-button severity="warning" label="Đóng" (onClick)="closeDialog()"
+                [disabled]="asyncSubmit || asyncLoading"></p-button>
+        </div>
+    </div>
+</form>

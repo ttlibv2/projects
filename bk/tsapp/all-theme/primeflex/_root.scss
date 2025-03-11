@@ -1,0 +1,12 @@
+@use "../setting/layout-config" as cfg;
+
+$prefix: cfg.$prefix;
+
+:root {
+
+  // $grid-breakpoints
+  @each $key, $width in cfg.$grid-breakpoints {
+    --#{$prefix}grid-bpw-#{$key}: #{$width};
+  }
+
+}

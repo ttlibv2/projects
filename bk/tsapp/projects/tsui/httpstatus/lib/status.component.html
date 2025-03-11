@@ -1,0 +1,73 @@
+<div class="page-status" [ngClass]="pageCls" [ngStyle]="style">
+    @if (header) {
+        <div class="page-status-header">
+            @if (isTemplateRef(header)) {
+                <ng-container *ngTemplateOutlet="header"></ng-container>
+            } @else {
+                <ng-container *ngTemplateOutlet="imageHeader"></ng-container>
+            }
+        </div>
+    }
+
+    @if (status) {
+        <div class="page-status-number">
+            @if (isTemplateRef(status)) {
+                <ng-container *ngTemplateOutlet="status"></ng-container>
+            } @else {
+                <h2 class="text">{{ status }}</h2>
+            }
+        </div>
+    }
+
+    @if (title) {
+        <div class="page-status-title">
+            @if (isTemplateRef(title)) {
+                <ng-container *ngTemplateOutlet="title"></ng-container>
+            } @else {
+                <h1 class="text">{{ title }}</h1>
+            }
+        </div>
+    }
+
+    @if (description) {
+        <div class="page-status-summary">
+            @if (isTemplateRef(description)) {
+                <ng-container *ngTemplateOutlet="description"></ng-container>
+            } @else {
+                <div class="text">{{ description }}</div>
+            }
+        </div>
+    }
+
+    @if(homeButton) {
+        <div class="page-status-back-home">
+            @if (isTemplateRef(homeButton)) {
+                <ng-container *ngTemplateOutlet="homeButton"></ng-container>
+            } @else {
+                <ng-container *ngTemplateOutlet="homeBtn"></ng-container>
+            }
+        </div>
+    }
+</div>
+
+<ng-template #homeBtn>
+    <button pButton [label]="homeObject.label" [loading]="homeObject.loading" [iconPos]="homeObject.iconPos"
+        [loadingIcon]="homeObject.loadingIcon" [icon]="homeObject.icon" [severity]="homeObject.severity"
+            [outlined]="homeObject.outlined" [plain]="homeObject.plain"
+            [raised]="homeObject.raised" [size]="homeObject.size"
+            [rounded]="homeObject.rounded" [text]="homeObject.text"
+            (click)="onClickHomeBtn($event)"></button>
+</ng-template>
+
+<ng-template #imageHeader>
+    <p-image [loading]="headerObject.loading" [imageClass]="headerObject.imageClass"
+             [imageStyle]="headerObject.imageStyle" [styleClass]="headerObject.styleClass"
+             [style]="headerObject.style" [src]="headerObject.src" [srcSet]="headerObject.srcSet"
+             [sizes]="headerObject.sizes" [preview]="headerObject.preview"
+             [previewImageSizes]="headerObject.previewImageSizes"
+             [previewImageSrc]="headerObject.previewImageSizes" [previewImageSrcSet]="headerObject.previewImageSizes"
+             [alt]="headerObject.alt" [width]="headerObject.width" [height]="headerObject.height"
+             [appendTo]="headerObject.appendTo" [showTransitionOptions]="headerObject.showTransitionOptions"
+             [hideTransitionOptions]="headerObject.hideTransitionOptions" (onShow)="onShowHeaderImage()"
+             (onHide)="onHideHeaderImage()" (onImageError)="onHeaderImageError($event)"></p-image>
+</ng-template>

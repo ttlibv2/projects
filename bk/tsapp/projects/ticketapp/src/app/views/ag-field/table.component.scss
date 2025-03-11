@@ -1,0 +1,13 @@
+.cag-field {
+  .p-fieldset {
+    border-width: 0;
+
+    .p-fieldset-legend {
+      border-width: 0;
+
+      span:not(:empty) {
+        padding: 0rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,93 @@
+@use '../../setting/config' as cfg;
+
+$fontFamily: cfg.$status-error-family;
+$defaultColor: cfg.$status-error-color;
+$gap: cfg.$status-error-gap;
+$numberFontSize: cfg.$status-error-number-size;
+$numberFontWeight: cfg.$status-error-number-weight;
+$summaryFontSize: cfg.$status-error-summary-size;
+$backHomeSize: cfg.$status-error-back-home-size;
+$backHomePadding: cfg.$status-error-back-home-padding;
+
+@mixin make-color-text($color: $defaultColor) {
+    color: var(--error-color, $color);
+    background: var(--error-color, $color);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@mixin make-color-button($color: $defaultColor, $textColor: #fff) {
+    background-image: var(--error-color, $color);
+    color: $textColor;
+}
+
+.page-status {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    margin: auto;
+    font-family: var(--error-family, $fontFamily);
+    row-gap: var(--error-gap, $gap);
+    text-align: center;
+    //min-height: calc(100vh - 7rem);
+
+    &-number .text {
+        @include make-color-text();
+        font-size: var(--error-number-size, $numberFontSize);
+        font-weight: var(--error-number-weight, $numberFontWeight);
+        letter-spacing: 1px;
+    }
+
+    &-title .text {
+        font-weight: var(--error-number-weight, $numberFontWeight);
+    }
+
+    &-summary .text {
+        font-size: var(--error-summary-size, $summaryFontSize);
+    }
+
+    &-back-home .p-button {
+        @include make-color-button();
+        font-size: var(--error-back-home-size, $backHomeSize);
+        padding: var(--error-back-home-padding, $backHomePadding);
+
+        &:hover {
+            background-size: 50% 100%;
+            transition: all 0.3s ease;
+            color: #fff;
+
+            // @if(variable-exists(--error-hover-color)) {
+                background-image: var(--error-hover-color);
+                background-position: right center;
+                border-color: transparent;
+            // }
+        }
+    }
+
+
+    &-s400 {
+        --error-color: #{cfg.$status-error-s400};
+    }
+
+    &-s401 {
+        --error-color: #{cfg.$status-error-s401};
+    }
+
+    &-s403 {
+        --error-color: #{cfg.$status-error-s403};
+    }
+
+    &-s404 {
+        --error-color: #{cfg.$status-error-s404};
+    }
+
+    &-s500 {
+        --error-color: #{cfg.$status-error-s500};
+    }
+
+    &-s503 {
+        --error-color: #{cfg.$status-error-s503};
+        --error-hover-color: #{cfg.$status-error-hover-s503};
+    }
+}

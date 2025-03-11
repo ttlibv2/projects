@@ -1,0 +1,88 @@
+<ts-card class="template-form">
+    <form [formGroup]="form" (ngSubmit)="saveTemplate()" class="grid sm">
+        <div class=" p-fluid col-12 xxl:col-12">
+            <h3>Tạo mẫu <span *ngIf="template.thread" class="text-danger">[{{template.thread}}]</span></h3>
+        </div>
+        <div class=" p-fluid col-6 xxl:col-6">
+            <label for="title">{{'title' | translate}}</label>
+            <input id="title" placeholder="{{'title.holder' | translate}}" pInputText formControlName="title" />
+        </div>
+        <div class=" p-fluid col-6 xxl:col-3">
+            <label for="entity_code">{{'template.thread' | translate}}</label>
+            <p-dropdown [options]="lsEntity" formControlName="thread" #entity></p-dropdown>
+        </div>
+        <div class=" p-fluid col-6 xxl:col-3">
+            <label for="icon">{{'template.icon' | translate}}</label>
+            <input pInputText formControlName="icon" placeholder="pi pi-user" />
+        </div>
+        <div class=" p-fluid col-6 xxl:col-3">
+            <label for="severity">{{'template.severity' | translate}}</label>
+            <p-dropdown [options]="lsSeverity" formControlName="severity"
+                placeholder="{{'template.holder.severity' | translate}}"></p-dropdown>
+        </div>
+        <div class="p-fluid col-6 xxl:col-3">
+            <label for="bgColor">{{ 'style.bg_color' | translate }}</label>
+            <ts-color [inputId]="'bgColor'" [focusOpen]="true" format="hex" formControlName="bg_color"></ts-color>
+        </div>
+        <div class="p-fluid col-6 xxl:col-3">
+            <label for="textColor">{{ 'style.text_color' | translate }}</label>
+            <ts-color [inputId]="'textColor'" [focusOpen]="true" format="hex" formControlName="text_color"></ts-color>
+        </div>
+        <div class=" p-fluid col-12">
+            <label for="summary">{{'summary' | translate}}</label>
+            <input id="summary" placeholder="{{'summary.holder' | translate}}" pInputText formControlName="summary" />
+        </div>
+        <div class=" p-fluid col-12">
+            <label for="data">{{'template.data' | translate}}</label>
+            <textarea id="data" placeholder="{{'template.holder.data' | translate}}" pInputTextarea
+                formControlName="data" rows="2" [autoResize]="true" readonly
+                [style]="{'max-height': '60px', 'min-height': '60px'}"></textarea>
+        </div>
+        <div class="p-fluid col-12 flex flex-inline align-items-center gap-2">
+            <p-checkbox label="Đặt mặc định" [binary]="true" formControlName="is_default"></p-checkbox>
+            <ts-divider [style.width]="'3%'" size="1px"></ts-divider>
+            <div class="flex flex-inline gap-2 align-items-center">
+                <label>STT</label>
+                <input formControlName="position" pInputText placeholder="STT" [style]="{'max-width': '50px'}" />
+            </div>
+            <div class="p-fluid flex align-items-end gap-2" *ngIf="template.title">
+                <ts-divider [layout]="'horizontal'"></ts-divider>
+                <button pRipple class="align-self-end flex-1 p-element p-button p-component p-button-rounded p-preview"
+                    [ngStyle]="btnPreviewStyle" [ngClass]="btnPreviewClass">
+                    <span class="p-button-label">{{template.title}}</span>
+                    <span class="p-ink" aria-hidden="true" role="presentation"></span>
+                </button>
+            </div>
+
+        </div>
+        <div class="col-12 flex flex-wrap align-items-center gap-2 mt-3">
+            <p-button type="submit" severity="help" label="{{'actions.'+labelSave | translate}}"
+                [loading]="state.asyncSave" [disabled]="form.invalid" *ngIf="visibleSave"></p-button>
+
+            <p-button label="{{'actions.create' | translate}}" (onClick)="createTemplate()"
+                severity="primary"></p-button>
+
+            <p-button label="{{'template.setting' | translate}}" (onClick)="settingData()"
+                [disabled]="!entity.value"></p-button>
+
+            <p-button label="Tải danh sách" (onClick)="loadTemplate()" [loading]="state.asyncTemplate"></p-button>
+
+            <p-button label="{{'actions.delete' | translate}}" (onClick)="deleteTemplate()" severity="danger"
+                *ngIf="state.visibleDelete"></p-button>
+
+            <p-button label="{{'actions.copy' | translate}}" (onClick)="copyTemplate()"
+                *ngIf="state.visibleCopy"></p-button>
+
+            <p-button label="Quay Lại" (onClick)="previousPage()" *ngIf="lastUrl"></p-button>
+
+        </div>
+    </form>
+
+    <div class="grid mt-2">
+        <ts-divider class="col-12" [color]="'var(--danger-color)'"></ts-divider>
+        <div class="col-12 pt-2">
+            <ts-ag-table [columns]="columns" [rows]="[]" [option]="agOption"
+                (rowClicked)="selectTemplate($event.data)"></ts-ag-table>
+        </div>
+    </div>
+</ts-card>

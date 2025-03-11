@@ -1,0 +1,56 @@
+.send-form {
+
+  .p-button {
+    width: max-content;
+  }
+
+  input.email {
+    //flex: .1 .1 auto;
+  }
+
+  .r-log {
+
+    label.label { color:olivedrab }
+    label.success { color: purple }
+    label.error { color: mediumvioletred}
+    label.space { color: navy }
+    label.total { color: red }
+    label.fileId { color: red }
+    label > span.num {
+      font-weight: bold;
+    }
+}
+
+.ag-table {
+
+    .ag-cell[col-id=send_status] {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-left: unset;
+
+      > div[ts-ag-cell-status] {
+        display: flex;
+      }
+
+    }
+
+    .pi-icon {
+        font-size: 2rem;
+  
+        &-state-error {
+          color: red;
+        }
+  
+        &-state-success {
+          color: rgb(20, 172, 71);
+        }
+  
+        &-state-loading {
+          color: rgb(221, 18, 194);
+        }
+  
+      }
+
+}
+}

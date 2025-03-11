@@ -1,0 +1,17 @@
+import { ChangeDetectionStrategy, Component, inject, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BaseComponent } from 'primeng/basecomponent';
+import { <%= classify(name) %>Style } from './<%= dasherize(name) %>.style';
+
+@Component({
+  selector: '<%= selector %>',
+  templateUrl: './<%= dasherize(name) %>.page.html',
+  styles: '<%= selector %>{display: block;}',
+  providers: [<%= classify(name) %>Style],
+  imports: [ CommonModule],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class <%= classify(name) %>Page extends BaseComponent {
+  _componentStyle = inject(<%= classify(name) %>Style);
+}

@@ -1,0 +1,41 @@
+.select-file {
+
+  .p-message-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    .p-message-icon,
+    .p-message-close {
+      display: none;
+    }
+
+    .p-message-detail {
+      margin-left: unset;
+      margin-top: .5rem;
+    }
+    
+  }
+
+  .p-fileupload {
+   
+    .p-button {
+      color: #e50808;
+      background: #e5d7d7;
+      padding: 0.5rem;
+      border: unset;
+
+      &-label {
+        flex: unset !important;
+      }
+    }
+  }
+
+  .link {
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0 0.45rem !important;
+    color: var(--help-color);
+  }
+}

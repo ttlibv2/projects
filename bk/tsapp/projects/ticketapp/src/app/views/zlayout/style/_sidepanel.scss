@@ -1,0 +1,26 @@
+@use "config" as cfg;
+
+$topbar-height: cfg.$topbar-height;
+
+.ts-sidepanel {
+    height    : 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+
+    &-header {
+        flex: 0 0 auto;
+        min-height: $topbar-height;
+        max-height: $topbar-height;
+    }
+
+    &-footer {
+        padding      : 17px 24px;
+        flex: 0 0 auto;
+    }
+
+    &-content {
+        flex: 1 1 auto;
+    }
+
+}

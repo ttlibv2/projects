@@ -1,0 +1,53 @@
+@use "mixins/breakpoints" as bp;
+@use "../setting/layout-config" as cfg;
+@use 'mixins/container' as c;
+
+$prefix: cfg.$prefix;
+$max-widths: cfg.$container-max-widths;
+$breakpoints: cfg.$grid-breakpoints;
+
+// Single container class with breakpoint max-widths
+.container,
+
+// 100% wide container at all breakpoints
+.container-fluid {
+    @include c.make-container-fluid();
+}
+
+// Responsive containers that are 100% wide until a breakpoint
+@each $breakpoint, $max-width in $max-widths {
+
+    $infix: bp.join-col-prefix($breakpoint, "container");
+
+    .#{$infix} {
+        @extend .container-fluid;
+    }
+
+    @include bp.media-breakpoint-up($breakpoint, $breakpoints) {
+
+        %responsive-#{$infix} {
+            max-width: $max-width;
+            padding-top: var(--#{$prefix}gutter-ry, cfg.$container-gutter-x);
+        }
+
+        // Extend each breakpoint which is smaller or equal to the current breakpoint
+        $extend-breakpoint: true;
+
+        @each $name, $width in $breakpoints {
+
+            @if ($extend-breakpoint) {
+                $infix2: bp.join-col-prefix($name, "container", $breakpoints);
+
+                .#{$infix2} {
+                    @extend %responsive-#{$infix};
+                }
+
+                // Once the current breakpoint is reached, stop extending
+                @if ($breakpoint ==$name) {
+                    $extend-breakpoint: false;
+                }
+            }
+        }
+    }
+
+}

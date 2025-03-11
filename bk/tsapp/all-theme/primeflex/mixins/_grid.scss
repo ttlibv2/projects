@@ -1,0 +1,216 @@
+@use "../../setting/layout-config" as cfg;
+@use "../mixins/breakpoints" as bp;
+@use "../comps/mixins" as mixins2;
+@use "sass:math";
+@use "sass:list";
+
+$prefix: cfg.$prefix;
+$prefix-row: cfg.$grid-row-prefix;
+$prefix-col: cfg.$grid-col-prefix;
+$gutter-x: cfg.$grid-gutter-x;
+$gutter-y: cfg.$grid-gutter-y;
+$columns: cfg.$grid-columns;
+$breakpoints: cfg.$grid-breakpoints;
+$grid-row-columns: cfg.$grid-row-columns;
+
+$gx: var(--#{$prefix}gutter-grx, $gutter-x);
+$gy: var(--#{$prefix}gutter-gry, $gutter-y);
+
+@mixin make-grid-row() {
+    $prow: ".#{$prefix}#{$prefix-row}";
+
+    #{$prow} {
+        display: flex;
+        flex-flow: row wrap;
+        min-width: 0;
+        row-gap: $gy;
+        margin-left: calc($gx * -1);
+        margin-right: calc($gx * -1);
+
+        &-nogutter {
+            margin-right: 0;
+            margin-left: 0;
+
+            >.#{$prefix}col,
+            >[class*="#{$prefix}col-"] {
+                padding: 0;
+            }
+        }
+
+        &:after,
+        &:before {
+            display: flex;
+        }
+
+        &-nowrap {
+            flex-wrap: nowrap;
+        }
+
+        &-start {
+            justify-content: flex-start;
+        }
+
+        &-end {
+            justify-content: flex-end;
+        }
+
+        &-center {
+            justify-content: center;
+        }
+
+        &-space-between {
+            justify-content: space-between;
+        }
+
+        &-space-around {
+            justify-content: space-around;
+        }
+
+        &-space-evenly {
+            justify-content: space-evenly;
+        }
+
+        &-top {
+            align-items: flex-start;
+        }
+
+        &-bottom {
+            align-items: flex-end;
+        }
+
+        &-middle {
+            align-items: center;
+        }
+
+        >[class*=col-],
+        >[class*=\:col-] {
+            @include make-col-ready();
+        }
+
+      
+    }
+}
+
+@mixin make-col-ready() {
+    box-sizing: border-box;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: $gx;
+    padding-left: $gx;
+}
+
+@mixin make-col-hide($class: '') {
+    $infix: bp.join-col-prefix($class, $prefix-col);
+
+    .#{$infix}-hide {
+        display: none;
+    }
+}
+
+@mixin make-col-auto($class: '') {
+    $infix: bp.join-col-prefix($class, $prefix-col);
+
+    .#{$infix}-auto {
+        flex: 0 0 auto !important;
+        width: auto !important;
+    }
+}
+
+@mixin make-grid-column($class, $index, $total) {
+    $percent: percentage(math.div($index, $total));
+
+    //sm:col
+    .#{bp.join-col-prefix($class, $prefix-col)} {
+
+        //sm:col-1
+        &-#{$index} {
+            flex: 0 0 auto;
+            width: $percent !important;
+            max-width: $percent !important;
+        }
+
+        ///*! sm:col-push-1 */
+        &-push-#{$index} {
+            left: $percent;
+        }
+
+        ///*! sm:col-pull-1 */
+        &-pull-#{$index} {
+            right: $percent;
+        }
+
+        //sm:col-offset-1
+        &-offset-#{$index} {
+            margin-left: $percent;
+        }
+
+        //sm:col-order-1
+        &-order-#{$index} {
+            order: #{$index};
+        }
+    }
+}
+
+@mixin make-grid-columns($class, $columns: $columns) {
+    @for $index from 1 through $columns {
+        @include make-grid-column($class, $index, $columns);
+    }
+}
+
+// Gutters
+// Make use of `.sm:g-*`, `.sm:grx-*` or `.sm:gry-*` utilities to change spacing between the columns.
+@mixin make-grid-gutters($class, $gutters: cfg.$gutters, $infix: null) {
+    $infix: if($infix ==null, bp.join-col-prefix($class, g), $infix); //sm:gr
+
+    // sm
+    @each $key, $value in $gutters {
+
+
+        .#{$infix}-#{$key},
+        .#{$infix}rx-#{$key} {
+            --#{$prefix}gutter-grx: #{$value};
+        }
+
+        .#{$infix}-#{$key},
+        .#{$infix}ry-#{$key} {
+            --#{$prefix}gutter-gry: #{$value};
+        }
+    }
+
+}
+
+@mixin make-breakpoint($breakpoint: $breakpoints, $columns: $columns) {
+
+    //col-1,...
+    @include make-grid-columns('', $columns);
+
+    @each $name, $width in $breakpoint {
+
+        @if ($width ==0) {
+            @include bp.media-breakpoint-down($name, $breakpoint) {
+                @include make-grid-columns($name, $columns);
+            }
+        }
+
+        @else if ($width > 0) {
+            @include bp.media-breakpoint-up($name, $breakpoint) {
+
+                //sm:col-1,2,3,4....
+                @include make-grid-columns($name, $columns);
+
+                //sm:col-auto
+                @include make-col-auto($name);
+
+                //sm:col-hide
+                @include make-col-hide($name);
+
+                //sm:grx-0
+                @include make-grid-gutters($name);
+
+            }
+        }
+
+
+    }
+}

@@ -1,0 +1,194 @@
+@use 'sass:meta';
+@use 'sass:list';
+
+/// $pCls: ($percent, $order)
+$xs-cls: (
+  'dateon': (55%, 1),
+  'option': (45%, 2),
+  'search': (55%, 3),
+  'send': (35%, 5),
+  'excel': (45%, 4),
+  'ag': (45%, 7),
+  'tool': (20%, 6),
+  'chk-chanel': (35%, 8),
+  'chk-visible': (35%, 9),
+  'total': (30%, 10)) !default;
+
+@function get-order($cls: $xs-cls) {}
+
+:host {
+  display: block;
+}
+
+.ticket-list {
+  .tool-r1 {
+    .p-divider-vertical {
+      padding: unset !important;
+      margin: unset !important;
+    }
+
+    .p-button {
+      padding: 0.1rem 0.39375rem
+    }
+  }
+
+  .tool-r2 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+
+    >div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .result {
+      .value {
+        font-weight: bold;
+      }
+
+      .send {
+        font-weight: bold;
+        color: var(--help-color
+        );
+    }
+
+    .ok {
+      color: var(--success-color);
+    }
+
+    .error {
+      color: var(--danger-color);
+    }
+
+    .total {
+      color: var(--primary-color);
+    }
+  }
+
+  .choose-attach {
+    .p-fileupload .p-button {
+      background-color: transparent;
+      color: #0ea5e9;
+      border-color: transparent;
+    }
+  }
+}
+
+.ag-table {
+  .ag-cell[col-id="send_status"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: unset;
+
+    >div[ts-ag-cell-status] {
+      display: flex;
+    }
+  }
+
+  .ag-cell.icon-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    >div:first-child {
+      display: flex;
+    }
+  }
+
+  .pi-icon {
+    font-size: 1.5rem;
+
+    &-state-error {
+      color: red;
+    }
+
+    &.pi-check,
+    &-state-success {
+      color: rgb(20, 172, 71);
+    }
+
+    &-state-loading {
+      color: rgb(221, 18, 194);
+    }
+  }
+}
+
+.r-divider {
+  //padding: 0 0.5rem;
+
+  .p-divider.p-divider-horizontal {
+    margin: 0 0 .5rem 0;
+
+    &:before {
+      border-top: 5px solid var(--info-color);
+
+    }
+  }
+
+}
+
+
+}
+
+.p-ticket-msg {
+  width: 25rem;
+}
+
+.ag-header-cell-label {
+  justify-content: center;
+}
+
+@media (min-height: 500px) {
+  .ag-table {
+    border-color: red;
+  }
+}
+
+@media screen and (min-width: var(--grid-bpw-sm)) {
+  .sm:plr-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@media screen and (max-width: 575px) {
+
+  #ticketListTool {
+
+    >.grid {
+      --gutter-grx: .25rem;
+    }
+
+    .p-dropdown,
+    .p-button,
+    .p-splitbutton-defaultbutton,
+    .p-splitbutton,
+    .p-calendar,
+    p-button {
+      width: 100%;
+    }
+
+    @each $cls, $v in $xs-cls {
+      $percent: list.nth($v, 1);
+      $order: list.nth($v, 2);
+
+      .p-col-#{$cls} {
+        flex: 0 0 auto;
+        width: $percent !important;
+        max-width: $percent !important;
+        order: $order;
+      }
+
+    }
+
+
+
+
+  }
+
+}

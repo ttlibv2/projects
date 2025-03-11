@@ -1,0 +1,101 @@
+@use "../../../setting/config" as cfg;.p-panelmenu {
+    .p-panelmenu-header {
+        border-radius: cfg.$menuitemBorderRadius;
+
+        &:not(.p-disabled) {
+            &:focus-visible {
+                .p-panelmenu-header-content {
+                    outline: 0 none;
+
+                    .p-panelmenu-header-action {
+                        background: cfg.$menuitemFocusBg;
+                        
+                        .p-menuitem-text {
+                            color: cfg.$menuitemTextFocusColor;
+                        }
+        
+                        .p-submenu-icon {
+                            color: cfg.$menuitemIconFocusColor;
+                        }
+        
+                        .p-menuitem-icon {
+                            color: cfg.$menuitemIconFocusColor;
+                        }
+                    }
+                }
+            }
+        }
+
+        .p-panelmenu-header-content {
+            border-radius: cfg.$menuitemBorderRadius;
+            transition: cfg.$listItemTransition;
+
+            .p-panelmenu-header-action {
+                color: cfg.$menuitemTextColor;
+                padding: cfg.$menuitemPadding;
+                font-weight: cfg.$submenuHeaderFontWeight;
+                border-radius: cfg.$menuitemBorderRadius;
+                transition: cfg.$listItemTransition;
+
+                .p-menuitem-text {
+                    color: cfg.$menuitemTextColor;
+                }
+
+                .p-submenu-icon {
+                    color: cfg.$menuitemIconColor;
+                }
+
+                .p-menuitem-icon {
+                    color: cfg.$menuitemIconColor;
+                }
+
+                &:hover {
+                    background: cfg.$menuitemHoverBg;
+
+                    .p-menuitem-text {
+                        color: cfg.$menuitemTextHoverColor;
+                    }
+    
+                    .p-submenu-icon {
+                        color: cfg.$menuitemIconHoverColor;
+                    }
+    
+                    .p-menuitem-icon {
+                        color: cfg.$menuitemIconHoverColor;
+                    }
+                }
+
+                .p-submenu-icon {
+                    margin-right: cfg.$inlineSpacing;
+                }
+
+                .p-menuitem-icon {
+                    margin-right: cfg.$inlineSpacing;
+                }
+            }
+        }
+    }
+
+    .p-panelmenu-content {
+        border-radius: cfg.$borderRadius;
+        padding: 0 0 0 1rem;
+
+        .p-menuitem {
+            &:first-child {
+                margin-top: 2px;
+            }
+
+            &:last-child {
+                margin-top: 2px;
+            }
+        }
+    }
+
+    .p-panelmenu-panel {
+        padding: cfg.$inputListPadding; 
+        overflow: hidden;
+        margin-bottom: .75rem;
+        border: 1px solid cfg.$panelHeaderBorderColor;
+        border-radius: cfg.$borderRadius;
+    }
+}

@@ -1,0 +1,8 @@
+<ag-grid-angular #agGridComp class="ag-theme-quartz"
+    [style.height]="tableHeight || gridOption?.height" 
+    [domLayout]="gridOption?.domLayout"
+    [columnDefs]="columns" [rowData]="rows"
+    [components]="components"
+    [gridOptions]="gridOption"
+    (rowClicked)="onRowClicked($event)"
+    (gridReady)="gridReadyAg($event)"></ag-grid-angular>

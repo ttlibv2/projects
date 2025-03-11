@@ -1,0 +1,5 @@
+<ul class="side--menu">
+    @for (item of items; track $index) {
+        <li ts-side-item [item]="item" [index]="$index" [level]="0"></li>
+    }
+</ul>

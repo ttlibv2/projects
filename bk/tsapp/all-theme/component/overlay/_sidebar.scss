@@ -1,0 +1,29 @@
+@use "../../setting/config" as cfg;
+@use "../../setting/mixins" as util;
+.p-sidebar {
+    background: cfg.$overlayContentBg;
+    color: cfg.$panelContentTextColor;
+    border: cfg.$overlayContentBorder;
+    box-shadow: cfg.$overlayContainerShadow;
+
+    .p-sidebar-header {
+        padding: cfg.$panelHeaderPadding;
+
+        .p-sidebar-close,
+        .p-sidebar-icon {
+            @include util.action-icon();
+        }
+
+        & + .p-sidebar-content {
+            padding-top: 0;
+        }
+    }
+
+    .p-sidebar-content {
+        padding: cfg.$panelContentPadding;
+    }
+
+    .p-sidebar-footer {
+        padding: cfg.$panelHeaderPadding;
+    }
+}

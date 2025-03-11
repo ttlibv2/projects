@@ -1,0 +1,177 @@
+$clsitem                 : 'side-item';
+$side-height             : calc(100vh - 90px);
+$side-width              : 252px;
+$side-bg                 : #170f28;
+$side-color              : #fff;
+$side-text-letter-spacing: .05rem;
+
+$side-main-padding     : 20px 0 12px 20px;
+$side-item-padding     : 14px 20px;
+$side-item-color       : $side-color;
+$side-item-fweight     : 500;
+$side-item-fsize       : 1.1rem;
+$side-item-line-height : 1;
+$side-item-gap         : .5rem;
+
+$side-item-icon-color : $side-item-color;
+$side-item-icon-size: 1.2rem;
+
+$side-item-active-bg   : #2c253b;
+$side-item-hover-bg: #2c253b;
+$side-item-hover-color: $side-color;
+
+$side-submenu-line-bg: #6f5a99;
+$side-subitem-color: #cbccce91;
+$side-subitem-dot-color: #cbccce91;
+$side-subitem-hover-color: #fff;
+$side-subitem-fsize: 1rem;
+
+.side {
+
+    &--menu {
+        height    : $side-height;
+        width     : $side-width;
+        color     : $side-color;
+        background: $side-bg;
+        display   : flex;
+        flex-flow : column nowrap;
+        transition: color 1s ease;
+        overflow  : auto;
+
+        &::-webkit-scrollbar {
+            width             : 2px;
+            height            : 5px;
+            background        : transparent;
+            -webkit-box-shadow: none;//inset 0 0 6px rgba(106, 113, 133, .3);
+        }
+    }
+
+    &--item {
+
+        &-main {
+            padding: $side-main-padding;
+
+            .side--item-title {
+                font-weight          : 600;
+                color                : #aa89ee;
+                text-transform       : uppercase;
+                text-decoration      : underline;
+                text-underline-offset: 4px;
+                overflow             : visible;
+            }
+        }
+
+        &-link {
+            padding       : $side-item-padding;
+            font-weight   : $side-item-fweight;
+            font-size     : $side-item-fsize;
+            line-height   : $side-item-line-height;
+            color         : $side-item-color;
+            cursor        : pointer;
+            transition    : all .5s ease;
+            text-transform: capitalize;
+
+            display    : flex;
+            flex-flow  : row nowrap;
+            column-gap : $side-item-gap;
+            align-items: center;
+
+            &.active {
+                background-color: $side-item-active-bg;
+            }
+
+            &:hover {
+                background-color: $side-item-hover-bg;
+                color: $side-item-hover-color;
+                transition      : all .3s ease;
+
+                .pinned-icon {
+                    visibility: visible;
+                }
+            }
+
+        }
+
+        &-title {
+            letter-spacing   : $side-text-letter-spacing;
+            overflow         : hidden;
+            text-overflow    : ellipsis;
+            white-space      : nowrap;
+            flex             : 1 auto;
+        }
+
+        &-icon {
+            font-size: $side-item-icon-size;
+            color    : $side-item-icon-color;
+
+            &.pinned-icon {
+                font-size: .8rem;
+                visibility: hidden;
+            }
+
+        }
+
+        &.has-sub .pinned-icon {
+            visibility: hidden !important;
+        }
+
+        &-submenu {
+            position: relative !important;
+
+            &::before {
+                position    : absolute;
+                content     : "";
+                width       : 1px;
+                height      : calc(100% - 12px);
+                background  : $side-submenu-line-bg;
+                top         : 6px;
+                left        : 27px;
+                transition  : height .5s;
+            }
+
+            .side--item-link {
+                padding       : 7px 25px;
+                font-size     : $side-subitem-fsize;
+                color         : $side-subitem-color;
+                letter-spacing: .06em;
+                font-weight   : $side-item-fweight;
+                transition    : all .3s ease;
+                white-space   : nowrap;
+                overflow      : hidden;
+                text-overflow : ellipsis;
+                padding-left  : 50px !important;
+
+                &::before {
+                    position     : absolute;
+                    content      : "";
+                    width        : 5px;
+                    height       : 5px;
+                    top          : 50%;
+                    transform    : translateY(-50%);
+                    left         : 43px;
+                    border-radius: 100%;
+                    background   : $side-subitem-dot-color;
+                }
+
+                &:hover {
+                    color: $side-subitem-hover-color;
+                    background: initial;
+                }
+
+            }
+
+            .side--item.level-2 {
+
+                .side--item-link {
+                    padding-left: 55px !important;
+
+                    &::before {
+                        height: 1px;
+                    }
+                }
+            }
+        }
+
+
+    }
+}
