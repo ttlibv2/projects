@@ -23,8 +23,9 @@ import {
 import { Option, parseJsonSchemaToOptions } from '../../utilities/json-schema';
 import { SchematicEngineHost } from '../../utilities/sc-engine-host';
 import { subscribeToWorkflow } from '../../utilities/sc-workflow';
+import { CLI_SCHEMATIC } from '../../utilities/environment';
 
-export const DEFAULT_SCHEMATICS_COLLECTION = '@schematics/angular';
+export const DEFAULT_SCHEMATICS_COLLECTION = CLI_SCHEMATIC;
 
 export interface SchematicsCommandArgs {
   interactive: boolean;
@@ -262,7 +263,7 @@ export abstract class SchematicsCommandModule
     return workflow;
   }
 
-  @memoize
+  // @memoize
   protected async getSchematicCollections(): Promise<Set<string>> {
     
     // const getSchematicCollections = (

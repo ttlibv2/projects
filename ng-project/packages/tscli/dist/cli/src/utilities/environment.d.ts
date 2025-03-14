@@ -1,5 +1,6 @@
 export declare const ROOT_JSON: string[];
 export declare const CLI_PKG = "@ngdev/cli";
+export declare const CLI_SCHEMATIC = "@ngdev/sc";
 export declare const V_PKG = "ngdev";
 export declare const analyticsDisabled: boolean;
 export declare const isCI: boolean;

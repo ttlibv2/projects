@@ -1,23 +1,34 @@
-import { json, workspaces } from '@angular-devkit/core';
-import { existsSync, promises as fs } from 'node:fs';
-import * as os from 'node:os';
-import * as path from 'node:path';
-import { findUp } from './find-up';
-import { JSONFile, readAndParseJson } from './json-file';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AngularWorkspace = exports.workspaceSchemaPath = void 0;
+exports.getWorkspace = getWorkspace;
+exports.getWorkspaceRaw = getWorkspaceRaw;
+exports.validateWorkspace = validateWorkspace;
+exports.getProjectByCwd = getProjectByCwd;
+exports.getConfiguredPackageManager = getConfiguredPackageManager;
+exports.getSchematicDefaults = getSchematicDefaults;
+exports.isWarningEnabled = isWarningEnabled;
+const tslib_1 = require("tslib");
+const core_1 = require("@angular-devkit/core");
+const node_fs_1 = require("node:fs");
+const os = tslib_1.__importStar(require("node:os"));
+const path = tslib_1.__importStar(require("node:path"));
+const find_up_1 = require("./find-up");
+const json_file_1 = require("./json-file");
 function isJsonObject(value) {
-    return value !== undefined && json.isJsonObject(value);
+    return value !== undefined && core_1.json.isJsonObject(value);
 }
 function createWorkspaceHost() {
     return {
         readFile(path) {
-            return fs.readFile(path, 'utf-8');
+            return node_fs_1.promises.readFile(path, 'utf-8');
         },
         async writeFile(path, data) {
-            await fs.writeFile(path, data);
+            await node_fs_1.promises.writeFile(path, data);
         },
         async isDirectory(path) {
             try {
-                const stats = await fs.stat(path);
+                const stats = await node_fs_1.promises.stat(path);
                 return stats.isDirectory();
             }
             catch {
@@ -26,7 +37,7 @@ function createWorkspaceHost() {
         },
         async isFile(path) {
             try {
-                const stats = await fs.stat(path);
+                const stats = await node_fs_1.promises.stat(path);
                 return stats.isFile();
             }
             catch {
@@ -35,7 +46,7 @@ function createWorkspaceHost() {
         },
     };
 }
-export const workspaceSchemaPath = path.join(__dirname, '../../lib/config/schema.json');
+exports.workspaceSchemaPath = path.join(__dirname, '../../lib/config/schema.json');
 const configNames = ['angular.json', '.angular.json'];
 const globalFileName = '.angular-config.json';
 const defaultGlobalFilePath = path.join(os.homedir(), globalFileName);
@@ -55,9 +66,9 @@ function xdgConfigHomeOld(home) {
 function projectFilePath(projectPath) {
     // Find the configuration, either where specified, in the Angular CLI project
     // (if it's in node_modules) or from the current process.
-    return ((projectPath && findUp(configNames, projectPath)) ||
-        findUp(configNames, process.cwd()) ||
-        findUp(configNames, __dirname));
+    return ((projectPath && (0, find_up_1.findUp)(configNames, projectPath)) ||
+        (0, find_up_1.findUp)(configNames, process.cwd()) ||
+        (0, find_up_1.findUp)(configNames, __dirname));
 }
 function globalFilePath() {
     const home = os.homedir();
@@ -69,24 +80,24 @@ function globalFilePath() {
     // global file in home directory, with this user will have
     // choice to move change its location to meet XDG convention
     const xdgConfig = xdgConfigHome(home, 'config.json');
-    if (existsSync(xdgConfig)) {
+    if ((0, node_fs_1.existsSync)(xdgConfig)) {
         return xdgConfig;
     }
     // NOTE: This check is for the old configuration location, for more
     // information see https://github.com/angular/angular-cli/pull/20556
     const xdgConfigOld = xdgConfigHomeOld(home);
-    if (existsSync(xdgConfigOld)) {
+    if ((0, node_fs_1.existsSync)(xdgConfigOld)) {
         /* eslint-disable no-console */
         console.warn(`Old configuration location detected: ${xdgConfigOld}\n` +
             `Please move the file to the new location ~/.config/angular/config.json`);
         return xdgConfigOld;
     }
-    if (existsSync(defaultGlobalFilePath)) {
+    if ((0, node_fs_1.existsSync)(defaultGlobalFilePath)) {
         return defaultGlobalFilePath;
     }
     return null;
 }
-export class AngularWorkspace {
+class AngularWorkspace {
     workspace;
     filePath;
     basePath;
@@ -112,15 +123,16 @@ export class AngularWorkspace {
         return project?.extensions['cli'];
     }
     save() {
-        return workspaces.writeWorkspace(this.workspace, createWorkspaceHost(), this.filePath, workspaces.WorkspaceFormat.JSON);
+        return core_1.workspaces.writeWorkspace(this.workspace, createWorkspaceHost(), this.filePath, core_1.workspaces.WorkspaceFormat.JSON);
     }
     static async load(workspaceFilePath) {
-        const result = await workspaces.readWorkspace(workspaceFilePath, createWorkspaceHost(), workspaces.WorkspaceFormat.JSON);
+        const result = await core_1.workspaces.readWorkspace(workspaceFilePath, createWorkspaceHost(), core_1.workspaces.WorkspaceFormat.JSON);
         return new AngularWorkspace(result.workspace, workspaceFilePath);
     }
 }
+exports.AngularWorkspace = AngularWorkspace;
 const cachedWorkspaces = new Map();
-export async function getWorkspace(level) {
+async function getWorkspace(level) {
     if (cachedWorkspaces.has(level)) {
         return cachedWorkspaces.get(level);
     }
@@ -129,7 +141,7 @@ export async function getWorkspace(level) {
         if (level === 'global') {
             // Unlike a local config, a global config is not mandatory.
             // So we create an empty one in memory and keep it as such until it has been modified and saved.
-            const globalWorkspace = new AngularWorkspace({ extensions: {}, projects: new workspaces.ProjectDefinitionCollection() }, defaultGlobalFilePath);
+            const globalWorkspace = new AngularWorkspace({ extensions: {}, projects: new core_1.workspaces.ProjectDefinitionCollection() }, defaultGlobalFilePath);
             cachedWorkspaces.set(level, globalWorkspace);
             return globalWorkspace;
         }
@@ -152,7 +164,7 @@ export async function getWorkspace(level) {
  *
  * NB: This method is intended to be used only for `ng config`.
  */
-export async function getWorkspaceRaw(level = 'local') {
+async function getWorkspaceRaw(level = 'local') {
     let configPath = level === 'local' ? projectFilePath() : globalFilePath();
     if (!configPath) {
         if (level === 'global') {
@@ -165,10 +177,10 @@ export async function getWorkspaceRaw(level = 'local') {
             return [null, null];
         }
     }
-    return [new JSONFile(configPath), configPath];
+    return [new json_file_1.JSONFile(configPath), configPath];
 }
-export async function validateWorkspace(data, isGlobal) {
-    const schema = readAndParseJson(workspaceSchemaPath);
+async function validateWorkspace(data, isGlobal) {
+    const schema = (0, json_file_1.readAndParseJson)(exports.workspaceSchemaPath);
     // We should eventually have a dedicated global config schema and use that to validate.
     const schemaToValidate = isGlobal
         ? {
@@ -176,12 +188,12 @@ export async function validateWorkspace(data, isGlobal) {
             definitions: schema['definitions'],
         }
         : schema;
-    const { formats } = await import('@angular-devkit/schematics');
-    const registry = new json.schema.CoreSchemaRegistry(formats.standardFormats);
+    const { formats } = await Promise.resolve().then(() => tslib_1.__importStar(require('@angular-devkit/schematics')));
+    const registry = new core_1.json.schema.CoreSchemaRegistry(formats.standardFormats);
     const validator = await registry.compile(schemaToValidate);
     const { success, errors } = await validator(data);
     if (!success) {
-        throw new json.schema.SchemaValidationException(errors);
+        throw new core_1.json.schema.SchemaValidationException(errors);
     }
 }
 function findProjectByPath(workspace, location) {
@@ -220,7 +232,7 @@ function findProjectByPath(workspace, location) {
     }
     return projects[0][1];
 }
-export function getProjectByCwd(workspace) {
+function getProjectByCwd(workspace) {
     if (workspace.projects.size === 1) {
         // If there is only one project, return that one.
         return Array.from(workspace.projects.keys())[0];
@@ -231,7 +243,7 @@ export function getProjectByCwd(workspace) {
     }
     return null;
 }
-export async function getConfiguredPackageManager() {
+async function getConfiguredPackageManager() {
     const getPackageManager = (source) => {
         if (isJsonObject(source)) {
             const value = source['packageManager'];
@@ -256,7 +268,7 @@ export async function getConfiguredPackageManager() {
     }
     return result;
 }
-export async function getSchematicDefaults(collection, schematic, project) {
+async function getSchematicDefaults(collection, schematic, project) {
     const result = {};
     const mergeOptions = (source) => {
         if (isJsonObject(source)) {
@@ -284,7 +296,7 @@ export async function getSchematicDefaults(collection, schematic, project) {
     }
     return result;
 }
-export async function isWarningEnabled(warning) {
+async function isWarningEnabled(warning) {
     const getWarning = (source) => {
         if (isJsonObject(source)) {
             const warnings = source['warnings'];

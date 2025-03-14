@@ -1,7 +1,39 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SchematicsCommandModule = exports.DEFAULT_SCHEMATICS_COLLECTION = void 0;
-const tslib_1 = require("tslib");
 const core_1 = require("@angular-devkit/core");
 const schematics_1 = require("@angular-devkit/schematics");
 const tools_1 = require("@angular-devkit/schematics/tools");
@@ -10,13 +42,13 @@ const node_path_1 = require("node:path");
 // import { EventCustomDimension } from '../analytics/analytics-parameters';
 const config_1 = require("../../utilities/config");
 const error_1 = require("../../utilities/error");
-const memoize_1 = require("../../utilities/memoize");
 const tty_1 = require("../../utilities/tty");
 const command_module_1 = require("./command-module");
 const json_schema_1 = require("../../utilities/json-schema");
 const sc_engine_host_1 = require("../../utilities/sc-engine-host");
 const sc_workflow_1 = require("../../utilities/sc-workflow");
-exports.DEFAULT_SCHEMATICS_COLLECTION = '@schematics/angular';
+const environment_1 = require("../../utilities/environment");
+exports.DEFAULT_SCHEMATICS_COLLECTION = environment_1.CLI_SCHEMATIC;
 class SchematicsCommandModule extends command_module_1.CommandModule {
     scope = command_module_1.CommandScope.In;
     allowPrivateSchematics = false;
@@ -112,7 +144,7 @@ class SchematicsCommandModule extends command_module_1.CommandModule {
                         continue;
                     }
                     // Only load prompt package if needed
-                    prompts ??= await Promise.resolve().then(() => tslib_1.__importStar(require('@inquirer/prompts')));
+                    prompts ??= await Promise.resolve().then(() => __importStar(require('@inquirer/prompts')));
                     switch (definition.type) {
                         case 'confirmation':
                             answers[definition.id] = await prompts.confirm({
@@ -193,6 +225,7 @@ class SchematicsCommandModule extends command_module_1.CommandModule {
         }
         return workflow;
     }
+    // @memoize
     async getSchematicCollections() {
         // const getSchematicCollections = (
         //   configSection: Record<string, unknown> | undefined,
@@ -301,6 +334,3 @@ class SchematicsCommandModule extends command_module_1.CommandModule {
     }
 }
 exports.SchematicsCommandModule = SchematicsCommandModule;
-tslib_1.__decorate([
-    memoize_1.memoize
-], SchematicsCommandModule.prototype, "getSchematicCollections", null);

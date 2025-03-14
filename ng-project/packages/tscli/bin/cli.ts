@@ -1,4 +1,4 @@
 #!/usr/bin/env node
-require('../lib/init');
+// require('../lib/init');
 
-// void import('../lib/init');
+void import('../lib/init');

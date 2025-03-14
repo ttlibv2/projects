@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.memoize = memoize;
 /**
  * A decorator that memoizes methods and getters.
  *
@@ -5,7 +8,7 @@
  *
  * @see https://en.wikipedia.org/wiki/Memoization
  */
-export function memoize(target, context) {
+function memoize(target, context) {
     console.log('memoize: ', context);
     if (context.kind !== 'method' && context.kind !== 'getter') {
         throw new Error('Memoize decorator can only be used on methods or get accessors.');

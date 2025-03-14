@@ -1,5 +1,6 @@
 export const ROOT_JSON = ['project.json'];
 export const CLI_PKG = '@ngdev/cli';
+export const CLI_SCHEMATIC = '@ngdev/sc';
 export const V_PKG = 'ngdev';
 
 

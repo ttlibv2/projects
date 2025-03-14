@@ -3,8 +3,8 @@
     "baseUrl": "tsconfig",
     "outDir": "./dist/cli",
     "noUncheckedIndexedAccess": true,
-    // "resolveJsonModule": true,
-    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
+    // "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "strict": false,
     "declaration": true,
@@ -20,7 +20,7 @@
     "importHelpers": true,
     "lib": ["es2022", "DOM"],
     "target": "ES2022",
-    "module": "ES2022"
+    "module": "CommonJS"
   },
   "include": ["bin", "package.json"],
   "exclude": ["node_modules", "e2e"]

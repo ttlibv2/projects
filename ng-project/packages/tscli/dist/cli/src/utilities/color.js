@@ -1,12 +1,18 @@
-import { WriteStream } from 'node:tty';
-export { color as colors, figures } from 'listr2';
-export function supportColor(stream = process.stdout) {
-    if (stream instanceof WriteStream) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.figures = exports.colors = void 0;
+exports.supportColor = supportColor;
+const node_tty_1 = require("node:tty");
+var listr2_1 = require("listr2");
+Object.defineProperty(exports, "colors", { enumerable: true, get: function () { return listr2_1.color; } });
+Object.defineProperty(exports, "figures", { enumerable: true, get: function () { return listr2_1.figures; } });
+function supportColor(stream = process.stdout) {
+    if (stream instanceof node_tty_1.WriteStream) {
         return stream.hasColors();
     }
     try {
         // The hasColors function does not rely on any instance state and should ideally be static
-        return WriteStream.prototype.hasColors();
+        return node_tty_1.WriteStream.prototype.hasColors();
     }
     catch {
         return process.env['FORCE_COLOR'] !== undefined && process.env['FORCE_COLOR'] !== '0';

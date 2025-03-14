@@ -3,7 +3,7 @@ import { FileSystemCollectionDescription, FileSystemSchematicDescription, NodeWo
 import { Argv } from 'yargs';
 import { CommandModule, CommandModuleImplementation, CommandScope, Options, OtherOptions } from './command-module';
 import { Option } from '../../utilities/json-schema';
-export declare const DEFAULT_SCHEMATICS_COLLECTION = "@schematics/angular";
+export declare const DEFAULT_SCHEMATICS_COLLECTION = "@ngdev/sc";
 export interface SchematicsCommandArgs {
     interactive: boolean;
     force: boolean;

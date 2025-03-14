@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VERSION = void 0;
 class Version {
     full;
     major;
@@ -11,4 +14,4 @@ class Version {
         this.patch = patch;
     }
 }
-export const VERSION = new Version('0.0.0-PLACEHOLDER');
+exports.VERSION = new Version('0.0.0-PLACEHOLDER');

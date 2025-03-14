@@ -1,21 +1,26 @@
-import { applyEdits, findNodeAtLocation, getNodeValue, modify, parse, parseTree, printParseErrorCode, } from 'jsonc-parser';
-import { readFileSync, writeFileSync } from 'node:fs';
-import { getEOL } from './eol';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JSONFile = void 0;
+exports.readAndParseJson = readAndParseJson;
+exports.parseJson = parseJson;
+const jsonc_parser_1 = require("jsonc-parser");
+const node_fs_1 = require("node:fs");
+const eol_1 = require("./eol");
 /** @internal */
-export class JSONFile {
+class JSONFile {
     path;
     content;
     eol;
     constructor(path) {
         this.path = path;
-        const buffer = readFileSync(this.path);
+        const buffer = (0, node_fs_1.readFileSync)(this.path);
         if (buffer) {
             this.content = buffer.toString();
         }
         else {
             throw new Error(`Could not read '${path}'.`);
         }
-        this.eol = getEOL(this.content);
+        this.eol = (0, eol_1.getEOL)(this.content);
     }
     _jsonAst;
     get JsonAst() {
@@ -23,7 +28,7 @@ export class JSONFile {
             return this._jsonAst;
         }
         const errors = [];
-        this._jsonAst = parseTree(this.content, errors, { allowTrailingComma: true });
+        this._jsonAst = (0, jsonc_parser_1.parseTree)(this.content, errors, { allowTrailingComma: true });
         if (errors.length) {
             formatError(this.path, errors);
         }
@@ -35,10 +40,10 @@ export class JSONFile {
             return undefined;
         }
         if (jsonPath.length === 0) {
-            return getNodeValue(jsonAstNode);
+            return (0, jsonc_parser_1.getNodeValue)(jsonAstNode);
         }
-        const node = findNodeAtLocation(jsonAstNode, jsonPath);
-        return node === undefined ? undefined : getNodeValue(node);
+        const node = (0, jsonc_parser_1.findNodeAtLocation)(jsonAstNode, jsonPath);
+        return node === undefined ? undefined : (0, jsonc_parser_1.getNodeValue)(node);
     }
     modify(jsonPath, value, insertInOrder) {
         if (value === undefined && this.get(jsonPath) === undefined) {
@@ -53,7 +58,7 @@ export class JSONFile {
         else if (insertInOrder !== false) {
             getInsertionIndex = insertInOrder;
         }
-        const edits = modify(this.content, jsonPath, value, {
+        const edits = (0, jsonc_parser_1.modify)(this.content, jsonPath, value, {
             getInsertionIndex,
             // TODO: use indentation from original file.
             formattingOptions: {
@@ -65,18 +70,19 @@ export class JSONFile {
         if (edits.length === 0) {
             return false;
         }
-        this.content = applyEdits(this.content, edits);
+        this.content = (0, jsonc_parser_1.applyEdits)(this.content, edits);
         this._jsonAst = undefined;
         return true;
     }
     save() {
-        writeFileSync(this.path, this.content);
+        (0, node_fs_1.writeFileSync)(this.path, this.content);
     }
 }
+exports.JSONFile = JSONFile;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function readAndParseJson(path) {
+function readAndParseJson(path) {
     const errors = [];
-    const content = parse(readFileSync(path, 'utf-8'), errors, { allowTrailingComma: true });
+    const content = (0, jsonc_parser_1.parse)((0, node_fs_1.readFileSync)(path, 'utf-8'), errors, { allowTrailingComma: true });
     if (errors.length) {
         formatError(path, errors);
     }
@@ -84,9 +90,9 @@ export function readAndParseJson(path) {
 }
 function formatError(path, errors) {
     const { error, offset } = errors[0];
-    throw new Error(`Failed to parse "${path}" as JSON AST Object. ${printParseErrorCode(error)} at location: ${offset}.`);
+    throw new Error(`Failed to parse "${path}" as JSON AST Object. ${(0, jsonc_parser_1.printParseErrorCode)(error)} at location: ${offset}.`);
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parseJson(content) {
-    return parse(content, undefined, { allowTrailingComma: true });
+function parseJson(content) {
+    return (0, jsonc_parser_1.parse)(content, undefined, { allowTrailingComma: true });
 }

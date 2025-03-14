@@ -1,13 +1,16 @@
-import 'symbol-observable';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+require("symbol-observable");
 // symbol polyfill must go first
-import { promises as fs } from 'node:fs';
-import { createRequire } from 'node:module';
-import * as path from 'node:path';
-import { SemVer, major } from 'semver';
-import { colors } from '../src/utilities/color';
-import { isWarningEnabled } from '../src/utilities/config';
-import { CLI_PKG, disableVersionCheck } from '../src/utilities/environment';
-import { VERSION } from '../src/utilities/version';
+const node_fs_1 = require("node:fs");
+const node_module_1 = require("node:module");
+const path = tslib_1.__importStar(require("node:path"));
+const semver_1 = require("semver");
+const color_1 = require("../src/utilities/color");
+const config_1 = require("../src/utilities/config");
+const environment_1 = require("../src/utilities/environment");
+const version_1 = require("../src/utilities/version");
 /**
  * Angular CLI versions prior to v14 may not exit correctly if not forcibly exited
  * via `process.exit()`. When bootstrapping, `forceExit` will be set to `true`
@@ -33,22 +36,22 @@ let forceExit = false;
      * cases orphan `node_modules` would cause the non global CLI to be used.
      * @see: https://github.com/angular/angular-cli/issues/14603
      */
-    if (disableVersionCheck || rawCommandName === 'new') {
-        return (await import('./cli')).default;
+    if (environment_1.disableVersionCheck || rawCommandName === 'new') {
+        return (await Promise.resolve().then(() => tslib_1.__importStar(require('./cli')))).default;
     }
     let cli;
     try {
         // No error implies a projectLocalCli, which will load whatever
         // version of ng-cli you have installed in a local package.json
-        const cwdRequire = createRequire(process.cwd() + '/');
-        const projectLocalCli = cwdRequire.resolve(CLI_PKG);
-        cli = await import(projectLocalCli);
-        const globalVersion = new SemVer(VERSION.full);
+        const cwdRequire = (0, node_module_1.createRequire)(process.cwd() + '/');
+        const projectLocalCli = cwdRequire.resolve(environment_1.CLI_PKG);
+        cli = await Promise.resolve(`${projectLocalCli}`).then(s => tslib_1.__importStar(require(s)));
+        const globalVersion = new semver_1.SemVer(version_1.VERSION.full);
         // Older versions might not have the VERSION export
         let localVersion = cli.VERSION?.full;
         if (!localVersion) {
             try {
-                const localPackageJson = await fs.readFile(path.join(path.dirname(projectLocalCli), '../../package.json'), 'utf-8');
+                const localPackageJson = await node_fs_1.promises.readFile(path.join(path.dirname(projectLocalCli), '../../package.json'), 'utf-8');
                 localVersion = JSON.parse(localPackageJson).version;
             }
             catch (error) {
@@ -57,7 +60,7 @@ let forceExit = false;
             }
         }
         // Ensure older versions of the CLI fully exit
-        const localMajorVersion = major(localVersion);
+        const localMajorVersion = (0, semver_1.major)(localVersion);
         if (localMajorVersion > 0 && localMajorVersion < 14) {
             forceExit = true;
             // Versions prior to 14 didn't implement completion command.
@@ -82,15 +85,15 @@ let forceExit = false;
             if (rawCommandName === 'update' &&
                 cli.VERSION &&
                 cli.VERSION.major - globalVersion.major <= 1) {
-                cli = await import('./cli');
+                cli = await Promise.resolve().then(() => tslib_1.__importStar(require('./cli')));
             }
-            else if (await isWarningEnabled('versionMismatch')) {
+            else if (await (0, config_1.isWarningEnabled)('versionMismatch')) {
                 // Otherwise, use local version and warn if global is newer than local
                 const warning = `Your global Angular CLI version (${globalVersion}) is greater than your local ` +
                     `version (${localVersion}). The local Angular CLI version is used.\n\n` +
                     'To disable this warning use "ng config -g cli.warnings.versionMismatch false".';
                 // eslint-disable-next-line  no-console
-                console.error(colors.yellow(warning));
+                console.error(color_1.colors.yellow(warning));
             }
         }
     }
@@ -99,7 +102,7 @@ let forceExit = false;
         // library from a package.json. Instead, include it from a relative
         // path to this script file (which is likely a globally installed
         // npm package). Most common cause for hitting this is `ng new`
-        cli = await import('./cli');
+        cli = await Promise.resolve().then(() => tslib_1.__importStar(require('./cli')));
     }
     if ('default' in cli) {
         cli = cli['default'];

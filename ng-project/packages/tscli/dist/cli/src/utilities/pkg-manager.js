@@ -1,18 +1,21 @@
-import { isJsonObject } from '@angular-devkit/core';
-import { execSync, spawn } from 'node:child_process';
-import { existsSync, promises as fs, realpathSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { getProjectByCwd } from './config';
-export var PackageManager;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PackageManagerUtils = exports.PackageManager = void 0;
+const core_1 = require("@angular-devkit/core");
+const node_child_process_1 = require("node:child_process");
+const node_fs_1 = require("node:fs");
+const node_os_1 = require("node:os");
+const node_path_1 = require("node:path");
+const config_1 = require("./config");
+var PackageManager;
 (function (PackageManager) {
     PackageManager["Npm"] = "npm";
     PackageManager["Cnpm"] = "cnpm";
     PackageManager["Yarn"] = "yarn";
     PackageManager["Pnpm"] = "pnpm";
     PackageManager["Bun"] = "bun";
-})(PackageManager || (PackageManager = {}));
-export class PackageManagerUtils {
+})(PackageManager || (exports.PackageManager = PackageManager = {}));
+class PackageManagerUtils {
     context;
     constructor(context) {
         this.context = context;
@@ -45,11 +48,11 @@ export class PackageManagerUtils {
     }
     /** Install a single package temporary. */
     async installTemp(packageName, extraArgs) {
-        const tempPath = await fs.mkdtemp(join(realpathSync(tmpdir()), 'angular-cli-packages-'));
+        const tempPath = await node_fs_1.promises.mkdtemp((0, node_path_1.join)((0, node_fs_1.realpathSync)((0, node_os_1.tmpdir)()), 'angular-cli-packages-'));
         // clean up temp directory on process exit
         process.on('exit', () => {
             try {
-                rmSync(tempPath, { recursive: true, maxRetries: 3 });
+                (0, node_fs_1.rmSync)(tempPath, { recursive: true, maxRetries: 3 });
             }
             catch { }
         });
@@ -61,7 +64,7 @@ export class PackageManagerUtils {
         // npm WARN .ng-temp-packages-84Qi7y No license field.
         // While we can use `npm init -y` we will end up needing to update the 'package.json' anyways
         // because of missing fields.
-        await fs.writeFile(join(tempPath, 'package.json'), JSON.stringify({
+        await node_fs_1.promises.writeFile((0, node_path_1.join)(tempPath, 'package.json'), JSON.stringify({
             name: 'temp-cli-install',
             description: 'temp-cli-install',
             repository: 'temp-cli-install',
@@ -69,7 +72,7 @@ export class PackageManagerUtils {
         }));
         // setup prefix/global modules path
         const packageManagerArgs = this.getArguments();
-        const tempNodeModules = join(tempPath, 'node_modules');
+        const tempNodeModules = (0, node_path_1.join)(tempPath, 'node_modules');
         // Yarn will not append 'node_modules' to the path
         const prefixPath = this.name === PackageManager.Yarn ? tempNodeModules : tempPath;
         const installArgs = [
@@ -121,7 +124,7 @@ export class PackageManagerUtils {
         const { cwd = process.cwd(), silent = false } = options;
         return new Promise((resolve) => {
             const bufferedOutput = [];
-            const childProcess = spawn(`${this.name}`, args, {
+            const childProcess = (0, node_child_process_1.spawn)(`${this.name}`, args, {
                 // Always pipe stderr to allow for failures to be reported
                 stdio: silent ? ['ignore', 'ignore', 'pipe'] : 'pipe',
                 shell: true,
@@ -142,7 +145,7 @@ export class PackageManagerUtils {
     //@memoize
     getVersion(name) {
         try {
-            return execSync(`${name} --version`, {
+            return (0, node_child_process_1.execSync)(`${name} --version`, {
                 encoding: 'utf8',
                 stdio: ['ignore', 'pipe', 'ignore'],
                 env: {
@@ -228,11 +231,11 @@ export class PackageManagerUtils {
                 lockfileName = 'package-lock.json';
                 break;
         }
-        return existsSync(join(this.context.root, lockfileName));
+        return (0, node_fs_1.existsSync)((0, node_path_1.join)(this.context.root, lockfileName));
     }
     getConfiguredPackageManager() {
         const getPackageManager = (source) => {
-            if (source && isJsonObject(source)) {
+            if (source && (0, core_1.isJsonObject)(source)) {
                 const value = source['packageManager'];
                 if (typeof value === 'string') {
                     return value;
@@ -243,7 +246,7 @@ export class PackageManagerUtils {
         let result;
         const { workspace: localWorkspace, globalConfiguration: globalWorkspace } = this.context;
         if (localWorkspace) {
-            const project = getProjectByCwd(localWorkspace);
+            const project = (0, config_1.getProjectByCwd)(localWorkspace);
             if (project) {
                 result = getPackageManager(localWorkspace.projects.get(project)?.extensions['cli']);
             }
@@ -255,3 +258,4 @@ export class PackageManagerUtils {
         return result;
     }
 }
+exports.PackageManagerUtils = PackageManagerUtils;
