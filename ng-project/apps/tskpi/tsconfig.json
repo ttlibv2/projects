@@ -1,0 +1,12 @@
+{
+  "extends": "@tslib/tsconfig/tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

@@ -3,8 +3,12 @@
     "globalDependencies": ["**/.env.*local"],
     "tasks": {
       "build": {
-        "dependsOn": ["copy"],
-        "outputs": ["./dist/**"],
+        "dependsOn": [],
+        "outputs": ["./dist"],
+        "cache": false
+      },
+      "glink": {
+        "dependsOn": [],
         "cache": false
       },
       "clean": {

@@ -1,6 +1,6 @@
 packages:
   - 'packages/*'
-  - 'apps/*'
+  - 'apps1/*'
 
 catalogs:
   angular19:

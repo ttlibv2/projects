@@ -1,0 +1,106 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "SchematicsMonoRepoWorkspace",
+    "title": "Workspace Options Schema",
+    "description": "Creates a new Monorepo workspace",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "description": "The name for the new workspace",
+            "x-prompt": "What name would you like to use for the new project?",
+            "type": "string",
+            "$default": {
+                "$source": "argv",
+                "index": 0
+            }
+        },
+        "author": {
+            "type": "string",
+            "description": "package author.",
+            "default": ""
+        },
+        "description": {
+            "type": "string",
+            "description": "package description.",
+            "default": "desc"
+        },
+        "directory": {
+            "type": "string",
+            "description": "The directory where the new workspace should be created",
+            "alias": "dir"
+        },
+        "strict": {
+            "type": "boolean",
+            "description": "With TypeScript strict mode.",
+            "default": true
+        },
+        "skipInstall": {
+            "description": "Skip the automatic installation of packages. You will need to manually install the dependencies later.",
+            "type": "boolean",
+            "default": false,
+            "alias": "si"
+        },
+        "skipGit": {
+            "description": "Do not initialize a Git repository in the new workspace. By default, a Git repository is initialized to help you track changes to your project.",
+            "type": "boolean",
+            "default": true,
+            "alias": "sg"
+        },
+        "commit": {
+            "description": "Configure the initial Git commit for the new repository.",
+            "oneOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string",
+                            "format": "email"
+                        },
+                        "message": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "name",
+                        "email"
+                    ]
+                }
+            ],
+            "default": true
+        },
+        "prefix": {
+            "type": "string",
+            "format": "html-selector",
+            "description": "The prefix to apply to generated selectors for the initial project. For example, if the prefix is `my-app` and you generate a component named `my-component`, the selector will be `my-app-my-component`.",
+            "minLength": 1,
+            "default": "app",
+            "alias": "p"
+        },
+        "style": {
+            "description": "The type of stylesheet files to be created for components in the initial project.",
+            "type": "string",
+            "enum": [
+                "css",
+                "scss",
+                "sass",
+                "less"
+            ],
+            "x-user-analytics": "ep.ng_style"
+        },
+        "minimal": {
+            "description": "Generate a minimal workspace without any testing frameworks. This is intended for learning purposes and simple experimentation, not for production applications.",
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "required": [
+        "name"
+    ]
+}

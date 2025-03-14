@@ -10,33 +10,53 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package.json" />
+        <option value="tsconfig.json" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2u9uKXlgL9Up2pC2jWnG6Xng5k6" />
   <component name="ProjectViewState">
+    <option name="autoscrollToSource" value="true" />
     <option name="foldersAlwaysOnTop" value="false" />
     <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Angular_CLI/projects/ng-project/packages/tslib",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "pnpm",
-    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\node_modules\\typescript\\lib"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Angular_CLI/projects/ng-project/packages/tslib/src/ag-grid&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;D:\\Angular_CLI\\projects\\ng-project\\node_modules\\typescript\\lib&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\src\ag-grid" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib" />
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\ngx-lib" />
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\schematics" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\ag-grid" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\scripts" />
+      <recent name="D:\Angular_CLI\projects\ng-project" />
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\src" />
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\lib" />
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib" />
     </key>
   </component>
   <component name="SharedIndexes">
