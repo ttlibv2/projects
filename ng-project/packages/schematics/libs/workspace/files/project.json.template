@@ -1,0 +1,6 @@
+{
+  "name": "<%= utils.dasherize(name) %>",
+  "packageManager": "pnpm",
+  "appsDir": "<%= appsDir %>",
+  "libsDir": "<%= libsDir %>"
+}

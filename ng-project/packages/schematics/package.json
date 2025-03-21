@@ -1,4 +1,34 @@
 {
-    "name": "@ngdev/sc",
-    "version": "25.03.11"
+  "name": "@ngdev/sc",
+  "version": "25.03.19",
+  "description": "A blank schematics",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "copy:collection": "cpx collection.json dist && cpx 'libs/**/schema.json' dist/libs",
+    "copy:lib": "cpx 'libs/**/{files,workspace}/**/*.*' dist/libs && cpx 'libs/**/{files,workspace}/**/.!(gitignore)' dist/libs"
+  },
+  "keywords": [
+    "schematics"
+  ],
+  "author": "",
+  "license": "MIT",
+  "schematics": "./collection.json",
+  "dependencies": {
+    "@angular-devkit/core": "^19.2.4",
+    "@angular-devkit/schematics": "^19.2.4",
+    "comment-json": "^4.2.5",
+    "jsonc-parser": "^3.3.1",
+    "pluralize": "^8.0.0",
+    "typescript": "~5.7.2"
+  },
+  "devDependencies": {
+    "@types/jasmine": "~5.1.0",
+    "@types/node": "^18.18.0",
+    "cpx2": "^8.0.0",
+    "del": "^8.0.0",
+    "gulp": "^5.0.0",
+    "husky": "^9.1.7",
+    "jasmine": "^5.0.0",
+    "prettier": "^3.5.3"
+  }
 }

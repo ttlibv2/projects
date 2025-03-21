@@ -1,0 +1,11 @@
+{
+  "name": "monorepo",
+  "packageManager": "pnpm",
+  "appsDir": "apps",
+  "libsDir": "packages",
+  "projects": {
+    "angular#default": {
+
+    }
+  }
+}

@@ -6,7 +6,9 @@
   "scripts": {
     "run": "turbo run run",
     "build": "turbo run build",
+    "clean": "turbo run clean",
     "watch": "turbo watch build",
+    "start0": "pnpm run start",
     "lint": "turbo run lint",
     "glink": "turbo run glink"
   },

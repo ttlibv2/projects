@@ -1,0 +1,28 @@
+{
+  "name": "<%= utils.dasherize(name) %>",
+  "version": "0.0.0",
+  "description": "monorepo project",
+  "private": true,
+  "scripts": {
+    "setup": "pnpm run clean && pnpm run init",
+    "clean": "npx rimraf --glob **/node_modules **/dist **/.angular ./pnpm-lock.yaml",
+    "init": "pnpm install && husky",
+    "link": "pnpm --filter './<%=packagesRoot%>/*' dev:link",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "//format": "prettier --write \"**/*.{js,mjs,ts,mts,d.ts,html}\" --cache",
+    "//format:check": "prettier --check \"**/*.{js,mjs,ts,mts,d.ts,html}\"",
+    "//lint": "eslint --ext \".js,.mjs,.ts,.mts\" --ignore-path .gitignore . --cache",
+    "//lint:fix": "eslint --fix --ext \".js,.mjs,.ts,.mts\" --ignore-path .gitignore ."
+  },
+  "devDependencies": {
+    "@ngdev/eslint-config": "workspace:*",
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4",
+    "rimraf": "^6.0.1",
+    "husky": "^9.1.7",
+    "typescript": "~5.4.5"
+  },
+  "packageManager": "pnpm@<%=pnpmVersion%>"
+}

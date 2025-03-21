@@ -4,14 +4,11 @@
     "tasks": {
       "build": {
         "dependsOn": [],
-        "outputs": ["./dist"]
-      },
-      "glink": {
-        "dependsOn": [],
+        "outputs": ["./dist"],
         "cache": false
       },
       "clean": {
-        "dependsOn": [],
+        "dependsOn": ["^clean"],
         "cache": false
       },
       "copy": {

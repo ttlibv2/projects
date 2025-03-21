@@ -1,0 +1,44 @@
+tpackages:
+  - '<%=appsRoot%>/*'
+  - '<%=packagesRoot%>/*'
+
+catalogs:
+  angular:
+    "@angular-devkit/build-angular": <%= latestVersions.Angular %>
+		"@angular/animations": <%= latestVersions.Angular %>
+		"@angular/cdk": <%= latestVersions.Angular %>
+		"@angular/cli": <%= latestVersions.Angular %>
+		"@angular/common": <%= latestVersions.Angular %>
+		"@angular/compiler": <%= latestVersions.Angular %>
+		"@angular/compiler-cli": <%= latestVersions.Angular %>
+		"@angular/core": <%= latestVersions.Angular %>
+		"@angular/forms": <%= latestVersions.Angular %>
+		"@angular/platform-browser": <%= latestVersions.Angular %>
+		"@angular/platform-browser-dynamic": <%= latestVersions.Angular %>
+		"@angular/platform-server": <%= latestVersions.Angular %>
+		"@angular/router": <%= latestVersions.Angular %>
+		"@angular/ssr": <%= latestVersions.Angular %>
+		"@angular-eslint/eslint-plugin": <%= latestVersions.Angular %>
+		"@angular-eslint/eslint-plugin-template": <%= latestVersions.Angular %>
+		"@angular-eslint/schematics": <%= latestVersions.Angular %>
+		"@angular-eslint/template-parser": <%= latestVersions.Angular %>
+    "ng-packagr": <%= latestVersions.Angular %>
+    "rxjs": <%= latestVersions['rxjs'] %>
+    "tslib": <%= latestVersions['tslib'] %>
+    "zone.js": <%= latestVersions['zone.js'] %>
+    "typescript": <%= latestVersions['typescript'] %>
+
+  test:
+    "jasmine-core": <%= latestVersions['jasmine-core'] %>
+    "karma": <%= latestVersions['karma'] %>
+    "karma-chrome-launcher": <%= latestVersions['karma-chrome-launcher'] %>
+    "karma-coverage": <%= latestVersions['karma-coverage'] %>
+    "karma-jasmine": <%= latestVersions['karma-jasmine'] %>
+    "karma-jasmine-html-reporter": <%= latestVersions['karma-jasmine-html-reporter'] %>  
+    "@types/jasmine": <%= latestVersions['@types/jasmine'] %>
+
+  dev:
+    "prettier": <%= latestVersions['prettier'] %>
+    "turbo": <%= latestVersions['turbo'] %>
+    "rimraf": <%= latestVersions['rimraf'] %>
+    "husky": <%= latestVersions['husky'] %>

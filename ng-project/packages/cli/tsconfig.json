@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "baseUrl": "tsconfig",
+    "outDir": "./dist",
+    "lib": ["es2018", "dom"],
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "rootDir": ".",
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "es6",
+    "types": ["node"]
+  },
+  "include": ["bin", "package.json", "libs", "src/utilities", "src/commands/abstract.command.ts", "src/commands/core/command.runner.ts", "src/commands/core/command.util.ts", "src/commands/core/json-help.ts"],
+  "exclude": ["node_modules", "e2e", "dist"]
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "workspace": {
+      "factory": "./src/workspace/factory",
+      "schema": "./src/workspace/schema.json",
+      "description": "Generate a workspace project."
+    }
+  }
+}
