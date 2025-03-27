@@ -13,6 +13,7 @@ import * as path from 'node:path';
 import { PackageManager } from './package-manager';
 import { findUp } from './find-up';
 import { JSONFile, readAndParseJson } from './json-file';
+import {WorkspaceHost} from "@angular-devkit/architect/node";
 
 function isJsonObject(value: json.JsonValue | undefined): value is json.JsonObject {
   return value !== undefined && json.isJsonObject(value);

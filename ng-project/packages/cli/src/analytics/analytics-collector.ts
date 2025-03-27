@@ -3,7 +3,7 @@ import * as https from 'node:https';
 import * as os from 'node:os';
 import * as querystring from 'node:querystring';
 import * as semver from 'semver';
-import type { CommandContext } from '../command-builder/command-module';
+import type { CommandContext } from '../commands/abstract.cmd';
 import { ngDebug } from '../utilities/environment';
 import { assertIsError } from '../utilities/error';
 import { VERSION } from '../utilities/version';

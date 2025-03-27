@@ -1,6 +1,5 @@
 packages:
-  - 'packages/cli'
-  - 'packages/schematics'  
+  - 'packages/*'
 
 catalogs:
   angular19:

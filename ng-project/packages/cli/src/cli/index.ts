@@ -1,7 +1,9 @@
 
 import { writeErrorToLogFile } from '../utilities/log-file';
-import {runCommand} from '../command-builder/command.runner';
+import {runCommand} from '../commands/command.runner';
 import {Logger} from '../utilities/logger';
+import { CommandModuleError } from '../commands/abstract.cmd';
+import { ERROR_PREFIX } from '../utilities/environment';
 
 function changeCmdTitle() {
   // Provide a title to the process in `ps`.
@@ -14,38 +16,45 @@ function changeCmdTitle() {
   }
 }
 
-function writeLog(logger: Logger, err: any) {
-  //if (err instanceof CommandModuleError) {
-  //  logger.fatal(`Error: ${err.message}`);
-  //} //
-  //else 
-  if (err instanceof Error) {
+function writeLog(logger: Logger, error: any) {
+  console.log('writeLog')
+
+
+
+
+  if (error instanceof CommandModuleError) {
+   logger.info(`${ERROR_PREFIX} ${error.message}`);
+  } //
+  else 
+  if (error instanceof Error) {
     try {
-      const logPath = writeErrorToLogFile(err);
-      logger.fatal(
-        `An unhandled exception occurred: ${err.message}\n` +
-        `See "${logPath}" for further details.`,
-      );
+      const logPath = writeErrorToLogFile(error);
+      logger.fatal(`AAA: ${error.stack || error}`);
+
+      // logger.fatal(
+      //   `An unhandled exception occurred: ${error.message}\n` +
+      //   `See "${logPath}" for further details.`,
+      // );
     } //
     catch (e) {
 
       logger.fatal(
-        `An unhandled exception occurred: ${err.message}\n` +
+        `An unhandled exception occurred: ${error.message}\n` +
         `Fatal error writing debug log file: ${e}`,
       );
 
-      if (err.stack) {
-        logger.fatal(err.stack);
+      if (error.stack) {
+        logger.fatal(error.stack);
       }
     }
 
     return 127;
-  } else if (typeof err === 'string') {
-    logger.fatal(err);
-  } else if (typeof err === 'number') {
+  } else if (typeof error === 'string') {
+    logger.fatal(error);
+  } else if (typeof error === 'number') {
     // Log nothing.
   } else {
-    logger.fatal(`An unexpected error occurred: ${err}`);
+    logger.fatal(`An unexpected error occurred: ${error}`);
   }
 
   return 1;
@@ -54,6 +63,8 @@ function writeLog(logger: Logger, err: any) {
 const logger = Logger.create('cli-main-logger');
 
 export default async function (option: { cliArgs: string[] }) {
+  //logger.warn(JSON.stringify(option));
+  
   try {
 
     // change title process
@@ -74,4 +85,3 @@ export default async function (option: { cliArgs: string[] }) {
   }
 
 }
-

@@ -59,7 +59,9 @@ const bootstrap = async (): Promise<BReturn> => {
 };
 
 bootstrap()
-  .then((cli) => cli?.({ cliArgs: process.argv.slice(2), }),)
+  .then(cli => cli?.({ 
+    cliArgs: process.argv.slice(2)
+   }))
     .then((exitCode = 0) => {
       if (forceExit) { process.exit(exitCode); }
       process.exitCode = exitCode;

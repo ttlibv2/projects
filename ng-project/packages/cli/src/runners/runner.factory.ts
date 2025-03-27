@@ -1,12 +1,12 @@
 import { yellow } from 'ansis';
 import { NpmRunner } from './npm.runner';
-import { Runner } from './runner';
+import { Runner } from './runner.enum';
 import { SchematicRunner } from './schematic.runner';
 import { YarnRunner } from './yarn.runner';
 import { PnpmRunner } from './pnpm.runner';
 import { Logger } from '../utilities/logger';
 import { AngularRunner } from './angular.runner';
-import { NestRunner } from './nest.runner';
+import { NestJsRunner } from './nestjs.runner';
 
 export class RunnerFactory {
 
@@ -28,7 +28,7 @@ export class RunnerFactory {
         return new AngularRunner();
 
         case Runner.NESTJS:
-          return new NestRunner();
+          return new NestJsRunner();
 
       default:
         Logger.create('runner.factory')

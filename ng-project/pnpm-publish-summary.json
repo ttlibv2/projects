@@ -1,0 +1,16 @@
+{
+	"publishedPackages": [
+		{
+			"name": "schematics",
+			"version": "25.03.255"
+		},
+		{
+			"name": "@ngdev/cli",
+			"version": "25.03.255"
+		},
+		{
+			"name": "yargs",
+			"version": "17.7.3"
+		}
+	]
+}

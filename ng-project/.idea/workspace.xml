@@ -16,6 +16,7 @@
         <option value="package.json" />
         <option value="tsconfig.json" />
         <option value="JavaScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -31,32 +32,32 @@
     <option name="showScratchesAndConsoles" value="false" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Angular_CLI/projects/ng-project/packages/tslib/src/ag-grid&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\Angular_CLI\\projects\\ng-project\\node_modules\\typescript\\lib&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/Angular_CLI/projects/ng-project/packages/ngxcli",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "pnpm",
+    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\node_modules\\typescript\\lib"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\ngxcli" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\src\ag-grid" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\ngx-lib" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\schematics" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\ag-grid" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\cli\src\commands" />
+      <recent name="D:\Angular_CLI\projects\ng-project\packages\cli\src\commands\base" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\scripts" />
       <recent name="D:\Angular_CLI\projects\ng-project" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\src" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\lib" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -69,5 +70,15 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/index.js" />
+        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/schema.js.map" />
+        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/schema.js" />
+        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/index.d.ts" />
+        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/index.js.map" />
+        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/schema.d.ts" />
+      </list>
+    </option>
   </component>
 </project>
