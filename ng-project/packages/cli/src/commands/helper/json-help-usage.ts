@@ -1,4 +1,4 @@
-import * as yargs from '../../../../../backup/index.cjs';
+import * as yargs from 'yargs';
 import { FullDescribe } from '../abstract.cmd';
 
 interface JsonHelpOption {

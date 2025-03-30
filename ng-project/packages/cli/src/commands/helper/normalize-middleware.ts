@@ -1,5 +1,5 @@
-import * as yargs from '../../../../../backup/index.cjs';
-import {Logger} from "../../utilities/logger";
+import * as yargs from 'yargs';
+import {Logger} from "../../help/logger";
 
 export function normalizeMiddleware(args: yargs.Arguments, logger: Logger): void {
   const option = (yargs as any).getOptions();

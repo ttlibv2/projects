@@ -4,7 +4,75 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6790babe-b5a1-4d57-9347-6c98b4d9afd2" name="Changes" comment="" />
+    <list default="true" id="6790babe-b5a1-4d57-9347-6c98b4d9afd2" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/bin/cli.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/bin/cli.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/rollup.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/rollup.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/analytics/analytics-collector.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/analytics/analytics-collector.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/analytics/analytics.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/analytics/analytics.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/cli/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/lib/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/abstract.cmd.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/abstract.cmd.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/architect.cmd.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/architect.cmd.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/architectbase.cmd.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/architectbase.cmd.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/command.list.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/command.list.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/command.runner.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/command.runner.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/generate.cmd.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/generate.cmd.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/helper/add-cmd-to-args.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/helper/add-cmd-to-args.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/helper/engine-host.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/helper/engine-host.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/helper/json-help-usage.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/helper/json-help-usage.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/helper/json-schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/helper/json-schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/helper/normalize-middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/helper/normalize-middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/helper/schematic-workflow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/helper/schematic-workflow.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/new.cmd.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/new.cmd.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/schematics.cmd.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/schematics.cmd.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/commands/version.cmd.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/commands/version.cmd.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/package-manager/abstract.package-manager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/pkgmanager/pkg.abstract.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/package-manager/package-manager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/pkgmanager/pkg.enum.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/runners/abstract.runner.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/runners/abstract.runner.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/runners/angular.runner.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/runners/angular.runner.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/runners/runner.factory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/runners/runner.factory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/runners/schematic.runner.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/runners/schematic.runner.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/typings.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/color.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/color.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/completion.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/completion.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/environment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/environment.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/eol.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/eol.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/error.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/error.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/find-up.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/find-up.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/json-file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/json-file.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/load-esm.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/load-esm.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/local-binaries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/local-binaries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/log-file.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/log-file.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/logger.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/logger.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/memoize.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/memoize.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/package-manager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/package-manager.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/package-metadata.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/package-metadata.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/package-tree.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/package-tree.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/project.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/project.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/prompt.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/prompt.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/tty.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/tty.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/version.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/version.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/src/utilities/wcschema.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/help/wcschema.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/helpers.d.mts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/typings/yargs/helpers.d.mts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/typings/yargs/helpers.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/index.d.mts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/typings/yargs/index.d.mts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/typings/yargs/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/typings/yargs/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/cli/yargs-types/yargs.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/cli/src/typings/yargs/yargs.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/scs/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/schematics/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-workspace.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-workspace.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.json" beforeDir="false" afterPath="$PROJECT_DIR$/project.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,72 +81,281 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="package.json" />
         <option value="tsconfig.json" />
         <option value="JavaScript File" />
+        <option value="package.json" />
         <option value="TypeScript File" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/packages/cli/package.json" />
+    <dismissed value="$PROJECT_DIR$/packages/cli/src/typings/yargs/package.json" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="2u9uKXlgL9Up2pC2jWnG6Xng5k6" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollToSource" value="true" />
     <option name="foldersAlwaysOnTop" value="false" />
-    <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Attach to Node.js/Chrome.Debug CLI.executor": "Debug",
+    "Attach to Node.js/Chrome.DebugCLI.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Angular_CLI/projects/ng-project/packages/ngxcli",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.nodejs.core.library.configured.version": "22.14.0",
+    "javascript.nodejs.core.library.typings.version": "22.13.14",
+    "last_opened_file_path": "D:/TuanPC/Gluon/projects/ng-project/packages/schematics/src/angular",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "pnpm",
-    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\node_modules\\typescript\\lib"
+    "npm.cli > build.executor": "Run",
+    "npm.cli > dev.executor": "Run",
+    "npm.samplediv > dev.executor": "Debug",
+    "npm.schematics > build.executor": "Run",
+    "npm.schematics > copy:collection.executor": "Run",
+    "npm.schematics > copy:lib.executor": "Run",
+    "npm.schematics > tsc:watch.executor": "Run",
+    "settings.editor.selected.configurable": "settings.nodejs",
+    "ts.external.directory.path": "D:\\TuanPC\\Gluon\\projects\\ng-project\\apps\\tsweb\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\schematics\src\angular" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\schematics\src\angular\app" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\schematics\src\pnew\files" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\schematics\src" />
       <recent name="D:\Angular_CLI\projects\ng-project\packages\ngxcli" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\src\ag-grid" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\ngx-lib" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\schematics" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\cli\src\commands" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\cli\src\commands\base" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\scripts" />
-      <recent name="D:\Angular_CLI\projects\ng-project" />
-      <recent name="D:\Angular_CLI\projects\ng-project\packages\tslib\src" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\schematics" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\schematics\src" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\cli\src\typings" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\cli\src" />
+      <recent name="D:\TuanPC\Gluon\projects\ng-project\packages\cli" />
     </key>
+  </component>
+  <component name="RunManager" selected="npm.samplediv &gt; dev">
+    <configuration name="DebugCLI" type="ChromiumRemoteDebugType" factoryName="Chromium Remote" port="9229">
+      <method v="2" />
+    </configuration>
+    <configuration name="cli &gt; build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/packages/cli/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="cli &gt; dev" type="js.build_tools.npm" temporary="true">
+      <package-json value="$PROJECT_DIR$/packages/cli/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="samplediv &gt; dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/packages/cli/samplediv/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="schematics &gt; build" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/packages/schematics/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="schematics &gt; copy:collection" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/packages/schematics/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="copy:collection" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="schematics &gt; tsc:watch" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/packages/schematics/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="tsc:watch" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Attach to Node.js/Chrome.DebugCLI" />
+      <item itemvalue="npm.schematics &gt; build" />
+      <item itemvalue="npm.samplediv &gt; dev" />
+      <item itemvalue="npm.cli &gt; build" />
+      <item itemvalue="npm.cli &gt; dev" />
+      <item itemvalue="npm.schematics &gt; copy:collection" />
+      <item itemvalue="npm.schematics &gt; tsc:watch" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.samplediv &gt; dev" />
+        <item itemvalue="npm.cli &gt; dev" />
+        <item itemvalue="npm.cli &gt; build" />
+        <item itemvalue="npm.schematics &gt; tsc:watch" />
+        <item itemvalue="npm.schematics &gt; copy:collection" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17011.90" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.18034.50" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6790babe-b5a1-4d57-9347-6c98b4d9afd2" name="Changes" comment="" />
+      <created>1743145122994</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1743145122994</updated>
+      <workItem from="1743145126145" duration="1210000" />
+      <workItem from="1743146346959" duration="4597000" />
+      <workItem from="1743208381746" duration="2417000" />
+      <workItem from="1743215933243" duration="7106000" />
+      <workItem from="1743249713122" duration="389000" />
+      <workItem from="1743303040515" duration="3277000" />
+    </task>
+    <servers />
+  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-    <option name="exactExcludedFiles">
-      <list>
-        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/index.js" />
-        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/schema.js.map" />
-        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/schema.js" />
-        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/index.d.ts" />
-        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/index.js.map" />
-        <option value="$PROJECT_DIR$/packages/schematics/libs/workspace/schema.d.ts" />
-      </list>
-    </option>
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.template" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/schematics/src/pnew/index.ts</url>
+          <line>9</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/schematics/src/pnew/index.ts</url>
+          <line>44</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/schematics/node_modules/@angular-devkit/core/src/utils/template.js</url>
+          <line>253</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/schematics/node_modules/@angular-devkit/schematics/src/rules/template.js</url>
+          <line>152</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/cli/src/commands/schematics.cmd.ts</url>
+          <line>352</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/cli/src/commands/command.runner.ts</url>
+          <line>42</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/cli/node_modules/@angular-devkit/core/src/workspace/core.js</url>
+          <line>59</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/.pnpm/@angular-devkit+core@19.2.5_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/core.js</url>
+          <line>92</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/.pnpm/@angular-devkit+core@19.2.5_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/core.d.ts</url>
+          <line>39</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/.pnpm/@angular-devkit+core@19.2.5_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/json/reader.d.ts</url>
+          <line>13</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/.pnpm/@angular-devkit+core@19.2.5_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/json/reader.js</url>
+          <line>18</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/cli/src/help/config.ts</url>
+          <line>165</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/packages/cli/src/help/config.ts</url>
+          <line>159</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/.pnpm/@angular-devkit+core@19.2.5_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/core.js</url>
+          <line>97</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/.pnpm/@angular-devkit+core@19.2.5_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/json/reader.js</url>
+          <line>91</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/node_modules/.pnpm/@angular-devkit+core@19.2.5_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/json/reader.js</url>
+          <line>61</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

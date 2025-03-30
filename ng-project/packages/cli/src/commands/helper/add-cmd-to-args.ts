@@ -1,4 +1,4 @@
-import { Argv } from '../../../../../backup/index.cjs';
+import { Argv } from 'yargs';
 import {
   CommandContext,
   CommandModule,

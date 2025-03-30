@@ -1,7 +1,7 @@
 import { red } from 'ansis';
 import { ChildProcess, spawn, SpawnOptions } from 'child_process';
 import { MESSAGES } from '../logui/messages';
-import { Logger } from '../utilities/logger';
+import { Logger } from '../help/logger';
 
 export function createRunnerLogger(nameOrLogger: string | Logger = 'runner') {
   if (nameOrLogger instanceof Logger) return nameOrLogger;

@@ -1,15 +1,15 @@
 // const { terminalWidth, Argv } = require('yargs');
 import yargs = require('yargs');
 import { Parser } from 'yargs/helpers';
-import { colors } from '../utilities/color';
-import { AngularWorkspace, getWorkspace } from '../utilities/config';
-import { assertIsError } from '../utilities/error';
-import { PackageManagerUtils } from '../utilities/package-manager';
+import { colors } from '../help/color';
+import { AngularWorkspace, getWorkspace } from '../help/config';
+import { assertIsError } from '../help/error';
+import { PackageManagerUtils } from '../help/package-manager';
 import { CommandContext, CommandModuleError } from './abstract.cmd';
 import { addCommandModuleToYargs, CommandModuleConstructor } from './helper/add-cmd-to-args';
 import { jsonHelpUsage } from './helper/json-help-usage';
 import { normalizeMiddleware } from './helper/normalize-middleware';
-import { Logger } from '../utilities/logger';
+import { Logger } from '../help/logger';
 import { CommandConfig, RootCommands, RootCommandsAliases } from "./command.list";
 
 const {bgYellow, red} = colors;
@@ -31,10 +31,6 @@ export async function runCommand(args: string[], logger: Logger): Promise<number
 
   // When `getYargsCompletions` is true the scriptName 'ngdev' at index 0 is not removed.
   const positional = getYargsCompletions ? _.slice(1) : _;
-
-  if (!args.length) {
-
-  }
 
   let workspace: AngularWorkspace | undefined;
   let globalConfiguration: AngularWorkspace;
@@ -78,7 +74,7 @@ export async function runCommand(args: string[], logger: Logger): Promise<number
   // Add default command to support version option when no subcommand is specified
   //localYargs.command('*', false, b => logger.warn('wa'));
 
-  localYargs
+  await localYargs
     .scriptName('ngdev')
     .usage("Usage: $0 <command> [options]")
 
@@ -120,9 +116,6 @@ export async function runCommand(args: string[], logger: Logger): Promise<number
       },
 
 
-
-
-
     })
     .epilogue('For more information, see https://ngdev.github.io/cli/.\n')
     .version((await pkg).version).alias("v", ["version"])
@@ -131,7 +124,9 @@ export async function runCommand(args: string[], logger: Logger): Promise<number
     .showHelpOnFail(false).help('help')
     .strict().strictOptions(true)
     .wrap(null)
-    .fail((msg, err) => { throw msg ? new CommandModuleError(msg) : err })
+    .fail((msg, err) => {
+      throw msg ? new CommandModuleError(msg) : err
+    })
     .parseAsync();
 
 

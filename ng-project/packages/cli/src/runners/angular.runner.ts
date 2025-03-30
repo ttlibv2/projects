@@ -8,16 +8,16 @@ export class AngularRunner extends AbstractRunner {
 
 // function findClosestBinary(): string {
 //   try {
-//     // NOTE: As a requirement, every user needs to install the ng cli
+//     // NOTE: As a requirement, every user needs to install the ng lib
 //     const globalNodeModulesPath = execSync('pnpm root -g').toString().trim();
-//     return require.resolve(globalNodeModulesPath + '/@angular/cli/bin/ng.js');
+//     return require.resolve(globalNodeModulesPath + '/@angular/lib/bin/ng.js');
 //   } catch (e) {
 //     ngLogger.error(e.message ?? '');
 //     throw new Error(
 //       `${colors.blue(
 //         EMOJIS['BROKEN_HEART'] +
-//           "Angular cli doesn't install, please execute:",
-//       )} ${colors.green('pnpm i -g @angular/cli')}`,
+//           "Angular lib doesn't install, please execute:",
+//       )} ${colors.green('pnpm i -g @angular/lib')}`,
 //     );
 //   }
 // }

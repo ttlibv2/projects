@@ -4,7 +4,7 @@ import { Runner } from './runner.enum';
 import { SchematicRunner } from './schematic.runner';
 import { YarnRunner } from './yarn.runner';
 import { PnpmRunner } from './pnpm.runner';
-import { Logger } from '../utilities/logger';
+import { Logger } from '../help/logger';
 import { AngularRunner } from './angular.runner';
 import { NestJsRunner } from './nestjs.runner';
 

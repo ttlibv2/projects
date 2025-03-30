@@ -8,11 +8,11 @@ import {
   CommandModule as YargsCommandModule,
 } from 'yargs';
 import { Parser as yargsParser } from 'yargs/helpers';
-import { considerSettingUpAutocompletion } from '../utilities/completion';
-import { AngularWorkspace } from '../utilities/config';
-import { PackageManagerUtils } from '../utilities/package-manager';
+import { considerSettingUpAutocompletion } from '../help/completion';
+import { AngularWorkspace } from '../help/config';
+import { PackageManagerUtils } from '../help/package-manager';
 import { Option, addSchemaOptionsToCommand } from './helper/json-schema';
-import { Logger } from '../utilities/logger';
+import { Logger } from '../help/logger';
 
 export type Options<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] };
 
@@ -100,7 +100,7 @@ export abstract class CommandModule<T extends {} = {}> implements CommandModuleI
     const desRelPath = path.relative(from, desPath).replace(/\\/g, path.posix.sep);
     let desText = '';
     try{
-      desText = readFileSync(this.longDescriptionPath, 'utf8').replace(/\r\n/g, '\n');   
+      desText = readFileSync(this.longDescriptionPath, 'utf8').replace(/\r\n/g, '\n');
     }//
     catch(err) {
       this.context.logger.warn(`Read document: [${this.command}] ==> Message: ${err.message}`);
@@ -271,7 +271,7 @@ export abstract class CommandModule<T extends {} = {}> implements CommandModuleI
   //   let librariesProjectsCount = 0;
   //   for (const project of workspace.projects.values()) {
   //     switch (project.extensions['projectType']) {
-  //       case 'application':
+  //       case 'app':
   //         applicationProjectsCount++;
   //         break;
   //       case 'library':

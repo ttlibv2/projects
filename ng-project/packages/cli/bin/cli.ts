@@ -2,9 +2,9 @@
 
 import 'symbol-observable';
 import { createRequire } from 'node:module';
-import { localBinExists } from '../src/utilities/local-binaries';
+import { localBinExists } from '../src/help/local-binaries';
 
-type BReturn = typeof import('../src/cli').default | null;
+type BReturn = typeof import('../lib').default | null;
 
 let forceExit = false;
 
@@ -31,23 +31,23 @@ const bootstrap = async (): Promise<BReturn> => {
    * @see: https://github.com/angular/angular-cli/issues/14603
    */
   if (rawCommandName === 'new') {
-    return (await import('../src/cli')).default;
+    return (await import('../lib')).default;
   }
 
   if(localBinExists()) {
     try{
     const cwdRequire = createRequire(process.cwd() + '/');
-    const projectLocalCli = cwdRequire.resolve('@ngdev/cli/lib/cli');
+    const projectLocalCli = cwdRequire.resolve('@ngdev/lib/lib/lib');
     cli = await import(projectLocalCli);
     }
     catch(e) {
       console.error(e)
-      cli = await import('../src/cli');
+      cli = await import('../lib');
     }
- 
+
   }
   else {
-    cli = await import('../src/cli');
+    cli = await import('../lib');
   }
 
   if ('default' in cli) {
@@ -59,7 +59,7 @@ const bootstrap = async (): Promise<BReturn> => {
 };
 
 bootstrap()
-  .then(cli => cli?.({ 
+  .then(cli => cli?.({
     cliArgs: process.argv.slice(2)
    }))
     .then((exitCode = 0) => {

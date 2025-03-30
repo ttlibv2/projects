@@ -9,7 +9,7 @@ export interface CommandConfig {
 export const RootCommands: Record<string, CommandConfig> = {
   'generate': {
     factory: () => import('./generate.cmd'),
-    aliases: ['g'],
+    aliases: ['g', 'gen'],
   },
   'new': {
     factory: () => import('./new.cmd'),

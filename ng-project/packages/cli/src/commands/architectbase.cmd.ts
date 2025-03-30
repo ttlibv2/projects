@@ -8,9 +8,9 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 // import { isPackageNameSafeForAnalytics } from '../analytics/analytics';
 // import { EventCustomDimension, EventCustomMetric } from '../analytics/analytics-parameters';
-import { assertIsError } from '../utilities/error';
-import { askConfirmation, askQuestion } from '../utilities/prompt';
-import { isTTY } from '../utilities/tty';
+import { assertIsError } from '../help/error';
+import { askConfirmation, askQuestion } from '../help/prompt';
+import { isTTY } from '../help/tty';
 import {
   CommandModule,
   CommandModuleError,
@@ -19,7 +19,7 @@ import {
   OtherOptions,
 } from './abstract.cmd';
 import { Option, parseJsonSchemaToOptions } from './helper/json-schema';
-import {AngularWorkspace} from "../utilities/config";
+import {AngularWorkspace} from "../help/config";
 
 export interface MissingTargetChoice {
   name: string;
@@ -231,7 +231,7 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
       if (packageToInstall) {
         throw new Error(`AddCommandModule`);
         // Example run: `ng add angular-eslint`.
-        // const AddCommandModule = (await import('../commands/add/cli')).default;
+        // const AddCommandModule = (await import('../commands/add/lib')).default;
         // await new AddCommandModule(this.context).run({
         //   interactive: true,
         //   force: false,

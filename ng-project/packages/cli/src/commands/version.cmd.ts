@@ -2,7 +2,7 @@ import * as nodeModule from 'node:module';
 import { resolve } from 'node:path';
 import { Argv } from 'yargs';
 import { CommandModule, CommandModuleImplementation } from './abstract.cmd';
-import { colors } from '../utilities/color';
+import { colors } from '../help/color';
 import {RootCommands} from "./command.list";
 
 interface PartialPackageInfo {
@@ -22,7 +22,7 @@ const PACKAGE_PATTERNS = [
   /^@angular-devkit\/.*/,
   /^@ngtools\/.*/,
   /^@schematics\/.*/,
-  /^rxjs$/, 
+  /^rxjs$/,
   /^typescript$/,
   /^ng-packagr$/,
   /^webpack$/,
@@ -169,11 +169,11 @@ export default class VersionCommandModule extends CommandModule implements Comma
     // If found, attempt to get the version
     if (packageInfo) {
       try {
-        return packageInfo.version + (cliOnly ? ' (cli-only)' : '');
+        return packageInfo.version + (cliOnly ? ' (lib-only)' : '');
       } catch {}
     }
 
     return '<error>';
   }
-  
+
 }

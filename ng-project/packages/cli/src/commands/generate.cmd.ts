@@ -15,7 +15,7 @@ interface GenerateCommandArgs extends SchematicsCommandArgs {
 export default class GenerateCommandModule extends SchematicsCommandModule
   implements CommandModuleImplementation<GenerateCommandArgs>
 {
-  command = 'generate';
+  command = 'generate|gen <schematic>';
   aliases = RootCommands['generate'].aliases;
   describe = 'Generates and/or modifies files based on a schematic.';
 

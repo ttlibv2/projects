@@ -1,6 +1,6 @@
 import { NodeWorkflow } from '@angular-devkit/schematics/tools';
-import { colors } from '../../utilities/color';
-import { Logger } from '../../utilities/logger';
+import { colors } from '../../help/color';
+import { Logger } from '../../help/logger';
 
 function removeLeadingSlash(value: string): string {
   return value[0] === '/' ? value.slice(1) : value;

@@ -1,0 +1,10 @@
+tpackages:
+  - 'apps/*'
+  - 'packages/*'
+
+catalogs:
+  dev:
+    "prettier": ^3.5.3
+    "turbo": ^2.4.4
+    "rimraf": ^6.0.1
+    "husky": ^9.1.7

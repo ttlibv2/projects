@@ -1,0 +1,3 @@
+# <%= utils.dasherize(name) %> LICENSES
+
+## <%= utils.dasherize(name) %> COMMUNITY VERSIONS LICENSE

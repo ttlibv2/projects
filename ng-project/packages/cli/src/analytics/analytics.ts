@@ -1,11 +1,11 @@
 import { json, tags } from '@angular-devkit/core';
 import { randomUUID } from 'node:crypto';
 import type { CommandContext } from '../commands/abstract.cmd';
-import { colors } from '../utilities/color';
-import { getWorkspace } from '../utilities/config';
-import { analyticsDisabled } from '../utilities/environment';
-import { askConfirmation } from '../utilities/prompt';
-import { isTTY } from '../utilities/tty';
+import { colors } from '../help/color';
+import { getWorkspace } from '../help/config';
+import { analyticsDisabled } from '../help/environment';
+import { askConfirmation } from '../help/prompt';
+import { isTTY } from '../help/tty';
 
 /* eslint-disable no-console */
 

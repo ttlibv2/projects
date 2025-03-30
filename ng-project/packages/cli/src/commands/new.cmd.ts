@@ -1,7 +1,7 @@
-import {Argv} from 'yargs';
+import {Argv} from 'src/typings/yargs';
 import {CommandModuleImplementation, CommandScope, Options, OtherOptions,} from './abstract.cmd';
 import {SchematicsCommandArgs, SchematicsCommandModule,} from './schematics.cmd';
-import {VERSION} from '../utilities/version';
+import {VERSION} from '../help/version';
 import {RootCommands} from "./command.list";
 import {Collection} from "../collection/collection";
 
@@ -10,7 +10,7 @@ interface NewCommandArgs extends SchematicsCommandArgs {
 }
 
 export default class NewCommandModule extends SchematicsCommandModule implements CommandModuleImplementation<NewCommandArgs> {
-  private readonly schematicName = 'wsnew';
+  private readonly schematicName = 'pnew';
   override scope = CommandScope.Out;
   protected override allowPrivateSchematics = true;
 
@@ -21,7 +21,7 @@ export default class NewCommandModule extends SchematicsCommandModule implements
   async builder(argv: Argv): Promise<Argv<NewCommandArgs>> {
     const localYargs = (await super.builder(argv)).option('collection', {
       alias: 'c', type: 'string',
-      describe: 'A collection of schematics to use in generating the initial application.'
+      describe: 'A collection of schematics to use in generating the initial project.'
     });
 
     const {options: {collection: collectionNameFromArgs}} = this.context.args;
@@ -44,7 +44,7 @@ export default class NewCommandModule extends SchematicsCommandModule implements
     const workflow = await this.getOrCreateWorkflowForExecution(collectionName, {
       dryRun, force,interactive, defaults});
 
-    workflow.registry.addSmartDefaultProvider('ng-cli-version', () => VERSION.full);
+    workflow.registry.addSmartDefaultProvider('ng-lib-version', () => VERSION.full);
 
     return this.runSchematic({
       collectionName,

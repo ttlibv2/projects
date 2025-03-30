@@ -14,10 +14,10 @@ export class SchematicRunner extends AbstractRunner {
 // function findClosestSchematicsBinary(): string {
 //   try {
 //     return require.resolve(
-//       '@angular-devkit/schematics-cli/bin/schematics.js',
+//       '@angular-devkit/schematics-lib/bin/schematics.js',
 //       { paths: this.getModulePaths() },
 //     );
 //   } catch {
-//     throw new Error("'@angular-devkit/schematics-cli' path could not be found!");
+//     throw new Error("'@angular-devkit/schematics-lib' path could not be found!");
 //   }
 // }

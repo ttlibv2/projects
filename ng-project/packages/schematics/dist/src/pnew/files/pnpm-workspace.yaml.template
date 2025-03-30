@@ -1,0 +1,10 @@
+tpackages:
+  - '<%=appsRoot%>/*'
+  - '<%=libsRoot%>/*'
+
+catalogs:
+  dev:
+    "prettier": <%= latestVersions['prettier'] %>
+    "turbo": <%= latestVersions['turbo'] %>
+    "rimraf": <%= latestVersions['rimraf'] %>
+    "husky": <%= latestVersions['husky'] %>

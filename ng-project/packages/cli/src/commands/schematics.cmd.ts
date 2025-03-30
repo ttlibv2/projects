@@ -1,5 +1,5 @@
 import { JsonValue, normalize as devkitNormalize, schema } from '@angular-devkit/core';
-import { Collection, UnsuccessfulWorkflowExecution, formats } from '@angular-devkit/schematics';
+import { Collection as NgCollection, UnsuccessfulWorkflowExecution, formats } from '@angular-devkit/schematics';
 import {
   FileSystemCollectionDescription,
   FileSystemSchematicDescription,
@@ -9,10 +9,10 @@ import { relative } from 'node:path';
 import { Argv } from 'yargs';
 // import { isPackageNameSafeForAnalytics } from '../analytics/analytics';
 // import { EventCustomDimension } from '../analytics/analytics-parameters';
-import { getProjectByCwd, getSchematicDefaults } from '../utilities/config';
-import { assertIsError } from '../utilities/error';
-import { memoize } from '../utilities/memoize';
-import { isTTY } from '../utilities/tty';
+import { getProjectByCwd, getSchematicDefaults } from '../help/config';
+import { assertIsError } from '../help/error';
+import { memoize } from '../help/memoize';
+import { isTTY } from '../help/tty';
 import {
   CommandModule,
   CommandModuleImplementation,
@@ -23,9 +23,9 @@ import {
 import { Option, parseJsonSchemaToOptions } from './helper/json-schema';
 import { EngineHost } from './helper/engine-host';
 import { subscribeToWorkflow } from './helper/schematic-workflow';
-import { SCHEMATICS_COLLECTION } from '../utilities/environment';
+import {Collection} from '../collection/collection';
 
-export const DEFAULT_SCHEMATICS_COLLECTION = SCHEMATICS_COLLECTION;
+export const DEFAULT_SCHEMATICS_COLLECTION = Collection.NgDevSC;
 
 export interface SchematicsCommandArgs {
   interactive: boolean;
@@ -73,7 +73,7 @@ export abstract class SchematicsCommandModule
 
   /** Get schematic schema options.*/
   protected async getSchematicOptions(
-    collection: Collection<FileSystemCollectionDescription, FileSystemSchematicDescription>,
+    collection: NgCollection<FileSystemCollectionDescription, FileSystemSchematicDescription>,
     schematicName: string,
     workflow: NodeWorkflow,
   ): Promise<Option[]> {
@@ -264,9 +264,8 @@ export abstract class SchematicsCommandModule
 
   //@memoize
   protected async getSchematicCollections(): Promise<Set<string>> {
-    const getSchematicCollections = (
-      configSection: Record<string, unknown> | undefined,
-    ): Set<string> | undefined => {
+    const getSchematicCollections = (configSection: Record<string, unknown> | undefined): Set<string> | undefined => {
+
       if (!configSection) {
         return undefined;
       }
@@ -290,8 +289,7 @@ export abstract class SchematicsCommandModule
       }
     }
 
-    const value =
-      getSchematicCollections(workspace?.getCli()) ??
+    const value = getSchematicCollections(workspace?.getCli()) ??
       getSchematicCollections(globalConfiguration.getCli());
     if (value) {
       return value;
@@ -353,7 +351,8 @@ export abstract class SchematicsCommandModule
         logger.fatal('The Schematic workflow failed. See above.');
       } else {
         assertIsError(err);
-        logger.fatal(err.message);
+        logger.logConsole("runSchematic", err);
+        //logger.fatal(err.message);
       }
 
       return 1;

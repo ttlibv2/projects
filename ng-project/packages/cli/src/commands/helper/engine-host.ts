@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { Module, createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { Script } from 'node:vm';
-import { assertIsError } from '../../utilities/error';
+import { assertIsError } from '../../help/error';
 
 /**
  * Environment variable to control schematic package redirection
@@ -27,10 +27,10 @@ function shouldWrapSchematic(schematicFile: string, schematicEncapsulation: bool
   const normalizedSchematicFile = schematicFile.replace(/\\/g, '/');
   // Never wrap the internal update schematic when executed directly
   // It communicates with the update command via `global`
-  // But we still want to redirect schematics located in `@angular/cli/node_modules`.
+  // But we still want to redirect schematics located in `@angular/lib/node_modules`.
   if (
-    normalizedSchematicFile.includes('node_modules/@angular/cli/') &&
-    !normalizedSchematicFile.includes('node_modules/@angular/cli/node_modules/')
+    normalizedSchematicFile.includes('node_modules/@angular/lib/') &&
+    !normalizedSchematicFile.includes('node_modules/@angular/lib/node_modules/')
   ) {
     return false;
   }
@@ -108,7 +108,7 @@ const legacyModules: Record<string, unknown> = {
     buildDefaultPath(project: { sourceRoot?: string; root: string; projectType: string }): string {
       const root = project.sourceRoot ? `/${project.sourceRoot}/` : `/${project.root}/src/`;
 
-      return `${root}${project.projectType === 'application' ? 'app' : 'lib'}`;
+      return `${root}${project.projectType === 'app' ? 'app' : 'lib'}`;
     },
   },
 };
@@ -161,7 +161,7 @@ function wrap(
         }
       }
 
-      // Resolve from inside the `@angular/cli` project
+      // Resolve from inside the `@angular/lib` project
       return hostRequire(id);
     } else if (id.startsWith('.') || id.startsWith('@angular/cdk')) {
       // Wrap relative files inside the schematic collection

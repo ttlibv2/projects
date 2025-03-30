@@ -1,0 +1,32 @@
+{
+    "name": "@types/yargs",
+    "version": "17.0.33",
+    "description": "TypeScript definitions for yargs",
+    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/yargs",
+    "license": "MIT",
+    "types": "index.d.ts",
+    "exports": {
+        ".": {
+            "types": {
+                "import": "./index.d.mts",
+                "default": "./index.d.ts"
+            }
+        },
+        "./helpers": {
+            "types": {
+                "import": "./helpers.d.mts",
+                "default": "./helpers.d.ts"
+            }
+        },
+        "./yargs": {
+            "types": {
+                "default": "./yargs.d.ts"
+            }
+        },
+        "./package.json": "./package.json"
+    },
+    "scripts": {},
+    "dependencies": {
+        "@types/yargs-parser": "*"
+    }
+}

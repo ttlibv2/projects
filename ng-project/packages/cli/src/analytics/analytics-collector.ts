@@ -4,9 +4,9 @@ import * as os from 'node:os';
 import * as querystring from 'node:querystring';
 import * as semver from 'semver';
 import type { CommandContext } from '../commands/abstract.cmd';
-import { ngDebug } from '../utilities/environment';
-import { assertIsError } from '../utilities/error';
-import { VERSION } from '../utilities/version';
+import { ngDebug } from '../help/environment';
+import { assertIsError } from '../help/error';
+import { VERSION } from '../help/version';
 import {
   EventCustomDimension,
   EventCustomMetric,

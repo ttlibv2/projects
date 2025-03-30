@@ -1,11 +1,11 @@
 import { json, strings } from '@angular-devkit/core';
-import { Arguments, Argv, PositionalOptions, Options as YargsOptions } from '../../../../../backup/index.cjs';
+import { Arguments, Argv, PositionalOptions, Options as YargsOptions } from 'yargs';
 
 /**
  * An option description.
  */
 export interface Option extends YargsOptions{
-  
+
   /**
    * The name of the option.
    */
