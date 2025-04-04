@@ -124,11 +124,3 @@ export class ProjectMap extends StringMap<IProject> {
         }
     }
 }
-
-export interface FileReader<T> {
-    read(path: string, host: WorkspaceHost, options?: any): Promise<T>;
-}
-
-export interface FileWriter {
-
-}

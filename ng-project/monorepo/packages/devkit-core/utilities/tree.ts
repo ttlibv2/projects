@@ -14,8 +14,8 @@ export function deleteAll(host: Tree, path: string, root?: string) {
         // try delete folder if empty
         try{host.delete(path);}
         catch(e) {
-            if(e instanceof Error && e.constructor.name == 'FileDoesNotExistException') {}
-            else throw e;
+            //if(e instanceof Error && e.constructor.name == 'FileDoesNotExistException') {}
+           // else throw e;
         }
     }
 

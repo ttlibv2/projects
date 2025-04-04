@@ -20,16 +20,16 @@ export default function (options: SchemaOption): Rule {
     const ngOption: NgNewSchema = {
       name: options.name,
       prefix: options.prefix ||  't',
-      strict: options.strict ||  true,
-      minimal: options.minimal ||  false,
+      strict: options.strict ??  true,
+      minimal: options.minimal ??  true,
       standalone: true,
       viewEncapsulation: ViewEncapsulation.None,
-      ssr: options.ssr ||  false,
-      inlineStyle: options.inlineStyle || false,
-      skipInstall: options.skipInstall ||  false,
-      routing: options.routing ||  true,
-      serverRouting: options.serverRouting || false,
-      inlineTemplate: options.inlineTemplate || false,
+      ssr: options.ssr ?? false,
+      inlineStyle: options.inlineStyle ?? false,
+      skipInstall: options.skipInstall ??  false,
+      routing: options.routing ??  true,
+      serverRouting: options.serverRouting ?? false,
+      inlineTemplate: options.inlineTemplate ?? false,
       style: options.style ||  Style.Scss,
       skipTests: options.skipTests ||  true,
       version: options.ngVersion || ngVersion,
@@ -60,7 +60,7 @@ function updateAngularJsonFile(options: SchemaOption): Rule {
 
 function deleteAllFiles(dir: string): Rule {
   return (host: Tree) => {
-    const files = ['.vscode', '.gitignore', '.editorconfig', 'README.md'].map(f => `${dir}/${f}`);
+    const files = ['.vscode', '.gitignore', '.editorconfig', 'README.md', 'tsconfig.spec.json'].map(f => `${dir}/${f}`);
     files.forEach(file => deleteAll(host, file));
   };
 }
