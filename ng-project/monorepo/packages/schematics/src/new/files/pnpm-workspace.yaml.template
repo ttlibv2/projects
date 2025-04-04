@@ -1,0 +1,10 @@
+packages:
+  <%if(appsDir)%>- '<%=appsDir%>/*'<%}%>
+  <%if(libsDir)%>- '<%=libsDir%>/*'<%}%>
+
+catalogs:
+  dev:
+    "prettier": <%= latestVersions['prettier'] %>
+    "turbo": <%= latestVersions['turbo'] %>
+    "rimraf": <%= latestVersions['rimraf'] %>
+    "husky": <%= latestVersions['husky'] %>

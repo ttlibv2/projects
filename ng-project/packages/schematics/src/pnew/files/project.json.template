@@ -1,7 +1,0 @@
-{
- "name": "@ngdev/<%= utils.dasherize(name) %>",
- "packageManager": "pnpm@<%=pnpmVersion%>",
- "appsRoot": "<%= appsRoot %>",
- "libsRoot": "<%= libsRoot %>",
- "projects": {}
-}

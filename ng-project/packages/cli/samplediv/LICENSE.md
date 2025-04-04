@@ -1,3 +1,0 @@
-# samplediv LICENSES
-
-## samplediv COMMUNITY VERSIONS LICENSE

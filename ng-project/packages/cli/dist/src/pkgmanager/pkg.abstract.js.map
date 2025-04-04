@@ -1,1 +1,0 @@
-{"version":3,"file":"pkg.abstract.js","sourceRoot":"","sources":["../../../src/pkgmanager/pkg.abstract.ts"],"names":[],"mappings":";;;AAeA,MAAsB,kBAAkB;IACN;IAAhC,YAAgC,MAAsB;QAAtB,WAAM,GAAN,MAAM,CAAgB;IAAG,CAAC;IAM1D,OAAO;QACL,OAAO,IAAI,CAAC,MAAM,CAAC,GAAG,CAAC,WAAW,EAAE,IAAI,CAAoB,CAAC;IAC/D,CAAC;CAKF;AAdD,gDAcC"}

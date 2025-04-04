@@ -1,0 +1,34 @@
+{
+  "name": "@ngdev/schematics",
+  "version": "25.0.0",
+  "description": "schematic monorepo",
+  "files": [
+    "dist/**.*"
+  ],
+  "schematics": "./collection.json",
+  "exports": {
+    "./package.json": "./package.json",
+    "./*": "./*.js"
+  },
+  "dependencies": {
+    "@angular-devkit/core": "^19.2.2",
+    "@angular-devkit/schematics": "^19.2.2",
+    "@schematics/angular": "^19.2.5",
+    "@ngdev/devkit-core": "workspace:^",
+    "jsonc-parser": "^3.3.1"
+  },
+  "scripts": {
+    "build": "pnpm run compile",
+    "compile": "tsc -p tsconfig.json",
+    "watch:schematics": "tsc -p tsconfig.json --watch",
+    "prebuild": "rimraf dist/src ",
+    "postbuild": "cpx src/**/*.md dist/src && cpx package.json dist && pnpm run copy:collection",
+    "copy:collection": "cpx collection.json dist && cpx src/**/schema.json dist/src && cpx src/**/files/** dist/src"
+  },
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1"
+  }
+}

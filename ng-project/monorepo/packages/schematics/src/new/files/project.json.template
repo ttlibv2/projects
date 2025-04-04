@@ -1,0 +1,10 @@
+{
+ "name": "<%= utils.dasherize(name) %>",
+ "appsDir": "<%= appsDir %>",
+ "libsDir": "<%= libsDir %>",
+ "cli": {
+   "packageManager": "pnpm",
+   "schematicCollections": []
+  },
+ "projects": {}
+}

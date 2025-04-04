@@ -1,8 +1,0 @@
-{
-    "name": "@ngdev/samplediv",
-    "version": 1,
-    "packageManager": "pnpm@10.7.0",
-    "appsRoot": "apps",
-    "libsRoot": "packages",
-    "projects": {}
-}

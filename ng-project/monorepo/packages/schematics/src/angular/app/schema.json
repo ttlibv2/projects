@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "NgDevSchematicsApp",
+  "title": "NgDev App Options Schema",
+  "description": "Creates a new NgDev App",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "The name for the new application.",
+      "x-prompt": "What name would you like to use for the application?",
+      "type": "string",
+      "pattern": "^(?:@[a-zA-Z0-9-*~][a-zA-Z0-9-*._~]*/)?[a-zA-Z0-9-~][a-zA-Z0-9-._~]*$",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      }
+    },
+    "routing": {
+      "type": "boolean",
+      "description": "Generate an application with routing already configured",
+      "default": true
+    },
+    "prefix": {
+      "type": "string",
+      "format": "html-selector",
+      "description": "A prefix to be added to the selectors of components generated within this application.",
+      "default": "t"
+    },
+    "skipTests": {
+      "description": "Skip the generation of a unit test files `spec.ts`.",
+      "type": "boolean",
+      "default": true,
+      "alias": "S"
+    },
+    "skipPackageJson": {
+      "type": "boolean",
+      "default": false,
+      "description": "Do not add dependencies to the `package.json` file."
+    },
+    "minimal": {
+      "description": "Generate a minimal project without any testing frameworks. This is intended for learning purposes and simple experimentation, not for production applications.",
+      "type": "boolean",
+      "default": false
+    },
+    "skipInstall": {
+      "description": "Skip the automatic installation of packages. You will need to manually install the dependencies later.",
+      "type": "boolean",
+      "default": false
+    },
+    "strict": {
+      "description": "Enable stricter bundle budget settings for the application. This helps to keep your application's bundle size small and improve performance. For more information, see https://angular.dev/tools/cli/template-typecheck#strict-mode",
+      "type": "boolean",
+      "default": true
+    },
+    "ssr": {
+      "description": "Configure the application for Server-Side Rendering (SSR) and Static Site Generation.",
+      "type": "boolean",
+      "default": false
+    },
+    "inlineStyle": {
+      "description": "Include the styles for the initial application's root component directly within the `app.component.ts` file. By default, a separate stylesheet file (e.g., `app.component.css`) is created.",
+      "type": "boolean",
+      "default": false
+    },
+    "inlineTemplate": {
+      "description": "Include the HTML template for the initial application's root component directly within the `app.component.ts` file. By default, a separate template file (e.g., `app.component.html`) is created.",
+      "type": "boolean",
+      "default": false
+    },
+    "viewEncapsulation": {
+      "description": "Sets the view encapsulation mode for components in the initial project. This determines how component styles are scoped and applied. Options include: `Emulated` (default, styles are scoped to the component), `None` (styles are global), and `ShadowDom` (styles are encapsulated using Shadow DOM).",
+      "enum": ["Emulated", "None", "ShadowDom"],
+      "type": "string"
+    },
+    "style": {
+      "description": "The type of stylesheet files to be created for components in the initial project.",
+      "type": "string",
+      "enum": ["css", "scss", "sass", "less"],
+    }
+  }
+}

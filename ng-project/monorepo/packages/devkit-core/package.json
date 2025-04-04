@@ -1,0 +1,26 @@
+{
+  "name": "@ngdev/devkit-core",
+  "version": "25.03.255",
+  "description": "devkit-core",
+  "main": "src/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "tsc:watch": "tsc -p tsconfig.json --watch",
+    "prebuild": "rimraf dist/utilities dist/workspace",
+    "postbuild": "pnpm run copy:src",
+    "copy:src": "cpx package.json dist && cpx workspace/*.json dist/workspace"
+  },
+  "dependencies": {
+    "@angular-devkit/core": "^19.2.2",
+    "@angular-devkit/schematics": "^19.2.2",
+    "ansis": "^3.17.0",
+    "jsonc-parser": "^3.3.1",
+    "node-emoji": "^2.2.0",
+    "ora": "^8.2.0",
+    "typescript": "~5.7.2"
+  },
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "rimraf": "^6.0.1"
+  }
+}

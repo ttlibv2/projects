@@ -1,0 +1,14 @@
+{
+ "name": "@ngdev/sample",
+ "appsDir": "apps",
+ "libsDir": "packages",
+ "cli": {
+  "packageManager": "pnpm",
+  "schematicCollections": [],
+  "ngVersion": "19.1.8"
+ },
+ "projects": {
+
+ }
+
+}
