@@ -9,11 +9,7 @@
     "init": "pnpm install && husky",
     "link": "pnpm --filter './<%=libsDir%>/*' dev:link",
     "build": "turbo run build",
-    "lint": "turbo run lint",
-    "//format": "prettier --write \"**/*.{js,mjs,ts,mts,d.ts,html}\" --cache",
-    "//format:check": "prettier --check \"**/*.{js,mjs,ts,mts,d.ts,html}\"",
-    "//lint": "eslint --ext \".js,.mjs,.ts,.mts\" --ignore-path .gitignore . --cache",
-    "//lint:fix": "eslint --fix --ext \".js,.mjs,.ts,.mts\" --ignore-path .gitignore ."
+    "lint": "turbo run lint"
   },
   "devDependencies": {
     "eslint": "<%=latestVersions['eslint']%>",
@@ -21,7 +17,9 @@
     "turbo": "<%=latestVersions['turbo']%>",
     "rimraf": "<%=latestVersions['rimraf']%>",
     "husky": "<%=latestVersions['husky']%>",
-    "typescript": "<%=latestVersions['typescript']%>"
+    "typescript": "<%=latestVersions['typescript']%>",
+    "@angular/cli": "<%=latestVersions['ngVersion']%>",
+    "@ngdev/cli": "link:../monorepo/packages/devkit-cli/dist"
   },
   "packageManager": "pnpm@<%=pnpmVersion%>"
 }

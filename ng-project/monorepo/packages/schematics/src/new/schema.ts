@@ -27,4 +27,6 @@ export interface Schema {
   directory: string;
 
   commit?: boolean;
+
+  ngVersion?: string;
 }

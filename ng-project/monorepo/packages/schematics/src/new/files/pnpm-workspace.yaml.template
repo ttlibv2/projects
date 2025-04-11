@@ -1,6 +1,10 @@
 packages:
-  <%if(appsDir)%>- '<%=appsDir%>/*'<%}%>
-  <%if(libsDir)%>- '<%=libsDir%>/*'<%}%>
+  <%if(appsDir == libsDir){%>- '<%=appsDir%>/*'<%} else {%>
+  <%if(appsDir){%>- '<%=appsDir%>/*'<%}%>
+  <%if(libsDir){%>- '<%=libsDir%>/*'<%}%> <%}%>
+
+catalog:
+    "@ngdev/cli": <%= latestVersions['@ngdev/cli'] %>
 
 catalogs:
   dev:

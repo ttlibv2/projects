@@ -3,6 +3,7 @@
   "version": "25.03.255",
   "description": "devkit-core",
   "main": "src/main.js",
+  "typings": "src/main.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "tsc:watch": "tsc -p tsconfig.json --watch",

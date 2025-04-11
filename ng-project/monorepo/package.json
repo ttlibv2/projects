@@ -17,7 +17,7 @@
     "demo": "ngdev new sample"
   },
   "dependencies": {
-    "@ngdev/cli": "link:packages/cli/dist",
+    "@ngdev/cli": "link:packages/devkit-cli/dist",
     "@ngdev/devkit-core": "link:packages/devkit-core/dist",
     "@ngdev/schematics": "link:packages/schematics/dist",
     "typescript": "~5.7.2"
@@ -31,7 +31,7 @@
   "pnpm": {
     "overrides": {
       "@ngdev/schematics": "link:packages/schematics/dist",
-      "@ngdev/cli": "link:packages/cli/dist",
+      "@ngdev/cli": "link:packages/devkit-cli/dist",
       "@ngdev/devkit-core": "link:packages/devkit-core/dist"
     },
     "ignoredBuiltDependencies": [

@@ -1,4 +1,5 @@
 {
+ "$schema": "./node_modules/@ngdev/cli/lib/schema.json",
  "name": "<%= utils.dasherize(name) %>",
  "appsDir": "<%= appsDir %>",
  "libsDir": "<%= libsDir %>",

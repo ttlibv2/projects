@@ -19,7 +19,7 @@ export type JSONPath = (string | number)[];
 /** @internal */
 export class JSONFile {
   content: string;
-  private eol: string;
+  private readonly eol: string;
 
   constructor(private readonly path: string) {
     const buffer = readFileSync(this.path);

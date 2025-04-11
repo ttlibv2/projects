@@ -6,6 +6,10 @@ import { YarnPackageManager } from "./yarn.pkg";
 
 export class PkgManagerFactory {
 
+  static pnpm(): PNpmPackageManager {
+    return new PNpmPackageManager();
+  }
+
   static create(name: EnumPkg | string): AbstractPkgManager {
     name = typeof name === 'string' ? name.toLowerCase() : name;
     switch (name) {
@@ -14,7 +18,7 @@ export class PkgManagerFactory {
       case EnumPkg.YARN:
         return new YarnPackageManager();
       case EnumPkg.PNPM:
-        return new PNpmPackageManager();
+        return PkgManagerFactory.pnpm();
       default:
         throw new Error(`Package manager ${name} is not managed.`);
     }

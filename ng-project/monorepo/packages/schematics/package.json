@@ -1,6 +1,6 @@
 {
   "name": "@ngdev/schematics",
-  "version": "25.0.0",
+  "version": "25.03.255",
   "description": "schematic monorepo",
   "files": [
     "dist/**.*"

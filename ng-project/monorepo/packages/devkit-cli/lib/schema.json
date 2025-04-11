@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "ngdev-cli://config/schema.json",
+  "title": "CLI Workspace Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {"type": "string"},
+    "name": {"type":  "string"},
+    "cli": {"$ref": "#/definitions/cliOptions"},
+    "appsDir": {
+      "type": "string",
+      "description": "Path where new application will be created."
+    },
+    "libsDir": {
+      "type": "string",
+      "description": "Path where new library will be created."
+    },
+    "defaultProject": {
+      "type": "string"
+    },
+    "projects": {
+      "type": "object",
+      "patternProperties": {
+        "^(?:@[a-zA-Z0-9._-]+/)?[a-zA-Z0-9._-]+$": {
+          "$ref": "#/definitions/project"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "definitions": {
+    "cliOptions": {
+      "type": "object",
+      "properties": {
+        "schematicCollections": {
+          "type": "array",
+          "description": "The list of schematic collections to use.",
+          "items": {
+            "type": "string",
+            "uniqueItems": true
+          }
+        },
+        "packageManager": {
+          "description": "Specify which package manager tool to use.",
+          "type": "string",
+          "enum": ["pnpm"]
+        },
+        "ngVersion": {
+          "type": "string",
+          "description": "Angular cli version"
+        },
+        "nestVersion": {
+          "type": "string",
+          "description": "NestJs Cli version"
+        }
+      },
+      "additionalProperties": false
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name project"
+        },
+        "root": {
+          "type": "string",
+          "description": "Root of the project files."
+        },
+        "projectType": {
+          "type": "string",
+          "description": "Project type.",
+          "enum": [
+            "application",
+            "library"
+          ]
+        },
+        "framework": {
+          "type": "string",
+          "description": "The framework project: angular, nestjs",
+          "enum": ["angular", "nestjs", "typeorm"]
+        },
+        "build": {
+          "type": "string",
+          "description": "The name project"
+        }
+      },
+      "required": [
+        "root","name","framework","build", "projectType"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-z]{1,3}-.*": {}
+      }
+    }
+  }
+}
