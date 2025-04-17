@@ -4,27 +4,22 @@
   "description": "CLI tool for monorepo",
   "license": "MIT",
   "scripts": {
-    "run": "turbo run run",
-    "build": "turbo run build",
-    "//clean": "turbo run clean",
-    "watch": "turbo watch build",
-    "start0": "pnpm run start",
-    "lint": "turbo run lint",
-    "glink": "turbo run glink",
-    "setup": "pnpm run clean && pnpm run init",
-    "clean": "npx rimraf --glob **/node_modules **/dist **/.angular ./pnpm-lock.yaml",
-    "init": "pnpm install",
-    "demo": "ngdev new sample"
+    "build:core": "pnpm --filter=devkit-core build",
+    "build:sc": "pnpm --filter=schematics build",
+    "build:cli": "pnpm --filter=cli build",
+    "turbo:build_all": "pnpm --filter=cli build",
+    "turbo:watch": "turbo watch compiler"
   },
   "dependencies": {
     "@ngdev/cli": "link:packages/devkit-cli/dist",
     "@ngdev/devkit-core": "link:packages/devkit-core/dist",
     "@ngdev/schematics": "link:packages/schematics/dist",
+    "rimraf": "^6.0.1",
     "typescript": "~5.7.2"
   },
   "devDependencies": {
     "@types/node": "^22.13.9",
-    "rimraf": "^6.0.1",
+    "del": "^8.0.0",
     "turbo": "^2.4.4"
   },
   "packageManager": "pnpm@10.7.1",
@@ -32,10 +27,12 @@
     "overrides": {
       "@ngdev/schematics": "link:packages/schematics/dist",
       "@ngdev/cli": "link:packages/devkit-cli/dist",
-      "@ngdev/devkit-core": "link:packages/devkit-core/dist"
+      "@ngdev/devkit-core": "link:packages/devkit-core/dist",
+      "*": "link:packages/devkit-core/dist/*"
     },
     "ignoredBuiltDependencies": [
       "@parcel/watcher",
+      "core-js",
       "esbuild",
       "lmdb",
       "msgpackr-extract"

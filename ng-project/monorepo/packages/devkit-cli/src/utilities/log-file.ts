@@ -1,6 +1,6 @@
-import { appendFileSync, mkdtempSync, realpathSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { normalize } from 'node:path';
+import { appendFileSync, mkdtempSync, realpathSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { normalize } from "node:path";
 
 let logPath: string | undefined;
 
@@ -11,11 +11,11 @@ let logPath: string | undefined;
  */
 export function writeErrorToLogFile(error: Error): string {
   if (!logPath) {
-    const tempDirectory = mkdtempSync(realpathSync(tmpdir()) + '/ngdev-');
-    logPath = normalize(tempDirectory + '/msg.log');
+    const tempDirectory = mkdtempSync(realpathSync(tmpdir()) + "/ngdev-");
+    logPath = normalize(tempDirectory + "/msg.log");
   }
 
-  appendFileSync(logPath, '[error] ' + (error.stack || error) + '\n\n');
+  appendFileSync(logPath, "[error] " + (error.stack || error) + "\n\n");
 
   return logPath;
 }

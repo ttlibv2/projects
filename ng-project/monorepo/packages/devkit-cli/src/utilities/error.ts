@@ -1,11 +1,16 @@
-import * as assert from 'node:assert';
+import * as assert from "node:assert";
 
 export class NotFoundError extends Error {}
 
-export function assertIsError(value: unknown): asserts value is Error & { code?: string } {
+export function assertIsError(
+  value: unknown,
+): asserts value is Error & { code?: string } {
   const isError =
     value instanceof Error ||
     // The following is needing to identify errors coming from RxJs.
-    (typeof value === 'object' && value && 'name' in value && 'message' in value);
-  assert(isError, 'catch clause variable is not an Error instance');
+    (typeof value === "object" &&
+      value &&
+      "name" in value &&
+      "message" in value);
+  assert(isError, "catch clause variable is not an Error instance");
 }

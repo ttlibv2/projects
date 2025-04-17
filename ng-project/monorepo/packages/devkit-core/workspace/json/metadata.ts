@@ -7,10 +7,16 @@ function escapeKey(key: string): string | number {
     return key.replace('~', '~0').replace('/', '~1');
 }
 
-interface ChangeValues {
+export interface ChangeValues {
     json: JsonValue;
     project: ProjectProp;
     projectCollection: Iterable<[string, ProjectProp]>;
+}
+
+export type BaseChangeInput<T extends keyof ChangeValues = any> = (jsonPath: string[], value: any) => {
+    jsonPath: string[];
+    value: ChangeValues[T] | undefined;
+    type?: T;
 }
 
 export interface JsonChange {
@@ -45,7 +51,6 @@ export class JsonWorkspaceMetadata {
 
     getNodeValueFromAst(path: JSONPath): unknown {
         const node = findNodeAtLocation(this.ast, path);
-
         return node && getNodeValue(node);
     }
 
@@ -53,8 +58,7 @@ export class JsonWorkspaceMetadata {
         return this.changes.get(path);
     }
 
-    addChange<T extends keyof ChangeValues = keyof ChangeValues>(
-        jsonPath: string[], value: ChangeValues[T] | undefined, type?: T): void {
+    addChange<T extends keyof ChangeValues = keyof ChangeValues>(jsonPath: string[], value: ChangeValues[T] | undefined, type?: T): void {
         let currentPath = '';
         for (let index = 0; index < jsonPath.length - 1; index++) {
             currentPath = currentPath + '/' + escapeKey(jsonPath[index]);

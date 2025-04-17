@@ -1,4 +1,4 @@
-import {CommandModuleConstructor} from "./helper/add-cmd-to-args";
+import { CommandModuleConstructor } from "./helper/add-cmd-to-args";
 
 export interface CommandConfig {
   aliases?: string[];
@@ -7,21 +7,21 @@ export interface CommandConfig {
 }
 
 export const RootCommands: Record<string, CommandConfig> = {
-  'gen': {
-    factory: () => import('./generate.cmd'),
-    aliases: ['g'],
+  gen: {
+    factory: () => import("./generate.cmd"),
+    aliases: ["g"],
   },
-  'new': {
-    factory: () => import('./new.cmd'),
-    aliases: ['n'],
+  new: {
+    factory: () => import("./new.cmd"),
+    aliases: ["n"],
   },
-  'version': {
-    factory: () => import('./version.cmd'),
-    aliases: ['v'],
+  exec: {
+    factory: () => import("./exec.cmd"),
+    aliases: ["exec"],
   },
-  'exec': {
-    factory: () => import('./exec.cmd'),
-    aliases: ['exec'],
+  info: {
+    factory: () => import("./info.cmd"),
+    aliases: ["inf"],
   }
 };
 

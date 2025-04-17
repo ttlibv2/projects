@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
+    "rootDir": ".",
     "lib": ["ES2023", "dom"],
     "declaration": true,
     "module": "commonjs",
@@ -13,7 +14,6 @@
     "noImplicitThis": true,
     "noUnusedParameters": false,
     "noUnusedLocals": false,
-    "rootDir": ".",
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
     "sourceMap": true,
@@ -21,6 +21,6 @@
     "target": "ES2023",
     "types": ["node"]
   },
-  "include": ["utilities", "package.json", "workspace", "src"],
+  "include": ["main.ts"],
   "exclude": ["node_modules", "e2e", "dist"]
 }

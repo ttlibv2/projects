@@ -4,8 +4,8 @@
  "appsDir": "<%= appsDir %>",
  "libsDir": "<%= libsDir %>",
  "cli": {
-   "packageManager": "pnpm",
-   "schematicCollections": []
+   "packageManager": "<%= pkgManager %>",
+   "ngVersion": "<%= ngVersion %>"
   },
  "projects": {}
 }

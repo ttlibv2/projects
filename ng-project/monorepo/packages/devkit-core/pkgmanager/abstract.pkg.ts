@@ -1,11 +1,10 @@
 import ora from "ora";
-import * as path from "node:path";
+import {normalize, join} from "node:path";
+import {readFile} from "node:fs";
 import {AbstractRunner} from '../runners/abstract.runner';
 import {memoize} from "../utilities/memoize";
 import {MESSAGES} from "../logui/messages";
-import {normalize} from "node:path";
 import  {colors} from '../utilities/color';
-import {readFile} from "node:fs";
 import { Logger } from "../utilities/logger";
 
 export enum EnumPkg {
@@ -62,7 +61,7 @@ export abstract class AbstractPkgManager {
 
     try {
       const commandArgs = `${this.cli.install} ${this.cli.silentFlag}`;
-      const cwd = path.join(process.cwd(), normalize(directory));
+      const cwd = join(process.cwd(), normalize(directory));
       await this.runner.run(commandArgs, true, cwd);
 
       spinner.succeed();
@@ -184,7 +183,7 @@ export abstract class AbstractPkgManager {
   private async readPackageJson(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       readFile(
-        path.join(process.cwd(), 'package.json'),
+        join(process.cwd(), 'package.json'),
         (error: NodeJS.ErrnoException | null, buffer: Buffer) => {
           if (error !== undefined && error !== null) {
             reject(error);

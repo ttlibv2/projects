@@ -12,24 +12,24 @@ export const yargsUnknownCommands = (argv: yargs.Arguments) => {
 
   if (currentContext.commands.length > 0 || commandKeys.length > 0) {
     const pos = currentContext.commands.length;
-    argv._.slice(pos).forEach((key:string) => {
-      if (!key.startsWith('--') && !commandKeys.includes('' + key)) {
-        unknown.push('' + key);
+    argv._.slice(pos).forEach((key: string) => {
+      if (!key.startsWith("--") && !commandKeys.includes("" + key)) {
+        unknown.push("" + key);
       }
     });
   }
 
   if (unknown.length > 0) {
     //usage.fail(
-      // __n(
-      //   'Unknown command: %s',
-      //   'Unknown commands: %s',
-      //   unknown.length,
-      //   unknown.join(', ')
-      // )
+    // __n(
+    //   'Unknown command: %s',
+    //   'Unknown commands: %s',
+    //   unknown.length,
+    //   unknown.join(', ')
+    // )
     //);
     return true;
   } else {
     return false;
   }
-}
+};

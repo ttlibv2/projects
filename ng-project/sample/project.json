@@ -1,0 +1,54 @@
+{
+  "$schema": "./node_modules/@ngdev/cli/lib/schema.json",
+  "name": "sample",
+  "appsDir": "apps",
+  "libsDir": "packages",
+  "cli": {
+    "packageManager": "pnpm",
+    "ngVersion": "19.1.8"
+  },
+  "projects": {
+    "tsweb": {
+      "name": "tsweb",
+      "root": "apps/tsweb",
+      "framework": "angular",
+      "projectType": "app",
+      "build": "turbo run build"
+    },
+    "tsweb2": {
+      "name": "tsweb2",
+      "root": "apps/tsweb2",
+      "framework": "angular",
+      "projectType": "app",
+      "build": "@ngdev/cli:build"
+    },
+    "tsweb3": {
+      "name": "tsweb3",
+      "root": "apps/tsweb3",
+      "framework": "angular",
+      "projectType": "app",
+      "build": "@ngdev/cli:build"
+    },
+    "tsweb4": {
+      "name": "tsweb4",
+      "root": "apps/tsweb4",
+      "framework": "angular",
+      "projectType": "app",
+      "build": "@ngdev/cli:build"
+    },
+    "tsweb6": {
+      "name": "tsweb6",
+      "root": "apps/tsweb6",
+      "framework": "angular",
+      "projectType": "app",
+      "build": "@ngdev/cli:build"
+    },
+    "libui": {
+      "name": "libui",
+      "root": "packages/libui",
+      "framework": "angular",
+      "projectType": "lib",
+      "build": "@ngdev/cli:build"
+    }
+  }
+}

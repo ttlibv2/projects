@@ -1,4 +1,4 @@
-import { isTTY } from './tty';
+import { isTTY } from "./tty";
 
 export async function askConfirmation(
   message: string,
@@ -9,12 +9,12 @@ export async function askConfirmation(
     return noTTYResponse ?? defaultResponse;
   }
 
-  const { confirm } = await import('@inquirer/prompts');
+  const { confirm } = await import("@inquirer/prompts");
   const answer = await confirm({
     message,
     default: defaultResponse,
     theme: {
-      prefix: '',
+      prefix: "",
     },
   });
 
@@ -31,13 +31,13 @@ export async function askQuestion(
     return noTTYResponse;
   }
 
-  const { select } = await import('@inquirer/prompts');
+  const { select } = await import("@inquirer/prompts");
   const answer = await select({
     message,
     choices,
     default: defaultResponseIndex,
     theme: {
-      prefix: '',
+      prefix: "",
     },
   });
 
@@ -53,12 +53,12 @@ export async function askChoices(
     return noTTYResponse;
   }
 
-  const { checkbox } = await import('@inquirer/prompts');
+  const { checkbox } = await import("@inquirer/prompts");
   const answers = await checkbox({
     message,
     choices,
     theme: {
-      prefix: '',
+      prefix: "",
     },
   });
 

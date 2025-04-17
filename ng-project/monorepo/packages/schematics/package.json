@@ -2,28 +2,24 @@
   "name": "@ngdev/schematics",
   "version": "25.03.255",
   "description": "schematic monorepo",
-  "files": [
-    "dist/**.*"
-  ],
   "schematics": "./collection.json",
-  "exports": {
-    "./package.json": "./package.json",
-    "./*": "./*.js"
+  "scripts": {
+    "build": "pnpm run compiler",
+    "compiler": "tsc -p tsconfig.json",
+    "prebuild": "rimraf dist/src dist/package.json dist/collection.json",
+    "postbuild": "pnpm run copy:collection",
+    "watch:sc": "tsc -p tsconfig.json --watch",
+    "copy:collection": "cpx collection.json dist && cpx package.json dist && cpx src/**/*.{md,json} dist/src && cpx src/**/files/** dist/src",
+    "copy:watch": "cpx collection.json dist && cpx package.json dist && cpx src/**/*.{md,json} dist/src && cpx src/**/files/** dist/src --watch"
+
   },
   "dependencies": {
     "@angular-devkit/core": "^19.2.2",
     "@angular-devkit/schematics": "^19.2.2",
     "@schematics/angular": "^19.2.5",
     "@ngdev/devkit-core": "workspace:^",
-    "jsonc-parser": "^3.3.1"
-  },
-  "scripts": {
-    "build": "pnpm run compile",
-    "compile": "tsc -p tsconfig.json",
-    "watch:schematics": "tsc -p tsconfig.json --watch",
-    "prebuild": "rimraf dist/src ",
-    "postbuild": "cpx src/**/*.md dist/src && cpx package.json dist && pnpm run copy:collection",
-    "copy:collection": "cpx collection.json dist && cpx src/**/schema.json dist/src && cpx src/**/files/** dist/src"
+    "jsonc-parser": "^3.3.1",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "cpx": "^1.5.0",

@@ -7,3 +7,8 @@ export * from './color';
 export * from './memoize';
 export * from './tree';
 export * from './string-map';
+export * from './finder-pkg';
+export * from './schema-inf';
+export * from './os-info';
+export * from './errors';
+export * from './cmd-option-tostring';

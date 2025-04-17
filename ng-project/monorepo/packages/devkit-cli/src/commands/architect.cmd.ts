@@ -1,15 +1,20 @@
-import { Target } from '@angular-devkit/architect';
-import { workspaces } from '@angular-devkit/core';
-import { Argv } from 'yargs';
-import { ArchitectBaseCommandModule } from './architectbase.cmd';
-import {CommandModuleImplementation, Options, OtherOptions} from './abstract.cmd';
+import { Target } from "@angular-devkit/architect";
+import { workspaces } from "@angular-devkit/core";
+import { Argv } from "yargs";
+import { ArchitectBaseCommandModule } from "./architectbase.cmd";
+import {
+  CommandModuleImplementation,
+  Options,
+  OtherOptions,
+} from "./abstract.cmd";
 
 export interface ArchitectCommandArgs {
   configuration?: string;
   project?: string;
 }
 
-export abstract class ArchitectCommandModule extends ArchitectBaseCommandModule<ArchitectCommandArgs>
+export abstract class ArchitectCommandModule
+  extends ArchitectBaseCommandModule<ArchitectCommandArgs>
   implements CommandModuleImplementation<ArchitectCommandArgs>
 {
   abstract readonly multiTarget: boolean;
@@ -81,10 +86,12 @@ export abstract class ArchitectCommandModule extends ArchitectBaseCommandModule<
     // return this.addSchemaOptionsToCommand(localYargs, schemaOptions);
   }
 
-  async run(options: Options<ArchitectCommandArgs> & OtherOptions): Promise<number | void> {
+  async run(
+    options: Options<ArchitectCommandArgs> & OtherOptions,
+  ): Promise<number | void> {
     const target = this.getArchitectTarget();
 
-    const { configuration = '', project, ...architectOptions } = options;
+    const { configuration = "", project, ...architectOptions } = options;
 
     if (!project) {
       // This runs each target sequentially.
@@ -92,16 +99,24 @@ export abstract class ArchitectCommandModule extends ArchitectBaseCommandModule<
       let result = 0;
       const projectNames = this.getProjectNamesByTarget(target);
       if (!projectNames) {
-        return this.onMissingTarget('Cannot determine project or target for command.');
+        return this.onMissingTarget(
+          "Cannot determine project or target for command.",
+        );
       }
 
       for (const project of projectNames) {
-        result |= await this.runSingleTarget({ configuration, target, project }, architectOptions);
+        result |= await this.runSingleTarget(
+          { configuration, target, project },
+          architectOptions,
+        );
       }
 
       return result;
     } else {
-      return await this.runSingleTarget({ configuration, target, project }, architectOptions);
+      return await this.runSingleTarget(
+        { configuration, target, project },
+        architectOptions,
+      );
     }
   }
 
@@ -114,8 +129,8 @@ export abstract class ArchitectCommandModule extends ArchitectBaseCommandModule<
     }
 
     // Yargs allows positional args to be used as flags.
-    if (typeof options['project'] === 'string') {
-      return options['project'];
+    if (typeof options["project"] === "string") {
+      return options["project"];
     }
 
     const target = this.getArchitectTarget();

@@ -5,7 +5,7 @@ import { applyEdits, modify } from 'jsonc-parser';
 import { JsonObject, JsonValue } from '@angular-devkit/core';
 import { EOL } from 'node:os';
 
-export async function writeWorkspace(workspace: WorkspaceProp, host: WorkspaceHost,
+export async function writeWorkspace(host: WorkspaceHost, workspace: WorkspaceProp,
     path?: string, options: { schema?: string; } = {}): Promise<void> {
     const metadata = (workspace as any)[JsonWorkspaceSymbol];
 
@@ -66,7 +66,7 @@ function convertJsonProjectCollection(
 
 
 function convertJsonProject(project: ProjectProp): JsonObject {
-    const {name, root, framework, extensions, projectType, build = null} = project;
+    const {name, root, framework, extensions, type = null} = project;
 
     //let targets: JsonObject | undefined;
     // if (project.targets.size > 0) {
@@ -78,7 +78,7 @@ function convertJsonProject(project: ProjectProp): JsonObject {
 
     return {
         ...extensions,
-        name, root, framework, projectType, build
+        name, root, framework, type: type
     };
 }
 

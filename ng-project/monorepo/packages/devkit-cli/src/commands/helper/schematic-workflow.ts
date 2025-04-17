@@ -1,15 +1,17 @@
-import { NodeWorkflow } from '@angular-devkit/schematics/tools';
-import { colors , Logger} from '@ngdev/devkit-core/utilities';
+import { NodeWorkflow } from "@angular-devkit/schematics/tools";
+import { colors, Logger } from "@ngdev/devkit-core/utilities";
 
-function removeLeadingSlash(value: string): string {
-  return value[0] === '/' ? value.slice(1) : value;
-}
-
-export function subscribeToWorkflow(workflow: NodeWorkflow, logger: Logger): {
+export interface ISubscribeToWorkflow {
   files: Set<string>;
   error: boolean;
   unsubscribe: () => void;
-} {
+}
+
+function removeLeadingSlash(value: string): string {
+  return value[0] === "/" ? value.slice(1) : value;
+}
+
+export function subscribeToWorkflow(workflow: NodeWorkflow, logger: Logger): ISubscribeToWorkflow {
   const files = new Set<string>();
   let error = false;
   let logs: string[] = [];
@@ -19,33 +21,31 @@ export function subscribeToWorkflow(workflow: NodeWorkflow, logger: Logger): {
     const eventPath = removeLeadingSlash(event.path);
 
     switch (event.kind) {
-      case 'error':
+      case "error":
         error = true;
-        logger.error(
-          `ERROR! ${eventPath} ${event.description == 'alreadyExist' ? 'already exists' : 'does not exist'}.`,
-        );
+        logger.error(`ERROR! ${eventPath} ${event.description == "alreadyExist" ? "already exists" : "does not exist"}.`);
         break;
-      case 'update':
-        logs.push(`${colors.cyan('UPDATE')} ${eventPath} (${event.content.length} bytes)`);
+      case "update":
+        logs.push(`${colors.cyan("UPDATE")} ${eventPath} (${event.content.length} bytes)`,);
         files.add(eventPath);
         break;
-      case 'create':
-        logs.push(`${colors.green('CREATE')} ${eventPath} (${event.content.length} bytes)`);
+      case "create":
+        logs.push(`${colors.green("CREATE")} ${eventPath} (${event.content.length} bytes)`,);
         files.add(eventPath);
         break;
-      case 'delete':
-        logs.push(`${colors.yellow('DELETE')} ${eventPath}`);
+      case "delete":
+        logs.push(`${colors.yellow("DELETE")} ${eventPath}`);
         files.add(eventPath);
         break;
-      case 'rename':
-        logs.push(`${colors.blue('RENAME')} ${eventPath} => ${removeLeadingSlash(event.to)}`);
+      case "rename":
+        logs.push(`${colors.blue("RENAME")} ${eventPath} => ${removeLeadingSlash(event.to)}`,);
         files.add(eventPath);
         break;
     }
   });
 
   const lifecycleSubscription = workflow.lifeCycle.subscribe((event) => {
-    if (event.kind == 'end' || event.kind == 'post-tasks-start') {
+    if (event.kind == "end" || event.kind == "post-tasks-start") {
       if (!error) {
         // Output the logging queue, no error happened.
         logs.forEach((log) => logger.info(log));
@@ -57,8 +57,7 @@ export function subscribeToWorkflow(workflow: NodeWorkflow, logger: Logger): {
   });
 
   return {
-    files,
-    error,
+    files, error,
     unsubscribe: () => {
       reporterSubscription.unsubscribe();
       lifecycleSubscription.unsubscribe();

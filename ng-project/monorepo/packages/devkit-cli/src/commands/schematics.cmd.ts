@@ -1,27 +1,26 @@
-import { JsonValue, normalize as devkitNormalize, schema } from '@angular-devkit/core';
-import { Collection as NgCollection, UnsuccessfulWorkflowExecution, formats } from '@angular-devkit/schematics';
-import {
-  FileSystemCollectionDescription,
-  FileSystemSchematicDescription,
-  NodeWorkflow,
-} from '@angular-devkit/schematics/tools';
-import { relative } from 'node:path';
-import { Argv } from 'yargs';
-import { assertIsError } from '../utilities/error';
-import { isTTY } from '../utilities/tty';
-import {CommandModule, CommandModuleImplementation, CommandScope, Options, OtherOptions} from './abstract.cmd';
-import { Option, parseJsonSchemaToOptions } from './helper/json-schema';
-import { EngineHost } from './helper/engine-host';
-import { subscribeToWorkflow } from './helper/schematic-workflow';
-import {Collection} from '../collection';
-import {getProjectByCwd, getSchematicDefaults} from "../workspace";
+import { JsonValue, normalize as devkitNormalize, schema} from "@angular-devkit/core";
+import { Collection as NgCollection, UnsuccessfulWorkflowExecution, formats} from "@angular-devkit/schematics";
+import { FileSystemCollectionDescription, FileSystemSchematicDescription, NodeWorkflow, } from "@angular-devkit/schematics/tools";
+import { relative } from "node:path";
+import { Argv } from "yargs";
+import { assertIsError } from "../utilities/error";
+import { isTTY } from "../utilities/tty";
+import { CommandModule, CommandModuleImplementation, CommandScope, Options, OtherOptions, } from "./abstract.cmd";
+import { Option, parseJsonSchemaToOptions } from "./helper/json-schema";
+import { EngineHost } from "./helper/engine-host";
+import { subscribeToWorkflow } from "./helper/schematic-workflow";
+import { Collection } from "../collection";
+import { getProjectByCwd, getSchematicDefaults } from "../workspace";
+import { memoize } from "@ngdev/devkit-core/utilities";
 
 export const DEFAULT_SCHEMATICS_COLLECTION = Collection.NgDevSC;
+
+export type SchematicCollection = NgCollection<FileSystemCollectionDescription, FileSystemSchematicDescription>;
 
 export interface SchematicsCommandArgs {
   interactive: boolean;
   force: boolean;
-  'dry-run': boolean;
+  "dry-run": boolean;
   defaults: boolean;
 }
 
@@ -29,53 +28,51 @@ export interface SchematicsExecutionOptions extends Options<SchematicsCommandArg
   packageRegistry?: string;
 }
 
-export abstract class SchematicsCommandModule extends CommandModule<SchematicsCommandArgs> implements CommandModuleImplementation<SchematicsCommandArgs> {
+export abstract class SchematicsCommandModule
+  extends CommandModule<SchematicsCommandArgs>
+  implements CommandModuleImplementation<SchematicsCommandArgs>
+{
   override scope = CommandScope.In;
   protected readonly allowPrivateSchematics: boolean = false;
 
   async builder(argv: Argv): Promise<Argv<SchematicsCommandArgs>> {
     return argv
-      .option('interactive', {
-        describe: 'Enable interactive input prompts.',
-        type: 'boolean',
+      .option("interactive", {
+        describe: "Enable interactive input prompts.",
+        type: "boolean",
         default: true,
       })
-      .option('dry-run', {
-        describe: 'Run through and reports activity without writing out results.',
-        type: 'boolean',
-        alias: ['d'],
+      .option("dry-run", {
+        describe:
+          "Run through and reports activity without writing out results.",
+        type: "boolean",
+        alias: ["d"],
         default: false,
       })
-      .option('defaults', {
-        describe: 'Disable interactive input prompts for options with a default.',
-        type: 'boolean',
+      .option("defaults", {
+        describe:
+          "Disable interactive input prompts for options with a default.",
+        type: "boolean",
         default: false,
       })
-      .option('force', {
-        describe: 'Force overwriting of existing files.',
-        type: 'boolean',
+      .option("force", {
+        describe: "Force overwriting of existing files.",
+        type: "boolean",
         default: false,
       })
       .strict();
   }
 
+
+
   /** Get schematic schema options.*/
-  protected async getSchematicOptions(
-    collection: NgCollection<FileSystemCollectionDescription, FileSystemSchematicDescription>,
-    schematicName: string,
-    workflow: NodeWorkflow,
-  ): Promise<Option[]> {
+  protected async getSchematicOptions(collection: SchematicCollection, schematicName: string, workflow: NodeWorkflow): Promise<Option[]> {
     const schematic = collection.createSchematic(schematicName, true);
     const { schemaJson } = schematic.description;
-
-    if (!schemaJson) {
-      return [];
-    }
-
-    return parseJsonSchemaToOptions(workflow.registry, schemaJson);
+    return schemaJson ?  parseJsonSchemaToOptions(workflow.registry, schemaJson) : [];
   }
 
- // @memoize
+  @memoize
   protected getOrCreateWorkflowForBuilder(collectionName: string): NodeWorkflow {
     return new NodeWorkflow(this.context.root, {
       resolvePaths: this.getResolvePaths(collectionName),
@@ -83,16 +80,15 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
     });
   }
 
-  //@memoize
-  protected async getOrCreateWorkflowForExecution(
-    collectionName: string,
-    options: SchematicsExecutionOptions,
-  ): Promise<NodeWorkflow> {
+  @memoize
+  protected async getOrCreateWorkflowForExecution(collectionName: string, options: SchematicsExecutionOptions): Promise<NodeWorkflow> {
     const { logger, root, packageManager } = this.context;
     const { force, dryRun, packageRegistry } = options;
 
     const workflow = new NodeWorkflow(root, {
-      force, dryRun,  packageRegistry,
+      force,
+      dryRun,
+      packageRegistry,
       packageManager: packageManager.name.toLowerCase(),
       registry: new schema.CoreSchemaRegistry(formats.standardFormats),
       resolvePaths: this.getResolvePaths(collectionName),
@@ -101,10 +97,16 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
         // Add configuration file defaults
         async (schematic, current) => {
           const projectName =
-            typeof current?.project === 'string' ? current.project : this.getProjectName();
+            typeof current?.project === "string"
+              ? current.project
+              : this.getProjectName();
 
           return {
-            ...(await getSchematicDefaults(schematic.collection.name, schematic.name, projectName)),
+            ...(await getSchematicDefaults(
+              schematic.collection.name,
+              schematic.name,
+              projectName,
+            )),
             ...current,
           };
         },
@@ -114,11 +116,15 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
 
     workflow.registry.addPostTransform(schema.transforms.addUndefinedDefaults);
     workflow.registry.useXDeprecatedProvider((msg) => logger.warn(msg));
-    workflow.registry.addSmartDefaultProvider('projectName', () => this.getProjectName());
+    workflow.registry.addSmartDefaultProvider("projectName", () =>
+      this.getProjectName(),
+    );
 
-    const workingDir = devkitNormalize(relative(this.context.root, process.cwd()));
-    workflow.registry.addSmartDefaultProvider('workingDirectory', () =>
-      workingDir === '' ? undefined : workingDir,
+    const workingDir = devkitNormalize(
+      relative(this.context.root, process.cwd()),
+    );
+    workflow.registry.addSmartDefaultProvider("workingDirectory", () =>
+      workingDir === "" ? undefined : workingDir,
     );
 
     workflow.engineHost.registerOptionsTransform(async (schematic, options) => {
@@ -141,107 +147,115 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
     });
 
     if (options.interactive !== false && isTTY()) {
-      workflow.registry.usePromptProvider(async (definitions: Array<schema.PromptDefinition>) => {
-        let prompts: typeof import('@inquirer/prompts') | undefined;
-        const answers: Record<string, JsonValue> = {};
+      workflow.registry.usePromptProvider(
+        async (definitions: Array<schema.PromptDefinition>) => {
+          let prompts: typeof import("@inquirer/prompts") | undefined;
+          const answers: Record<string, JsonValue> = {};
 
-        for (const definition of definitions) {
-          if (options.defaults && definition.default !== undefined) {
-            continue;
-          }
+          for (const definition of definitions) {
+            if (options.defaults && definition.default !== undefined) {
+              continue;
+            }
 
-          // Only load prompt package if needed
-          prompts ??= await import('@inquirer/prompts');
+            // Only load prompt package if needed
+            prompts ??= await import("@inquirer/prompts");
 
-          switch (definition.type) {
-            case 'confirmation':
-              answers[definition.id] = await prompts.confirm({
-                message: definition.message,
-                default: definition.default as boolean | undefined,
-              });
-              break;
-            case 'list':
-              if (!definition.items?.length) {
-                continue;
-              }
+            switch (definition.type) {
+              case "confirmation":
+                answers[definition.id] = await prompts.confirm({
+                  message: definition.message,
+                  default: definition.default as boolean | undefined,
+                });
+                break;
+              case "list":
+                if (!definition.items?.length) {
+                  continue;
+                }
 
-              answers[definition.id] = await (
-                definition.multiselect ? prompts.checkbox : prompts.select
-              )({
-                message: definition.message,
-                validate: (values) => {
-                  if (!definition.validator) {
-                    return true;
-                  }
-
-                  return definition.validator(Object.values(values).map(({ value }) => value));
-                },
-                default: definition.multiselect ? undefined : definition.default,
-                choices: definition.items?.map((item) =>
-                  typeof item == 'string'
-                    ? {
-                        name: item,
-                        value: item,
-                      }
-                    : {
-                        ...item,
-                        name: item.label,
-                        value: item.value,
-                      },
-                ),
-              });
-              break;
-            case 'input': {
-              let finalValue: JsonValue | undefined;
-              answers[definition.id] = await prompts.input({
-                message: definition.message,
-                default: definition.default as string | undefined,
-                async validate(value) {
-                  if (definition.validator === undefined) {
-                    return true;
-                  }
-
-                  let lastValidation: ReturnType<typeof definition.validator> = false;
-                  for (const type of definition.propertyTypes) {
-                    let potential;
-                    switch (type) {
-                      case 'string':
-                        potential = String(value);
-                        break;
-                      case 'integer':
-                      case 'number':
-                        potential = Number(value);
-                        break;
-                      default:
-                        potential = value;
-                        break;
-                    }
-                    lastValidation = await definition.validator(potential);
-
-                    // Can be a string if validation fails
-                    if (lastValidation === true) {
-                      finalValue = potential;
-
+                answers[definition.id] = await (
+                  definition.multiselect ? prompts.checkbox : prompts.select
+                )({
+                  message: definition.message,
+                  validate: (values) => {
+                    if (!definition.validator) {
                       return true;
                     }
-                  }
 
-                  return lastValidation;
-                },
-              });
+                    return definition.validator(
+                      Object.values(values).map(({ value }) => value),
+                    );
+                  },
+                  default: definition.multiselect
+                    ? undefined
+                    : definition.default,
+                  choices: definition.items?.map((item) =>
+                    typeof item == "string"
+                      ? {
+                          name: item,
+                          value: item,
+                        }
+                      : {
+                          ...item,
+                          name: item.label,
+                          value: item.value,
+                        },
+                  ),
+                });
+                break;
+              case "input": {
+                let finalValue: JsonValue | undefined;
+                answers[definition.id] = await prompts.input({
+                  message: definition.message,
+                  default: definition.default as string | undefined,
+                  async validate(value) {
+                    if (definition.validator === undefined) {
+                      return true;
+                    }
 
-              // Use validated value if present.
-              // This ensures the correct type is inserted into the final schema options.
-              if (finalValue !== undefined) {
-                answers[definition.id] = finalValue;
+                    let lastValidation: ReturnType<
+                      typeof definition.validator
+                    > = false;
+                    for (const type of definition.propertyTypes) {
+                      let potential;
+                      switch (type) {
+                        case "string":
+                          potential = String(value);
+                          break;
+                        case "integer":
+                        case "number":
+                          potential = Number(value);
+                          break;
+                        default:
+                          potential = value;
+                          break;
+                      }
+                      lastValidation = await definition.validator(potential);
+
+                      // Can be a string if validation fails
+                      if (lastValidation === true) {
+                        finalValue = potential;
+
+                        return true;
+                      }
+                    }
+
+                    return lastValidation;
+                  },
+                });
+
+                // Use validated value if present.
+                // This ensures the correct type is inserted into the final schema options.
+                if (finalValue !== undefined) {
+                  answers[definition.id] = finalValue;
+                }
+                break;
               }
-              break;
             }
           }
-        }
 
-        return answers;
-      });
+          return answers;
+        },
+      );
     }
 
     return workflow;
@@ -286,8 +300,8 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
   protected parseSchematicInfo(
     schematic: string | undefined,
   ): [collectionName: string | undefined, schematicName: string | undefined] {
-    if (schematic?.includes(':')) {
-      const [collectionName, schematicName] = schematic.split(':', 2);
+    if (schematic?.includes(":")) {
+      const [collectionName, schematicName] = schematic.split(":", 2);
 
       return [collectionName, schematicName];
     }
@@ -301,13 +315,21 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
     collectionName: string;
     schematicName: string;
   }): Promise<number> {
-
     const { logger } = this.context;
-    const { schematicOptions, executionOptions, collectionName, schematicName } = options;
-    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, executionOptions);
+    const {
+      schematicOptions,
+      executionOptions,
+      collectionName,
+      schematicName,
+    } = options;
+
+    const workflow = await this.getOrCreateWorkflowForExecution(
+      collectionName,
+      executionOptions,
+    );
 
     if (!schematicName) {
-      throw new Error('schematicName cannot be undefined.');
+      throw new Error("schematicName cannot be undefined.");
     }
 
     const { unsubscribe, files } = subscribeToWorkflow(workflow, logger);
@@ -324,18 +346,20 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
         .toPromise();
 
       if (!files.size) {
-        logger.info('Nothing to be done.');
+        logger.info("Nothing to be done.");
       }
 
       if (executionOptions.dryRun) {
-        logger.warn(`\nNOTE: The "--dry-run" option means no changes were made.`);
+        logger.warn(
+          `\nNOTE: The "--dry-run" option means no changes were made.`,
+        );
       }
-    } //
-    catch (err) {
+    } catch (err) {
+      //
       // In case the workflow was not successful, show an appropriate error message.
       if (err instanceof UnsuccessfulWorkflowExecution) {
         // "See above" because we already printed the error.
-        logger.fatal('The Schematic workflow failed. See above.');
+        logger.fatal("The Schematic workflow failed. See above.");
       } //
       else {
         assertIsError(err);
@@ -367,7 +391,7 @@ export abstract class SchematicsCommandModule extends CommandModule<SchematicsCo
 
   private getResolvePaths(collectionName: string): string[] {
     const { workspace, root } = this.context;
-    if (collectionName[0] === '.') {
+    if (collectionName[0] === ".") {
       // Resolve relative collections from the location of `angular.json`
       return [root];
     }

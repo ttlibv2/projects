@@ -1,21 +1,22 @@
-import {AbstractRunner} from "@ngdev/devkit-core/runners";
-import {ISchematic} from "./collection";
-import {SchematicOption} from "./schematic.option";
-import {NodeWorkflow} from "@angular-devkit/schematics/tools";
+import { AbstractRunner } from "@ngdev/devkit-core/runners";
+import { ISchematic } from "./collection";
+import { SchematicOption } from "./schematic.option";
 
 export abstract class AbstractCollection {
-
   constructor(
     protected collection: string,
-    protected runner: AbstractRunner) {
-  }
+    protected runner: AbstractRunner,
+  ) {}
 
   abstract get schematics(): ISchematic[];
 
-  async execute(name: string, options: SchematicOption[], extraFlags?: string): Promise<void> {
+  async execute(name: string,
+    options: SchematicOption[],
+    extraFlags?: string,
+  ): Promise<void> {
     const schematic: string = this.validate(name);
     let command = this.buildCommandLine(schematic, options);
-    if(extraFlags) command = command.concat(` ${extraFlags}`);
+    if (extraFlags) command = command.concat(` ${extraFlags}`);
     await this.runner.run(command);
   }
 
@@ -24,16 +25,22 @@ export abstract class AbstractCollection {
   }
 
   protected buildOptions(options: SchematicOption[]): string {
-    return options.reduce((line, option) => line.concat(` ${option.toCommandString()}`), '');
+    return options.reduce(
+      (line, option) => line.concat(` ${option.toCommandString()}`),
+      "",
+    );
   }
 
   protected validate(name: string) {
-    const schematic = this.schematics.find(s => s.name === name || s.alias === name);
+    const schematic = this.schematics.find(
+      (s) => s.name === name || s.alias === name,
+    );
 
     if (schematic === undefined || schematic === null) {
-      throw new Error(`Invalid schematic "${name}". Please, ensure that "${name}" exists in this collection.`);
+      throw new Error(
+        `Invalid schematic "${name}". Please, ensure that "${name}" exists in this collection.`,
+      );
     }
     return schematic.name;
   }
-
 }

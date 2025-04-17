@@ -1,15 +1,26 @@
 import { Argv } from "yargs";
-import { CommandModuleImplementation, CommandScope, Options, OtherOptions} from "./abstract.cmd";
-import { SchematicsCommandArgs, SchematicsCommandModule} from "./schematics.cmd";
+import {
+  CommandModuleImplementation,
+  CommandScope,
+  Options,
+  OtherOptions,
+} from "./abstract.cmd";
+import {
+  SchematicsCommandArgs,
+  SchematicsCommandModule,
+} from "./schematics.cmd";
 import { RootCommands } from "./command.list";
 import { Collection } from "../collection";
-import { PkgManagerFactory } from '@ngdev/devkit-core/pkgmanager';
+import { PkgManagerFactory } from "@ngdev/devkit-core/pkgmanager";
 
 interface NewCommandArgs extends SchematicsCommandArgs {
   collection?: string;
 }
 
-export default class NewCommandModule extends SchematicsCommandModule implements CommandModuleImplementation<NewCommandArgs> {
+export default class NewCommandModule
+  extends SchematicsCommandModule
+  implements CommandModuleImplementation<NewCommandArgs>
+{
   private readonly schematicName = "new";
   override scope = CommandScope.Out;
   protected override allowPrivateSchematics = true;
@@ -20,45 +31,65 @@ export default class NewCommandModule extends SchematicsCommandModule implements
 
   async builder(argv: Argv): Promise<Argv<NewCommandArgs>> {
     const localYargs = (await super.builder(argv)).option("collection", {
-      alias: ["c"], type: "string",
-      describe: "A collection of collection to use in generating the initial project.",
+      alias: ["c"],
+      type: "string",
+      describe:
+        "A collection of collection to use in generating the initial project.",
     });
 
-    const { options: { collection: collectionNameFromArgs }} = this.context.args;
+    const {
+      options: { collection: collectionNameFromArgs },
+    } = this.context.args;
 
     const collectionName =
       typeof collectionNameFromArgs === "string"
-        ? collectionNameFromArgs : await this.getCollectionFromConfig();
+        ? collectionNameFromArgs
+        : await this.getCollectionFromConfig();
 
     const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
     const collection = workflow.engine.createCollection(collectionName);
     const options = await this.getSchematicOptions(
-      collection, this.schematicName, workflow);
+      collection,
+      this.schematicName,
+      workflow,
+    );
 
     return this.addSchemaOptionsToCommand(localYargs, options);
   }
 
-  async run(options: Options<NewCommandArgs> & OtherOptions): Promise<number | void> {
-
+  async run(
+    options: Options<NewCommandArgs> & OtherOptions,
+  ): Promise<number | void> {
     // Register the version of the CLI in the registry.
-    const collectionName = options.collection ?? (await this.getCollectionFromConfig());
-    const {dryRun, force, interactive, defaults, collection, ...schematicOptions} = options;
+    const collectionName =
+      options.collection ?? (await this.getCollectionFromConfig());
+    const {
+      dryRun,
+      force,
+      interactive,
+      defaults,
+      collection,
+      ...schematicOptions
+    } = options;
 
     const pnpmVersion = await PkgManagerFactory.pnpm().version;
 
-    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, {dryRun, force, interactive, defaults});
+    const workflow = await this.getOrCreateWorkflowForExecution(
+      collectionName,
+      { dryRun, force, interactive, defaults },
+    );
     //workflow.registry.addSmartDefaultProvider("ng-version", () => VERSION.full);
     workflow.registry.addSmartDefaultProvider("pkg-version", () => pnpmVersion);
 
-
-    console.log(`pnpmVersion`, pnpmVersion)
+    console.log(`pnpmVersion`, pnpmVersion);
 
     // workflow.registry.addSmartDefaultProvider("packageManager", () => '');
 
-
     return this.runSchematic({
-      collectionName, schematicName: this.schematicName, schematicOptions,
-      executionOptions: {dryRun, force, interactive, defaults,},
+      collectionName,
+      schematicName: this.schematicName,
+      schematicOptions,
+      executionOptions: { dryRun, force, interactive, defaults },
     });
   }
 

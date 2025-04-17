@@ -1,14 +1,18 @@
 import * as path from "node:path";
 import * as os from "node:os";
-import {existsSync} from "node:fs";
-import {findUp} from "../utilities/find-up";
-import { DevWorkspace } from './ws.type';
+import { existsSync } from "node:fs";
+import { findUp } from "../utilities/find-up";
+import { DevWorkspace } from "./ws.type";
 
 const fileConfigName = "project.json";
-export const joinGlobal = (dir: any) => path.join(dir, ".ngdev", fileConfigName);
+export const joinGlobal = (dir: any) =>
+  path.join(dir, ".ngdev", fileConfigName);
 export const defaultGlobalPath = () => joinGlobal(os.homedir());
 
-export const getProjectByCwd = (workspace: DevWorkspace, location?: string): string | null => {
+export const getProjectByCwd = (
+  workspace: DevWorkspace,
+  location?: string,
+): string | null => {
   if (!workspace.projects) return null;
   else if (workspace.projects.size === 1) {
     const projectNames = workspace.projects.keys();
@@ -16,13 +20,17 @@ export const getProjectByCwd = (workspace: DevWorkspace, location?: string): str
   } else {
     return findProjectByPath(workspace, location) ?? null;
   }
+};
+
+export function getConfigPath(level: "global" | "local"): string | null {
+  return level === "global" ? getGlobalFilePath() : getProjectFilePath();
 }
 
-export function getConfigPath(level: 'global' | 'local'): string | null {
-  return level === 'global' ? getGlobalFilePath() : getProjectFilePath();
-}
-
-export async function getSchematicDefaults(collection: string, schematic: string, project?: string | null): Promise<{}> {
+export async function getSchematicDefaults(
+  collection: string,
+  schematic: string,
+  project?: string | null,
+): Promise<{}> {
   const result = {};
 
   // const mergeOptions = (source: json.JsonValue): void => {
@@ -60,12 +68,18 @@ export async function getSchematicDefaults(collection: string, schematic: string
   return result;
 }
 
-
-
 function getGlobalFilePath(): string | null {
-  const join = (dir: any) => dir ? joinGlobal(dir) : null;
-  const dirPaths: string[] = [<string>process.env['XDG_CONFIG_HOME'], process.cwd(), __dirname, os.homedir()];
-  return dirPaths.map(dir => join(dir)).find(file => file && existsSync(file)) ?? null;
+  const join = (dir: any) => (dir ? joinGlobal(dir) : null);
+  const dirPaths: string[] = [
+    <string>process.env["XDG_CONFIG_HOME"],
+    process.cwd(),
+    __dirname,
+    os.homedir(),
+  ];
+  return (
+    dirPaths.map((dir) => join(dir)).find((file) => file && existsSync(file)) ??
+    null
+  );
 }
 
 function getProjectFilePath(projectPath?: string): string | null {
@@ -76,14 +90,19 @@ function getProjectFilePath(projectPath?: string): string | null {
   );
 }
 
-function findProjectByPath(workspace: DevWorkspace, location?: string): string | null {
+function findProjectByPath(
+  workspace: DevWorkspace,
+  location?: string,
+): string | null {
   location = location ?? process.cwd();
 
   const isInside = (base: string, potential: string): boolean => {
     const absoluteBase = path.resolve(workspace.baseDir, base);
     const absolutePotential = path.resolve(workspace.baseDir, potential);
     const relativePotential = path.relative(absoluteBase, absolutePotential);
-    return !relativePotential.startsWith('..') && !path.isAbsolute(relativePotential);
+    return (
+      !relativePotential.startsWith("..") && !path.isAbsolute(relativePotential)
+    );
   };
 
   const projects = Array.from(workspace.projects ?? [])
@@ -110,7 +129,6 @@ function findProjectByPath(workspace: DevWorkspace, location?: string): string |
       // Ambiguous location - cannot determine a project
       return null;
     }
-
   }
 
   return projects[0][1];

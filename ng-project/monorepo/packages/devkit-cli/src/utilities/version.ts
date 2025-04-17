@@ -5,11 +5,11 @@ class Version {
   readonly patch: string;
 
   constructor(readonly full: string) {
-    const [major, minor, patch] = full.split('-', 1)[0].split('.', 3);
+    const [major, minor, patch] = full.split("-", 1)[0].split(".", 3);
     this.major = major;
     this.minor = minor;
     this.patch = patch;
   }
 }
 
-export const VERSION = new Version('0.0.0-PLACEHOLDER');
+export const VERSION = new Version("0.0.0-PLACEHOLDER");

@@ -1,5 +1,5 @@
 import * as path from "node:path";
-import {existsSync} from "node:fs";
+import { existsSync } from "node:fs";
 
 export function findUp(dirPath: string, names: string | string[]) {
   names = !Array.isArray(names) ? [names] : names;

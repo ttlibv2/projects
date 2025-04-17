@@ -35,7 +35,7 @@ export const workspace = {
      */
     write: async (tree: Tree, workspace: WorkspaceProp, path?: string): Promise<void> => {
         const host = workspaces.createTreeHost(tree);
-        return workspaces.writeWorkspace(workspace, host, path);
+        return workspaces.writeWorkspace(host, workspace, path);
     },
 
     /**
@@ -53,7 +53,7 @@ export const workspace = {
             const host = workspaces.createTreeHost(tree);
             const ws = await workspace.get(tree);
             const result = await updater(ws);
-            await workspaces.writeWorkspace(ws, host);
+            await workspaces.writeWorkspace(host, ws);
             return result || noop;
         };
     }

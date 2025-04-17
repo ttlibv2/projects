@@ -1,7 +1,7 @@
-import * as fs from 'node:fs';
-import { dirname, join } from 'node:path';
-import * as resolve from 'resolve';
-import { NgAddSaveDependency } from './package-metadata';
+import * as fs from "node:fs";
+import { dirname, join } from "node:path";
+import * as resolve from "resolve";
+import { NgAddSaveDependency } from "./package-metadata";
 
 interface PackageJson {
   name: string;
@@ -10,10 +10,10 @@ interface PackageJson {
   devDependencies?: Record<string, string>;
   peerDependencies?: Record<string, string>;
   optionalDependencies?: Record<string, string>;
-  'ng-update'?: {
+  "ng-update"?: {
     migrations?: string;
   };
-  'ng-add'?: {
+  "ng-add"?: {
     save?: NgAddSaveDependency;
   };
 }
@@ -34,18 +34,27 @@ export interface PackageTreeNode {
   package: PackageJson | undefined;
 }
 
-export async function readPackageJson(packageJsonPath: string): Promise<PackageJson | undefined> {
+export async function readPackageJson(
+  packageJsonPath: string,
+): Promise<PackageJson | undefined> {
   try {
-    return JSON.parse((await fs.promises.readFile(packageJsonPath)).toString()) as PackageJson;
+    return JSON.parse(
+      (await fs.promises.readFile(packageJsonPath)).toString(),
+    ) as PackageJson;
   } catch {
     return undefined;
   }
 }
 
-export function findPackageJson(workspaceDir: string, packageName: string): string | undefined {
+export function findPackageJson(
+  workspaceDir: string,
+  packageName: string,
+): string | undefined {
   try {
     // avoid require.resolve here, see: https://github.com/angular/angular-cli/pull/18610#issuecomment-681980185
-    const packageJsonPath = resolve.sync(`${packageName}/package.json`, { basedir: workspaceDir });
+    const packageJsonPath = resolve.sync(`${packageName}/package.json`, {
+      basedir: workspaceDir,
+    });
 
     return packageJsonPath;
   } catch {
@@ -53,10 +62,12 @@ export function findPackageJson(workspaceDir: string, packageName: string): stri
   }
 }
 
-export async function getProjectDependencies(dir: string): Promise<Map<string, PackageTreeNode>> {
-  const pkg = await readPackageJson(join(dir, 'package.json'));
+export async function getProjectDependencies(
+  dir: string,
+): Promise<Map<string, PackageTreeNode>> {
+  const pkg = await readPackageJson(join(dir, "package.json"));
   if (!pkg) {
-    throw new Error('Could not find package.json');
+    throw new Error("Could not find package.json");
   }
 
   const results = new Map<string, PackageTreeNode>();

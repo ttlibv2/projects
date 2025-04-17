@@ -1,35 +1,39 @@
-import { Architect, Target } from '@angular-devkit/architect';
+import { Architect, Target } from "@angular-devkit/architect";
 import {
   NodeModulesBuilderInfo,
   WorkspaceNodeModulesArchitectHost,
-} from '@angular-devkit/architect/node';
-import { json } from '@angular-devkit/core';
-import { existsSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { assertIsError } from '../utilities/error';
-import { askConfirmation, askQuestion } from '../utilities/prompt';
-import { isTTY } from '../utilities/tty';
+} from "@angular-devkit/architect/node";
+import { json } from "@angular-devkit/core";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { assertIsError } from "../utilities/error";
+import { askConfirmation, askQuestion } from "../utilities/prompt";
+import { isTTY } from "../utilities/tty";
 import {
   CommandModule,
   CommandModuleError,
   CommandModuleImplementation,
   CommandScope,
   OtherOptions,
-} from './abstract.cmd';
-import { Option, parseJsonSchemaToOptions } from './helper/json-schema';
+} from "./abstract.cmd";
+import { Option, parseJsonSchemaToOptions } from "./helper/json-schema";
 
 export interface MissingTargetChoice {
   name: string;
   value: string;
 }
 
-export abstract class ArchitectBaseCommandModule<T extends object> extends CommandModule<T>
+export abstract class ArchitectBaseCommandModule<T extends object>
+  extends CommandModule<T>
   implements CommandModuleImplementation<T>
 {
   override scope = CommandScope.In;
   protected readonly missingTargetChoices: MissingTargetChoice[] | undefined;
 
-  protected async runSingleTarget(target: Target, options: OtherOptions): Promise<number> {
+  protected async runSingleTarget(
+    target: Target,
+    options: OtherOptions,
+  ): Promise<number> {
     const architectHost = this.getArchitectHost();
 
     let builderName: string;
@@ -42,8 +46,11 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
     }
 
     const { logger } = this.context;
-    const run = await this.getArchitect().scheduleTarget(target,
-        options as json.JsonObject, {logger: <any>logger.scLogger});
+    const run = await this.getArchitect().scheduleTarget(
+      target,
+      options as json.JsonObject,
+      { logger: <any>logger.scLogger },
+    );
 
     // const analytics = isPackageNameSafeForAnalytics(builderName)
     //   ? await this.getAnalytics() : undefined;
@@ -124,7 +131,6 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
 
   private _architectHost: WorkspaceNodeModulesArchitectHost | undefined;
 
-
   protected getArchitectHost(): WorkspaceNodeModulesArchitectHost {
     // if (this._architectHost) {
     //   return this._architectHost;
@@ -166,9 +172,11 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
       builderDesc = await architectHost.resolveBuilder(builderConf);
     } catch (e) {
       assertIsError(e);
-      if (e.code === 'MODULE_NOT_FOUND') {
+      if (e.code === "MODULE_NOT_FOUND") {
         this.warnOnMissingNodeModules();
-        throw new CommandModuleError(`Could not find the '${builderConf}' builder's node package.`);
+        throw new CommandModuleError(
+          `Could not find the '${builderConf}' builder's node package.`,
+        );
       }
 
       throw e;
@@ -193,7 +201,7 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
     }
 
     // Check for a `node_modules` directory (npm, yarn non-PnP, etc.)
-    if (existsSync(resolve(basePath, 'node_modules'))) {
+    if (existsSync(resolve(basePath, "node_modules"))) {
       return;
     }
 
@@ -220,14 +228,17 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
       `Cannot find "${this.getArchitectTarget()}" target for the specified project.\n` +
       `You can add a package that implements these capabilities.\n\n` +
       `For example:\n` +
-      choices.map(({ name, value }) => `  ${name}: ng add ${value}`).join('\n') +
-      '\n';
+      choices
+        .map(({ name, value }) => `  ${name}: ng add ${value}`)
+        .join("\n") +
+      "\n";
 
     if (isTTY()) {
       // Use prompts to ask the user if they'd like to install a package.
       logger.warn(missingTargetMessage);
 
-      const packageToInstall = await this.getMissingTargetPackageToInstall(choices);
+      const packageToInstall =
+        await this.getMissingTargetPackageToInstall(choices);
       if (packageToInstall) {
         throw new Error(`AddCommandModule`);
         // Example run: `ng add angular-eslint`.
@@ -254,7 +265,9 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
     if (choices.length === 1) {
       // Single choice
       const { name, value } = choices[0];
-      if (await askConfirmation(`Would you like to add ${name} now?`, true, false)) {
+      if (
+        await askConfirmation(`Would you like to add ${name} now?`, true, false)
+      ) {
         return value;
       }
 
@@ -266,7 +279,7 @@ export abstract class ArchitectBaseCommandModule<T extends object> extends Comma
       `Would you like to add a package with "${this.getArchitectTarget()}" capabilities now?`,
       [
         {
-          name: 'No',
+          name: "No",
           value: null,
         },
         ...choices,

@@ -1,0 +1,23 @@
+{
+  "$schema2": "https://json.schemastore.org/nest-cli",
+  "name": "monorepo",
+  "appsRoot": "apps",
+  "libsRoot": "packages",
+  "cli": {
+    "packageManager": "pnpm",
+    "collection": ["@ngdev/schematics"]
+  },
+  "projects": {
+    "my-lib": {
+      "type": "app",
+      "root": "apps/my-app",
+      "entryFile": "main",
+      "sourceRoot": "apps/my-app",
+      "compilerOptions": {
+        "tsConfigPath": "apps/my-app/tsconfig.app.json"
+      }
+    }
+  }
+
+
+}

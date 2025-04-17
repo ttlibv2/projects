@@ -1,7 +1,7 @@
-import { json, workspaces } from '@angular-devkit/core';
-import { existsSync, promises as fs } from 'node:fs';
-import * as os from 'node:os';
-import * as path from 'node:path';
+import { json, workspaces } from "@angular-devkit/core";
+import { existsSync, promises as fs } from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
 // import { PackageManager } from './package-manager';
 // import { findUp } from './helper';
 // import { JSONFile, readAndParseJson } from './json-file';
@@ -37,10 +37,10 @@ import * as path from 'node:path';
 //   };
 // }
 
-export const workspaceSchemaPath = path.join(__dirname, 'wc-schema.json');
+export const workspaceSchemaPath = path.join(__dirname, "wc-schema.json");
 
-const configNames = ['project.json'];
-const globalFileName = '.ng-dev.json';
+const configNames = ["project.json"];
+const globalFileName = ".ng-dev.json";
 const defaultGlobalFilePath = path.join(os.homedir(), globalFileName);
 
 // function xdgConfigHome(home: string, configFile?: string): string {

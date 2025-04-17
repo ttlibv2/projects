@@ -1,36 +1,47 @@
-import { RuleFactory, SchematicsException, Tree } from '@angular-devkit/schematics';
-import { FileSystemCollectionDesc, NodeModulesEngineHost } from '@angular-devkit/schematics/tools';
-import { parse as parseJson } from 'jsonc-parser';
-import { readFileSync } from 'node:fs';
-import { Module, createRequire } from 'node:module';
-import { dirname, resolve } from 'node:path';
-import { Script } from 'node:vm';
-import { assertIsError } from '../../utilities/error';
+import {
+  RuleFactory,
+  SchematicsException,
+  Tree,
+} from "@angular-devkit/schematics";
+import {
+  FileSystemCollectionDesc,
+  NodeModulesEngineHost,
+} from "@angular-devkit/schematics/tools";
+import { parse as parseJson } from "jsonc-parser";
+import { readFileSync } from "node:fs";
+import { Module, createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+import { Script } from "node:vm";
+import { assertIsError } from "../../utilities/error";
 
 /**
  * Environment variable to control schematic package redirection
  */
-const schematicRedirectVariable = process.env['NG_SCHEMATIC_REDIRECT']?.toLowerCase();
+const schematicRedirectVariable =
+  process.env["NG_SCHEMATIC_REDIRECT"]?.toLowerCase();
 
-function shouldWrapSchematic(schematicFile: string, schematicEncapsulation: boolean): boolean {
+function shouldWrapSchematic(
+  schematicFile: string,
+  schematicEncapsulation: boolean,
+): boolean {
   // Check environment variable if present
   switch (schematicRedirectVariable) {
-    case '0':
-    case 'false':
-    case 'off':
-    case 'none':
+    case "0":
+    case "false":
+    case "off":
+    case "none":
       return false;
-    case 'all':
+    case "all":
       return true;
   }
 
-  const normalizedSchematicFile = schematicFile.replace(/\\/g, '/');
+  const normalizedSchematicFile = schematicFile.replace(/\\/g, "/");
   // Never wrap the internal update schematic when executed directly
   // It communicates with the update command via `global`
   // But we still want to redirect collection located in `@angular/lib/node_modules`.
   if (
-    normalizedSchematicFile.includes('node_modules/@angular/lib/') &&
-    !normalizedSchematicFile.includes('node_modules/@angular/lib/node_modules/')
+    normalizedSchematicFile.includes("node_modules/@angular/lib/") &&
+    !normalizedSchematicFile.includes("node_modules/@angular/lib/node_modules/")
   ) {
     return false;
   }
@@ -38,13 +49,17 @@ function shouldWrapSchematic(schematicFile: string, schematicEncapsulation: bool
   // @angular/pwa uses dynamic imports which causes `[1]    2468039 segmentation fault` when wrapped.
   // We should remove this when make `importModuleDynamically` work.
   // See: https://nodejs.org/docs/latest-v14.x/api/vm.html
-  if (normalizedSchematicFile.includes('@angular/pwa')) {
+  if (normalizedSchematicFile.includes("@angular/pwa")) {
     return false;
   }
 
   // Check for first-party Angular schematic packages
   // Angular collection are safe to use in the wrapped VM context
-  if (/\/node_modules\/@(?:angular|schematics|nguniversal)\//.test(normalizedSchematicFile)) {
+  if (
+    /\/node_modules\/@(?:angular|schematics|nguniversal)\//.test(
+      normalizedSchematicFile,
+    )
+  ) {
     return true;
   }
 
@@ -58,14 +73,19 @@ export class EngineHost extends NodeModulesEngineHost {
     parentPath: string,
     collectionDescription?: FileSystemCollectionDesc,
   ) {
-    const [path, name] = refString.split('#', 2);
+    const [path, name] = refString.split("#", 2);
     // Mimic behavior of ExportStringRef class used in default behavior
-    const fullPath = path[0] === '.' ? resolve(parentPath ?? process.cwd(), path) : path;
+    const fullPath =
+      path[0] === "." ? resolve(parentPath ?? process.cwd(), path) : path;
 
     const referenceRequire = createRequire(__filename);
-    const schematicFile = referenceRequire.resolve(fullPath, { paths: [parentPath] });
+    const schematicFile = referenceRequire.resolve(fullPath, {
+      paths: [parentPath],
+    });
 
-    if (shouldWrapSchematic(schematicFile, !!collectionDescription?.encapsulation)) {
+    if (
+      shouldWrapSchematic(schematicFile, !!collectionDescription?.encapsulation)
+    ) {
       const schematicPath = dirname(schematicFile);
 
       const moduleCache = new Map<string, unknown>();
@@ -73,11 +93,11 @@ export class EngineHost extends NodeModulesEngineHost {
         schematicFile,
         schematicPath,
         moduleCache,
-        name || 'default',
+        name || "default",
       ) as () => RuleFactory<{}>;
 
       const factory = factoryInitializer();
-      if (!factory || typeof factory !== 'function') {
+      if (!factory || typeof factory !== "function") {
         return null;
       }
 
@@ -85,7 +105,11 @@ export class EngineHost extends NodeModulesEngineHost {
     }
 
     // All other collection use default behavior
-    return super._resolveReferenceString(refString, parentPath, collectionDescription);
+    return super._resolveReferenceString(
+      refString,
+      parentPath,
+      collectionDescription,
+    );
   }
 }
 
@@ -93,9 +117,9 @@ export class EngineHost extends NodeModulesEngineHost {
  * Minimal shim modules for legacy deep imports of `@collection/angular`
  */
 const legacyModules: Record<string, unknown> = {
-  '@schematics/angular/utility/config': {
+  "@schematics/angular/utility/config": {
     getWorkspace(host: Tree) {
-      const path = '/.angular.json';
+      const path = "/.angular.json";
       const data = host.read(path);
       if (!data) {
         throw new SchematicsException(`Could not find (${path})`);
@@ -104,11 +128,17 @@ const legacyModules: Record<string, unknown> = {
       return parseJson(data.toString(), [], { allowTrailingComma: true });
     },
   },
-  '@schematics/angular/utility/project': {
-    buildDefaultPath(project: { sourceRoot?: string; root: string; projectType: string }): string {
-      const root = project.sourceRoot ? `/${project.sourceRoot}/` : `/${project.root}/src/`;
+  "@schematics/angular/utility/project": {
+    buildDefaultPath(project: {
+      sourceRoot?: string;
+      root: string;
+      projectType: string;
+    }): string {
+      const root = project.sourceRoot
+        ? `/${project.sourceRoot}/`
+        : `/${project.root}/src/`;
 
-      return `${root}${project.projectType === 'app' ? 'app' : 'lib'}`;
+      return `${root}${project.projectType === "app" ? "app" : "lib"}`;
     },
   },
 };
@@ -135,7 +165,7 @@ function wrap(
     if (legacyModules[id]) {
       // Provide compatibility modules for older versions of @angular/cdk
       return legacyModules[id];
-    } else if (id.startsWith('collection:')) {
+    } else if (id.startsWith("collection:")) {
       // Schematics built-in modules use the `collection` scheme (similar to the Node.js `node` scheme)
       const builtinId = id.slice(11);
       const builtinModule = loadBuiltinModule(builtinId);
@@ -146,16 +176,19 @@ function wrap(
       }
 
       return builtinModule;
-    } else if (id.startsWith('@angular-devkit/') || id.startsWith('@collection/')) {
+    } else if (
+      id.startsWith("@angular-devkit/") ||
+      id.startsWith("@collection/")
+    ) {
       // Files should not redirect `@angular/core` and instead use the direct
       // dependency if available. This allows old major version migrations to continue to function
       // even though the latest major version may have breaking changes in `@angular/core`.
-      if (id.startsWith('@angular-devkit/core')) {
+      if (id.startsWith("@angular-devkit/core")) {
         try {
           return schematicRequire(id);
         } catch (e) {
           assertIsError(e);
-          if (e.code !== 'MODULE_NOT_FOUND') {
+          if (e.code !== "MODULE_NOT_FOUND") {
             throw e;
           }
         }
@@ -163,7 +196,7 @@ function wrap(
 
       // Resolve from inside the `@angular/lib` project
       return hostRequire(id);
-    } else if (id.startsWith('.') || id.startsWith('@angular/cdk')) {
+    } else if (id.startsWith(".") || id.startsWith("@angular/cdk")) {
       // Wrap relative files inside the schematic collection
       // Also wrap `@angular/cdk`, it contains helper helper that import core schematic packages
 
@@ -178,11 +211,17 @@ function wrap(
 
       // Do not wrap vendored third-party packages or JSON files
       if (
-        !/[/\\]node_modules[/\\]@schematics[/\\]angular[/\\]third_party[/\\]/.test(modulePath) &&
-        !modulePath.endsWith('.json')
+        !/[/\\]node_modules[/\\]@schematics[/\\]angular[/\\]third_party[/\\]/.test(
+          modulePath,
+        ) &&
+        !modulePath.endsWith(".json")
       ) {
         // Wrap module and save in cache
-        const wrappedModule = wrap(modulePath, dirname(modulePath), moduleCache)();
+        const wrappedModule = wrap(
+          modulePath,
+          dirname(modulePath),
+          moduleCache,
+        )();
         moduleCache.set(modulePath, wrappedModule);
 
         return wrappedModule;
@@ -194,7 +233,7 @@ function wrap(
   };
 
   // Setup a wrapper function to capture the module's exports
-  const schematicCode = readFileSync(schematicFile, 'utf8');
+  const schematicCode = readFileSync(schematicFile, "utf8");
   const script = new Script(Module.wrap(schematicCode), {
     filename: schematicFile,
     lineOffset: 1,
@@ -211,7 +250,9 @@ function wrap(
       schematicDirectory,
     );
 
-    return exportName ? schematicModule.exports[exportName] : schematicModule.exports;
+    return exportName
+      ? schematicModule.exports[exportName]
+      : schematicModule.exports;
   };
 }
 

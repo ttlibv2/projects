@@ -1,5 +1,5 @@
-import * as yargs from 'yargs';
-import { FullDescribe } from '../abstract.cmd';
+import * as yargs from "yargs";
+import { FullDescribe } from "../abstract.cmd";
 
 interface JsonHelpOption {
   name: string;
@@ -35,11 +35,17 @@ export interface JsonHelpUsage extends JsonHelpDescription {
 const yargsDefaultCommandRegExp = /^\$0|\*/;
 
 export function jsonHelpUsage(localYargs: any): string {
-
-  const { deprecatedOptions,
-    alias: aliases, array, string,
-    boolean, number, choices, demandedOptions,
-    default: defaultVal, hiddenOptions = [],
+  const {
+    deprecatedOptions,
+    alias: aliases,
+    array,
+    string,
+    boolean,
+    number,
+    choices,
+    demandedOptions,
+    default: defaultVal,
+    hiddenOptions = [],
   } = localYargs.getOptions();
 
   const internalMethods = localYargs.getInternalMethods();
@@ -47,17 +53,19 @@ export function jsonHelpUsage(localYargs: any): string {
   const context = internalMethods.getContext();
   const descriptions = usageInstance.getDescriptions();
   const groups = localYargs.getGroups();
-  const positional = groups[usageInstance.getPositionalGroupName()] as string[] | undefined;
+  const positional = groups[usageInstance.getPositionalGroupName()] as
+    | string[]
+    | undefined;
 
   const hidden = new Set(hiddenOptions);
   const normalizeOptions: JsonHelpOption[] = [];
   const allAliases = new Set([...Object.values<string[]>(aliases).flat()]);
 
   for (const [names, type] of [
-    [array, 'array'],
-    [string, 'string'],
-    [boolean, 'boolean'],
-    [number, 'number'],
+    [array, "array"],
+    [string, "string"],
+    [boolean, "boolean"],
+    [number, "number"],
   ]) {
     for (const name of names) {
       if (allAliases.has(name) || hidden.has(name)) {
@@ -69,13 +77,14 @@ export function jsonHelpUsage(localYargs: any): string {
       const alias = aliases[name];
 
       normalizeOptions.push({
-        name, type,
+        name,
+        type,
         deprecated: deprecatedOptions[name],
         aliases: alias?.length > 0 ? alias : undefined,
         default: defaultVal[name],
         required: demandedOptions[name],
         enum: choices[name],
-        description: descriptions[name]?.replace('__yargsString__:', ''),
+        description: descriptions[name]?.replace("__yargsString__:", ""),
         positional: positionalIndex >= 0 ? positionalIndex : undefined,
       });
     }
@@ -92,8 +101,8 @@ export function jsonHelpUsage(localYargs: any): string {
     ][]
   )
     .map(([name, rawDescription, isDefault, aliases, deprecated]) => ({
-      name: name.split(' ', 1)[0].replace(yargsDefaultCommandRegExp, ''),
-      command: name.replace(yargsDefaultCommandRegExp, ''),
+      name: name.split(" ", 1)[0].replace(yargsDefaultCommandRegExp, ""),
+      command: name.replace(yargsDefaultCommandRegExp, ""),
       default: isDefault || undefined,
       ...parseDescription(rawDescription),
       aliases,
@@ -102,12 +111,12 @@ export function jsonHelpUsage(localYargs: any): string {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const [command, rawDescription] = usageInstance.getUsage()[0] ?? [];
-  const defaultSubCommand = subcommands.find((x) => x.default)?.command ?? '';
+  const defaultSubCommand = subcommands.find((x) => x.default)?.command ?? "";
   const otherSubcommands = subcommands.filter((s) => !s.default);
 
   const output: JsonHelpUsage = {
     name: [...context.commands].pop(),
-    command: `${command?.replace(yargsDefaultCommandRegExp, localYargs['$0'])}${defaultSubCommand}`,
+    command: `${command?.replace(yargsDefaultCommandRegExp, localYargs["$0"])}${defaultSubCommand}`,
     ...parseDescription(rawDescription),
     options: normalizeOptions.sort((a, b) => a.name.localeCompare(b.name)),
     subcommands: otherSubcommands.length ? otherSubcommands : undefined,

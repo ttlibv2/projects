@@ -37,8 +37,8 @@ const bootstrap = async (): Promise<BReturn> => {
     const cwdRequire = createRequire(process.cwd());
     const projectLocalCli = cwdRequire.resolve("@ngdev/cli");
     cli = await import(projectLocalCli);
-  } //
-  catch (e) {
+  } catch (e) {
+    //
     //console.error(e instanceof Error ? e.message : e);
     cli = await import("../lib");
   }

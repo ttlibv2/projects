@@ -7,16 +7,13 @@
     "ngdev": "./bin/cli.js"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "tsc:watch": "tsc -p tsconfig.json --watch",
+    "build": "pnpm run compiler",
+    "compiler": "tsc -p tsconfig.json",
     "prebuild": "rimraf dist/bin dist/lib dist/src",
     "postbuild": "pnpm run copy:src",
-    "copy:src": "cpx src/**/*.{md,json} dist/src && cpx package.json dist lib/*.json dist/lib",
     "watch:cli": "tsc -p tsconfig.json --watch",
-    "clean": "gulp clean:bundle",
-    "format": "prettier --write \"**/*.ts\"",
-    "lint": "eslint '{lib,commands,actions}/**/*.ts' --fix",
-    "dev": "node dist/bin/cli.js new samplediv"
+    "copy:src": "cpx src/**/*.{md,json} dist/src && cpx package.json dist && cpx lib/*.json dist/lib",
+    "format": "prettier --write \"**/*.ts\""
   },
   "dependencies": {
     "@angular-devkit/architect": "^0.1902.4",
@@ -45,7 +42,7 @@
     "tree-kill": "^1.2.2",
     "tsconfig-paths": "^4.2.0",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
-    "typescript": "~5.7.2",
+    "typescript": "^5.8.3",
     "webpack": "^5.98.0",
     "yargs": "17.7.2"
   },

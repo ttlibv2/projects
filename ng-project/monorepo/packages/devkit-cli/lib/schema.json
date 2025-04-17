@@ -73,8 +73,8 @@
           "type": "string",
           "description": "Project type.",
           "enum": [
-            "application",
-            "library"
+            "app",
+            "lib"
           ]
         },
         "framework": {

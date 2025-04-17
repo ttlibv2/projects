@@ -1,14 +1,24 @@
-import { apply, chain, externalSchematic, MergeStrategy, mergeWith, Rule, SchematicContext, Tree, url } from '@angular-devkit/schematics';
+import { chain, externalSchematic, Rule, SchematicContext, Tree } from '@angular-devkit/schematics';
 import { Schema as NgNewSchema } from '@schematics/angular/ng-new/schema';
 import { Schema as SchemaOption } from './schema';
 import { CliProp } from '@ngdev/devkit-core/workspace';
 import { deleteAll } from '@ngdev/devkit-core/utilities';
 import { Style, ViewEncapsulation } from '@schematics/angular/application/schema';
 import { workspace } from '../../utility/workspace';
+import { ngVersion } from '../../utility/ng-version';
 
 export default function(options: SchemaOption): Rule {
-    return async (host: Tree) => {
-        const { appsDir, cli } = await workspace.get(host);
+    return async (host: Tree, context: SchematicContext) => {
+        let { appsDir, cli } = await workspace.get(host);
+
+        try {
+            const version = await ngVersion(cli.ngVersion, true);
+            if(version != null) cli.ngVersion = version;
+        }//
+        catch(e) {
+            context.logger.warn(`Get angular cli version error -> ${e.message}`)
+        }
+
 
         let path = options.name;
         if (options.name.startsWith('@') && options.name.includes('/')) {
@@ -36,7 +46,7 @@ function updateMonoRepo(option: SchemaOption): Rule {
                 name: option.name,
                 root: option.direction,
                 framework: 'angular',
-                projectType: 'app'
+                type: 'app'
             });
         });
     };

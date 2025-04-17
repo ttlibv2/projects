@@ -1,257 +1,143 @@
 import { isJsonObject, JsonValue } from '@angular-devkit/core';
 import { getNodeValue, parseTree, Node, findNodeAtLocation } from 'jsonc-parser';
-import { StringMapListener } from '../../utilities';
+import { isJsonValue, NotObjectError, NullError, StringMapListener } from '../../utilities';
 import { WorkspaceHost } from '../ws.host';
-import { JsonWorkspaceMetadata, JsonWorkspaceSymbol } from './metadata';
-import { ProjectMap, ProjectProp, WorkspaceProp } from '../ws.type';
-import { createVirtualAstObject } from './utilities';
+import { BaseChangeInput, ChangeValues, JsonWorkspaceMetadata, JsonWorkspaceSymbol } from './metadata';
+import { CLI_EXTENSIONS, CliProp, COMPILER_OPTION_EXTENSIONS, CompilerOptions, ProjectMap, ProjectProp, WorkspaceProp } from '../ws.type';
+import { ChangeListener, createVirtualAstObject } from './utilities';
 
 const WORKSPACE_EXTENSIONS = ['name', 'appsDir', 'libsDir', 'cli', 'defaultPkg', '$schema'];
 const PROJECT_EXTENSIONS = ['cli', 'schematics', 'projectType', 'i18n'];
 const PROJECT_FIELDS = ['name', 'root', 'build', 'framework', 'projectType'];
 
+const WS_EXTENSIONS = ['name', 'appsDir', 'libsDir', 'defaultPkg', '$schema' ];
+
 interface ParserContext {
     readonly host: WorkspaceHost;
     readonly metadata: JsonWorkspaceMetadata;
     readonly trackChanges: boolean;
-    readonly unPrefixedWorkspaceExtensions: ReadonlySet<string>;
-    readonly unPrefixedProjectExtensions: ReadonlySet<string>;
-
-    error(message: string, node: JsonValue): void;
-
-    warn(message: string, node: JsonValue): void;
+    error:(message: string, node: JsonValue) => void;
+    warn:(message: string, node: JsonValue)=> void;
 }
 
-export interface JsonWorkspaceOptions {
-    allowedProjectExtensions?: string[];
-    allowedWorkspaceExtensions?: string[];
-}
+type JsonPathChange = (jsonPath: string[]) => string[];
 
-export interface ReaderResult {
+interface ReaderResult {
     workspace: WorkspaceProp;
     host: WorkspaceHost;
     filePath: string;
 }
 
-export async function readWorkspace(host: WorkspaceHost,
-   filePath: string, options: JsonWorkspaceOptions = {}): Promise<ReaderResult> {
+export async function readWorkspace(host: WorkspaceHost, filePath: string): Promise<ReaderResult> {
 
     const raw = await host.readFile(filePath);
     if (raw === undefined) {
-        throw new Error(`Unable to read workspace file '${filePath}'.`);
+        throw new NullError(`Unable to read workspace file '${filePath}'.`);
     }
 
-    const ast = parseTree(raw, undefined, { allowTrailingComma: true, disallowComments: false });
-    if (ast?.type !== 'object' || !ast.children) {
-        throw new Error(`Invalid workspace file '${filePath}' - expected JSON object.`);
+    const workspaceNode = parseTree(raw, undefined, { allowTrailingComma: true, disallowComments: false });
+    if (workspaceNode?.type !== 'object' || !workspaceNode.children) {
+        throw new NotObjectError(`Invalid workspace file '${filePath}'`);
     }
 
     const context: ParserContext = {
         host, trackChanges: true,
-        metadata: new JsonWorkspaceMetadata(filePath, ast, raw),
-        unPrefixedWorkspaceExtensions: new Set([...WORKSPACE_EXTENSIONS, ...(options.allowedWorkspaceExtensions ?? [])]),
-        unPrefixedProjectExtensions: new Set([...PROJECT_EXTENSIONS, ...(options.allowedProjectExtensions ?? [])]),
-        error(message, _node) {
-            throw new Error(message);
-        },
-        warn(message, _node) {
-            console.warn(message);
-        }
+        metadata: new JsonWorkspaceMetadata(filePath, workspaceNode, raw),
+        error: (message, _node) => {throw new Error(message);},
+        warn: (message, _node) => console.warn(message)
     };
 
-    const workspace = parseWorkspace(ast, context);
-    return {workspace, filePath, host};
-}
+    // parse workspace
+    let cli: Record<string, any>;
+    let projects: Record<string, any>;
 
-function parseWorkspace(workspaceNode: Node, context: ParserContext): WorkspaceProp {
-    const jsonMetadata = context.metadata;
-    let wsProperties: Record<string, JsonValue> | undefined;
-    let extensions: Record<string, JsonValue> | undefined;
-    let projects: Record<string, ProjectProp> | undefined = undefined;
-
-    if (!context.trackChanges) {
-        extensions = Object.create(null);
-        wsProperties = Object.create(null);
-    }
-
-    // Might be something to look at moving forward to optimize.
     const workspaceNodeValue = getNodeValue(workspaceNode);
-    for (const [name, value] of Object.entries<JsonValue>(workspaceNodeValue)) {
-        //is projects
-        if (name === 'projects') {
-            const nodes = findNodeAtLocation(workspaceNode, ['projects']);
-            if (!isJsonObject(value) || !nodes) {
-                context.error('Invalid "projects" field found; expected an object.', value);
-                continue;
-            }
+    for(const [name, value] of Object.entries(workspaceNodeValue)) {
 
-            projects = parseProjectsObject(nodes, context);
+        // node [cli]
+        if(name == 'cli') {
+            const childNode = findNode(workspaceNode, ['projects'], context);
+            if(childNode == null) throw new Error(`Invalid value field 'cli'`);
+            cli = parseCli(childNode, context);
         }
-        else if (WORKSPACE_EXTENSIONS.includes(name) && wsProperties) {
-            wsProperties[name] = value;
+        else if(name == 'projects') {
+            const childNode = findNode(workspaceNode, ['projects'], context);
+            if(childNode == null) throw new Error(`Invalid value field 'project'`);
+            projects = parseProjects(childNode, context);
         }
 
-        // is extension workspace property
-        else if (!context.unPrefixedWorkspaceExtensions.has(name) && !/^[a-z]{1,3}-.*/.test(name)) {
-            context.warn(`Workspace extension with invalid name (${name}) found.`, name);
-        }
-        // allowedWorkspaceExtensions
-        else if (extensions) {
-            extensions[name] = value;
-        }
+
+
     }
 
-    let collectionListener: StringMapListener<ProjectProp> | undefined;
-    if (context.trackChanges) {
-        collectionListener = (name, newValue) => {
-            jsonMetadata.addChange(['projects', name], newValue, 'project');
-        };
-    }
 
-    const workspaceProp: any = Object.create({});
-    workspaceProp.projects =  new ProjectMap(projects, collectionListener);
-    workspaceProp[JsonWorkspaceSymbol] = jsonMetadata;
 
-   return Object.assign(workspaceProp, {
-        extensions:  extensions ?? createPropWsExt(workspaceNodeValue, jsonMetadata),
-        ...createPropWs(wsProperties, workspaceNodeValue, jsonMetadata)
-    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return { workspace, filePath, host };
 }
 
-function createPropWs(wsProperties: any, workspaceNodeValue: any, jsonMetadata: any) {
-    return wsProperties ?? createVirtualAstObject(workspaceNodeValue, {
-        include: [...WORKSPACE_EXTENSIONS],
-        listener(path, value) {
-            jsonMetadata.addChange(path, value);
-        }
-    });
+function parseCli(node: Node, context: ParserContext): CliProp {
+    return parseObjectVirtual(node, context, CLI_EXTENSIONS, path => ['cli', ...path]);
 }
 
-function createPropWsExt(workspaceNodeValue: any, jsonMetadata: any) {
-   return createVirtualAstObject(workspaceNodeValue, {
-        exclude: ['$schema', 'projects', ...WORKSPACE_EXTENSIONS],
-        listener(path, value) {
-            jsonMetadata.addChange(path, value);
-        }
-    })
-}
-
-function parseProjectsObject(projectsNode: Node, context: ParserContext): Record<string, ProjectProp> {
+function parseProjects(projectsNode: Node, context: ParserContext): Record<string, ProjectProp>  {
+    const nodeValue = getNodeValue(projectsNode);
     const projects: Record<string, ProjectProp> = Object.create(null);
-
-    for (const [name, value] of Object.entries<JsonValue>(getNodeValue(projectsNode))) {
-        const nodes = findNodeAtLocation(projectsNode, [name]);
-        if (!isJsonObject(value) || !nodes) {
-            context.warn('Skipping invalid project value; expected an object.', value);
-            continue;
+    for(const [name, value] of Object.entries(nodeValue)) {
+        const nodeName = findNodeAtLocation(projectsNode, [name]);
+        if (!nodeName || !isJsonObject(nodeName.value)) {
+            throw new Error(`Invalid project value at ${name}; expected an object.`, nodeName?.value);
         }
-
-        projects[name] = parseProject(name, nodes, context);
+        projects[name] = parseProject(name, nodeName, context);
     }
-
     return projects;
 }
 
-function parseProject(projectName: string, projectNode: Node, context: ParserContext): ProjectProp {
-    const jsonMetadata = context.metadata;
-    //let targets, asTargets = false;
-    let extensions: Record<string, JsonValue> | undefined;
-    let properties: Record<string, string> | undefined;
+function parseProject(name: string, projectNode: Node, context: ParserContext): ProjectProp {
+    
+}
 
-    if (!context.trackChanges) {
-        // If not tracking changes, the parser will store the values directly in standard objects
-        extensions = Object.create(null);
-        properties = Object.create(null);
+function parseCompilerOption(node: Node, context: ParserContext): CompilerOptions {
+    throw new Error(`Method not implement.`);
+}
+
+function findNode(parentNode: Node, childNodeName: string[], context: ParserContext) {
+    const cliNode = findNodeAtLocation(parentNode, childNodeName);
+    if(!cliNode || !isJsonObject(cliNode.value)) {
+        context.error(`Invalid "${childNodeName.join('/')}" field found`, cliNode?.value);
+        return null;
     }
+    return cliNode;
+}
 
-    const projectNodeValue = getNodeValue(projectNode);
-    const errorFields = PROJECT_FIELDS.filter(f => !(f in projectNodeValue));
-    if(errorFields.length > 0) {
-        let fields = errorFields.join(', ').trim();
-        throw new Error(`Project "${projectName}" is missing a required property "[${fields}]".`);
-    }
 
-    for (const [name, value] of Object.entries<JsonValue>(projectNodeValue)) {
-        switch (name) {
-            // case 'targets':
-            // case 'architect': {
-            //     const nodes = findNodeAtLocation(projectNode, [name]);
-            //     if (!isJsonObject(value) || !nodes) {
-            //         context.error(`Invalid "${name}" field found; expected an object.`, value);
-            //         break;
-            //     }
-            //     hasTargets = true;
-            //     targets = parseTargetsObject(projectName, nodes, context);
-            //     jsonMetadata.hasLegacyTargetsName = name === 'architect';
-            //     break;
-            // }
-            case 'name':
-            case 'root':
-            case 'build':
-            case 'framework':
-            case 'projectType':
-                if (typeof value !== 'string') {
-                    context.warn(`Project property "${name}" should be a string.`, value);
-                }
-                if (properties) {
-                    properties[name] = value as string;
-                }
-                break;
-            default:
-                if (!context.unPrefixedProjectExtensions.has(name) && !/^[a-z]{1,3}-.*/.test(name)) {
-                    context.warn(
-                        `Project '${projectName}' contains extension with invalid name (${name}).`,
-                        name,
-                    );
-                }
-                if (extensions) {
-                    extensions[name] = value;
-                }
-                break;
-        }
-    }
+function parseObjectVirtual(node: Node, context: ParserContext, includeFields: string[], change: JsonPathChange) {
+    const nodeValue = getNodeValue(node);
 
-    // let collectionListener: DefinitionCollectionListener<TargetDefinition> | undefined;
-    // if (context.trackChanges) {
-    //     collectionListener = (name, newValue, collection) => {
-    //         if (hasTargets) {
-    //             jsonMetadata.addChange(['projects', projectName, 'targets', name], newValue, 'target');
-    //         } else {
-    //             jsonMetadata.addChange(
-    //                 ['projects', projectName, 'targets'],
-    //                 collection,
-    //                 'targetcollection',
-    //             );
-    //         }
-    //     };
-    // }
+    const base = createVirtualAstObject(nodeValue, {
+        exclude: [...includeFields],
+        listener: (path, value) => context.metadata.addChange(change(path), value)
+    });
 
-    const base = {
-        //targets: new TargetDefinitionCollection(targets, collectionListener),
+    const properties = createVirtualAstObject(nodeValue, {
+        include: [...includeFields, 'extensions'],
+        listener: (path, value) => context.metadata.addChange(change(path), value)
+    });
 
-        // If not tracking changes the `extensions` variable will contain the parsed
-        // values.  Otherwise the extensions are tracked via a virtual AST object.
-        extensions: extensions ??
-            createVirtualAstObject(projectNodeValue, {
-                //exclude: ['architect', 'prefix', 'root', 'sourceRoot', 'targets'],
-                exclude: [...PROJECT_FIELDS],
-                listener(path, value) {
-                    jsonMetadata.addChange(['projects', projectName, ...path], value);
-                },
-            }),
-    };
-
-    const baseKeys = new Set(Object.keys(base));
-    const project =
-        properties ??
-        createVirtualAstObject<ProjectProp>(projectNodeValue, {
-            include: [...PROJECT_FIELDS, ...baseKeys],
-            listener(path, value) {
-                if (!baseKeys.has(path[0])) {
-                    jsonMetadata.addChange(['projects', projectName, ...path], value);
-                }
-            },
-        });
-
-    return Object.assign(project, base) as ProjectProp;
+    return Object.assign(properties, base) as any;
 }

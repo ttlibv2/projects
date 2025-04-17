@@ -1,12 +1,14 @@
-import { logging } from '@angular-devkit/core';
-import * as lockfile from '@yarnpkg/lockfile';
-import * as ini from 'ini';
-import { existsSync, readFileSync } from 'node:fs';
-import { homedir } from 'node:os';
-import * as path from 'node:path';
-import type { Manifest, Packument } from 'pacote';
+import { logging } from "@angular-devkit/core";
+import * as lockfile from "@yarnpkg/lockfile";
+import * as ini from "ini";
+import { existsSync, readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import * as path from "node:path";
+import type { Manifest, Packument } from "pacote";
 
-export interface PackageMetadata extends Packument, NgPackageManifestProperties {
+export interface PackageMetadata
+  extends Packument,
+    NgPackageManifestProperties {
   tags: Record<string, PackageManifest>;
   versions: Record<string, PackageManifest>;
 }
@@ -15,10 +17,10 @@ export interface NpmRepositoryPackageJson extends PackageMetadata {
   requestedName?: string;
 }
 
-export type NgAddSaveDependency = 'dependencies' | 'devDependencies' | boolean;
+export type NgAddSaveDependency = "dependencies" | "devDependencies" | boolean;
 
 export interface PackageIdentifier {
-  type: 'git' | 'tag' | 'version' | 'range' | 'file' | 'directory' | 'remote';
+  type: "git" | "tag" | "version" | "range" | "file" | "directory" | "remote";
   name: string;
   scope: string | null;
   registry: boolean;
@@ -28,10 +30,10 @@ export interface PackageIdentifier {
 }
 
 export interface NgPackageManifestProperties {
-  'ng-add'?: {
+  "ng-add"?: {
     save?: NgAddSaveDependency;
   };
-  'ng-update'?: {
+  "ng-update"?: {
     migrations?: string;
     packageGroup?: string[] | Record<string, string>;
     packageGroupName?: string;
@@ -48,9 +50,16 @@ interface PackageManagerOptions extends Record<string, unknown> {
 }
 
 let npmrc: PackageManagerOptions;
-const npmPackageJsonCache = new Map<string, Promise<Partial<NpmRepositoryPackageJson>>>();
+const npmPackageJsonCache = new Map<
+  string,
+  Promise<Partial<NpmRepositoryPackageJson>>
+>();
 
-function ensureNpmrc(logger: logging.LoggerApi, usingYarn: boolean, verbose: boolean): void {
+function ensureNpmrc(
+  logger: logging.LoggerApi,
+  usingYarn: boolean,
+  verbose: boolean,
+): void {
   if (!npmrc) {
     try {
       npmrc = readOptions(logger, false, verbose);
@@ -70,28 +79,34 @@ function readOptions(
   showPotentials = false,
 ): PackageManagerOptions {
   const cwd = process.cwd();
-  const baseFilename = yarn ? 'yarnrc' : 'npmrc';
-  const dotFilename = '.' + baseFilename;
+  const baseFilename = yarn ? "yarnrc" : "npmrc";
+  const dotFilename = "." + baseFilename;
 
   let globalPrefix: string;
   if (process.env.PREFIX) {
     globalPrefix = process.env.PREFIX;
   } else {
     globalPrefix = path.dirname(process.execPath);
-    if (process.platform !== 'win32') {
+    if (process.platform !== "win32") {
       globalPrefix = path.dirname(globalPrefix);
     }
   }
 
   const defaultConfigLocations = [
-    (!yarn && process.env.NPM_CONFIG_GLOBALCONFIG) || path.join(globalPrefix, 'etc', baseFilename),
-    (!yarn && process.env.NPM_CONFIG_USERCONFIG) || path.join(homedir(), dotFilename),
+    (!yarn && process.env.NPM_CONFIG_GLOBALCONFIG) ||
+      path.join(globalPrefix, "etc", baseFilename),
+    (!yarn && process.env.NPM_CONFIG_USERCONFIG) ||
+      path.join(homedir(), dotFilename),
   ];
 
   const projectConfigLocations: string[] = [path.join(cwd, dotFilename)];
   if (yarn) {
     const root = path.parse(cwd).root;
-    for (let curDir = path.dirname(cwd); curDir && curDir !== root; curDir = path.dirname(curDir)) {
+    for (
+      let curDir = path.dirname(cwd);
+      curDir && curDir !== root;
+      curDir = path.dirname(curDir)
+    ) {
       projectConfigLocations.unshift(path.join(curDir, dotFilename));
     }
   }
@@ -101,16 +116,21 @@ function readOptions(
   }
 
   let rcOptions: PackageManagerOptions = {};
-  for (const location of [...defaultConfigLocations, ...projectConfigLocations]) {
+  for (const location of [
+    ...defaultConfigLocations,
+    ...projectConfigLocations,
+  ]) {
     if (existsSync(location)) {
       if (showPotentials) {
         logger.info(`Trying '${location}'...found.`);
       }
 
-      const data = readFileSync(location, 'utf8');
+      const data = readFileSync(location, "utf8");
       // Normalize RC options that are needed by 'npm-registry-fetch'.
       // See: https://github.com/npm/npm-registry-fetch/blob/ebddbe78a5f67118c1f7af2e02c8a22bcaf9e850/index.js#L99-L126
-      const rcConfig: PackageManagerOptions = yarn ? lockfile.parse(data) : ini.parse(data);
+      const rcConfig: PackageManagerOptions = yarn
+        ? lockfile.parse(data)
+        : ini.parse(data);
 
       rcOptions = normalizeOptions(rcConfig, location, rcOptions);
     }
@@ -123,19 +143,19 @@ function readOptions(
     }
 
     let normalizedName = key.toLowerCase();
-    if (normalizedName.startsWith('npm_config_')) {
+    if (normalizedName.startsWith("npm_config_")) {
       normalizedName = normalizedName.substring(11);
-    } else if (yarn && normalizedName.startsWith('yarn_')) {
+    } else if (yarn && normalizedName.startsWith("yarn_")) {
       normalizedName = normalizedName.substring(5);
     } else {
       continue;
     }
 
     if (
-      normalizedName === 'registry' &&
-      rcOptions['registry'] &&
-      value === 'https://registry.yarnpkg.com' &&
-      process.env['npm_config_user_agent']?.includes('yarn')
+      normalizedName === "registry" &&
+      rcOptions["registry"] &&
+      value === "https://registry.yarnpkg.com" &&
+      process.env["npm_config_user_agent"]?.includes("yarn")
     ) {
       // When running `ng update` using yarn (`yarn ng update`), yarn will set the `npm_config_registry` env variable to `https://registry.yarnpkg.com`
       // even when an RC file is present with a different repository.
@@ -143,7 +163,7 @@ function readOptions(
       continue;
     }
 
-    normalizedName = normalizedName.replace(/(?!^)_/g, '-'); // don't replace _ at the start of the key.s
+    normalizedName = normalizedName.replace(/(?!^)_/g, "-"); // don't replace _ at the start of the key.s
     envVariablesOptions[normalizedName] = value;
   }
 
@@ -161,8 +181,11 @@ function normalizeOptions(
     let substitutedValue = value;
 
     // Substitute any environment variable references.
-    if (typeof value === 'string') {
-      substitutedValue = value.replace(/\$\{([^}]+)\}/, (_, name) => process.env[name] || '');
+    if (typeof value === "string") {
+      substitutedValue = value.replace(
+        /\$\{([^}]+)\}/,
+        (_, name) => process.env[name] || "",
+      );
     }
 
     switch (key) {
@@ -170,43 +193,48 @@ function normalizeOptions(
       // even though they are documented.
       // https://github.com/npm/npm-registry-fetch/blob/8954f61d8d703e5eb7f3d93c9b40488f8b1b62ac/README.md
       // https://github.com/npm/npm-registry-fetch/blob/8954f61d8d703e5eb7f3d93c9b40488f8b1b62ac/auth.js#L45-L91
-      case '_authToken':
-      case 'token':
-      case 'username':
-      case 'password':
-      case '_auth':
-      case 'auth':
-        options['forceAuth'] ??= {};
-        options['forceAuth'][key] = substitutedValue;
+      case "_authToken":
+      case "token":
+      case "username":
+      case "password":
+      case "_auth":
+      case "auth":
+        options["forceAuth"] ??= {};
+        options["forceAuth"][key] = substitutedValue;
         break;
-      case 'noproxy':
-      case 'no-proxy':
-        options['noProxy'] = substitutedValue;
+      case "noproxy":
+      case "no-proxy":
+        options["noProxy"] = substitutedValue;
         break;
-      case 'maxsockets':
-        options['maxSockets'] = substitutedValue;
+      case "maxsockets":
+        options["maxSockets"] = substitutedValue;
         break;
-      case 'https-proxy':
-      case 'proxy':
-        options['proxy'] = substitutedValue;
+      case "https-proxy":
+      case "proxy":
+        options["proxy"] = substitutedValue;
         break;
-      case 'strict-ssl':
-        options['strictSSL'] = substitutedValue;
+      case "strict-ssl":
+        options["strictSSL"] = substitutedValue;
         break;
-      case 'local-address':
-        options['localAddress'] = substitutedValue;
+      case "local-address":
+        options["localAddress"] = substitutedValue;
         break;
-      case 'cafile':
-        if (typeof substitutedValue === 'string') {
+      case "cafile":
+        if (typeof substitutedValue === "string") {
           const cafile = path.resolve(path.dirname(location), substitutedValue);
           try {
-            options['ca'] = readFileSync(cafile, 'utf8').replace(/\r?\n/g, '\n');
+            options["ca"] = readFileSync(cafile, "utf8").replace(
+              /\r?\n/g,
+              "\n",
+            );
           } catch {}
         }
         break;
-      case 'before':
-        options['before'] =
-          typeof substitutedValue === 'string' ? new Date(substitutedValue) : substitutedValue;
+      case "before":
+        options["before"] =
+          typeof substitutedValue === "string"
+            ? new Date(substitutedValue)
+            : substitutedValue;
         break;
       default:
         options[key] = substitutedValue;
@@ -234,7 +262,7 @@ export async function fetchPackageMetadata(
   };
 
   ensureNpmrc(logger, usingYarn, verbose);
-  const { packument } = await import('pacote');
+  const { packument } = await import("pacote");
   const response = await packument(name, {
     fullMetadata: true,
     ...npmrc,
@@ -252,13 +280,15 @@ export async function fetchPackageMetadata(
     tags: {},
   };
 
-  if (response['dist-tags']) {
-    for (const [tag, version] of Object.entries(response['dist-tags'])) {
+  if (response["dist-tags"]) {
+    for (const [tag, version] of Object.entries(response["dist-tags"])) {
       const manifest = metadata.versions[version];
       if (manifest) {
         metadata.tags[tag] = manifest;
       } else if (verbose) {
-        logger.warn(`Package ${metadata.name} has invalid version metadata for '${tag}'.`);
+        logger.warn(
+          `Package ${metadata.name} has invalid version metadata for '${tag}'.`,
+        );
       }
     }
   }
@@ -277,7 +307,7 @@ export async function fetchPackageManifest(
 ): Promise<PackageManifest> {
   const { usingYarn = false, verbose = false, registry } = options;
   ensureNpmrc(logger, usingYarn, verbose);
-  const { manifest } = await import('pacote');
+  const { manifest } = await import("pacote");
 
   const response = await manifest(name, {
     fullMetadata: true,
@@ -304,7 +334,7 @@ export async function getNpmPackageJson(
 
   const { usingYarn = false, verbose = false, registry } = options;
   ensureNpmrc(logger, usingYarn, verbose);
-  const { packument } = await import('pacote');
+  const { packument } = await import("pacote");
   const response = packument(packageName, {
     fullMetadata: true,
     ...npmrc,

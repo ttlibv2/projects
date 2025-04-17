@@ -3,27 +3,10 @@
     "globalDependencies": ["**/.env.*local"],
     "tasks": {
       "build": {
-        "dependsOn": [],
-        "outputs": ["./dist"]
+        "dependsOn": ["^build"]
       },
-      "glink": {
-        "dependsOn": [],
-        "cache": false
-      },
-      "clean": {
-        "dependsOn": [],
-        "cache": false
-      },
-      "copy": {
-        "dependsOn": ["^copy"],
-        "cache": false
-      },
-      "lint": {
-        "dependsOn": ["^lint"]
-      },
-      "start": {
-        "cache": false,
-        "persistent": true
-      }
+      "watch": {},
+      "compiler": {},
+      "postbuild": {}
     }
   }

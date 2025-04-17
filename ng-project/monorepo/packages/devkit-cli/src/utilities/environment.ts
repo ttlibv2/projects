@@ -1,15 +1,21 @@
 import { colors } from "@ngdev/devkit-core/utilities";
 
 function isPresent(variable: string | undefined): variable is string {
-  return typeof variable === 'string' && variable !== '';
+  return typeof variable === "string" && variable !== "";
 }
 
 function isDisabled(variable: string | undefined): boolean {
-  return isPresent(variable) && (variable === '0' || variable.toLowerCase() === 'false');
+  return (
+    isPresent(variable) &&
+    (variable === "0" || variable.toLowerCase() === "false")
+  );
 }
 
 function isEnabled(variable: string | undefined): boolean {
-  return isPresent(variable) && (variable === '1' || variable.toLowerCase() === 'true');
+  return (
+    isPresent(variable) &&
+    (variable === "1" || variable.toLowerCase() === "true")
+  );
 }
 
 function optional(variable: string | undefined): boolean | undefined {
@@ -20,8 +26,10 @@ function optional(variable: string | undefined): boolean | undefined {
   return isEnabled(variable);
 }
 
-export const ERROR_PREFIX = colors.bgRed.bold.rgb(0, 0, 0)(' ERROR ');
-export const INFO_PREFIX = colors.bgRgb(60, 190, 100).bold.rgb(0, 0, 0)( ' INFO ',);
+export const ERROR_PREFIX = colors.bgRed.bold.rgb(0, 0, 0)(" ERROR ");
+export const INFO_PREFIX = colors.bgRgb(60, 190, 100).bold.rgb(0, 0, 0)(
+  " INFO ",
+);
 
 // export const analyticsDisabled = isDisabled(process.env['NG_CLI_ANALYTICS']);
 // export const isCI = isEnabled(process.env['CI']);

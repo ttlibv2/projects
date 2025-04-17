@@ -1,11 +1,15 @@
-import { json, strings } from '@angular-devkit/core';
-import { Arguments, Argv, PositionalOptions, Options as YargsOptions } from 'yargs';
+import { json, strings } from "@angular-devkit/core";
+import {
+  Arguments,
+  Argv,
+  PositionalOptions,
+  Options as YargsOptions,
+} from "yargs";
 
 /**
  * An option description.
  */
 export interface Option extends YargsOptions {
-
   /**
    * The name of the option.
    */
@@ -40,10 +44,13 @@ export interface Option extends YargsOptions {
   /**
    * Type of the values in a key/value pair field.
    */
-  itemValueType?: 'string';
+  itemValueType?: "string";
 }
 
-function coerceToStringMap(dashedName: string, value: (string | undefined)[]): Record<string, string> | Promise<never> {
+function coerceToStringMap(
+  dashedName: string,
+  value: (string | undefined)[],
+): Record<string, string> | Promise<never> {
   const stringMap: Record<string, string> = {};
   for (const pair of value) {
     // This happens when the flag isn't passed at all.
@@ -51,7 +58,7 @@ function coerceToStringMap(dashedName: string, value: (string | undefined)[]): R
       continue;
     }
 
-    const eqIdx = pair.indexOf('=');
+    const eqIdx = pair.indexOf("=");
     if (eqIdx === -1) {
       const msg = `Invalid value for argument: ${dashedName}, Given: '${pair}', Expected key=value pair`;
       return Promise.reject(new Error(msg));
@@ -73,11 +80,15 @@ function isStringMap(node: json.JsonObject): boolean {
   return (
     json.isJsonObject(node.additionalProperties) &&
     !node.additionalProperties.enum &&
-    node.additionalProperties.type === 'string'
+    node.additionalProperties.type === "string"
   );
 }
 
-export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegistry, schema: json.JsonObject, interactive = true,): Promise<Option[]> {
+export async function parseJsonSchemaToOptions(
+  registry: json.schema.SchemaRegistry,
+  schema: json.JsonObject,
+  interactive = true,
+): Promise<Option[]> {
   const options: Option[] = [];
 
   function visitor(
@@ -88,14 +99,16 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
     if (!parentSchema) {
       // Ignore root.
       return;
-    } else if (pointer.split(/\/(?:properties|items|definitions)\//g).length > 2) {
+    } else if (
+      pointer.split(/\/(?:properties|items|definitions)\//g).length > 2
+    ) {
       // Ignore subitems (objects or arrays).
       return;
     } else if (json.isJsonArray(current)) {
       return;
     }
 
-    if (pointer.indexOf('/not/') != -1) {
+    if (pointer.indexOf("/not/") != -1) {
       // We don't support anyOf/not.
       throw new Error('The "not" keyword is not supported in JSON Schema.');
     }
@@ -103,7 +116,7 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
     const ptr = json.schema.parseJsonPointer(pointer);
     const name = ptr[ptr.length - 1];
 
-    if (ptr[ptr.length - 2] != 'properties') {
+    if (ptr[ptr.length - 2] != "properties") {
       // Skip any non-property items.
       return;
     }
@@ -111,36 +124,36 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
     const typeSet = json.schema.getTypesOfSchema(current);
 
     if (typeSet.size == 0) {
-      throw new Error('Cannot find type of schema.');
+      throw new Error("Cannot find type of schema.");
     }
 
     // We only support number, string or boolean (or array of those), so remove everything else.
     const types = [...typeSet].filter((x) => {
       switch (x) {
-        case 'boolean':
-        case 'number':
-        case 'string':
+        case "boolean":
+        case "number":
+        case "string":
           return true;
 
-        case 'array':
+        case "array":
           // Only include arrays if they're boolean, string or number.
           if (
             json.isJsonObject(current.items) &&
-            typeof current.items.type == 'string' &&
-            ['boolean', 'number', 'string'].includes(current.items.type)
+            typeof current.items.type == "string" &&
+            ["boolean", "number", "string"].includes(current.items.type)
           ) {
             return true;
           }
 
           return false;
 
-        case 'object':
+        case "object":
           return isStringMap(current);
 
         default:
           return false;
       }
-    }) as ('string' | 'number' | 'boolean' | 'array' | 'object')[];
+    }) as ("string" | "number" | "boolean" | "array" | "object")[];
 
     if (types.length == 0) {
       // This means it's not usable on the command line. e.g. an Object.
@@ -148,11 +161,14 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
     }
 
     // Only keep enum values we support (booleans, numbers and strings).
-    const enumValues = ((json.isJsonArray(current.enum) && current.enum) || []).filter((x) => {
+    const enumValues = (
+      (json.isJsonArray(current.enum) && current.enum) ||
+      []
+    ).filter((x) => {
       switch (typeof x) {
-        case 'boolean':
-        case 'number':
-        case 'string':
+        case "boolean":
+        case "number":
+        case "string":
           return true;
 
         default:
@@ -163,18 +179,18 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
     let defaultValue: string | number | boolean | undefined = undefined;
     if (current.default !== undefined) {
       switch (types[0]) {
-        case 'string':
-          if (typeof current.default == 'string') {
+        case "string":
+          if (typeof current.default == "string") {
             defaultValue = current.default;
           }
           break;
-        case 'number':
-          if (typeof current.default == 'number') {
+        case "number":
+          if (typeof current.default == "number") {
             defaultValue = current.default;
           }
           break;
-        case 'boolean':
-          if (typeof current.default == 'boolean') {
+        case "boolean":
+          if (typeof current.default == "boolean") {
             defaultValue = current.default;
           }
           break;
@@ -182,34 +198,45 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
     }
 
     const $default = current.$default;
-    const $defaultIndex = json.isJsonObject($default) && $default['$source'] == 'argv' ? $default['index'] : undefined;
-    const positional: number | undefined = typeof $defaultIndex == 'number' ? $defaultIndex : undefined;
+    const $defaultIndex =
+      json.isJsonObject($default) && $default["$source"] == "argv"
+        ? $default["index"]
+        : undefined;
+    const positional: number | undefined =
+      typeof $defaultIndex == "number" ? $defaultIndex : undefined;
 
-    let required = json.isJsonArray(schema.required) ? schema.required.includes(name) : false;
-    if (required && interactive && current['x-prompt']) {
+    let required = json.isJsonArray(schema.required)
+      ? schema.required.includes(name)
+      : false;
+    if (required && interactive && current["x-prompt"]) {
       required = false;
     }
 
     const alias = json.isJsonArray(current.aliases)
-      ? [...current.aliases].map((x) => '' + x)
+      ? [...current.aliases].map((x) => "" + x)
       : current.alias
-        ? ['' + current.alias]
+        ? ["" + current.alias]
         : [];
-    const format = typeof current.format == 'string' ? current.format : undefined;
+    const format =
+      typeof current.format == "string" ? current.format : undefined;
     const visible = current.visible === undefined || current.visible === true;
     const hidden = !!current.hidden || !visible;
 
-    const xUserAnalytics = current['x-user-analytics'];
-    const userAnalytics = typeof xUserAnalytics === 'string' ? xUserAnalytics : undefined;
+    const xUserAnalytics = current["x-user-analytics"];
+    const userAnalytics =
+      typeof xUserAnalytics === "string" ? xUserAnalytics : undefined;
 
     // Deprecated is set only if it's true or a string.
-    const xDeprecated = current['x-deprecated'];
+    const xDeprecated = current["x-deprecated"];
     const deprecated =
-      xDeprecated === true || typeof xDeprecated === 'string' ? xDeprecated : undefined;
+      xDeprecated === true || typeof xDeprecated === "string"
+        ? xDeprecated
+        : undefined;
 
     const option: Option = {
       name,
-      description: '' + (current.description === undefined ? '' : current.description),
+      description:
+        "" + (current.description === undefined ? "" : current.description),
       default: defaultValue,
       choices: enumValues.length ? enumValues : undefined,
       required,
@@ -219,10 +246,10 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
       userAnalytics,
       deprecated,
       positional,
-      ...(types[0] === 'object'
+      ...(types[0] === "object"
         ? {
-            type: 'array',
-            itemValueType: 'string',
+            type: "array",
+            itemValueType: "string",
           }
         : {
             type: types[0],
@@ -238,7 +265,9 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
   // Sort by positional and name.
   return options.sort((a, b) => {
     if (a.positional) {
-      return b.positional ? a.positional - b.positional : a.name.localeCompare(b.name);
+      return b.positional
+        ? a.positional - b.positional
+        : a.name.localeCompare(b.name);
     } else if (b.positional) {
       return -1;
     }
@@ -253,7 +282,11 @@ export async function parseJsonSchemaToOptions(registry: json.schema.SchemaRegis
  *
  * @returns A map from option name to analytics configuration.
  */
-export function addSchemaOptionsToCommand<T>(localYargs: Argv<T>, options: Option[], includeDefaultValues: boolean): Map<string, string> {
+export function addSchemaOptionsToCommand<T>(
+  localYargs: Argv<T>,
+  options: Option[],
+  includeDefaultValues: boolean,
+): Map<string, string> {
   const booleanOptionsWithNoPrefix = new Set<string>();
   const keyValuePairOptions = new Set<string>();
   const optionsWithAnalytics = new Map<string, string>();
@@ -276,7 +309,7 @@ export function addSchemaOptionsToCommand<T>(localYargs: Argv<T>, options: Optio
     let dashedName = strings.dasherize(name);
 
     // Handle options which have been defined in the schema with `no` prefix.
-    if (type === 'boolean' && dashedName.startsWith('no-')) {
+    if (type === "boolean" && dashedName.startsWith("no-")) {
       dashedName = dashedName.slice(3);
       booleanOptionsWithNoPrefix.add(dashedName);
     }
@@ -286,8 +319,14 @@ export function addSchemaOptionsToCommand<T>(localYargs: Argv<T>, options: Optio
     }
 
     const sharedOptions: YargsOptions & PositionalOptions = {
-      alias, hidden, description, deprecated, choices,
-      coerce: itemValueType ? coerceToStringMap.bind(null, dashedName) : undefined,
+      alias,
+      hidden,
+      description,
+      deprecated,
+      choices,
+      coerce: itemValueType
+        ? coerceToStringMap.bind(null, dashedName)
+        : undefined,
       // This should only be done when `--help` is used otherwise default will override options set in angular.json.
       ...(includeDefaultValues ? { default: defaultVal } : {}),
     };
@@ -298,10 +337,9 @@ export function addSchemaOptionsToCommand<T>(localYargs: Argv<T>, options: Optio
         type: itemValueType ?? type,
         ...sharedOptions,
       });
-    }
-    else {
+    } else {
       localYargs = localYargs.positional(dashedName, {
-        type: type === 'array' || type === 'count' ? 'string' : type,
+        type: type === "array" || type === "count" ? "string" : type,
         ...sharedOptions,
       });
     }

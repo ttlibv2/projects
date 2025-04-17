@@ -11,29 +11,40 @@ import {AbstractRunner} from "./abstract.runner";
 
 export class RunnerFactory {
 
-  public static create(runner: Runner) : AbstractRunner{
+  static schematic(): SchematicRunner {
+    return new SchematicRunner();
+  }
+
+  static npm(): SchematicRunner {
+    return new NpmRunner();
+  }
+
+  static pnpm(): SchematicRunner {
+    return new PnpmRunner();
+  }
+
+  static yarn(): SchematicRunner {
+    return new YarnRunner();
+  }
+
+  static nestjs(): SchematicRunner {
+    return new NestJsRunner();
+  }
+
+  static angular(): AngularRunner {
+    return new AngularRunner();
+  }
+
+  static create(runner: Runner) : AbstractRunner{
     switch (runner) {
-      case Runner.SCHEMATIC:
-        return new SchematicRunner();
-
-      case Runner.NPM:
-        return new NpmRunner();
-
-      case Runner.YARN:
-        return new YarnRunner();
-
-      case Runner.PNPM:
-        return new PnpmRunner();
-
-      case Runner.ANGULAR:
-        return new AngularRunner();
-
-        case Runner.NESTJS:
-          return new NestJsRunner();
-
+      case Runner.SCHEMATIC:return RunnerFactory.schematic();
+      case Runner.NPM:return RunnerFactory.npm();
+      case Runner.YARN:return RunnerFactory.yarn();
+      case Runner.PNPM:return RunnerFactory.pnpm();
+      case Runner.ANGULAR:return RunnerFactory.angular();
+      case Runner.NESTJS:return RunnerFactory.nestjs();
       default:
-        Logger.create('runner.factory')
-          .info(yellow`[WARN] Unsupported runner: ${runner}`);
+        Logger.create('runner.factory').info(yellow`[WARN] Unsupported runner: ${runner}`);
         throw new Error(`[WARN] Unsupported runner: ${runner}`);
     }
   }

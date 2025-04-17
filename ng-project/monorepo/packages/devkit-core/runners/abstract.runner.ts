@@ -2,6 +2,7 @@ import { red } from 'ansis';
 import { ChildProcess, spawn, SpawnOptions } from 'child_process';
 import { MESSAGES } from '../logui/messages';
 import { Logger } from '../utilities/logger';
+import * as process from 'node:process';
 
 export function createRunnerLogger(nameOrLogger: string | Logger = 'runner') {
   if (nameOrLogger instanceof Logger) return nameOrLogger;
@@ -25,11 +26,16 @@ export interface CmdInput {
 
 export abstract class AbstractRunner {
 
-  constructor(
+  public constructor(
     protected binary: string,
     protected args: string[] = [],
     protected logger?: string | Logger) {
     this.logger = createRunnerLogger(logger);
+  }
+
+  async run2(command: string, inputs: string[], flags: CmdInput[], options?: any): Promise<string | null> {
+    let cmd = this.buildCommandLine({command, inputs, flags});
+    return this.run(cmd, options?.collect, options?.cwd);
   }
 
   async run(command: string, collect?: boolean, cwd?: string): Promise<string | null> {
@@ -55,7 +61,11 @@ export abstract class AbstractRunner {
     return `${this.binary} ${commandArgs.join(' ')}`;
   }
 
-  protected buildCommandLine({command,inputs,flags}: CmdOptions): string {
+  version(): Promise<string | null> {
+    return this.run('--version', true);
+  }
+
+  buildCommandLine({command,inputs,flags}: CmdOptions): string {
     return `${command} ${this.buildInputs(inputs)} ${this.buildFlags(flags)}`;
   }
 
@@ -64,13 +74,14 @@ export abstract class AbstractRunner {
   }
 
   protected buildFlags(flags: CmdInput[] = []): string {
-    return flags.map(({ name, value }) =>`--${name}${value !== undefined ? '=' + value : ''}`).join(' ');
+    return flags.map(({ name, value }) =>`${name.length==1 ? '-': '--'}${name}${value !== undefined ? '=' + value : ''}`).join(' ');
   }
 
 }
 
 function spawnAsync(command: string, args: string[], options: SpawnOptions, collect: boolean = false): Promise<string | null> {
   return new Promise<string | null>((resolve, reject) => {
+    console.debug(`${options.cwd}> ${command} ${args.join(' ')}`);
     const child: ChildProcess = spawn(command, args, options);
 
     if (collect) {
@@ -84,13 +95,14 @@ function spawnAsync(command: string, args: string[], options: SpawnOptions, coll
       else {
         const msg = MESSAGES.RUNNER_EXECUTION_ERROR(`${command}`);
         //writeErrorToLogFile(msg);
-        console.error(red(msg));
+        console.error(`close: `, red(msg));
         reject();
       }
     });
 
     child.on('error', (error: any) => {
-      console.error(`Spawn error: ${error.message}`);
+      console.error(`error: `, `Spawn error: ${error.message}`);
+      if(error instanceof Error) console.log(error.stack, error.cause);
       process.exit(1);
     });
 
