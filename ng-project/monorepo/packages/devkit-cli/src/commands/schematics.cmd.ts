@@ -363,8 +363,8 @@ export abstract class SchematicsCommandModule
       } //
       else {
         assertIsError(err);
-        logger.logConsole("runSchematic", err);
-        //logger.fatal(err.message);
+        //logger.logConsole("runSchematic", err);
+        logger.fatal(err.message);
       }
 
       return 1;

@@ -10,7 +10,7 @@
     "link": "pnpm --filter './packages/*' dev:link",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "dev": "ngdev exec ngcli new --style SCSS"
+    "dev:sample": "ngdev --help"
   },
   "devDependencies": {
     "eslint": "^9.22.0",

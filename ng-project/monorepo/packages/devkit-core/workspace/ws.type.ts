@@ -1,27 +1,20 @@
 import { JsonValue } from '@angular-devkit/core';
 import { StringMap, StringMapListener } from '../utilities';
 
-export function defaultWorkspace():WorkspaceProp {
+export function defaultWorkspace():Partial<WorkspaceProp> {
     return {
-        $schema: './node_modules/@ngdev/cli/lib/config.schema.json',
+        $schema: './node_modules/@ngdev/cli/lib/schema.json',
         appsDir: 'apps',
         libsDir: 'packages',
         projects: new ProjectMap(),
         cli: {
             packageManager: 'pnpm',
-            schematicCollections: new Set<string>(),
+            collections: new Set<string>(),
             ngVersion: 'ANGULAR::VERSION',
             nestVersion: 'NESTJS::VERSION'
         }
-    } as WorkspaceProp;
+    };
 }
-
-export const COMPILER_OPTION_EXTENSIONS = ['tsConfigPath', 'plugin', 'assets', 'deleteOutDir', 'manualRestart', 'builder'];
-export const WORKSPACE_EXTENSIONS = ['$schema','name','appsDir', 'libsDir', 'cli', 'projects', 'defaultProject'];
-export const CLI_EXTENSIONS = ['packageManager', 'collections', 'ngVersion', 'nestVersion'];
-export const PROJECT_EXTENSIONS = ['framework', 'type', 'name', 'root', 'sourceRoot', 'entryFile', 'exec'];
-
-
 
 export interface SwcBuilderOptions {
     swcPath?: string;
@@ -72,6 +65,7 @@ export interface CliProp {
     ngVersion: string;
     nestVersion: string;
 }
+
 export interface ProjectProp {
     framework: 'angular' | 'nestjs';
     type: 'app' | 'lib';
@@ -89,7 +83,7 @@ export interface WorkspaceProp {
     name: string;
     appsDir: string;
     libsDir: string;
-    defaultPkg?: string;
+    defaultProject?: string;
     cli: CliProp;
     projects: ProjectMap;
     extensions?: Record<string, JsonValue>;

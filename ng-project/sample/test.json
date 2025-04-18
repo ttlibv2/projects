@@ -7,13 +7,5 @@
     "packageManager": "pnpm",
     "ngVersion": "19.1.8"
   },
-  "projects": {
-    "my-app": {
-      "name": "my-app",
-      "root": "apps/my-app",
-      "framework": "angular",
-      "type": "app"
-    }
-
-  }
+  "projects": {}
 }

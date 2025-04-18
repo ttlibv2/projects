@@ -37,68 +37,69 @@
     <option name="showScratchesAndConsoles" value="false" />
     <option name="sortKey" value="BY_TIME_DESCENDING" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Angular_CLI/projects/ng-project/monorepo/packages/devkit-core/workspace/json&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;pnpm&quot;,
-    &quot;npm.build (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.build (2).executor&quot;: &quot;Run&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build:core.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build:tsc.executor&quot;: &quot;Run&quot;,
-    &quot;npm.build:watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.clean:all.executor&quot;: &quot;Run&quot;,
-    &quot;npm.cli -&gt; build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.cli::build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.cli::watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.cli:build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.compiler (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.compiler.executor&quot;: &quot;Run&quot;,
-    &quot;npm.copy:collection.executor&quot;: &quot;Run&quot;,
-    &quot;npm.copy:watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.core:build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.core:watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.del2.executor&quot;: &quot;Run&quot;,
-    &quot;npm.del:dist (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.del:dist.executor&quot;: &quot;Run&quot;,
-    &quot;npm.delsrc.executor&quot;: &quot;Run&quot;,
-    &quot;npm.demo.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev (1).executor&quot;: &quot;Debug&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Debug&quot;,
-    &quot;npm.dev:link.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev:unlink.executor&quot;: &quot;Run&quot;,
-    &quot;npm.devkit-core::watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.devkit-core:build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.devkit::watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.format.executor&quot;: &quot;Run&quot;,
-    &quot;npm.link:dist.executor&quot;: &quot;Run&quot;,
-    &quot;npm.prebuild.executor&quot;: &quot;Run&quot;,
-    &quot;npm.sc:build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.scheamtic -&gt; build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.schematics::watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.tsc:compile.executor&quot;: &quot;Run&quot;,
-    &quot;npm.tsc:watch (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.tsc:watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.turbo:build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.turbo:watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.watch (1).executor&quot;: &quot;Run&quot;,
-    &quot;npm.watch (2).executor&quot;: &quot;Run&quot;,
-    &quot;npm.watch.executor&quot;: &quot;Run&quot;,
-    &quot;npm.watch:cli.executor&quot;: &quot;Run&quot;,
-    &quot;npm.watch:core.executor&quot;: &quot;Run&quot;,
-    &quot;npm.watch:sc.executor&quot;: &quot;Run&quot;,
-    &quot;npm.watch:schematics.executor&quot;: &quot;Run&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;D:\\Angular_CLI\\projects\\ng-project\\sample\\node_modules\\typescript\\lib&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "D:/Angular_CLI/projects/ng-project/monorepo/packages/devkit-core/workspace/json",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "pnpm",
+    "npm.build (1).executor": "Run",
+    "npm.build (2).executor": "Run",
+    "npm.build.executor": "Run",
+    "npm.build:core.executor": "Run",
+    "npm.build:tsc.executor": "Run",
+    "npm.build:watch.executor": "Run",
+    "npm.clean:all.executor": "Run",
+    "npm.cli -> build.executor": "Run",
+    "npm.cli::build.executor": "Run",
+    "npm.cli::watch.executor": "Run",
+    "npm.cli:build.executor": "Run",
+    "npm.compiler (1).executor": "Run",
+    "npm.compiler.executor": "Run",
+    "npm.copy:collection.executor": "Run",
+    "npm.copy:watch.executor": "Run",
+    "npm.core:build.executor": "Run",
+    "npm.core:watch.executor": "Run",
+    "npm.del2.executor": "Run",
+    "npm.del:dist (1).executor": "Run",
+    "npm.del:dist.executor": "Run",
+    "npm.delsrc.executor": "Run",
+    "npm.demo.executor": "Run",
+    "npm.dev (1).executor": "Run",
+    "npm.dev.executor": "Debug",
+    "npm.dev:link.executor": "Run",
+    "npm.dev:sample.executor": "Run",
+    "npm.dev:unlink.executor": "Run",
+    "npm.devkit-core::watch.executor": "Run",
+    "npm.devkit-core:build.executor": "Run",
+    "npm.devkit::watch.executor": "Run",
+    "npm.format.executor": "Run",
+    "npm.link:dist.executor": "Run",
+    "npm.prebuild.executor": "Run",
+    "npm.sc:build.executor": "Run",
+    "npm.scheamtic -> build.executor": "Run",
+    "npm.schematics::watch.executor": "Run",
+    "npm.tsc:compile.executor": "Run",
+    "npm.tsc:watch (1).executor": "Run",
+    "npm.tsc:watch.executor": "Run",
+    "npm.turbo:build.executor": "Run",
+    "npm.turbo:watch.executor": "Run",
+    "npm.watch (1).executor": "Run",
+    "npm.watch (2).executor": "Run",
+    "npm.watch.executor": "Run",
+    "npm.watch:cli.executor": "Run",
+    "npm.watch:core.executor": "Run",
+    "npm.watch:sc.executor": "Run",
+    "npm.watch:schematics.executor": "Run",
+    "settings.editor.selected.configurable": "advanced.settings",
+    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\sample\\node_modules\\typescript\\lib"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core\workspace\json" />
@@ -108,14 +109,24 @@
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core\utilities" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core\workspace" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core\src" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\schematics" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core\dist\src" />
-      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-cli\lib" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev">
+  <component name="RunManager" selected="npm.build (1)">
+    <configuration name="build (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-cli/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-core/package.json" />
       <command value="run" />
@@ -126,41 +137,31 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="del:dist" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="compiler (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-core/package.json" />
       <command value="run" />
       <scripts>
-        <script value="del:dist" />
+        <script value="compiler" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/sample/apps/tsweb6/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="dev" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="watch:cli" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="compiler" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-cli/package.json" />
       <command value="run" />
       <scripts>
-        <script value="watch:cli" />
+        <script value="compiler" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="watch:core" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-core/package.json" />
+    <configuration name="dev:sample" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/sample/package.json" />
       <command value="run" />
       <scripts>
-        <script value="watch:core" />
+        <script value="dev:sample" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -168,11 +169,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.dev" />
-        <item itemvalue="npm.watch:cli" />
-        <item itemvalue="npm.watch:core" />
+        <item itemvalue="npm.build (1)" />
         <item itemvalue="npm.build" />
-        <item itemvalue="npm.del:dist" />
+        <item itemvalue="npm.compiler (1)" />
+        <item itemvalue="npm.dev:sample" />
+        <item itemvalue="npm.compiler" />
       </list>
     </recent_temporary>
   </component>
@@ -225,9 +226,14 @@
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-cli/src/workspace/ws.type.ts</url>
-          <line>67</line>
-          <option name="timeStamp" value="20" />
+          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-core/workspace/json-proxy.ts</url>
+          <line>79</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-core/workspace/json-writer.ts</url>
+          <line>27</line>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

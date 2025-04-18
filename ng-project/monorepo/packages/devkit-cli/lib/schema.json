@@ -7,7 +7,6 @@
   "properties": {
     "$schema": {"type": "string"},
     "name": {"type":  "string"},
-    "cli": {"$ref": "#/definitions/cliOptions"},
     "appsDir": {
       "type": "string",
       "description": "Path where new application will be created."
@@ -16,6 +15,7 @@
       "type": "string",
       "description": "Path where new library will be created."
     },
+    "cli": {"$ref": "#/definitions/cliOptions"},
     "defaultProject": {
       "type": "string"
     },
@@ -34,7 +34,7 @@
     "cliOptions": {
       "type": "object",
       "properties": {
-        "schematicCollections": {
+        "collections": {
           "type": "array",
           "description": "The list of schematic collections to use.",
           "items": {

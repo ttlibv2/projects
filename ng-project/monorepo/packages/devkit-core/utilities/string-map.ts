@@ -1,4 +1,3 @@
-
 export type StringMapListener<V extends object> = (
     name: string,
     newValue: V | undefined,
@@ -6,7 +5,7 @@ export type StringMapListener<V extends object> = (
 ) => void;
 
 export class StringMap<V extends object> implements ReadonlyMap<string, V> {
-    private readonly _map: Map<string, V>;
+    readonly _map: Map<string, V>;
 
     constructor(
         initial?: Record<string, V>,

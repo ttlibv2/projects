@@ -2,6 +2,7 @@ import { workspaces as ws } from "@ngdev/devkit-core";
 import * as path from "node:path";
 import { defaultGlobalPath, getConfigPath } from "./ws.help";
 import { existsSync } from "node:fs";
+import { join } from 'path';
 
 function applyWorkspaceProp(prop: ws.WorkspaceProp) {
   return Object.assign({}, ws.defaultWorkspace(), prop);
@@ -34,8 +35,8 @@ export class DevWorkspace {
     return this.prop.libsDir;
   }
 
-  get defaultPkg(): string {
-    return this.prop.defaultPkg;
+  get defaultProject(): string {
+    return this.prop.defaultProject;
   }
 
   get cli(): ws.CliProp {
@@ -43,7 +44,7 @@ export class DevWorkspace {
   }
 
   get collection(): Set<string> {
-    return this.cli?.schematicCollections;
+    return this.cli?.collections;
   }
 
   get projects(): ws.ProjectMap | null {
@@ -52,20 +53,22 @@ export class DevWorkspace {
 
   async add(prop: ws.ProjectProp, host?: ws.WorkspaceHost): Promise<void> {
     this.projects.add(prop);
-    await this.write(host);
+    await this.write({ host });
   }
 
-  async write(host: ws.WorkspaceHost = this.host): Promise<void> {
-    await ws.writeWorkspace(host, this.prop, this.filePath);
+  async write(options?: {host?: ws.WorkspaceHost, path?: string}): Promise<void> {
+    let host = options?.host ?? this.host;
+    let path = options?.path ?? this.filePath;
+    await ws.writeWorkspace(host, this.prop, path, {override: true});
   }
 
   static async load(path: string): Promise<DevWorkspace> {
     const { workspace, host, filePath } = await ws.readWorkspace(
-      ws.createPromiseHost(),
-      path,
-    );
-    console.log(JSON.stringify(workspace));
-    return new DevWorkspace(filePath, host, workspace);
+      ws.createPromiseHost(), path);
+
+    const wb = new DevWorkspace(filePath, host, workspace);
+    await wb.write({path: join(wb.baseDir, "test.json")});
+    return wb;
   }
 
   static async global(): Promise<DevWorkspace> {
@@ -80,5 +83,16 @@ export class DevWorkspace {
   static async project(): Promise<DevWorkspace | undefined> {
     const configPath = getConfigPath("local");
     return configPath ? DevWorkspace.load(configPath) : undefined;
+  }
+
+
+  toJson() {
+    return {
+      ...this.prop,
+      cli: { ...this.prop?.cli },
+      projects: {
+        ...this.prop.projects
+      }
+    }
   }
 }
