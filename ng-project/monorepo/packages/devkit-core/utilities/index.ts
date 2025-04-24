@@ -11,4 +11,6 @@ export * from './finder-pkg';
 export * from './schema-inf';
 export * from './os-info';
 export * from './errors';
+export * from './dependencies';
+export * from './paths';
 export * from './cmd-option-tostring';

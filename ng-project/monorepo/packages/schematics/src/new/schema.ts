@@ -29,4 +29,7 @@ export interface Schema {
   commit?: boolean;
 
   ngVersion?: string;
+
+  packageVersion?: string;
+  packageManager?: string;
 }

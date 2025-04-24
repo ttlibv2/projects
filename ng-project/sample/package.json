@@ -10,7 +10,7 @@
     "link": "pnpm --filter './packages/*' dev:link",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "dev:sample": "ngdev --help"
+    "dev:sample": "ngdev ng app tsweb --skip-install true --package-manager pnpm"
   },
   "devDependencies": {
     "eslint": "^9.22.0",

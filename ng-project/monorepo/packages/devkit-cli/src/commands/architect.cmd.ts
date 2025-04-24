@@ -4,7 +4,7 @@ import { Argv } from "yargs";
 import { ArchitectBaseCommandModule } from "./architectbase.cmd";
 import {
   CommandModuleImplementation,
-  Options,
+  RunOptions,
   OtherOptions,
 } from "./abstract.cmd";
 
@@ -87,7 +87,7 @@ export abstract class ArchitectCommandModule
   }
 
   async run(
-    options: Options<ArchitectCommandArgs> & OtherOptions,
+    options: RunOptions<ArchitectCommandArgs> & OtherOptions,
   ): Promise<number | void> {
     const target = this.getArchitectTarget();
 

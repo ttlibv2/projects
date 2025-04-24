@@ -1,4 +1,4 @@
-export const latestVersions = {
+export const latestVersions: any = {
   "turbo": "^2.4.4",
   "eslint": "^9.22.0",
   "gulp": "^5.0.0",

@@ -4,7 +4,7 @@
  "appsDir": "<%= appsDir %>",
  "libsDir": "<%= libsDir %>",
  "cli": {
-   "packageManager": "<%= pkgManager %>",
+   "packageManager": "<%= packageManager %>",
    "ngVersion": "<%= ngVersion %>"
   },
  "projects": {}

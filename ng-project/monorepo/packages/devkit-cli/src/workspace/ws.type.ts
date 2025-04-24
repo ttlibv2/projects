@@ -43,7 +43,12 @@ export class DevWorkspace {
     return this.prop.cli;
   }
 
-  get collection(): Set<string> {
+  getSchematics(schematic: string) {
+    const sc = this.cli?.schematics;
+    return sc ? sc[schematic] : {};
+  }
+
+  get collections(): string[] {
     return this.cli?.collections;
   }
 
@@ -67,7 +72,7 @@ export class DevWorkspace {
       ws.createPromiseHost(), path);
 
     const wb = new DevWorkspace(filePath, host, workspace);
-    await wb.write({path: join(wb.baseDir, "test.json")});
+    //await wb.write({path: join(wb.baseDir, "test.json")});
     return wb;
   }
 

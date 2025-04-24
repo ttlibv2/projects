@@ -45,10 +45,10 @@ export abstract class AbstractPkgManager {
   /** Get the package manager version. */
   @memoize
   get version(): Promise<string> {
-    return this.runner.run('--version', true) as Promise<string>;
+    return this.runner.run('--version', { collect: true }) as Promise<string>;
   }
 
-  async install(packageManager: string, directory: string) {
+  async install(directory?: string) {
 
     const spinner = ora({
       spinner: { interval: 120,
@@ -61,16 +61,16 @@ export abstract class AbstractPkgManager {
 
     try {
       const commandArgs = `${this.cli.install} ${this.cli.silentFlag}`;
-      const cwd = join(process.cwd(), normalize(directory));
-      await this.runner.run(commandArgs, true, cwd);
+      const cwd = directory == undefined ? process.cwd() : join(process.cwd(), normalize(directory));
+      await this.runner.run(commandArgs, { collect: true, cwd });
 
       spinner.succeed();
       console.info();
-      console.info(MESSAGES.PACKAGE_MANAGER_INSTALLATION_SUCCEED(directory));
+      console.info(MESSAGES.PACKAGE_MANAGER_INSTALLATION_SUCCEED(cwd));
       console.info(MESSAGES.GET_STARTED_INFORMATION);
       console.info();
-      console.info(colors.gray(MESSAGES.CHANGE_DIR_COMMAND(directory)));
-      console.info(colors.gray(MESSAGES.START_COMMAND(packageManager)));
+      console.info(colors.gray(MESSAGES.CHANGE_DIR_COMMAND(cwd)));
+      console.info(colors.gray(MESSAGES.START_COMMAND(this.name)));
       console.info();
     } //
     catch {
@@ -91,7 +91,7 @@ export abstract class AbstractPkgManager {
   }
 
   /** install package dependencies */
-  async addPro(dependencies: string[], tag: string): Promise<boolean> {
+  async addPro(dependencies: string[], tag: string, cwd?: string): Promise<boolean> {
     const command: string = [this.cli.add, this.cli.saveFlag].filter((i) => i).join(' ');
     const args: string = dependencies.map((dependency) => `${dependency}@${tag}`).join(' ');
     const spinner = ora({
@@ -104,7 +104,7 @@ export abstract class AbstractPkgManager {
 
     spinner.start();
     try {
-      await this.add(`${command} ${args}`);
+      await this.add(`${command} ${args}`, cwd);
       spinner.succeed();
       return true;
     }//
@@ -169,15 +169,12 @@ export abstract class AbstractPkgManager {
     return dependencies as ProjectDependency[];
   }
 
-
-
-  private async delete(commandArguments: string): Promise<void> {
-    const collect = true;
-    await this.runner.run(commandArguments, collect);
+  private async delete(commandArguments: string, cwd?: string): Promise<void> {
+    await this.runner.run(commandArguments, { collect: true, cwd });
   }
 
-  private async add(commandArguments: string) {
-    await this.runner.run(commandArguments, true);
+  private async add(commandArguments: string, cwd?: string) {
+    await this.runner.run(commandArguments, { collect: true, cwd });
   }
 
   private async readPackageJson(): Promise<any> {
@@ -196,7 +193,6 @@ export abstract class AbstractPkgManager {
   }
 
   private async update(commandArguments: string) {
-    const collect = true;
-    await this.runner.run(commandArguments, collect);
+    await this.runner.run(commandArguments, { collect: true });
   }
 }

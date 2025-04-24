@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/@ngdev/cli/lib/schema.json",
+  "defaultProject": "tsweb",
   "name": "sample",
   "appsDir": "apps",
   "libsDir": "packages",
@@ -8,12 +9,32 @@
     "ngVersion": "19.1.8"
   },
   "projects": {
-    "my-app": {
-      "name": "my-app",
-      "root": "apps/my-app",
+    "tslib": {
       "framework": "angular",
-      "type": "app"
-    }
+      "projectType": "lib",
+      "name": "tslib",
+      "root": "packages/tslib"
+    },
+    "tsweb": {
+      "framework": "angular",
+      "projectType": "app",
+      "name": "tsweb",
+      "root": "apps/tsweb",
+      "options": {
+        "classDir": "models",
+        "serviceDir": "services",
+        "directiveDir": "directives",
+        "componentDir": "ui"
+      }
+    },
+    "app0": {
+      "framework": "angular",
+      "projectType": "app",
+      "name": "app0",
+      "root": "apps/app0"
+    },
+    "abc": {
 
+    }
   }
 }

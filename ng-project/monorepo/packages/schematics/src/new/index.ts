@@ -2,13 +2,13 @@ import { apply, applyTemplates, chain, filter, mergeWith, move, Rule, SchematicC
 import { latestVersions } from '../utility/last-version';
 import { NodePackageInstallTask, RepositoryInitializerTask } from '@angular-devkit/schematics/tasks';
 import { Schema as NgAppOption } from './schema';
-import { ngVersion } from '../utility/ng-version';
 
 const packageManager: string = 'pnpm';
 
 export default function(options: NgAppOption): Rule {
+    console.debug(`new monorepo: `, options);
+
     return async (tree: Tree) => {
-        const version = await ngVersion(null, true);
 
         if (!options.directory) {
             // If scoped project (i.e. "@foo/bar"), convert directory to "foo/bar".
@@ -18,15 +18,18 @@ export default function(options: NgAppOption): Rule {
         options.appsDir = options.appsDir || 'apps';
         options.libsDir = options.libsDir || 'packages';
 
+
+
         return chain([
-            copyFiles(options, version),
-            installPackage(options)
+           copyFiles(options),
+           installPackage(options)
         ]);
     };
 }
 
-function copyFiles(options: NgAppOption, ngVersion: string | null): Rule {
+function copyFiles(options: NgAppOption): Rule {
     return (tree: Tree, context: SchematicContext) => {
+        latestVersions['@angular/cli'] = options.ngVersion;
 
         return mergeWith(apply(url('./files'), [
             filter(path => {
@@ -36,10 +39,7 @@ function copyFiles(options: NgAppOption, ngVersion: string | null): Rule {
             applyTemplates({
                 ...options,
                 utils: strings, dot: '.',
-                latestVersions: latestVersions,
-                pkgManager: 'pnpm',
-                pkgVersion: '10.7.0',
-                ngVersion: ngVersion
+                latestVersions: latestVersions
             }),
             move(options.directory)
         ]));

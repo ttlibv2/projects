@@ -85,10 +85,13 @@
         "build": {
           "type": "string",
           "description": "The name project"
+        },
+        "options": {
+          "type": "object"
         }
       },
       "required": [
-        "root","name","framework","build", "projectType"
+        "root","name","framework", "projectType"
       ],
       "additionalProperties": false,
       "patternProperties": {

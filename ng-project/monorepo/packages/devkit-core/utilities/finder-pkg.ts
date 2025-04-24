@@ -10,6 +10,12 @@ interface GetPackageOption {
     showLog?: Function;
 }
 
+export async function getVersionPackage(...packageNames: string[]): Promise<{[name: string]: string | undefined}>{
+    return packageNames
+      .map(pkg => [pkg, getPackageFile(pkg, 'package.json')])
+      .reduce((json, arr: any[]) => ({ ...json, [arr[0]]: arr[1]?.version}), {});
+}
+
 /**
  * get a file based on package name and file name (with or without internal path)
  * @param packageName the package name to find
@@ -46,8 +52,7 @@ export async function getPackageFile<T = any>(packageName: string, fileName: str
             return response.data;
         } //
         catch (error) {
-           // if(isShowLog)  logger.error(`Failed to fetch ${fileName} for ${packageName} from ${url}:
-            // ${error.message ?? error}`);
+           console.error(`Failed to fetch ${fileName} for ${packageName} from ${url}: ${error.message ?? error}`);
             return null;
         }
 

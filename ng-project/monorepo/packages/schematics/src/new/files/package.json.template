@@ -18,8 +18,8 @@
     "rimraf": "<%=latestVersions['rimraf']%>",
     "husky": "<%=latestVersions['husky']%>",
     "typescript": "<%=latestVersions['typescript']%>",
-    "@angular/cli": "<%=latestVersions['ngVersion']%>",
+    "@angular/cli": "<%=latestVersions['@angular/cli']%>",
     "@ngdev/cli": "link:../monorepo/packages/devkit-cli/dist"
   },
-  "packageManager": "<%=pkgManager%>@<%=pkgVersion%>"
+  "packageManager": "<%=packageManager%>@<%=packageVersion%>"
 }

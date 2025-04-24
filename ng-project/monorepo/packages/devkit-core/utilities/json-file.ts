@@ -12,23 +12,28 @@ import {
 } from 'jsonc-parser';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { getEOL } from './eol';
+import * as buffer from "buffer";
 
 export type InsertionIndex = (properties: string[]) => number;
 export type JSONPath = (string | number)[];
+
+function bufferToString(path: string): string {
+  const buffer = readFileSync(path);
+  if (buffer) {return  buffer.toString();}
+  else {throw new Error(`Could not read '${path}'.`);}
+}
 
 /** @internal */
 export class JSONFile {
   content: string;
   private readonly eol: string;
 
-  constructor(private readonly path: string) {
-    const buffer = readFileSync(this.path);
-    if (buffer) {
-      this.content = buffer.toString();
-    } else {
-      throw new Error(`Could not read '${path}'.`);
-    }
+  static readPath(path: string, readContent?: (path: string) => string): JSONFile {
+    return new JSONFile(path, p => readContent ? readContent(p) : bufferToString(p));
+  }
 
+  constructor(private readonly path: string, contentFunc: (path: string) => string) {
+    this.content = contentFunc(path);
     this.eol = getEOL(this.content);
   }
 
@@ -40,9 +45,7 @@ export class JSONFile {
 
     const errors: ParseError[] = [];
     this._jsonAst = parseTree(this.content, errors, { allowTrailingComma: true });
-    if (errors.length) {
-      formatError(this.path, errors);
-    }
+    if (errors.length) {formatError(this.path, errors);}
 
     return this._jsonAst;
   }
@@ -65,7 +68,7 @@ export class JSONFile {
   modify(
     jsonPath: JSONPath,
     value: JsonValue | undefined,
-    insertInOrder?: InsertionIndex | false,
+    insertInOrder?: InsertionIndex | false
   ): boolean {
     if (value === undefined && this.get(jsonPath) === undefined) {
       // Cannot remove a value which doesn't exist.
@@ -104,16 +107,21 @@ export class JSONFile {
   save(): void {
     writeFileSync(this.path, this.content);
   }
+
+  remove(jsonPath: JSONPath): void {
+    if (this.get(jsonPath) !== undefined) {
+      this.modify(jsonPath, undefined);
+    }
+  }
+
+
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function readAndParseJson(path: string): any {
   const errors: ParseError[] = [];
   const content = parse(readFileSync(path, 'utf-8'), errors, { allowTrailingComma: true });
-  if (errors.length) {
-    formatError(path, errors);
-  }
-
+  if (errors.length) {formatError(path, errors);}
   return content;
 }
 

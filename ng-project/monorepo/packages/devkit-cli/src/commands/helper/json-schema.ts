@@ -47,10 +47,7 @@ export interface Option extends YargsOptions {
   itemValueType?: "string";
 }
 
-function coerceToStringMap(
-  dashedName: string,
-  value: (string | undefined)[],
-): Record<string, string> | Promise<never> {
+function coerceToStringMap(dashedName: string, value: (string | undefined)[]): Record<string, string> | Promise<never> {
   const stringMap: Record<string, string> = {};
   for (const pair of value) {
     // This happens when the flag isn't passed at all.
@@ -328,7 +325,7 @@ export function addSchemaOptionsToCommand<T>(
         ? coerceToStringMap.bind(null, dashedName)
         : undefined,
       // This should only be done when `--help` is used otherwise default will override options set in angular.json.
-      ...(includeDefaultValues ? { default: defaultVal } : {}),
+      ...(includeDefaultValues && defaultVal ? { default: defaultVal } : {}),
     };
 
     if (positional === undefined) {

@@ -6,7 +6,7 @@ export function cmdOptionToString(name: string, value: any): string {
     let dot = name.length == 1 ? '-' : '--';
 
     if(typeof value === 'boolean') {
-       return value ? `${dot}${name}` : `--no-${name}`;
+       return value ? `${dot}${name} ${value}` : `--no-${name}`;
     }
 
     else if(typeof value === 'string') {

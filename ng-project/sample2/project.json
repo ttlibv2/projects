@@ -1,0 +1,23 @@
+{
+ "$schema": "./node_modules/@ngdev/cli/lib/schema.json",
+ "name": "sample2",
+ "appsDir": "apps",
+ "libsDir": "packages",
+ "cli": {
+   "packageManager": "pnpm",
+   "ngVersion": "19.1.8",
+   "schematics": {
+     "@ngdev/sc:app": {
+       "standalone": true,
+       "inlineStyle": false,
+       "inlineTemplate": false,
+       "prefix": "t",
+       "minimal": true,
+       "routing": true,
+       "skipInstall": true
+     }
+   }
+
+  },
+ "projects": {}
+}

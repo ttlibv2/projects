@@ -3,67 +3,66 @@ import * as os from "node:os";
 import { existsSync } from "node:fs";
 import { findUp } from "../utilities/find-up";
 import { DevWorkspace } from "./ws.type";
+import { isJsonObject, json } from "@angular-devkit/core";
 
 const fileConfigName = "project.json";
-export const joinGlobal = (dir: any) =>
-  path.join(dir, ".ngdev", fileConfigName);
+export const joinGlobal = (dir: any) => path.join(dir, ".ngdev", fileConfigName);
+
 export const defaultGlobalPath = () => joinGlobal(os.homedir());
 
-export const getProjectByCwd = (
-  workspace: DevWorkspace,
-  location?: string,
-): string | null => {
+export const getProjectByCwd = (workspace: DevWorkspace, location?: string): string | null => {
   if (!workspace.projects) return null;
   else if (workspace.projects.size === 1) {
     const projectNames = workspace.projects.keys();
     return Array.from(projectNames)[0];
-  } else {
+  } //
+  else {
     return findProjectByPath(workspace, location) ?? null;
   }
+
 };
 
 export function getConfigPath(level: "global" | "local"): string | null {
   return level === "global" ? getGlobalFilePath() : getProjectFilePath();
 }
 
-export async function getSchematicDefaults(
-  collection: string,
-  schematic: string,
-  project?: string | null,
-): Promise<{}> {
+export async function getSchematicDefaults(collection: string, schematic: string, project?: string | null,): Promise<{}> {
+  console.log(`ws.help => getSchematicDefaults: `, `${collection}:${schematic}`);
+
   const result = {};
 
-  // const mergeOptions = (source: json.JsonValue): void => {
-  //   if (isJsonObject(source)) {
-  //
-  //     // Merge options from the qualified name
-  //     Object.assign(result, source[`${collection}:${schematic}`]);
-  //
-  //     // Merge options from nested collection collection
-  //     const collectionOptions = source[collection];
-  //     if (isJsonObject(collectionOptions)) {
-  //       Object.assign(result, collectionOptions[schematic]);
-  //     }
-  //   }
-  // };
+  const mergeOptions = (source: json.JsonValue): void => {
+    if (isJsonObject(source)) {
+
+      // Merge options from the qualified name
+      Object.assign(result, source[`${collection}:${schematic}`]);
+
+      // Merge options from nested collection collection
+      const collectionOptions = source[collection];
+      if (isJsonObject(collectionOptions)) {
+        Object.assign(result, collectionOptions[schematic]);
+      }
+
+    }
+  };
 
   // Global level schematic options
-  //const globalOptions = await DevWorkspace.global();
-  //mergeOptions(globalOptions?.collection);
+  const globalOptions = await DevWorkspace.global();
+  mergeOptions(globalOptions?.collections);
 
-  // const workspace = await getWorkspace('local');
-  // if (workspace) {
-  //
-  //   // Workspace level schematic options
-  //   mergeOptions(workspace.extensions['collection']);
-  //
-  //   project = project || getProjectByCwd(workspace);
-  //
-  //   if (project) {
-  //     // Project level schematic options
-  //     mergeOptions(workspace.projects.get(project)?.extensions['collection']);
-  //   }
-  // }
+  const workspace = await DevWorkspace.project();
+  if (workspace) {
+
+    // Workspace level schematic options
+    mergeOptions(workspace.collections);
+
+    project = project || getProjectByCwd(workspace);
+
+    if (project) {
+      // Project level schematic options
+      mergeOptions(workspace.projects.get(project)?.extensions['collection']);
+    }
+  }
 
   return result;
 }

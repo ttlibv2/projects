@@ -41,14 +41,26 @@
     },
     "ngVersion": {
       "type": "string",
-      "description": "Angular Cli Version"
+      "description": "Angular Cli Version",
+      "visible": false,
+      "$default": {
+        "$source": "ngcli-version"
+      }
     },
-    "pkgVersion": {
+    "packageVersion": {
       "type": "string",
       "description": "Package manager version",
       "visible": false,
       "$default": {
-        "$source": "pkg-version"
+        "$source": "package-version"
+      }
+    },
+    "packageManager": {
+      "type": "string",
+      "description": "Package manager",
+      "visible": false,
+      "$default": {
+        "$source": "package-manager"
       }
     }
   },

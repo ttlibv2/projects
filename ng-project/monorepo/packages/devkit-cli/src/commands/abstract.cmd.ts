@@ -1,21 +1,16 @@
 import { schema } from "@angular-devkit/core";
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
-import {
-  ArgumentsCamelCase,
-  Argv,
-  CamelCaseKey,
-  CommandModule as YargsCommandModule,
-} from "yargs";
+import { ArgumentsCamelCase, Argv, CamelCaseKey, CommandModule as YargsCommandModule} from "yargs";
 import { Option, addSchemaOptionsToCommand } from "./helper/json-schema";
 import { Logger } from "@ngdev/devkit-core/utilities";
 import { AbstractPkgManager } from "@ngdev/devkit-core/pkgmanager";
 import { DevWorkspace } from "../workspace";
 import { Parser as yargsParser } from "yargs/helpers";
-import a from 'ansis';
 import * as yargs from '../typings/yargs';
 
-export type Options<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] };
+export type RunOptions<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] };
+export type LocalArgv<T = {}> = Argv<T>;
 
 export enum CommandScope {
   /** Command can only run inside an Angular workspace. */
@@ -51,21 +46,29 @@ export interface CommandContext {
 
 export type OtherOptions = Record<string, unknown>;
 
-export interface CommandModuleImplementation<T extends {} = {}>
-  extends Omit<YargsCommandModule<{}, T>, "builder" | "handler"> {
+export interface CommandModuleImplementation<T extends {} = {}> {
+
   /** Scope in which the command can be executed in. */
   scope: CommandScope;
 
   /** Path used to load the long description for the command in JSON utilities text. */
   longDescriptionPath?: string;
 
-  /** Object declaring the options the command accepts, or a function accepting and returning a yargs instance. */
-  builder(argv: Argv): Promise<Argv<T>> | Argv<T>;
+  /** array of strings (or a single string) representing aliases of `exports.command`, positional args defined in an alias are ignored */
+  aliases?: readonly string[] | string | undefined;
 
-  /** A function which will be passed the parsed argv. */
-  run(
-    options: Options<T> & OtherOptions,
-  ): Promise<number | void> | number | void;
+  /** Object declaring the options the command accepts, or a function accepting and returning a yargs instance */
+  builder(argv: LocalArgv): Promise<LocalArgv<T>> | LocalArgv<T>;
+
+  /** string (or array of strings) that executes this command when given on the command line, first string may contain positional args */
+  command?: readonly string[] | string | undefined;
+
+  /** boolean (or string) to show deprecation notice */
+  deprecated?: boolean | string | undefined;
+
+  /** a function which will be passed the parsed argv. */
+  run(options: RunOptions<T> & OtherOptions): Promise<number | void>;
+
 }
 
 export interface FullDescribe {
@@ -74,8 +77,7 @@ export interface FullDescribe {
   longDescriptionRelativePath?: string;
 }
 
-export abstract class CommandModule<T extends {} = {}>
-  implements CommandModuleImplementation<T>
+export abstract class CommandModule<T extends {} = {}> implements CommandModuleImplementation<T>
 {
   abstract readonly command: string;
   abstract readonly describe: string | false;
@@ -92,13 +94,18 @@ export abstract class CommandModule<T extends {} = {}>
    *
    * `false` will result in a hidden command.
    */
-  public get fullDescribe(): FullDescribe | false {
+  get fullDescribe(): FullDescribe | false {
     return this.describe === false
       ? false
       : {
           describe: this.describe,
           ...this.getDesFile(this.longDescriptionPath),
         };
+  }
+
+  get longDescriptionPath(): string {
+    const fileName = `${this.commandName}.doc.md`;
+    return path.join(__dirname, "docs", fileName);
   }
 
   private getDesFile(desPath?: string) {
@@ -133,22 +140,16 @@ export abstract class CommandModule<T extends {} = {}>
     return this.command.split(" ", 1)[0];
   }
 
-  public get longDescriptionPath(): string {
-    return path.join(__dirname, "docs", `${this.commandName}.doc.md`);
-  }
+  abstract builder(argv: LocalArgv): Promise<LocalArgv<T>> | LocalArgv<T>;
+  abstract run(argOptions: RunOptions<T> & OtherOptions, options?: any): Promise<number | void>;
 
-  abstract builder(localYargs: Argv): Promise<Argv<T>> | Argv<T>;
-  abstract run(
-    options: Options<T> & OtherOptions,
-    unknownOptions?: Record<string, unknown>
-  ): Promise<number | void> | number | void;
+  async handler(args: ArgumentsCamelCase<T> & OtherOptions, options?: any): Promise<void> {
 
-  async handler(args: ArgumentsCamelCase<T> & OtherOptions): Promise<void> {
-    const { _, $0, ...options } = args;
+    const { _, $0, ...argOptions } = args;
 
     // Camelize options as yargs will return the object in kebab-case when camel casing is disabled.
     const camelCasedOptions: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(options)) {
+    for (const [key, value] of Object.entries(argOptions)) {
       camelCasedOptions[yargsParser.camelCase(key)] = value;
     }
 
@@ -181,7 +182,8 @@ export abstract class CommandModule<T extends {} = {}>
       //   this.reportWorkspaceInfoAnalytics(analytics);
       // }
 
-      exitCode = await this.run(camelCasedOptions as Options<T> & OtherOptions, { unknownOptions, originArgs: args });
+      // , { unknownOptions, originArgs: args }
+      exitCode = await this.run(camelCasedOptions as any, options);
     } catch (e) {
       if (e instanceof schema.SchemaValidationException) {
         this.context.logger.fatal(`Error: ${e.message}`);
@@ -217,28 +219,18 @@ export abstract class CommandModule<T extends {} = {}>
    * Adds schema options to a command also this keeps track of options that are required for analytics.
    * **Note:** This method should be called from the command bundler method.
    */
-  protected addSchemaOptionsToCommand<T>(
-    localYargs: Argv<T>,
-    options: Option[],
-  ): Argv<T> {
-    const optionsWithAnalytics = addSchemaOptionsToCommand(
-      localYargs,
-      options,
+  protected addSchemaOptionsToCommand<T>(localYargs: Argv<T>, options: Option[]): Argv<T> {
+
+    addSchemaOptionsToCommand(localYargs, options,
       this.context.args.options.help,
     );
-
-    // Record option of analytics.
-    //for (const [name, userAnalytics] of optionsWithAnalytics) {
-    //this.optionsWithAnalytics.set(name, userAnalytics);
-    //}
 
     return localYargs;
   }
 
   protected getWorkspaceOrThrow(): DevWorkspace {
     const { workspace } = this.context;
-    if (!workspace)
-      throw new CommandModuleError("A workspace is required for this command.");
+    if (!workspace) throw new CommandModuleError("A workspace is required for this command.");
     return workspace;
   }
 

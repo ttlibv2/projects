@@ -1,5 +1,6 @@
-import { JsonValue } from '@angular-devkit/core';
+import { JsonObject, JsonValue, strings } from '@angular-devkit/core';
 import { StringMap, StringMapListener } from '../utilities';
+import { JsonArray } from "@angular-devkit/core/src/json/utils";
 
 export function defaultWorkspace():Partial<WorkspaceProp> {
     return {
@@ -9,7 +10,7 @@ export function defaultWorkspace():Partial<WorkspaceProp> {
         projects: new ProjectMap(),
         cli: {
             packageManager: 'pnpm',
-            collections: new Set<string>(),
+            collections: [],
             ngVersion: 'ANGULAR::VERSION',
             nestVersion: 'NESTJS::VERSION'
         }
@@ -60,15 +61,16 @@ export interface PluginOptions {
 
 export interface CliProp {
     extensions?: Record<string, JsonValue>;
-    packageManager: string;
-    collections: Set<string>;
-    ngVersion: string;
-    nestVersion: string;
+    packageManager?: string;
+    collections?: string[];
+    ngVersion?: string;
+    nestVersion?: string;
+    schematics?: Record<string, JsonObject>;
 }
 
 export interface ProjectProp {
     framework: 'angular' | 'nestjs';
-    type: 'app' | 'lib';
+    projectType: 'app' | 'lib';
     name: string;
     root: string;
     sourceRoot?: string;
@@ -76,6 +78,9 @@ export interface ProjectProp {
     exec?: string;
     extensions?: Record<string, JsonValue>;
     compilerOptions?: CompilerOptions;
+    options?: {
+        modelDir?: string;
+    }
 }
 
 export interface WorkspaceProp {

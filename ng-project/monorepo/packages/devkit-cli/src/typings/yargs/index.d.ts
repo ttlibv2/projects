@@ -411,9 +411,9 @@ declare namespace yargs {
       module: CommandModule<T, U>,
     ): Argv<T>;
     // eslint-disable-next-line @definitelytyped/no-unnecessary-generics
-    command<U = any>(module: CommandModule<T, U>): Argv<T>;
+    command<U = any>(module: Partial<CommandModule<T, U>>): Argv<T>;
     // eslint-disable-next-line @definitelytyped/no-unnecessary-generics
-    command<U = any>(modules: Array<CommandModule<T, U>>): Argv<T>;
+    command<U = any>(modules: Array<Partial<CommandModule<T, U>>>): Argv<T>;
 
     // Advanced API
     /** Apply command modules from a directory relative to the module calling this method. */

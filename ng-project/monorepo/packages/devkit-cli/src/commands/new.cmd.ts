@@ -1,26 +1,16 @@
-import { Argv } from "yargs";
-import {
-  CommandModuleImplementation,
-  CommandScope,
-  Options,
-  OtherOptions,
-} from "./abstract.cmd";
-import {
-  SchematicsCommandArgs,
-  SchematicsCommandModule,
-} from "./schematics.cmd";
+import { CommandScope, RunOptions, OtherOptions, LocalArgv } from "./abstract.cmd";
+import { SchematicsCommandArgs, SchematicsCommandModule } from "./schematics.cmd";
 import { RootCommands } from "./command.list";
 import { Collection } from "../collection";
 import { PkgManagerFactory } from "@ngdev/devkit-core/pkgmanager";
+import { RunnerFactory } from "@ngdev/devkit-core/runners";
+import { paths } from "./helper/paths";
 
 interface NewCommandArgs extends SchematicsCommandArgs {
   collection?: string;
 }
 
-export default class NewCommandModule
-  extends SchematicsCommandModule
-  implements CommandModuleImplementation<NewCommandArgs>
-{
+export default class NewCommandModule extends SchematicsCommandModule<NewCommandArgs> {
   private readonly schematicName = "new";
   override scope = CommandScope.Out;
   protected override allowPrivateSchematics = true;
@@ -29,82 +19,72 @@ export default class NewCommandModule
   aliases = RootCommands["new"].aliases;
   describe = "Creates a new workspace.";
 
-  async builder(argv: Argv): Promise<Argv<NewCommandArgs>> {
-    const localYargs = (await super.builder(argv)).option("collection", {
-      alias: ["c"],
-      type: "string",
-      describe:
-        "A collection of collection to use in generating the initial project.",
-    });
+  async builder(argv: LocalArgv): Promise<LocalArgv<NewCommandArgs>> {
+    const localYargs = (await super.builder(argv))
+      .option("collection", {
+        alias: ["c"], type: "string",
+        describe: "A collection of collection to use in generating the initial project."
+      })
+      .option('packageManager', {
+        type: "string",
+        choices: ["pnpm"],
+        default: "pnpm"
+      })
+      .option('appName', {
+        type: "string",
+      })
+      .option('libName', {
+        type: "string",
+      });
 
-    const {
-      options: { collection: collectionNameFromArgs },
-    } = this.context.args;
-
-    const collectionName =
-      typeof collectionNameFromArgs === "string"
-        ? collectionNameFromArgs
-        : await this.getCollectionFromConfig();
-
+    const { options: { collection: collectionNameFromArgs } } = this.context.args;
+    const collectionName = typeof collectionNameFromArgs === "string" ? collectionNameFromArgs : await this.getCollectionFromConfig(this.schematicName);
     const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
     const collection = workflow.engine.createCollection(collectionName);
-    const options = await this.getSchematicOptions(
-      collection,
-      this.schematicName,
-      workflow,
-    );
-
+    const options = await this.getSchematicOptions(collection, this.schematicName, workflow);
     return this.addSchemaOptionsToCommand(localYargs, options);
   }
 
-  async run(
-    options: Options<NewCommandArgs> & OtherOptions,
-  ): Promise<number | void> {
-    // Register the version of the CLI in the registry.
-    const collectionName =
-      options.collection ?? (await this.getCollectionFromConfig());
-    const {
-      dryRun,
-      force,
-      interactive,
-      defaults,
-      collection,
-      ...schematicOptions
-    } = options;
+  async run(options: RunOptions<NewCommandArgs> & OtherOptions): Promise<number | void> {
+    const collectionName = options.collection ?? (await this.getCollectionFromConfig(this.schematicName));
+    const { dryRun, force, interactive, defaults, collection, packageManager, appName, libName, ...schematicOptions } = options;
 
-    const pnpmVersion = await PkgManagerFactory.pnpm().version;
+    const packageName = <any>packageManager ?? 'pnpm';
+    const pnpmVersion = await PkgManagerFactory.create(packageName).version;
+    const ngVersion  = await RunnerFactory.angular().version;
 
-    const workflow = await this.getOrCreateWorkflowForExecution(
-      collectionName,
-      { dryRun, force, interactive, defaults },
-    );
-    //workflow.registry.addSmartDefaultProvider("ng-version", () => VERSION.full);
-    workflow.registry.addSmartDefaultProvider("pkg-version", () => pnpmVersion);
+    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, { dryRun, force, interactive, defaults });
+    workflow.registry.addSmartDefaultProvider("package-version", () => pnpmVersion);
+    workflow.registry.addSmartDefaultProvider("package-manager", () => packageName);
+    workflow.registry.addSmartDefaultProvider("ngcli-version", () => ngVersion);
 
-    console.log(`pnpmVersion`, pnpmVersion);
+    schematicOptions.appsDir = schematicOptions.appsDir ?? 'apps';
+    schematicOptions.libsDir = schematicOptions.libsDir ?? 'packages';
 
-    // workflow.registry.addSmartDefaultProvider("packageManager", () => '');
-
-    return this.runSchematic({
-      collectionName,
+    const number = await this.runSchematic({
+      collectionName, schematicOptions,
       schematicName: this.schematicName,
-      schematicOptions,
-      executionOptions: { dryRun, force, interactive, defaults },
+      executionOptions: { dryRun, force, interactive, defaults }
     });
-  }
 
-  /** Find a collection from config that has an `ng-new` schematic. */
-  private async getCollectionFromConfig(): Promise<string> {
-    for (const collectionName of await this.getSchematicCollections()) {
-      const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
-      const collection = workflow.engine.createCollection(collectionName);
-      const schematicsInCollection = collection.description.schematics;
-
-      if (Object.keys(schematicsInCollection).includes(this.schematicName)) {
-        return collectionName;
-      }
+    if(number == 0) {
+      this.createDir(schematicOptions);
     }
 
-    return Collection.NgDevSC;
+    return number;
   }
+
+  private createDir(schematicOptions: any) {
+    let dir = <any>schematicOptions.directory;
+
+    // If scoped project (i.e. "@foo/bar"), convert directory to "foo/bar".
+    if (!dir && schematicOptions.name) {
+      const name: string = <any>schematicOptions.name;
+      dir = name.startsWith('@') ? name.slice(1) : schematicOptions.name;
+    }
+
+    paths.mkdir(paths.join(dir, <string>schematicOptions.appsDir));
+    paths.mkdir(paths.join(dir, <string>schematicOptions.libsDir));
+  }
+
 }

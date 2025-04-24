@@ -19,8 +19,7 @@ export function addCommandModuleToYargs<
   U extends CommandModuleConstructor,
 >(localYargs: Argv<T>, commandModule: U, context: CommandContext): Argv<T> {
   const cmd = new commandModule(context);
-  const jsonHelp = context.args.options.jsonHelp;
-  const workspace = context.workspace;
+  const {workspace, args: {options: {jsonHelp,help}}} = context;
 
   const describe = jsonHelp ? cmd.fullDescribe : cmd.describe;
 
@@ -31,8 +30,7 @@ export function addCommandModuleToYargs<
     deprecated: cmd.deprecated,
     builder: (argv) => {
       // Skip scope validation when running with '--json-utilities' since it's easier to generate the output for all commands this way.
-      const isInvalidScope =
-        !jsonHelp &&
+      const isInvalidScope = (!jsonHelp && !help) &&
         ((cmd.scope === CommandScope.In && !workspace) ||
           (cmd.scope === CommandScope.Out && workspace));
 
@@ -43,7 +41,7 @@ export function addCommandModuleToYargs<
         );
       }
 
-      return cmd.builder(argv) as Argv<T>;
+      return cmd.builder(argv) as any;
     },
     handler: (args) => cmd.handler(args),
   });

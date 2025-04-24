@@ -2,7 +2,9 @@ import { red } from 'ansis';
 import { ChildProcess, spawn, SpawnOptions } from 'child_process';
 import { MESSAGES } from '../logui/messages';
 import { Logger } from '../utilities/logger';
+import { colors } from '../utilities/color';
 import * as process from 'node:process';
+import { cmdOptionToString } from "../utilities";
 
 export function createRunnerLogger(nameOrLogger: string | Logger = 'runner') {
   if (nameOrLogger instanceof Logger) return nameOrLogger;
@@ -15,14 +17,17 @@ export function createRunnerLogger(nameOrLogger: string | Logger = 'runner') {
 export interface CmdOptions {
   command?: string;
   inputs: string[];
-  flags: CmdInput[];
+  flags: Record<string, string | boolean | number | unknown>;
 }
 
-export interface CmdInput {
-  name: string;
-  value?: boolean | string;
-  options?: any;
-}
+// export interface CmdInput {
+//   name: string;
+//   value?: boolean | string;
+//   options?: any;
+// }
+
+export type FlagCmd = Record<string, string | boolean | number | unknown>;
+export type RunCmd = string | Record<string, string | boolean | number | unknown>;
 
 export abstract class AbstractRunner {
 
@@ -33,23 +38,16 @@ export abstract class AbstractRunner {
     this.logger = createRunnerLogger(logger);
   }
 
-  async run2(command: string, inputs: string[], flags: CmdInput[], options?: any): Promise<string | null> {
-    let cmd = this.buildCommandLine({command, inputs, flags});
-    return this.run(cmd, options?.collect, options?.cwd);
-  }
+  async run(command: string, options?: { collect?: boolean, cwd?: string }): Promise<string | null> {
+    const collect = options?.collect ?? false;
+    const cwd = options?.cwd ?? process.cwd();
 
-  async run(command: string, collect?: boolean, cwd?: string): Promise<string | null> {
-    collect = collect ?? false;
-    cwd = cwd ?? process.cwd();
-
-    const options: SpawnOptions = {
+    const spawnOptions: SpawnOptions = {
       cwd, shell: true,
       stdio: collect ? 'pipe' : 'inherit'
     };
 
-
-    //return await spawnAsync(`node`, [this.binary, command], options, collect);
-    return await spawnAsync(this.binary, [...this.args, command], options, collect,);
+    return await spawnAsync(this.binary, [...this.args, command], spawnOptions, collect,);
   }
 
   /**
@@ -61,27 +59,28 @@ export abstract class AbstractRunner {
     return `${this.binary} ${commandArgs.join(' ')}`;
   }
 
-  version(): Promise<string | null> {
-    return this.run('--version', true);
+  get version(): Promise<string | null> {
+    return this.run('--version', { collect: true });
   }
 
   buildCommandLine({command,inputs,flags}: CmdOptions): string {
-    return `${command} ${this.buildInputs(inputs)} ${this.buildFlags(flags)}`;
+    const segments = [command, this.buildInputs(inputs), this.buildFlags(flags)];
+    return segments.filter(s => s != '').join(' ');
   }
 
   protected buildInputs(inputs: string[] = []): string {
     return inputs.join(' ');
   }
 
-  protected buildFlags(flags: CmdInput[] = []): string {
-    return flags.map(({ name, value }) =>`${name.length==1 ? '-': '--'}${name}${value !== undefined ? '=' + value : ''}`).join(' ');
+  protected buildFlags(flags: FlagCmd): string {
+    return Object.entries(flags).map(op => cmdOptionToString(op[0], op[1])).join(' ');
   }
 
 }
 
 function spawnAsync(command: string, args: string[], options: SpawnOptions, collect: boolean = false): Promise<string | null> {
   return new Promise<string | null>((resolve, reject) => {
-    console.debug(`${options.cwd}> ${command} ${args.join(' ')}`);
+    console.debug(`[DEBUG] ${colors.bold.red(options.cwd)}: ${command} ${args.join(' ')}`);
     const child: ChildProcess = spawn(command, args, options);
 
     if (collect) {
