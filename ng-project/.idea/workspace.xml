@@ -70,10 +70,10 @@
     "npm.del:dist.executor": "Run",
     "npm.delsrc.executor": "Run",
     "npm.demo.executor": "Run",
-    "npm.dev (1).executor": "Run",
+    "npm.dev (1).executor": "Debug",
     "npm.dev.executor": "Debug",
     "npm.dev:link.executor": "Run",
-    "npm.dev:sample.executor": "Debug",
+    "npm.dev:sample.executor": "Run",
     "npm.dev:unlink.executor": "Run",
     "npm.devkit-core::watch.executor": "Run",
     "npm.devkit-core:build.executor": "Run",
@@ -97,7 +97,7 @@
     "npm.watch:sc.executor": "Run",
     "npm.watch:schematics.executor": "Run",
     "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui",
-    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\sample\\node_modules\\typescript\\lib"
+    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\monorepo\\packages\\devkit-core\\node_modules\\typescript\\lib"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -116,7 +116,7 @@
       <recent name="D:\Angular_CLI\projects\ng-project\sample\packages\tslib\src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.build">
+  <component name="RunManager" selected="npm.dev:sample">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/monorepo/packages/schematics/package.json" />
       <command value="run" />
@@ -127,11 +127,21 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/package.json" />
+    <configuration name="dev (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/sample2/package.json" />
       <command value="run" />
       <scripts>
         <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="dev:sample" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/sample2/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev:sample" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -157,23 +167,13 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="watch:sc" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/monorepo/packages/schematics/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="watch:sc" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.build" />
-        <item itemvalue="npm.dev" />
-        <item itemvalue="npm.watch:sc" />
+        <item itemvalue="npm.dev:sample" />
+        <item itemvalue="npm.dev (1)" />
         <item itemvalue="npm.watch:core" />
         <item itemvalue="npm.watch:cli" />
+        <item itemvalue="npm.build" />
       </list>
     </recent_temporary>
   </component>
@@ -196,57 +196,10 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-cli/node_modules/@angular-devkit/core/src/utils/template.js</url>
-          <line>240</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/monorepo/node_modules/.pnpm/yargs@17.7.2/node_modules/yargs/build/lib/yargs-factory.js</url>
-          <line>27</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/sample/node_modules/@angular-devkit/core/src/workspace/json/reader.js</url>
-          <line>57</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/sample/node_modules/.pnpm/@angular-devkit+core@19.2.7_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/json/reader.js</url>
-          <line>91</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/sample/node_modules/.pnpm/@angular-devkit+core@19.2.7_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/json/reader.js</url>
-          <line>94</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/sample/node_modules/.pnpm/@angular-devkit+core@19.2.7_chokidar@4.0.3/node_modules/@angular-devkit/core/src/workspace/json/reader.js</url>
-          <line>58</line>
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-core/workspace/json-proxy.ts</url>
-          <line>79</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/monorepo/packages/devkit-cli/src/workspace/ws.help.ts</url>
-          <line>66</line>
+          <line>52</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-core/node_modules/@angular-devkit/schematics/src/workflow/base.js</url>
-          <line>101</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/monorepo/node_modules/.pnpm/@angular-devkit+schematics@19.2.8_chokidar@4.0.3/node_modules/@angular-devkit/schematics/src/workflow/base.js</url>
-          <line>119</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="44" />
+          <option name="timeStamp" value="60" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

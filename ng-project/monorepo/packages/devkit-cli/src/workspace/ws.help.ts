@@ -27,7 +27,7 @@ export function getConfigPath(level: "global" | "local"): string | null {
 }
 
 export async function getSchematicDefaults(collection: string, schematic: string, project?: string | null,): Promise<{}> {
-  console.log(`ws.help => getSchematicDefaults: `, `${collection}:${schematic}`);
+ //console.log(`ws.help => getSchematicDefaults: `, `${collection}:${schematic}`);
 
   const result = {};
 
@@ -59,9 +59,10 @@ export async function getSchematicDefaults(collection: string, schematic: string
     project = project || getProjectByCwd(workspace);
 
     if (project) {
-      // Project level schematic options
-      mergeOptions(workspace.projects.get(project)?.extensions['collection']);
+      const projectProp = workspace.projects.get(project);
+      mergeOptions(projectProp?.collections);
     }
+
   }
 
   return result;

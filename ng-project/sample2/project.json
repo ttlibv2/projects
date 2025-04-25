@@ -1,23 +1,72 @@
 {
- "$schema": "./node_modules/@ngdev/cli/lib/schema.json",
- "name": "sample2",
- "appsDir": "apps",
- "libsDir": "packages",
- "cli": {
-   "packageManager": "pnpm",
-   "ngVersion": "19.1.8",
-   "schematics": {
-     "@ngdev/sc:app": {
-       "standalone": true,
-       "inlineStyle": false,
-       "inlineTemplate": false,
-       "prefix": "t",
-       "minimal": true,
-       "routing": true,
-       "skipInstall": true
-     }
-   }
-
+  "$schema": "./node_modules/@ngdev/cli/lib/schema.json",
+  "name": "sample2",
+  "appsDir": "apps",
+  "libsDir": "packages",
+  "cli": {
+    "packageManager": "pnpm",
+    "ngVersion": "19.1.8",
+    "debug": false
   },
- "projects": {}
+  "schematics": {
+    "@schematics/angular:new-lib": {
+      "standalone": true,
+      "inlineStyle": false,
+      "inlineTemplate": false,
+      "viewEncapsulation": "None",
+      "prefix": "t",
+      "minimal": true,
+      "routing": true,
+      "skipInstall": false,
+      "skipTests": true,
+      "packageManager": "pnpm",
+      "style": "scss",
+      "ssr": false,
+      "serverRouting": false
+    }
+  },
+  "projects": {
+    "lib2312": {
+      "name": "lib2312",
+      "framework": "angular",
+      "projectType": "lib",
+      "root": "packages/lib2312"
+    },
+    "lib23122": {
+      "name": "lib23122",
+      "framework": "angular",
+      "projectType": "lib",
+      "root": "packages/lib23122"
+    },
+    "lib231229": {
+      "name": "lib231229",
+      "framework": "angular",
+      "projectType": "lib",
+      "root": "packages/lib231229"
+    },
+    "libpo": {
+      "name": "libpo",
+      "framework": "angular",
+      "projectType": "lib",
+      "root": "packages/libpo"
+    },
+    "libpo1": {
+      "name": "libpo1",
+      "framework": "angular",
+      "projectType": "lib",
+      "root": "packages/libpo1"
+    },
+    "libpo2": {
+      "name": "libpo2",
+      "framework": "angular",
+      "projectType": "lib",
+      "root": "packages/libpo2"
+    },
+    "libpo3": {
+      "name": "libpo3",
+      "framework": "angular",
+      "projectType": "lib",
+      "root": "packages/libpo3"
+    }
+  }
 }

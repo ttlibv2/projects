@@ -9,7 +9,8 @@ import { DevWorkspace } from "../workspace";
 import { Parser as yargsParser } from "yargs/helpers";
 import * as yargs from '../typings/yargs';
 
-export type RunOptions<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] };
+export type RunOptions<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] } & OtherOptions;
+
 export type LocalArgv<T = {}> = Argv<T>;
 
 export enum CommandScope {
@@ -44,7 +45,7 @@ export interface CommandContext {
   };
 }
 
-export type OtherOptions = Record<string, unknown>;
+export type OtherOptions = Record<string, any>;
 
 export interface CommandModuleImplementation<T extends {} = {}> {
 
@@ -141,11 +142,11 @@ export abstract class CommandModule<T extends {} = {}> implements CommandModuleI
   }
 
   abstract builder(argv: LocalArgv): Promise<LocalArgv<T>> | LocalArgv<T>;
-  abstract run(argOptions: RunOptions<T> & OtherOptions, options?: any): Promise<number | void>;
+  abstract run(options: RunOptions<T>): Promise<number | void>;
 
-  async handler(args: ArgumentsCamelCase<T> & OtherOptions, options?: any): Promise<void> {
+  async handler(options: ArgumentsCamelCase<T> & OtherOptions): Promise<void> {
 
-    const { _, $0, ...argOptions } = args;
+    const { _, $0, ...argOptions } = options;
 
     // Camelize options as yargs will return the object in kebab-case when camel casing is disabled.
     const camelCasedOptions: Record<string, unknown> = {};
@@ -161,30 +162,13 @@ export abstract class CommandModule<T extends {} = {}> implements CommandModuleI
       unknownOptions[yargsParser.decamelize(key)] = value;
     }
 
-    // Set up autocompletion if appropriate.
-    // const autocompletionExitCode = await considerSettingUpAutocompletion(
-    //   this.commandName, this.context.logger);
-    //
-    // if (autocompletionExitCode !== undefined) {
-    //   process.exitCode = autocompletionExitCode;
-    //
-    //   return;
-    // }
-
-    // Gather and report analytics.
-    // const analytics = await this.getAnalytics();
-    // const stopPeriodicFlushes = analytics && analytics.periodFlush();
 
     let exitCode: number | void | undefined;
     try {
-      // if (analytics) {
-      //   this.reportCommandRunAnalytics(analytics);
-      //   this.reportWorkspaceInfoAnalytics(analytics);
-      // }
 
-      // , { unknownOptions, originArgs: args }
-      exitCode = await this.run(camelCasedOptions as any, options);
-    } catch (e) {
+      exitCode = await this.run(camelCasedOptions as any);
+    } //
+    catch (e) {
       if (e instanceof schema.SchemaValidationException) {
         this.context.logger.fatal(`Error: ${e.message}`);
         exitCode = 1;
@@ -199,21 +183,6 @@ export abstract class CommandModule<T extends {} = {}> implements CommandModuleI
       }
     }
   }
-
-  // @memoize
-  // protected async getAnalytics(): Promise<AnalyticsCollector | undefined> {
-  //   if (!this.shouldReportAnalytics) {
-  //     return undefined;
-  //   }
-
-  //   const userId = await getAnalyticsUserId(
-  //     this.context,
-  //     // Don't prompt on `ng update`, 'ng version' or `ng analytics`.
-  //     ['version', 'update', 'analytics'].includes(this.commandName),
-  //   );
-
-  //   return userId ? new AnalyticsCollector(this.context, userId) : undefined;
-  // }
 
   /**
    * Adds schema options to a command also this keeps track of options that are required for analytics.
@@ -234,79 +203,6 @@ export abstract class CommandModule<T extends {} = {}> implements CommandModuleI
     return workspace;
   }
 
-  // /**
-  //  * Flush on an interval (if the event loop is waiting).
-  //  *
-  //  * @returns a method that when called will terminate the periodic
-  //  * flush and call flush one last time.
-  //  */
-  // protected getAnalyticsParameters(
-  //   options: (Options<T> & OtherOptions) | OtherOptions,
-  // ): Partial<Record<EventCustomDimension | EventCustomMetric, string | boolean | number>> {
-  //   const parameters: Partial<
-  //     Record<EventCustomDimension | EventCustomMetric, string | boolean | number>
-  //   > = {};
-
-  //   const validEventCustomDimensionAndMetrics = new Set([
-  //     ...Object.values(EventCustomDimension),
-  //     ...Object.values(EventCustomMetric),
-  //   ]);
-
-  //   for (const [name, ua] of this.optionsWithAnalytics) {
-  //     const value = options[name];
-  //     if (
-  //       (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') &&
-  //       validEventCustomDimensionAndMetrics.has(ua as EventCustomDimension | EventCustomMetric)
-  //     ) {
-  //       parameters[ua as EventCustomDimension | EventCustomMetric] = value;
-  //     }
-  //   }
-
-  //   return parameters;
-  // }
-
-  // private reportCommandRunAnalytics(analytics: AnalyticsCollector): void {
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   const internalMethods = (yargs as any).getInternalMethods();
-  //   // $0 generate component [name] -> generate_component
-  //   // $0 add <collection> -> add
-  //   const fullCommand = (internalMethods.getUsageInstance().getUsage()[0][0] as string)
-  //     .split(' ')
-  //     .filter((x) => {
-  //       const code = x.charCodeAt(0);
-
-  //       return code >= 97 && code <= 122;
-  //     })
-  //     .join('_');
-
-  //   analytics.reportCommandRunEvent(fullCommand);
-  // }
-
-  // private reportWorkspaceInfoAnalytics(analytics: AnalyticsCollector): void {
-  //   const { workspace } = this.context;
-  //   if (!workspace) {
-  //     return;
-  //   }
-
-  //   let applicationProjectsCount = 0;
-  //   let librariesProjectsCount = 0;
-  //   for (const project of workspace.projects.values()) {
-  //     switch (project.extensions['projectType']) {
-  //       case 'app':
-  //         applicationProjectsCount++;
-  //         break;
-  //       case 'library':
-  //         librariesProjectsCount++;
-  //         break;
-  //     }
-  //   }
-
-  //   analytics.reportWorkspaceInfoEvent({
-  //     [EventCustomMetric.AllProjectsCount]: librariesProjectsCount + applicationProjectsCount,
-  //     [EventCustomMetric.ApplicationProjectsCount]: applicationProjectsCount,
-  //     [EventCustomMetric.LibraryProjectsCount]: librariesProjectsCount,
-  //   });
-  // }
 }
 
 /**

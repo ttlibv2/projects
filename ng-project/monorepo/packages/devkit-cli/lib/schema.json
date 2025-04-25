@@ -19,6 +19,10 @@
     "defaultProject": {
       "type": "string"
     },
+    "schematics": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "projects": {
       "type": "object",
       "patternProperties": {
@@ -54,6 +58,9 @@
         "nestVersion": {
           "type": "string",
           "description": "NestJs Cli version"
+        },
+        "debug": {
+          "type": "boolean"
         }
       },
       "additionalProperties": false
@@ -88,7 +95,9 @@
         },
         "options": {
           "type": "object"
-        }
+        },
+        "schematics": { "type": "object",
+          "additionalProperties": true}
       },
       "required": [
         "root","name","framework", "projectType"

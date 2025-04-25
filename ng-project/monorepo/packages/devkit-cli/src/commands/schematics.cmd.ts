@@ -11,6 +11,7 @@ import { subscribeToWorkflow } from "./helper/schematic-workflow";
 import { Collection } from "../collection";
 import { getProjectByCwd, getSchematicDefaults } from "../workspace";
 import { memoize } from "@ngdev/devkit-core/utilities";
+import { SmartDefaultProvider } from '@angular-devkit/core/src/json/schema/interface';
 
 export type SchematicCollection = NgCollection<FileSystemCollectionDescription, FileSystemSchematicDescription>;
 
@@ -24,6 +25,11 @@ export interface SchematicsCommandArgs {
 
 export interface SchematicsExecutionOptions extends RunOptions<SchematicsCommandArgs> {
   packageRegistry?: string;
+}
+
+export interface SmartDefaultProviderOption extends SchematicsExecutionOptions {
+  collectionName: string;
+  providers: Record<string, SmartDefaultProvider<any>>
 }
 
 type SchematicsToRegister = [schematicName: string, collectionName: string];
@@ -107,24 +113,7 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
       workingDir === "" ? undefined : workingDir,
     );
 
-    workflow.engineHost.registerOptionsTransform(async (schematic, options) => {
-      const {
-        collection: { name: collectionName },
-        name: schematicName,
-      } = schematic;
-
-      // const analytics = isPackageNameSafeForAnalytics(collectionName)
-      //   ? await this.getAnalytics()
-      //   : undefined;
-
-      // analytics?.reportSchematicRunEvent({
-      //   [EventCustomDimension.SchematicCollectionName]: collectionName,
-      //   [EventCustomDimension.SchematicName]: schematicName,
-      //   ...this.getAnalyticsParameters(options as unknown as {}),
-      // });
-
-      return options;
-    });
+    workflow.engineHost.registerOptionsTransform(async (schematic, options) => options);
 
     if (options.interactive !== false && isTTY()) {
       workflow.registry.usePromptProvider(
@@ -300,7 +289,12 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     return [undefined, schematic];
   }
 
-  protected async runSchematic(options: { executionOptions: SchematicsExecutionOptions; schematicOptions: OtherOptions; collectionName: string; schematicName: string; }): Promise<number> {
+  protected async runSchematic(options: {
+    executionOptions: SchematicsExecutionOptions;
+    schematicOptions: OtherOptions;
+    collectionName: string;
+    schematicName: string;
+  }): Promise<number> {
     const { logger } = this.context;
     const { schematicOptions, executionOptions, collectionName, schematicName, } = options;
     const workflow = await this.getOrCreateWorkflowForExecution(collectionName, executionOptions);
@@ -340,8 +334,8 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
       } //
       else {
         assertIsError(err);
-        //logger.logConsole("runSchematic", err);
         logger.fatal(err.message);
+        throw err;
       }
 
       return 1;
@@ -538,6 +532,12 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
       !!collectionNameFromArgs ||
       !collectionNames.some((c) => schematicCollectionsFromConfig.has(c))
     );
+  }
+
+  protected async addSmartDefaultProvider(options: SmartDefaultProviderOption, ) {
+    const {providers, collectionName, ...workflowOptions } = options;
+    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, workflowOptions);
+    Object.entries(providers).forEach(provider => workflow.registry.addSmartDefaultProvider(provider[0], provider[1]));
   }
 
 }

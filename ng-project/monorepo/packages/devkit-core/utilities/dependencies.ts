@@ -24,12 +24,8 @@ const ALL_DEPENDENCY_TYPE = [
   NodeDependencyType.Peer,
 ];
 
-export function addPackageJsonDependency(
-  treeOrFunc: Tree | ((path: string) => string),
-  dependency: NodeDependency,
-  pkgJsonPath = PKG_JSON_PATH): void {
-  const func = (path: string) => typeof treeOrFunc == 'function' ? treeOrFunc(path) : treeOrFunc.readText(path);
-  const json = new JSONFile(pkgJsonPath, p => func(p));
+export function addPackageJsonDependency(tree: Tree, dependency: NodeDependency, pkgJsonPath = PKG_JSON_PATH): void {
+  const json = JSONFile.read(pkgJsonPath,tree);
 
   const { overwrite, type, name, version } = dependency;
   const path = [type, name];
@@ -41,7 +37,7 @@ export function addPackageJsonDependency(
 export function removePackageJsonDependency(
   tree: Tree, name: string,
   pkgJsonPath = PKG_JSON_PATH): void {
-  const json = JSONFile.readPath(pkgJsonPath, p => tree.readText(p));
+  const json = JSONFile.read(pkgJsonPath,tree);
 
   for (const depType of ALL_DEPENDENCY_TYPE) {
     json.remove([depType, name]);
@@ -49,7 +45,7 @@ export function removePackageJsonDependency(
 }
 
 export function getPackageJsonDependency(tree: Tree, name: string, pkgJsonPath = PKG_JSON_PATH): NodeDependency | null {
-  const json = JSONFile.readPath(pkgJsonPath, p => tree.readText(p));
+  const json = JSONFile.read(pkgJsonPath, tree);
 
   for (const depType of ALL_DEPENDENCY_TYPE) {
     const version = json.get([depType, name]);

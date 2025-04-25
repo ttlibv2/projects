@@ -1,5 +1,5 @@
 import { CommandScope, RunOptions, OtherOptions, LocalArgv } from "./abstract.cmd";
-import { SchematicsCommandArgs, SchematicsCommandModule } from "./schematics.cmd";
+import { SchematicsCommandArgs, SchematicsCommandModule, SchematicsExecutionOptions } from './schematics.cmd';
 import { RootCommands } from "./command.list";
 import { Collection } from "../collection";
 import { PkgManagerFactory } from "@ngdev/devkit-core/pkgmanager";
@@ -45,18 +45,27 @@ export default class NewCommandModule extends SchematicsCommandModule<NewCommand
     return this.addSchemaOptionsToCommand(localYargs, options);
   }
 
+
+
+
   async run(options: RunOptions<NewCommandArgs> & OtherOptions): Promise<number | void> {
     const collectionName = options.collection ?? (await this.getCollectionFromConfig(this.schematicName));
     const { dryRun, force, interactive, defaults, collection, packageManager, appName, libName, ...schematicOptions } = options;
 
     const packageName = <any>packageManager ?? 'pnpm';
     const pnpmVersion = await PkgManagerFactory.create(packageName).version;
-    const ngVersion  = await RunnerFactory.angular().version;
+    const ngVersion  = await RunnerFactory.angular().getVersion();
 
-    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, { dryRun, force, interactive, defaults });
-    workflow.registry.addSmartDefaultProvider("package-version", () => pnpmVersion);
-    workflow.registry.addSmartDefaultProvider("package-manager", () => packageName);
-    workflow.registry.addSmartDefaultProvider("ngcli-version", () => ngVersion);
+    await this.addSmartDefaultProvider({
+      dryRun, force, interactive, defaults,
+      collectionName,
+      providers: {
+        "package-version": () => pnpmVersion,
+        "package-manager": () => packageName,
+        "ngcli-version": () => ngVersion
+      }
+
+    });
 
     schematicOptions.appsDir = schematicOptions.appsDir ?? 'apps';
     schematicOptions.libsDir = schematicOptions.libsDir ?? 'packages';

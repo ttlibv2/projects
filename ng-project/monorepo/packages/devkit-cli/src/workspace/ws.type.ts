@@ -44,8 +44,8 @@ export class DevWorkspace {
   }
 
   getSchematics(schematic: string) {
-    const sc = this.cli?.schematics;
-    return sc ? sc[schematic] : {};
+    const schematics = this.prop?.schematics ?? {};
+    return schematics[schematic] ?? {};
   }
 
   get collections(): string[] {

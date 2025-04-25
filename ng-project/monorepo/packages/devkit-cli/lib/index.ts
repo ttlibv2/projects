@@ -1,8 +1,9 @@
 import { writeErrorToLogFile } from "../src/utilities/log-file";
 import { runCommand } from "../src/commands/runner.cmd";
-import { Logger } from "@ngdev/devkit-core/utilities";
+import { Logger, colors } from "@ngdev/devkit-core/utilities";
 import { CommandModuleError } from "../src/commands/abstract.cmd";
 import { ERROR_PREFIX } from "../src/utilities/environment";
+import { DevWorkspace } from '../src/workspace';
 
 function changeCmdTitle() {
   // Provide a title to the process in `ps`.
@@ -15,7 +16,7 @@ function changeCmdTitle() {
   }
 }
 
-function writeLog(logger: Logger, error: any) {
+async function writeLog(logger: Logger, error: any) {
   // console.log('writeLog')
 
   if (error instanceof CommandModuleError) {
@@ -23,16 +24,23 @@ function writeLog(logger: Logger, error: any) {
   } //
   else if (error instanceof Error) {
     try {
-      const logPath = writeErrorToLogFile(error);
-      const msgLines: string[] = [];
-      msgLines.push(`Message: ${error.message}`);
 
-      if (logPath !== "runSchematic") {
-        msgLines.push(`Log Path: ${logPath}`);
-        msgLines.push(`Stack: ${error.stack || error}`);
+      const workspace = await DevWorkspace.project();
+      const [logPath, message] = writeErrorToLogFile(error);
+
+      let consoleMsg = error.message;
+
+      if(!!workspace?.cli?.debug) {
+        consoleMsg = message;
       }
 
-      logger.error(msgLines.join("\n"));
+      const lines: string[] = [
+        `${colors.bold('Message:')} ${colors.cyan(consoleMsg)}`,
+        `${colors.bold('See detail:')} ${colors.underline.magenta(logPath)}`
+      ];
+
+      logger.error(lines.join('\n'));
+
     } catch (e) {
       //
     }
@@ -65,7 +73,7 @@ export default async function (option: { cliArgs: string[] }) {
     return await runCommand(option.cliArgs, logger);
   } catch (err) {
     // logger error
-    writeLog(logger, err);
+    await writeLog(logger, err);
   } finally {
     // fisnish
     logger.close();

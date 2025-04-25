@@ -24,13 +24,14 @@ export async function writeWorkspace(host: WorkspaceHost, workspace: WorkspacePr
 
 
 function convertJsonWorkspace(workspace: WorkspaceProp, schema?: string): JsonObject {
-    const exclude = ['$schema', 'projects', 'cli', 'name', 'appsDir', 'libsDir'];
+    const exclude = ['$schema', 'projects', 'cli', 'name', 'appsDir', 'libsDir', 'schematics'];
     return copyObject(workspace as any, exclude, () => ({
         $schema: schema || workspace.$schema || './node_modules/@ngdev/cli/lib/config/schema.json',
         name: workspace.name,
         appsDir: workspace.appsDir,
         libsDir: workspace.libsDir,
         cli: convertCli(workspace.cli),
+        schematics: workspace.schematics,
         projects: convertJsonProjectCollection(workspace.projects.entries())
     }));
 }
@@ -131,8 +132,8 @@ function isEmpty(obj: object | undefined): boolean {
 }
 
 function copyObject(object: Record<string, any>, exclude: string[] = [], other?: () => Record<string, any>): any {
-    if(object === undefined || object === null) return undefined;
     exclude = [...exclude, 'extensions'];
+    if(object === undefined || object === null) return undefined;
     const keys = Object.keys(object).filter(key => !exclude.includes(key));
     const jsonData = keys.reduce((json, property) => ({...json, [property]: convertValue(object[property])}), {});
     return {...jsonData, ...object.extensions, ...(other ? other() : {})};

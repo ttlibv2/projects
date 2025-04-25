@@ -29,25 +29,28 @@ export interface CmdOptions {
 export type FlagCmd = Record<string, string | boolean | number | unknown>;
 export type RunCmd = string | Record<string, string | boolean | number | unknown>;
 
+export interface RunOptions {
+  collect?: boolean; cwd?: string;showLog?: boolean;
+}
+
 export abstract class AbstractRunner {
 
-  public constructor(
+  constructor(
     protected binary: string,
     protected args: string[] = [],
     protected logger?: string | Logger) {
     this.logger = createRunnerLogger(logger);
   }
 
-  async run(command: string, options?: { collect?: boolean, cwd?: string }): Promise<string | null> {
-    const collect = options?.collect ?? false;
-    const cwd = options?.cwd ?? process.cwd();
+  async run(command: string, options?: RunOptions): Promise<string | null> {
+    options = Object.assign({collect: false, cwd: process.cwd()}, options);
 
     const spawnOptions: SpawnOptions = {
-      cwd, shell: true,
-      stdio: collect ? 'pipe' : 'inherit'
+      cwd: options.cwd, shell: true,
+      stdio: options.collect ? 'pipe' : 'inherit'
     };
 
-    return await spawnAsync(this.binary, [...this.args, command], spawnOptions, collect,);
+    return await spawnAsync(this.binary, [...this.args, command], spawnOptions, options);
   }
 
   /**
@@ -59,8 +62,8 @@ export abstract class AbstractRunner {
     return `${this.binary} ${commandArgs.join(' ')}`;
   }
 
-  get version(): Promise<string | null> {
-    return this.run('--version', { collect: true });
+  getVersion(cwd?: string): Promise<string | null> {
+    return this.run('--version', { collect: true, cwd });
   }
 
   buildCommandLine({command,inputs,flags}: CmdOptions): string {
@@ -78,12 +81,17 @@ export abstract class AbstractRunner {
 
 }
 
-function spawnAsync(command: string, args: string[], options: SpawnOptions, collect: boolean = false): Promise<string | null> {
+function spawnAsync(command: string, args: string[], spawnOptions: SpawnOptions, other?: RunOptions): Promise<string | null> {
   return new Promise<string | null>((resolve, reject) => {
-    console.debug(`[DEBUG] ${colors.bold.red(options.cwd)}: ${command} ${args.join(' ')}`);
-    const child: ChildProcess = spawn(command, args, options);
+    spawnOptions = Object.assign({collect: false, cwd: process.cwd()}, spawnOptions);
 
-    if (collect) {
+    if(!!other?.showLog) {
+      console.debug(`[DEBUG] ${command} ${args.join(' ')}`);
+    }
+
+    const child: ChildProcess = spawn(command, args, spawnOptions);
+
+    if (!!other?.collect) {
       child.stdout!.on('data', (data) =>
         resolve(data.toString().replace(/\r\n|\n/, '')),
       );

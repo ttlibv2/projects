@@ -1,6 +1,6 @@
 import { rmSync, rename, mkdirSync } from "fs";
-import { dirname, join, relative, resolve } from "node:path";
-import { existsSync, PathLike } from "node:fs";
+import { dirname, join, relative, resolve,  } from "node:path";
+import { existsSync, PathLike, readdirSync } from "node:fs";
 
 export const paths = {
 
@@ -33,8 +33,12 @@ export const paths = {
 
   mkdir: (...paths: string[]) => {
     const newPath = join(...paths);
-    if(!existsSync(newPath)) mkdirSync(newPath);
+    if(!existsSync(newPath)) mkdirSync(newPath, {recursive: true});
     return newPath;
-  }
+  },
+
+  files: (dir: string): string[] => {
+   return <any>readdirSync(dir, {recursive: true,encoding: "utf-8"});
+}
 
 };

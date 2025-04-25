@@ -61,10 +61,11 @@ export abstract class AbstractPkgManager {
 
     try {
       const commandArgs = `${this.cli.install} ${this.cli.silentFlag}`;
-      const cwd = directory == undefined ? process.cwd() : join(process.cwd(), normalize(directory));
+      const cwd = directory ? normalize(directory) : process.cwd();
       await this.runner.run(commandArgs, { collect: true, cwd });
 
       spinner.succeed();
+
       console.info();
       console.info(MESSAGES.PACKAGE_MANAGER_INSTALLATION_SUCCEED(cwd));
       console.info(MESSAGES.GET_STARTED_INFORMATION);

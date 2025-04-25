@@ -65,7 +65,7 @@ export interface CliProp {
     collections?: string[];
     ngVersion?: string;
     nestVersion?: string;
-    schematics?: Record<string, JsonObject>;
+    debug?: boolean;
 }
 
 export interface ProjectProp {
@@ -76,7 +76,9 @@ export interface ProjectProp {
     sourceRoot?: string;
     entryFile?: string;
     exec?: string;
+    collections?: string[];
     extensions?: Record<string, JsonValue>;
+    schematics?: Record<string, JsonObject>;
     compilerOptions?: CompilerOptions;
     options?: {
         modelDir?: string;
@@ -89,6 +91,7 @@ export interface WorkspaceProp {
     appsDir: string;
     libsDir: string;
     defaultProject?: string;
+    schematics?: Record<string, JsonObject>;
     cli: CliProp;
     projects: ProjectMap;
     extensions?: Record<string, JsonValue>;
