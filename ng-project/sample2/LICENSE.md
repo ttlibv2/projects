@@ -1,3 +1,0 @@
-# sample2 LICENSES
-
-## sample2 COMMUNITY VERSIONS LICENSE
