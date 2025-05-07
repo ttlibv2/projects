@@ -1,6 +1,5 @@
-import { JsonObject, JsonValue, strings } from '@angular-devkit/core';
+import { JsonObject, JsonValue } from '@angular-devkit/core';
 import { StringMap, StringMapListener } from '../utilities';
-import { JsonArray } from "@angular-devkit/core/src/json/utils";
 
 export function defaultWorkspace():Partial<WorkspaceProp> {
     return {
@@ -10,7 +9,6 @@ export function defaultWorkspace():Partial<WorkspaceProp> {
         projects: new ProjectMap(),
         cli: {
             packageManager: 'pnpm',
-            collections: [],
             ngVersion: 'ANGULAR::VERSION',
             nestVersion: 'NESTJS::VERSION'
         }
@@ -61,8 +59,8 @@ export interface PluginOptions {
 
 export interface CliProp {
     extensions?: Record<string, JsonValue>;
+    collections?: Record<string, string[]>;
     packageManager?: string;
-    collections?: string[];
     ngVersion?: string;
     nestVersion?: string;
     debug?: boolean;

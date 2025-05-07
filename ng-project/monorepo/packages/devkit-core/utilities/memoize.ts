@@ -1,3 +1,4 @@
+
 /**
  * A decorator that memoizes methods and getters.
  *
@@ -7,24 +8,27 @@
  */
 export function memoize<This, Args extends unknown[], Return>(
   target: (this: This, ...args: Args) => Return,
-  context: ClassMemberDecoratorContext,
-) {
-  if (context.kind !== 'method' && context.kind !== 'getter') {
+  context: ClassMemberDecoratorContext) {
+
+  const { kind, name } = context;
+
+  if (kind !== 'method' && kind !== 'getter') {
     throw new Error('Memoize decorator can only be used on methods or get accessors.');
   }
 
   const cache = new Map<string, Return>();
 
   return function (this: This, ...args: Args): Return {
+
+    // validate arg has serializable
     for (const arg of args) {
       if (!isJSONSerializable(arg)) {
-        throw new Error(
-          `Argument ${isNonPrimitive(arg) ? arg.toString() : arg} is JSON serializable.`,
-        );
+        throw new Error(`Argument ${isNonPrimitive(arg) ? arg.toString() : arg} is JSON serializable.`,);
       }
     }
 
-    const key = JSON.stringify(args);
+    const key = `${kind}:${<any>name}:${JSON.stringify(args)}`;
+
     if (cache.has(key)) {
       return cache.get(key) as Return;
     }
@@ -48,7 +52,6 @@ function isNonPrimitive(value: unknown): value is object | Function | symbol {
 /** Method to check if the values are JSON serializable */
 function isJSONSerializable(value: unknown): boolean {
   if (!isNonPrimitive(value)) {
-    // Can be seralized since it's a primitive.
     return true;
   }
 
