@@ -4,96 +4,112 @@ import { FileSystemCollectionDescription, FileSystemSchematicDescription, NodeWo
 import { relative } from "node:path";
 import { assertIsError } from "../utilities/error";
 import { isTTY } from "../utilities/tty";
-import { CommandModule, CommandScope, RunOptions, OtherOptions, LocalArgv } from "./abstract.cmd";
+import { CommandModule, CommandScope, ArgvOptions, OtherOptions, LocalArgv, CommandContext } from "./abstract.cmd";
 import { Option, parseJsonSchemaToOptions } from "./helper/json-schema";
 import { EngineHost } from "./helper/engine-host";
 import { subscribeToWorkflow } from "./helper/schematic-workflow";
 import { Collection } from "../collection";
 import { getProjectByCwd, getSchematicDefaults } from "../workspace";
 import { memoize } from "@ngdev/devkit-core/utilities";
-import { SmartDefaultProvider } from '@angular-devkit/core/src/json/schema/interface';
+import { writeErrorToLogFile } from "../utilities/log-file";
 
-export type SchematicCollection = NgCollection<FileSystemCollectionDescription, FileSystemSchematicDescription>;
+export interface SchematicsCommandArgs  {
 
-export interface SchematicsCommandArgs {
+  /**Enable interactive input prompts*/
   interactive: boolean;
+
+  /**Force overwriting of existing files.*/
   force: boolean;
+
+  /**Run through and reports activity without writing out results*/
   dryRun: boolean;
+
+  /**Disable interactive input prompts for options with a default.*/
   defaults: boolean;
-  workflowRoot?: string;
 }
 
-export interface SchematicsExecutionOptions extends RunOptions<SchematicsCommandArgs> {
+type SchematicCollection = NgCollection<FileSystemCollectionDescription, FileSystemSchematicDescription>;
+
+interface SchematicsExecutionOptions extends ArgvOptions<SchematicsCommandArgs> {
   packageRegistry?: string;
+  schemaValidation?: boolean;
 }
 
-export interface SmartDefaultProviderOption extends SchematicsExecutionOptions {
+interface SmartDefaultProviderOption extends SchematicsExecutionOptions {
   collectionName: string;
-  providers: Record<string, SmartDefaultProvider<any>>
+  providers: Record<string, schema.SmartDefaultProvider<any>>
+}
+
+interface RunSchematicOption {
+  executionOptions: SchematicsExecutionOptions;
+  schematicOptions: OtherOptions;
+  collectionName: string;
+  schematicName: string
+  workflowRootDir?: string;
 }
 
 type SchematicsToRegister = [schematicName: string, collectionName: string];
 
-export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> extends CommandModule<T> {
+export abstract class SchematicsCommand<T extends SchematicsCommandArgs> extends CommandModule<T> {
   override scope = CommandScope.In;
-  protected readonly allowPrivateSchematics: boolean = false;
+  allowPrivateSchematics: boolean = false;
 
-  builder(argv: LocalArgv): Promise<LocalArgv<T>> | LocalArgv<T> {
+  constructor(context: CommandContext) {
+    super(context);
+  }
+
+  async builder(argv: LocalArgv): Promise<LocalArgv<T>> {
     return argv
       .option("interactive", {
-        describe: "Enable interactive input prompts.",
-        type: "boolean",
-        default: true,
+        describe: "Enable interactive input prompts.", type: "boolean", default: true,
       })
       .option("dryRun", {
-        describe:
-          "Run through and reports activity without writing out results.",
-        type: "boolean",
-        alias: ["d"],
-        default: false,
+        describe: "Run through and reports activity without writing out results.",
+        type: "boolean", alias: ["d"], default: false,
       })
       .option("defaults", {
-        describe:
-          "Disable interactive input prompts for options with a default.",
-        type: "boolean",
-        default: false,
+        describe: "Disable interactive input prompts for options with a default.",
+        type: "boolean", default: false,
       })
       .option("force", {
         describe: "Force overwriting of existing files.",
-        type: "boolean",
-        default: false,
+        type: "boolean", default: false,
       })
       .strict() as LocalArgv<T>;
   }
 
-  /** Get schematic schema options.*/
-  protected async getSchematicOptions(collection: SchematicCollection, schematicName: string, workflow: NodeWorkflow): Promise<Option[]> {
-    const { schemaJson } = collection.createSchematic(schematicName, true).description;
-    return schemaJson ?  parseJsonSchemaToOptions(workflow.registry, schemaJson) : [];
-  }
-
+  /**
+   * @param collectionName The collection name has create workflow
+   * @param workflowRoot The cwd folder has create
+   * */
   @memoize
-  protected getOrCreateWorkflowForBuilder(collectionName: string, workflowRoot: string = this.context.root): NodeWorkflow {
+  protected getOrCreateWorkflowForBuilder(collectionName: string, workflowRoot?: string): NodeWorkflow {
+    workflowRoot = workflowRoot ?? this.contextRoot;
     return new NodeWorkflow(workflowRoot, {
       resolvePaths: this.getResolvePaths(collectionName),
-      engineHostCreator: (options) => new EngineHost(options.resolvePaths),
+      engineHostCreator: options => new EngineHost(options.resolvePaths),
     });
   }
 
   @memoize
-  protected async getOrCreateWorkflowForExecution(collectionName: string, options: SchematicsExecutionOptions): Promise<NodeWorkflow> {
+  protected async getOrCreateWorkflowForExecution(collectionName: string, execOptions: SchematicsExecutionOptions, workflowRootDir?: string): Promise<NodeWorkflow> {
     const { logger, root: contextRoot, packageManager } = this.context;
-    const { force, dryRun, packageRegistry, workflowRoot } = options;
+    const { force, dryRun, packageRegistry, schemaValidation = true} = execOptions;
 
-    const cwdRoot = workflowRoot || contextRoot;
-    const workflow = new NodeWorkflow(cwdRoot, {
+    workflowRootDir = workflowRootDir || contextRoot;
+
+    if(contextRoot != workflowRootDir) {
+      console.warn(`workflowRootDir: `, workflowRootDir);
+    }
+
+    const workflow = new NodeWorkflow(workflowRootDir, {
       force, dryRun, packageRegistry,
       packageManager: packageManager.name.toLowerCase(),
       registry: new schema.CoreSchemaRegistry(formats.standardFormats),
       resolvePaths: this.getResolvePaths(collectionName),
       engineHostCreator: (options) => new EngineHost(options.resolvePaths),
-      schemaValidation: true,
-      optionTransforms: [ // Add configuration file defaults
+      schemaValidation: schemaValidation,
+      optionTransforms: [
         async (schematic, current) => {
           const projectName = typeof current?.project === "string" ? current.project : this.getProjectName();
           const scDefaults = await getSchematicDefaults(schematic.collection.name, schematic.name, projectName);
@@ -104,25 +120,21 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
 
     workflow.registry.addPostTransform(schema.transforms.addUndefinedDefaults);
     workflow.registry.useXDeprecatedProvider((msg) => logger.warn(msg));
-    workflow.registry.addSmartDefaultProvider("projectName", () =>
-      this.getProjectName(),
-    );
+    workflow.registry.addSmartDefaultProvider("projectName", () => this.getProjectName());
 
-    const workingDir = devkitNormalize(relative(cwdRoot, process.cwd()),);
-    workflow.registry.addSmartDefaultProvider("workingDirectory", () =>
-      workingDir === "" ? undefined : workingDir,
-    );
+    const workingDir = devkitNormalize(relative(workflowRootDir, process.cwd()),);
+    workflow.registry.addSmartDefaultProvider("workingDirectory", () => workingDir === "" ? undefined : workingDir );
 
-    workflow.engineHost.registerOptionsTransform(async (schematic, options) => options);
+    //workflow.engineHost.registerOptionsTransform(async (schematic, options) => options);
 
-    if (options.interactive !== false && isTTY()) {
+    if (execOptions.interactive !== false && isTTY()) {
       workflow.registry.usePromptProvider(
         async (definitions: Array<schema.PromptDefinition>) => {
           let prompts: typeof import("@inquirer/prompts") | undefined;
           const answers: Record<string, JsonValue> = {};
 
           for (const definition of definitions) {
-            if (options.defaults && definition.default !== undefined) {
+            if (execOptions.defaults && definition.default !== undefined) {
               continue;
             }
 
@@ -230,18 +242,19 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     return workflow;
   }
 
-  /** Find a collection from config that has an `ng-new` schematic. */
-  protected async getCollectionFromConfig(schematicName: string, defaultCollection?: string): Promise<string> {
-    for (const collectionName of await this.getSchematicCollections()) {
-      const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
-      const collection = workflow.engine.createCollection(collectionName);
-      const schematicsInCollection = collection.description.schematics;
-      if (Object.keys(schematicsInCollection).includes(schematicName)) {
-        return collectionName;
-      }
+  /** Find a collection by schematicName. */
+  protected async findCollectionBySchematicName(schematicName: string, defaultCollection?: string): Promise<string> {
+    const collections = await this.getSchematicCollections();
+    for (const collectionName of collections) {
+      const {collection: {description: {schematics}}} = await this.createBuilderCollection(collectionName);
+      if (Object.keys(schematics).includes(schematicName)) return collectionName;
     }
 
-    return defaultCollection ?? Collection.NgDevSC;
+    if(defaultCollection == undefined) {
+      throw new Error(`The schematic [${schematicName}] not exist in collections ${[...collections].join(",")}  `);
+    }
+
+    return defaultCollection;// ?? Collection.NgDevSC;
   }
 
   @memoize
@@ -249,10 +262,10 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     // const getSchematicCollections = (configSection: Record<string, unknown> | undefined): Set<string> | undefined => {
     //   if (!configSection) return undefined;
     //
-    //   const { collections } = configSection;
+    //   const { schematicCollections } = configSection;
     //
-    //   if (Array.isArray(collections)) {
-    //     return new Set(...collections, DEFAULT_SCHEMATICS_COLLECTION);
+    //   if (Array.isArray(schematicCollections)) {
+    //     return new Set(...schematicCollections, DEFAULT_SCHEMATICS_COLLECTION);
     //   }
     //
     //   return undefined;
@@ -280,24 +293,22 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
    return new Set([Collection.NgDevSC]);
   }
 
-  protected parseSchematicInfo(schematic: string | undefined): [collectionName: string | undefined, schematicName: string | undefined] {
+  protected parseSchematicInfo(schematic: string | undefined): {collectionName: string, schematicName: string}  {
     if (schematic?.includes(":")) {
       const [collectionName, schematicName] = schematic.split(":", 2);
-      return [collectionName, schematicName];
+      return {collectionName, schematicName};
     }
-
-    return [undefined, schematic];
+    else return {
+      collectionName: undefined,
+      schematicName: schematic
+    };
   }
 
-  protected async runSchematic(options: {
-    executionOptions: SchematicsExecutionOptions;
-    schematicOptions: OtherOptions;
-    collectionName: string;
-    schematicName: string;
-  }): Promise<number> {
+  protected async runSchematic(options: RunSchematicOption): Promise<number> {
     const { logger } = this.context;
-    const { schematicOptions, executionOptions, collectionName, schematicName, } = options;
-    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, executionOptions);
+    const { schematicOptions, executionOptions, collectionName, schematicName, workflowRootDir} = options;
+
+    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, executionOptions, workflowRootDir);
 
     if (!schematicName) {
       throw new Error("schematicName cannot be undefined.");
@@ -306,8 +317,7 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     const { unsubscribe, files } = subscribeToWorkflow(workflow, logger);
 
     try {
-      await workflow
-        .execute({
+      await workflow.execute({
           collection: collectionName,
           schematic: schematicName,
           options: schematicOptions,
@@ -321,16 +331,16 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
       }
 
       if (executionOptions.dryRun) {
-        logger.warn(
-          `\nNOTE: The "--dry-run" option means no changes were made.`,
-        );
+        logger.warn(`\nNOTE: The "--dry-run" option means no changes were made.`,);
       }
-    } catch (err) {
+    } //
+    catch (err) {
       //
       // In case the workflow was not successful, show an appropriate error message.
       if (err instanceof UnsuccessfulWorkflowExecution) {
         // "See above" because we already printed the error.
         logger.fatal("The Schematic workflow failed. See above.");
+        writeErrorToLogFile(err, 'schematics.cmd::runSchematic');
       } //
       else {
         assertIsError(err);
@@ -348,14 +358,10 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
 
   private getProjectName(): string | undefined {
     const { workspace } = this.context;
-    if (!workspace) {
-      return undefined;
-    }
+    if (!workspace) return undefined;
 
     const projectName = getProjectByCwd(workspace);
-    if (projectName) {
-      return projectName;
-    }
+    if (projectName) return projectName;
 
     return undefined;
   }
@@ -377,16 +383,13 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
         [__dirname, process.cwd()];
   }
 
-
-
   /**
    * Get collection that should to be registered as subcommands.
-   *
    * @returns a sorted list of schematic that needs to be registered as subcommands.
    */
   protected async getSchematicsToRegister(): Promise<SchematicsToRegister[]> {
     const schematicsToRegister: SchematicsToRegister[] = [];
-    const [, schematicNameFromArgs] = this.parseSchematicInfo(
+    const {schematicName: schematicNameFromArgs} = this.parseSchematicInfo(
       // positional = [generate, component] or [generate]
       this.context.args.positional[1]
     );
@@ -405,9 +408,8 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     );
   }
 
-
   protected async getCollectionNames(): Promise<string[]> {
-    const [collectionName] = this.parseSchematicInfo(
+    const {collectionName} = this.parseSchematicInfo(
       // positional = [generate, component] or [generate]
       this.context.args.positional[1]
     );
@@ -417,23 +419,18 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
       : [...(await this.getSchematicCollections())];
   }
 
-
   /**
    * Get collection that can to be registered as subcommands.
    */
-  protected async* getSchematics(): AsyncGenerator<{
-    schematicName: string;
-    schematicAliases?: Set<string>;
-    collectionName: string;
-  }> {
+  protected async* getSchematics(): AsyncGenerator<{ schematicName: string; schematicAliases?: Set<string>; collectionName: string; }> {
     const seenNames = new Set<string>();
     for (const collectionName of await this.getCollectionNames()) {
       const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
       const collection = workflow.engine.createCollection(collectionName);
+      const schematicNames = collection.listSchematicNames(true);
 
-      for (const schematicName of collection.listSchematicNames(
-        true /** includeHidden */
-      )) {
+
+      for (const schematicName of schematicNames) {
         // If a schematic with this same name is already registered skip.
         if (!seenNames.has(schematicName)) {
           seenNames.add(schematicName);
@@ -450,7 +447,6 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
       }
     }
   }
-
 
   private listSchematicAliases(collection: SchematicCollection, schematicName: string): Set<string> | undefined {
     const description = collection.description.schematics[schematicName];
@@ -472,22 +468,17 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     return undefined;
   }
 
-
   /**
    * Generate an aliases string array to be passed to the command builder.
    *
    * @example `[component]` or `[@collection/angular:component]`.
    */
-  protected async generateCommandAliasesStrings(
-    collectionName: string,
-    schematicAliases: string[]
-  ): Promise<string[]> {
+  protected async generateCommandAliasesStrings(collectionName: string, schematicAliases: string[]): Promise<string[]> {
     // Only add the collection name as part of the command when it's not a known
     // collection collection or when it has been provided via the CLI.
     // Ex:`ng generate @collection/angular:c`
-    return (await this.shouldAddCollectionNameAsPartOfCommand())
-      ? schematicAliases.map((alias) => `${collectionName}:${alias}`)
-      : schematicAliases;
+    const shouldAdd = await this.shouldAddCollectionNameAsPartOfCommand();
+    return shouldAdd ? schematicAliases.map((alias) => `${collectionName}:${alias}`) : schematicAliases;
   }
 
   /**
@@ -515,9 +506,8 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     return `${commandName}${positionalArgs ? ' ' + positionalArgs : ''}`;
   }
 
-
   private async shouldAddCollectionNameAsPartOfCommand(): Promise<boolean> {
-    const [collectionNameFromArgs] = this.parseSchematicInfo(
+    const {collectionName: collectionNameFromArgs} = this.parseSchematicInfo(
       // positional = [generate, component] or [generate]
       this.context.args.positional[1]
     );
@@ -534,10 +524,77 @@ export abstract class SchematicsCommandModule<T extends SchematicsCommandArgs> e
     );
   }
 
-  protected async addSmartDefaultProvider(options: SmartDefaultProviderOption, ) {
+  protected async addSmartDefaultProvider(options: SmartDefaultProviderOption, workflowDir?: string) {
     const {providers, collectionName, ...workflowOptions } = options;
-    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, workflowOptions);
+    const workflow = await this.getOrCreateWorkflowForExecution(collectionName, workflowOptions, workflowDir);
     Object.entries(providers).forEach(provider => workflow.registry.addSmartDefaultProvider(provider[0], provider[1]));
   }
 
+  protected async addSchematicToCommand(yargs: LocalArgv, collectionName: string, schematicName: string, handler: (options: any) => Promise<void>): Promise<LocalArgv> {
+    const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
+    const collection = workflow.engine.createCollection(collectionName);
+    const { description: scDesc } = collection.createSchematic(schematicName, true);
+    if(!scDesc.schemaJson) return yargs;
+    else {
+
+      const {
+        aliases: schematicAliases,
+        hidden: schematicHidden,
+        description: schematicDescription,
+        schemaJson: {
+          "x-deprecated": xDeprecated,
+          description = schematicDescription,
+          hidden = schematicHidden
+        }
+      } = scDesc;
+
+
+      const schematicOption = await this.getSchematicOptions(schematicName, workflow, collection);
+
+      return yargs.command({
+        command: await this.generateCommandString(collectionName, schematicName, schematicOption),
+        describe: hidden === true ? false : typeof description === "string" ? description : "",
+        deprecated: xDeprecated === true || typeof xDeprecated === "string" ? xDeprecated : false,
+        aliases: Array.isArray(schematicAliases) ? await this.generateCommandAliasesStrings(collectionName, schematicAliases) : [],
+        builder: (localYargs) => this.addSchemaToCommandOption(localYargs, schematicOption ).strict(),
+        handler: (options) => handler(options)
+      });
+    }
+  }
+
+  protected async addSchemaToCommandOption2<T>(localYargs: LocalArgv<T>, schematicName: string, collectionName?: string): Promise<any> {
+    const [workflow, collection] = await this.createWorkflowAndCollection(schematicName, collectionName);
+    const schematicOption = await this.getSchematicOptions(schematicName, workflow, collection);
+    return super.addSchemaToCommandOption(localYargs, schematicOption);
+  }
+
+  /***/
+  @memoize
+  protected async getSchematicOptionsByName(schematicName: string, collectionName?: string): Promise<Option[]> {
+    const [workflow, collection] = await this.createWorkflowAndCollection(schematicName, collectionName);
+    return this.getSchematicOptions(schematicName, workflow, collection);
+  }
+
+  /**
+   * @param schematicName The schematic*/
+  @memoize
+  protected async createWorkflowAndCollection(schematicName: string, collectionName?: string): Promise<[NodeWorkflow, SchematicCollection]> {
+    collectionName = collectionName ?? await this.findCollectionBySchematicName(schematicName);
+    const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
+    const collection = workflow.engine.createCollection(collectionName);
+    return [workflow, collection];
+  }
+
+  /** Get schematic schema options.*/
+  protected async getSchematicOptions(schematicName: string, workflow: NodeWorkflow, collection: SchematicCollection): Promise<Option[]> {
+    const { schemaJson } = collection.createSchematic(schematicName, true).description;
+    return schemaJson ?  parseJsonSchemaToOptions(workflow.registry, schemaJson) : [];
+  }
+
+  @memoize
+  protected async createBuilderCollection(collectionName: string): Promise<{ workflow: NodeWorkflow, collection: SchematicCollection }> {
+    const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
+    const collection = workflow.engine.createCollection(collectionName);
+    return {workflow, collection};
+  }
 }

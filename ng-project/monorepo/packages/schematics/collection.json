@@ -1,10 +1,23 @@
 {
   "$schema": "./node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "new": {
+	  
+    "dev-new": {
       "description": "Create a project",
       "factory": "./src/new",
       "schema": "./src/new/schema.json"
+    },
+	 "ng-new-app2": {
+      "description": "Create a angular application project",
+      "factory": "./src/angular/new-app",
+      "schema": "./src/angular/new-app/schema.json",
+	  "aliases": ["ng-app", "new-app"]
+    },
+	 "ng-new-lib2": {
+      "description": "Create a angular library project",
+      "factory": "./src/angular/new-lib",
+      "schema": "./src/angular/new-lib/schema.json",
+	   "aliases": ["ng-lib", "new-lib"]
     }
   }
 }

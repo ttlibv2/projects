@@ -6,19 +6,16 @@ import { Schema as NgAppOption } from './schema';
 const packageManager: string = 'pnpm';
 
 export default function(options: NgAppOption): Rule {
-    console.debug(`new monorepo: `, options);
 
     return async (tree: Tree) => {
 
         if (!options.directory) {
-            // If scoped project (i.e. "@foo/bar"), convert directory to "foo/bar".
             options.directory = options.name.startsWith('@') ? options.name.slice(1) : options.name;
         }
 
         options.appsDir = options.appsDir || 'apps';
         options.libsDir = options.libsDir || 'packages';
-
-
+        options.loggerLevel = options.loggerLevel || 'info';
 
         return chain([
            copyFiles(options),

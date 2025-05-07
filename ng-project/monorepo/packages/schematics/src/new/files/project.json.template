@@ -5,7 +5,42 @@
  "libsDir": "<%= libsDir %>",
  "cli": {
    "packageManager": "<%= packageManager %>",
-   "ngVersion": "<%= ngVersion %>"
+   "ngVersion": "<%= ngVersion %>",
+   "loggerLevel": "<%= loggerLevel %>",
+    "collections": {
+     "angular": ["@schematics/angular"],
+      "ngdev": ["@ngdev/schematics"]
+     }
   },
+  "schematics": {
+      "@schematics/angular:new-app": {
+        "standalone": true,
+        "inlineStyle": false,
+        "inlineTemplate": false,
+        "viewEncapsulation": "None",
+        "prefix": "t",
+        "minimal": true,
+        "routing": true,
+        "skipTests": true,
+        "packageManager": "pnpm",
+        "style": "scss",
+        "ssr": false,
+        "serverRouting": false
+      },
+      "@schematics/angular:new-lib": {
+              "standalone": true,
+              "inlineStyle": false,
+              "inlineTemplate": false,
+              "viewEncapsulation": "None",
+              "prefix": "t",
+              "minimal": true,
+              "routing": true,
+              "skipTests": true,
+              "packageManager": "pnpm",
+              "style": "scss",
+              "ssr": false,
+              "serverRouting": false
+            }
+    },
  "projects": {}
 }

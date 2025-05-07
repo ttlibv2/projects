@@ -31,5 +31,8 @@ export interface Schema {
   ngVersion?: string;
 
   packageVersion?: string;
+
   packageManager?: string;
+
+  loggerLevel?: string;
 }

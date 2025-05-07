@@ -62,6 +62,10 @@
       "$default": {
         "$source": "package-manager"
       }
+    },
+    "loggerLevel": {
+      "type": "string",
+      "default": "info"
     }
   },
   "required": ["name"]
