@@ -1,0 +1,16 @@
+{
+  "name": "@ngdev/utilities",
+  "version": "25.03.255",
+  "description": "utilities",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
+  "scripts": {
+    "build": "pnpm run compiler",
+    "compiler": "tsc -p tsconfig.json",
+    "build:utilities": "pnpm run build",
+    "watch:utilities": "tsc -p tsconfig.json --watch"
+  },
+  "dependencies": {
+    "typescript": "^5.8.3"
+  }
+}

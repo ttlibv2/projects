@@ -2,14 +2,14 @@ import { schema } from "@angular-devkit/core";
 import { readFileSync } from "node:fs";
 import * as path from "node:path";
 import { ArgumentsCamelCase, Argv, CamelCaseKey, CommandModule as YargsCommandModule} from "yargs";
-import { Option, addSchemaOptionsToCommand } from "./helper/json-schema";
+import { Option, addSchemaOptionsToCommand } from "../helper/json-schema";
 import { Logger } from "@ngdev/devkit-core/utilities";
 import { AbstractPkgManager } from "@ngdev/devkit-core/pkgmanager";
-import { DevWorkspace } from "../workspace";
+import { DevWorkspace } from "../../workspace";
 import { Parser as yargsParser } from "yargs/helpers";
-import * as yargs from '../typings/yargs';
+import * as yargs from '../../typings/yargs';
 
-export type RunOptions<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] } & OtherOptions;
+export type ArgOption<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] } & OtherOptions;
 
 export type LocalArgv<T = {}> = Argv<T>;
 
@@ -47,7 +47,7 @@ export interface CommandContext {
 
 export type OtherOptions = Record<string, any>;
 
-export interface CommandModuleImplementation<T extends {} = {}> {
+export interface ICommandModule<T extends {} = {}> {
 
   /** Scope in which the command can be executed in. */
   scope: CommandScope;
@@ -68,7 +68,7 @@ export interface CommandModuleImplementation<T extends {} = {}> {
   deprecated?: boolean | string | undefined;
 
   /** a function which will be passed the parsed argv. */
-  run(options: RunOptions<T> & OtherOptions): Promise<number | void>;
+  run(options: ArgOption<T>): Promise<number | void>;
 
 }
 
@@ -78,7 +78,7 @@ export interface FullDescribe {
   longDescriptionRelativePath?: string;
 }
 
-export abstract class CommandModule<T extends {} = {}> implements CommandModuleImplementation<T>
+export abstract class CommandModule<T extends {} = {}> implements ICommandModule<T>
 {
   abstract readonly command: string;
   abstract readonly describe: string | false;
@@ -142,7 +142,7 @@ export abstract class CommandModule<T extends {} = {}> implements CommandModuleI
   }
 
   abstract builder(argv: LocalArgv): Promise<LocalArgv<T>> | LocalArgv<T>;
-  abstract run(options: RunOptions<T>): Promise<number | void>;
+  abstract run(options: ArgOption<T>): Promise<number | void>;
 
   async handler(options: ArgumentsCamelCase<T> & OtherOptions): Promise<void> {
 

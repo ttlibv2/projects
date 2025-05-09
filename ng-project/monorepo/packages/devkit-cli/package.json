@@ -11,9 +11,9 @@
     "compiler": "tsc -p tsconfig.json",
     "prebuild": "rimraf dist/bin dist/lib dist/src",
     "postbuild": "pnpm run copy:src",
+    "build:cli": "pnpm run build",
     "watch:cli": "tsc -p tsconfig.json --watch",
-    "copy:src": "cpx src/**/*.{md,json} dist/src && cpx package.json dist && cpx lib/*.json dist/lib",
-    "format": "prettier --write \"**/*.ts\""
+    "copy:src": "cpx src/**/*.{md,json} dist/src && cpx package.json dist && cpx lib/*.json dist/lib"
   },
   "dependencies": {
     "@angular-devkit/architect": "^0.1902.4",
@@ -22,8 +22,9 @@
     "@angular-devkit/schematics-cli": "^19.2.3",
     "@inquirer/prompts": "^7.4.0",
     "@listr2/prompt-adapter-inquirer": "^2.0.18",
-    "@ngdev/schematics": "workspace:^",
     "@ngdev/devkit-core": "workspace:^",
+    "@ngdev/schematics": "workspace:^",
+    "@ngdev/utilities": "workspace:^",
     "@yarnpkg/lockfile": "^1.1.0",
     "ansis": "^3.17.0",
     "chokidar": "^4.0.3",
@@ -43,6 +44,7 @@
     "tsconfig-paths": "^4.2.0",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^5.8.3",
+    "utilities": "^1.0.6",
     "webpack": "^5.98.0",
     "yargs": "17.7.2"
   },

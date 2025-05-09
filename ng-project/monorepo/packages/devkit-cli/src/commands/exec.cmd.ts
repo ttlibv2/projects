@@ -1,7 +1,6 @@
 import { Argv } from 'yargs/index.mjs';
-import { CommandModule, CommandScope, RunOptions, OtherOptions } from './abstract.cmd';
+import { CommandModule, CommandScope, ArgOption, OtherOptions } from './core/abstract.cmd';
 import { RootCommands } from './command.list';
-import { RunnerFactory } from '@ngdev/devkit-core/runners';
 import { cmdOptionToString } from '@ngdev/devkit-core/utilities';
 import { join } from 'path';
 
@@ -27,11 +26,11 @@ export default class ExecuteCmd extends CommandModule {
             .strict(false);
     }
 
-    async run(options: RunOptions<any> & OtherOptions): Promise<any> {
+    async run(options: ArgOption<any> & OtherOptions): Promise<any> {
         throw new Error(`Method not implements`);
     }
 
-    async run2(options: RunOptions<any> & OtherOptions, other?: Record<string, any>): Promise<any> {
+    async run2(options: ArgOption<any> & OtherOptions, other?: Record<string, any>): Promise<any> {
         const {collection, schematic} = options;
         const {unknownOptions, originArgs} = other;
 

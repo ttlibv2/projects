@@ -1,5 +1,5 @@
 import { Argv } from 'yargs';
-import { CommandModule, CommandScope, RunOptions, OtherOptions } from './abstract.cmd';
+import { CommandModule, CommandScope, ArgOption, OtherOptions } from './core/abstract.cmd';
 import { RootCommands } from './command.list';
 import { AbstractPkgManager } from '@ngdev/devkit-core/pkgmanager';
 import { colors, getPackageFile, Logger } from '@ngdev/devkit-core/utilities';
@@ -47,7 +47,7 @@ export default class InfoCmd extends CommandModule<InfoArg> {
             .strictOptions(false);
     }
 
-    async run(options: RunOptions<InfoArg> & OtherOptions): Promise<any> {
+    async run(options: ArgOption<InfoArg> & OtherOptions): Promise<any> {
        await this.displayBanner();
        this.logger.info(`\n\n`);
        await this.displaySystemInformation();
@@ -76,7 +76,7 @@ export default class InfoCmd extends CommandModule<InfoArg> {
 
     }
 
-    private async displayCollection(options: RunOptions<InfoArg> & OtherOptions) {
+    private async displayCollection(options: ArgOption<InfoArg> & OtherOptions) {
         let table = new CliTable3({
             head: ['name', 'alias', 'required', 'desc']
         });

@@ -7,18 +7,23 @@ export interface CommandConfig {
 }
 
 export const RootCommands: Record<string, CommandConfig> = {
-  generate: {
-    factory: () => import("./generate.cmd"),
-    aliases: ["g", "gen"],
-  },
+  // generate: {
+  //   factory: () => import("./generate.cmd"),
+  //   aliases: ["g", "gen"],
+  // },
   new: {
     factory: () => import("./new.cmd"),
     aliases: ["n"],
   },
-  ng: {
-    factory: () => import("./ng.cmd"),
-    aliases: []
+  'ng-app': {
+    factory: () => import("./angular/ng-app.cmd"),
+    aliases: ['app']
   },
+  'ng-lib': {
+    factory: () => import("./angular/ng-lib.cmd"),
+    aliases: ['lib']
+  },
+
   exec: {
     factory: () => import("./exec.cmd"),
     aliases: ["exec"],
@@ -26,6 +31,10 @@ export const RootCommands: Record<string, CommandConfig> = {
   info: {
     factory: () => import("./info.cmd"),
     aliases: ["inf"],
+  },
+  test: {
+    factory: () => import("./test.cmd"),
+    aliases: [],
   }
 };
 

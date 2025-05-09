@@ -3,15 +3,15 @@ import {
   CommandContext,
   CommandModule,
   CommandModuleError,
-  CommandModuleImplementation,
+  ICommandModule,
   CommandScope,
-} from "../abstract.cmd";
+} from "../core/abstract.cmd";
 
 export const demandCommandFailureMessage = `You need to specify a command before moving on. Use '--help' to view the available commands.`;
-export type CommandModuleConstructor = Partial<CommandModuleImplementation> & {
+export type CommandModuleConstructor = Partial<ICommandModule> & {
   new (
     context: CommandContext,
-  ): Partial<CommandModuleImplementation> & CommandModule;
+  ): Partial<ICommandModule> & CommandModule;
 };
 
 export function addCommandModuleToYargs<

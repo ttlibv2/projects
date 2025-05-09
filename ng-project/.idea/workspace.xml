@@ -13,10 +13,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="tsconfig.json" />
-        <option value="TypeScript File" />
+        <option value="JavaScript File" />
         <option value="package.json" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -38,8 +38,9 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "D:/Angular_CLI/projects/ng-project/monorepo/packages/devkit-core/utilities",
+    "last_opened_file_path": "D:/Angular_CLI/projects/ng-project/monorepo/packages/utilities/dist",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
@@ -51,8 +52,10 @@
     "npm.build (1).executor": "Run",
     "npm.build (2).executor": "Run",
     "npm.build.executor": "Run",
+    "npm.build:cli.executor": "Run",
     "npm.build:core.executor": "Run",
     "npm.build:tsc.executor": "Run",
+    "npm.build:utilities.executor": "Run",
     "npm.build:watch.executor": "Run",
     "npm.clean:all.executor": "Run",
     "npm.cli -> build.executor": "Run",
@@ -84,6 +87,8 @@
     "npm.sc:build.executor": "Run",
     "npm.scheamtic -> build.executor": "Run",
     "npm.schematics::watch.executor": "Run",
+    "npm.test (1).executor": "Debug",
+    "npm.test.executor": "Debug",
     "npm.tsc:compile.executor": "Run",
     "npm.tsc:watch (1).executor": "Run",
     "npm.tsc:watch.executor": "Run",
@@ -96,52 +101,62 @@
     "npm.watch:core.executor": "Run",
     "npm.watch:sc.executor": "Run",
     "npm.watch:schematics.executor": "Run",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.new.ui",
-    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\monorepo\\packages\\devkit-core\\node_modules\\typescript\\lib"
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\monorepo\\node_modules\\typescript\\lib"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\utilities\dist" />
+      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\utilities\src" />
+      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\utilities" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core\utilities" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-cli\src\commands" />
-      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core\workspace\json" />
-      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-core" />
-      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-cli\dist\lib" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-cli\src\commands\core" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-cli\src\commands" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-cli\src\commands\angular" />
       <recent name="D:\Angular_CLI\projects\ng-project\monorepo\packages\devkit-cli\src\commands\common" />
       <recent name="D:\Angular_CLI\projects\ng-project\sample\packages\tslib\projects\tslib\src" />
-      <recent name="D:\Angular_CLI\projects\ng-project\sample\packages\tslib\src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev:sample">
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/monorepo/packages/schematics/package.json" />
+  <component name="RunManager" selected="npm.watch:cli">
+    <configuration name="build:cli" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-cli/package.json" />
       <command value="run" />
       <scripts>
-        <script value="build" />
+        <script value="build:cli" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dev (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/sample2/package.json" />
+    <configuration name="build:utilities" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/monorepo/packages/utilities/package.json" />
       <command value="run" />
       <scripts>
-        <script value="dev" />
+        <script value="build:utilities" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="dev:sample" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/sample2/package.json" />
+    <configuration name="test (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/sample/test/package.json" />
       <command value="run" />
       <scripts>
-        <script value="dev:sample" />
+        <script value="test" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="test" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -157,34 +172,34 @@
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="watch:core" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-core/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="watch:core" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="npm.dev:sample" />
-        <item itemvalue="npm.dev (1)" />
-        <item itemvalue="npm.watch:core" />
         <item itemvalue="npm.watch:cli" />
-        <item itemvalue="npm.build" />
+        <item itemvalue="npm.build:utilities" />
+        <item itemvalue="npm.test (1)" />
+        <item itemvalue="npm.test" />
+        <item itemvalue="npm.build:cli" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17011.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-WS-251.25410.117" />
       </set>
     </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="35bf29fa-fd2d-4692-9434-50d6ffce3e32" name="Changes" comment="" />
+      <created>1746763250391</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746763250391</updated>
+    </task>
+    <servers />
+  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
@@ -196,10 +211,39 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-cli/src/workspace/ws.help.ts</url>
-          <line>52</line>
-          <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="60" />
+          <url>file://$PROJECT_DIR$/monorepo/node_modules/@angular/cli/src/command-builder/schematics-command-module.js</url>
+          <line>293</line>
+          <option name="timeStamp" value="67" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/sample/test/node_modules/@angular/cli/src/command-builder/schematics-command-module.js</url>
+          <line>293</line>
+          <option name="timeStamp" value="68" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/sample/test/node_modules/@angular/cli/src/commands/generate/cli.js</url>
+          <line>32</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/sample/test/node_modules/.pnpm/@angular+cli@19.2.11_@types+node@22.15.16_chokidar@4.0.3/node_modules/@angular/cli/src/commands/generate/cli.js</url>
+          <line>80</line>
+          <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/sample/test/node_modules/.pnpm/@angular+cli@19.2.11_@types+node@22.15.16_chokidar@4.0.3/node_modules/@angular/cli/src/utilities/config.js</url>
+          <line>247</line>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/sample/test/node_modules/.pnpm/@angular+cli@19.2.11_@types+node@22.15.16_chokidar@4.0.3/node_modules/@angular/cli/src/utilities/config.js</url>
+          <line>254</line>
+          <option name="timeStamp" value="73" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/sample/test/node_modules/.pnpm/@angular+cli@19.2.11_@types+node@22.15.16_chokidar@4.0.3/node_modules/@angular/cli/src/utilities/config.js</url>
+          <line>242</line>
+          <option name="timeStamp" value="74" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

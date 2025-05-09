@@ -1,0 +1,46 @@
+{
+ "$schema": "./node_modules/@ngdev/cli/lib/schema.json",
+ "name": "@sample/exec",
+ "appsDir": "apps",
+ "libsDir": "packages",
+ "cli": {
+   "packageManager": "pnpm",
+   "ngVersion": "19.2.11",
+   "loggerLevel": "info",
+    "collections": {
+     "angular": ["@schematics/angular"],
+      "ngdev": ["@ngdev/schematics"]
+     }
+  },
+  "schematics": {
+      "@schematics/angular:new-app": {
+        "standalone": true,
+        "inlineStyle": false,
+        "inlineTemplate": false,
+        "viewEncapsulation": "None",
+        "prefix": "t",
+        "minimal": true,
+        "routing": true,
+        "skipTests": true,
+        "packageManager": "pnpm",
+        "style": "scss",
+        "ssr": false,
+        "serverRouting": false
+      },
+      "@schematics/angular:new-lib": {
+              "standalone": true,
+              "inlineStyle": false,
+              "inlineTemplate": false,
+              "viewEncapsulation": "None",
+              "prefix": "t",
+              "minimal": true,
+              "routing": true,
+              "skipTests": true,
+              "packageManager": "pnpm",
+              "style": "scss",
+              "ssr": false,
+              "serverRouting": false
+            }
+    },
+ "projects": {}
+}

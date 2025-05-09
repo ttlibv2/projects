@@ -6,17 +6,17 @@ import {
 import { json } from "@angular-devkit/core";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { assertIsError } from "../utilities/error";
-import { askConfirmation, askQuestion } from "../utilities/prompt";
-import { isTTY } from "../utilities/tty";
+import { assertIsError } from "../../utilities/error";
+import { askConfirmation, askQuestion } from "../../utilities/prompt";
+import { isTTY } from "../../utilities/tty";
 import {
   CommandModule,
   CommandModuleError,
-  CommandModuleImplementation,
+  ICommandModule,
   CommandScope,
   OtherOptions,
 } from "./abstract.cmd";
-import { Option, parseJsonSchemaToOptions } from "./helper/json-schema";
+import { Option, parseJsonSchemaToOptions } from "../helper/json-schema";
 
 export interface MissingTargetChoice {
   name: string;
@@ -25,7 +25,7 @@ export interface MissingTargetChoice {
 
 export abstract class ArchitectBaseCommandModule<T extends object>
   extends CommandModule<T>
-  implements CommandModuleImplementation<T>
+  implements ICommandModule<T>
 {
   override scope = CommandScope.In;
   protected readonly missingTargetChoices: MissingTargetChoice[] | undefined;

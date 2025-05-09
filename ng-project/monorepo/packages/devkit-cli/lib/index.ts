@@ -1,7 +1,7 @@
 import { writeErrorToLogFile } from "../src/utilities/log-file";
 import { runCommand } from "../src/commands/runner.cmd";
 import { Logger, colors } from "@ngdev/devkit-core/utilities";
-import { CommandModuleError } from "../src/commands/abstract.cmd";
+import { CommandModuleError } from "../src/commands/core/abstract.cmd";
 import { ERROR_PREFIX } from "../src/utilities/environment";
 import { DevWorkspace } from '../src/workspace';
 

@@ -3,8 +3,8 @@ import { workspaces } from "@angular-devkit/core";
 import { Argv } from "yargs";
 import { ArchitectBaseCommandModule } from "./architectbase.cmd";
 import {
-  CommandModuleImplementation,
-  RunOptions,
+  ICommandModule,
+  ArgOption,
   OtherOptions,
 } from "./abstract.cmd";
 
@@ -15,7 +15,7 @@ export interface ArchitectCommandArgs {
 
 export abstract class ArchitectCommandModule
   extends ArchitectBaseCommandModule<ArchitectCommandArgs>
-  implements CommandModuleImplementation<ArchitectCommandArgs>
+  implements ICommandModule<ArchitectCommandArgs>
 {
   abstract readonly multiTarget: boolean;
 
@@ -87,7 +87,7 @@ export abstract class ArchitectCommandModule
   }
 
   async run(
-    options: RunOptions<ArchitectCommandArgs> & OtherOptions,
+    options: ArgOption<ArchitectCommandArgs> & OtherOptions,
   ): Promise<number | void> {
     const target = this.getArchitectTarget();
 

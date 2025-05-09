@@ -1,99 +1,89 @@
-import { CommandScope, RunOptions, OtherOptions, LocalArgv } from "./abstract.cmd";
-import { SchematicsCommandArgs, SchematicsCommandModule, SchematicsExecutionOptions } from './schematics.cmd';
-import { RootCommands } from "./command.list";
-import { Collection } from "../collection";
-import { PkgManagerFactory } from "@ngdev/devkit-core/pkgmanager";
-import { RunnerFactory } from "@ngdev/devkit-core/runners";
-import { paths } from "./helper/paths";
+import {PkgManagerFactory} from "@ngdev/devkit-core/pkgmanager";
+import {RunnerFactory} from "@ngdev/devkit-core/runners";
+import { SchematicArg, SchematicsCommand } from './core/schematics.cmd';
+import { ArgOption, CommandScope, LocalArgv } from './core/abstract.cmd';
+import { RootCommands } from './command.list';
+import { Collection } from '../collection';
 
-interface NewCommandArgs extends SchematicsCommandArgs {
-  collection?: string;
+interface NewArgs extends SchematicArg {
+    collection?: string;
+    packageManager?: 'pnpm';
+    appName?: string;
+    libName?: string;
+    name?: string;
 }
 
-export default class NewCommandModule extends SchematicsCommandModule<NewCommandArgs> {
-  private readonly schematicName = "new";
-  override scope = CommandScope.Out;
-  protected override allowPrivateSchematics = true;
+export default class NewCommand extends SchematicsCommand<NewArgs> {
+    readonly command = 'new <name>';
+    readonly aliases = RootCommands['new'].aliases;
+    readonly describe = 'Creates a new monorepo workspace.';
+    readonly scope = CommandScope.Out;
+    readonly schematicName = 'dev-new';
 
-  command = "new [name]";
-  aliases = RootCommands["new"].aliases;
-  describe = "Creates a new workspace.";
+    async builder(argv: LocalArgv): Promise<LocalArgv<NewArgs>> {
+        argv = await super.builder(argv);
 
-  async builder(argv: LocalArgv): Promise<LocalArgv<NewCommandArgs>> {
-    const localYargs = (await super.builder(argv))
-      .option("collection", {
-        alias: ["c"], type: "string",
-        describe: "A collection of collection to use in generating the initial project."
-      })
-      .option('packageManager', {
-        type: "string",
-        choices: ["pnpm"],
-        default: "pnpm"
-      })
-      .option('appName', {
-        type: "string",
-      })
-      .option('libName', {
-        type: "string",
-      });
+        // add default option
+        argv.positional('name', {type: 'string', describe: 'The name monorepo'});
+        argv.option('collection', { alias: ['c'], type: 'string', describe: 'A collection of collection to use in generating the initial project.' });
+        argv.option('packageManager', { type: 'string', choices: ['pnpm'], default: 'pnpm', describe: 'The package manager project' });
+        argv.option('appName', { type: 'string', describe: 'The name application' });
+        argv.option('libName', { type: 'string', describe: 'The name library' });
 
-    const { options: { collection: collectionNameFromArgs } } = this.context.args;
-    const collectionName = typeof collectionNameFromArgs === "string" ? collectionNameFromArgs : await this.getCollectionFromConfig(this.schematicName);
-    const workflow = this.getOrCreateWorkflowForBuilder(collectionName);
-    const collection = workflow.engine.createCollection(collectionName);
-    const options = await this.getSchematicOptions(collection, this.schematicName, workflow);
-    return this.addSchemaOptionsToCommand(localYargs, options);
-  }
-
-
-
-
-  async run(options: RunOptions<NewCommandArgs> & OtherOptions): Promise<number | void> {
-    const collectionName = options.collection ?? (await this.getCollectionFromConfig(this.schematicName));
-    const { dryRun, force, interactive, defaults, collection, packageManager, appName, libName, ...schematicOptions } = options;
-
-    const packageName = <any>packageManager ?? 'pnpm';
-    const pnpmVersion = await PkgManagerFactory.create(packageName).version;
-    const ngVersion  = await RunnerFactory.angular().getVersion();
-
-    await this.addSmartDefaultProvider({
-      dryRun, force, interactive, defaults,
-      collectionName,
-      providers: {
-        "package-version": () => pnpmVersion,
-        "package-manager": () => packageName,
-        "ngcli-version": () => ngVersion
-      }
-
-    });
-
-    schematicOptions.appsDir = schematicOptions.appsDir ?? 'apps';
-    schematicOptions.libsDir = schematicOptions.libsDir ?? 'packages';
-
-    const number = await this.runSchematic({
-      collectionName, schematicOptions,
-      schematicName: this.schematicName,
-      executionOptions: { dryRun, force, interactive, defaults }
-    });
-
-    if(number == 0) {
-      this.createDir(schematicOptions);
+        // add option from schematic [new]
+        const {options: {collection}} = this.context.args;
+        const collectionName = <string>collection ?? await this.getCollectionFromConfig();
+        const workflow = this.createWorkflowBuilder(collectionName);
+        const schematicOption = await workflow.getSchematicOption(this.schematicName);
+        return this.addSchemaOptionsToCommand<any>(argv, schematicOption);
     }
 
-    return number;
-  }
+    async run(options: ArgOption<NewArgs>): Promise<number | void> {
+        const collectionName = options.collection ?? await this.getCollectionFromConfig();
+        const { dryRun, force, interactive, defaults, collection, packageManager, appName, libName, ...schematicOptions } = options;
 
-  private createDir(schematicOptions: any) {
-    let dir = <any>schematicOptions.directory;
+        const packageName = <any>packageManager ?? 'pnpm';
+        const pnpmVersion = await PkgManagerFactory.create(packageName).version;
+        const ngVersion  = await RunnerFactory.angular().getVersion();
 
-    // If scoped project (i.e. "@foo/bar"), convert directory to "foo/bar".
-    if (!dir && schematicOptions.name) {
-      const name: string = <any>schematicOptions.name;
-      dir = name.startsWith('@') ? name.slice(1) : schematicOptions.name;
+        await this.addSmartDefaultProvider({
+            dryRun, force, interactive, defaults,
+            collectionName,
+            providers: {
+                "package-version": () => pnpmVersion,
+                "package-manager": () => packageName,
+                "ngcli-version": () => ngVersion
+            }
+
+        });
+
+        schematicOptions.appsDir = schematicOptions.appsDir ?? 'apps';
+        schematicOptions.libsDir = schematicOptions.libsDir ?? 'packages';
+
+        const number = await this.runSchematic({
+            collectionName, schematicOptions,
+            schematicName: this.schematicName,
+            executionOptions: { dryRun, force, interactive, defaults }
+        });
+
+        // if(number == 0) {
+        //     this.createDir(schematicOptions);
+        // }
+
+        return number;
     }
 
-    paths.mkdir(paths.join(dir, <string>schematicOptions.appsDir));
-    paths.mkdir(paths.join(dir, <string>schematicOptions.libsDir));
-  }
+    /** Find a collection from config that has an `ng-new` schematic. */
+    private async getCollectionFromConfig(): Promise<string> {
+        for (const collectionName of await this.getSchematicCollections()) {
+            const workflow = this.createWorkflowBuilder(collectionName);
+            const collection = workflow.engine.createCollection(collectionName);
+            const schematicsInCollection = collection.description.schematics;
+            if (Object.keys(schematicsInCollection).includes(this.schematicName)) {
+                return collectionName;
+            }
+        }
 
+        return Collection.NgDevSC;
+    }
 }

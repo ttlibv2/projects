@@ -1,8 +1,7 @@
-import { workspaces as ws } from "@ngdev/devkit-core";
-import * as path from "node:path";
-import { defaultGlobalPath, getConfigPath } from "./ws.help";
-import { existsSync } from "node:fs";
-import { join } from 'path';
+import { workspaces as ws } from '@ngdev/devkit-core';
+import * as path from 'node:path';
+import { defaultGlobalPath, getConfigPath } from './ws.help';
+import { existsSync } from 'node:fs';
 
 function applyWorkspaceProp(prop: ws.WorkspaceProp) {
   return Object.assign({}, ws.defaultWorkspace(), prop);
@@ -48,7 +47,7 @@ export class DevWorkspace {
     return schematics[schematic] ?? {};
   }
 
-  get collections(): string[] {
+  get collections(): Record<string, string[]> {
     return this.cli?.collections;
   }
 
@@ -67,13 +66,17 @@ export class DevWorkspace {
     await ws.writeWorkspace(host, this.prop, path, {override: true});
   }
 
-  static async load(path: string): Promise<DevWorkspace> {
-    const { workspace, host, filePath } = await ws.readWorkspace(
-      ws.createPromiseHost(), path);
+  hasProject(name: string): boolean {
+    return this.projects?.has(name) ?? false;
+  }
 
-    const wb = new DevWorkspace(filePath, host, workspace);
-    //await wb.write({path: join(wb.baseDir, "test.json")});
-    return wb;
+  getCollectionProject(name: string): string[] {
+    return this.projects?.get(name)?.collections ?? [];
+  }
+
+  static async load(path: string): Promise<DevWorkspace> {
+    const { workspace, host, filePath } = await ws.readWorkspace(ws.createPromiseHost(), path);
+    return new DevWorkspace(filePath, host, workspace);
   }
 
   static async global(): Promise<DevWorkspace> {

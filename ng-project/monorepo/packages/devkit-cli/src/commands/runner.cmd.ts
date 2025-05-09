@@ -2,7 +2,7 @@ import yargs = require('yargs');
 import { Parser } from 'yargs/helpers';
 import { colors, Logger } from '@ngdev/devkit-core/utilities';
 import { assertIsError } from '../utilities/error';
-import { CommandContext, CommandModuleError } from './abstract.cmd';
+import { CommandContext, CommandModuleError } from './core/abstract.cmd';
 import {
     addCommandModuleToYargs,
     CommandModuleConstructor
@@ -26,13 +26,6 @@ const yargsParser = Parser as unknown as typeof Parser;
 const helpDesc = `See ${red('--help')} for a list of available commands`;
 const invalidCmd = `Invalid command: ${bgYellow(red(` %s `))}\n${helpDesc}`;
 const invalidArg = `Invalid argument: ${bgYellow(red(` %s `))}\n${helpDesc}`;
-
-
-function runValidation(aliases: Dictionary<string[]>, positionalMap: Dictionary<string[]>, parseErrors: Error | null, isDefaultCommand?: boolean) {
-    return (argv: Arguments) => {
-        console.log(`runValidation`, argv);
-    };
-}
 
 
 export async function runCommand(args: string[], logger: Logger): Promise<number> {

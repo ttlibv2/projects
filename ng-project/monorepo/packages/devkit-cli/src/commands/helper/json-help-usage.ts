@@ -1,5 +1,5 @@
 import * as yargs from "yargs";
-import { FullDescribe } from "../abstract.cmd";
+import { FullDescribe } from "../core/abstract.cmd";
 
 interface JsonHelpOption {
   name: string;

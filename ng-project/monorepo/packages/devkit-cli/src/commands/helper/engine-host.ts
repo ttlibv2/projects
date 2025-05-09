@@ -4,9 +4,9 @@ import {
   Tree,
 } from "@angular-devkit/schematics";
 import {
-  FileSystemCollectionDesc,
-  NodeModulesEngineHost,
-} from "@angular-devkit/schematics/tools";
+  FileSystemCollectionDesc, FileSystemSchematicDesc,
+  NodeModulesEngineHost
+} from '@angular-devkit/schematics/tools';
 import { parse as parseJson } from "jsonc-parser";
 import { readFileSync } from "node:fs";
 import { Module, createRequire } from "node:module";
@@ -17,13 +17,9 @@ import { assertIsError } from "../../utilities/error";
 /**
  * Environment variable to control schematic package redirection
  */
-const schematicRedirectVariable =
-  process.env["NG_SCHEMATIC_REDIRECT"]?.toLowerCase();
+const schematicRedirectVariable = process.env["NG_SCHEMATIC_REDIRECT"]?.toLowerCase();
 
-function shouldWrapSchematic(
-  schematicFile: string,
-  schematicEncapsulation: boolean,
-): boolean {
+function shouldWrapSchematic(schematicFile: string, schematicEncapsulation: boolean): boolean {
   // Check environment variable if present
   switch (schematicRedirectVariable) {
     case "0":
@@ -68,20 +64,22 @@ function shouldWrapSchematic(
 }
 
 export class EngineHost extends NodeModulesEngineHost {
-  protected override _resolveReferenceString(
-    refString: string,
-    parentPath: string,
-    collectionDescription?: FileSystemCollectionDesc,
-  ) {
+
+  createSchematicDescription(name: string, collection: FileSystemCollectionDesc): FileSystemSchematicDesc | null {
+    console.warn(`createSchematicDescription`)
+    return super.createSchematicDescription(name, collection);
+  }
+
+  protected override _resolveReferenceString(refString: string, parentPath: string, collectionDescription?: FileSystemCollectionDesc) {
+    console.error(`_resolveReferenceString`);
+
     const [path, name] = refString.split("#", 2);
+
     // Mimic behavior of ExportStringRef class used in default behavior
-    const fullPath =
-      path[0] === "." ? resolve(parentPath ?? process.cwd(), path) : path;
+    const fullPath = path[0] === "." ? resolve(parentPath ?? process.cwd(), path) : path;
 
     const referenceRequire = createRequire(__filename);
-    const schematicFile = referenceRequire.resolve(fullPath, {
-      paths: [parentPath],
-    });
+    const schematicFile = referenceRequire.resolve(fullPath, { paths: [parentPath] });
 
     if (
       shouldWrapSchematic(schematicFile, !!collectionDescription?.encapsulation)

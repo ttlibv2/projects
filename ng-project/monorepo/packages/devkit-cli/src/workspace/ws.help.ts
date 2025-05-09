@@ -5,7 +5,7 @@ import { findUp } from "../utilities/find-up";
 import { DevWorkspace } from "./ws.type";
 import { isJsonObject, json } from "@angular-devkit/core";
 
-const fileConfigName = "project.json";
+const fileConfigName = "ngdev-cli.json";
 export const joinGlobal = (dir: any) => path.join(dir, ".ngdev", fileConfigName);
 
 export const defaultGlobalPath = () => joinGlobal(os.homedir());
@@ -26,7 +26,7 @@ export function getConfigPath(level: "global" | "local"): string | null {
   return level === "global" ? getGlobalFilePath() : getProjectFilePath();
 }
 
-export async function getSchematicDefaults(collection: string, schematic: string, project?: string | null,): Promise<{}> {
+export async function getSchematicDefaults(collection: string, schematic: string, project?: string | null): Promise<{}> {
  //console.log(`ws.help => getSchematicDefaults: `, `${collection}:${schematic}`);
 
   const result = {};
@@ -70,16 +70,8 @@ export async function getSchematicDefaults(collection: string, schematic: string
 
 function getGlobalFilePath(): string | null {
   const join = (dir: any) => (dir ? joinGlobal(dir) : null);
-  const dirPaths: string[] = [
-    <string>process.env["XDG_CONFIG_HOME"],
-    process.cwd(),
-    __dirname,
-    os.homedir(),
-  ];
-  return (
-    dirPaths.map((dir) => join(dir)).find((file) => file && existsSync(file)) ??
-    null
-  );
+  const dirPaths: string[] = [<string>process.env["XDG_CONFIG_HOME"], process.cwd(), __dirname, os.homedir(),];
+  return dirPaths.map((dir) => join(dir)).find((file) => file && existsSync(file)) ?? null;
 }
 
 function getProjectFilePath(projectPath?: string): string | null {

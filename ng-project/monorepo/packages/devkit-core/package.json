@@ -9,6 +9,7 @@
     "prebuild": "pnpm run del:dist",
     "postbuild": "pnpm run copy:src",
     "compiler": "tsc -p tsconfig.json",
+    "build:core": "pnpm run build",
     "watch:core": "tsc -p tsconfig.json --watch",
     "copy:src": "cpx package.json dist && cpx src/*.{md,json} dist/src",
     "del:dist": "rimraf --glob dist/{logui,pkgmanager,runners,utilities,workspace,*.js,*.js.*,*.ts,*.json}"

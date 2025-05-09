@@ -1,0 +1,25 @@
+{
+  "name": "@ngdev/@sample/exec",
+  "version": "0.0.0",
+  "description": "monorepo project",
+  "private": true,
+  "scripts": {
+    "setup": "pnpm run clean && pnpm run init",
+    "clean": "npx rimraf --glob **/node_modules **/dist **/.angular ./pnpm-lock.yaml",
+    "init": "pnpm install && husky",
+    "link": "pnpm --filter './packages/*' dev:link",
+    "build": "turbo run build",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "eslint": "^9.22.0",
+    "prettier": "^3.5.3",
+    "turbo": "^2.4.4",
+    "rimraf": "^6.0.1",
+    "husky": "^9.1.7",
+    "typescript": "~5.8.2",
+    "@angular/cli": "19.2.11",
+    "@ngdev/cli": "link:../monorepo/packages/devkit-cli/dist"
+  },
+  "packageManager": "pnpm@10.10.0"
+}
