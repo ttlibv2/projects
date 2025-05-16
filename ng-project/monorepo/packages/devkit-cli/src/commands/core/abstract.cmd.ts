@@ -7,7 +7,7 @@ import { Logger } from "@ngdev/devkit-core/utilities";
 import { AbstractPkgManager } from "@ngdev/devkit-core/pkgmanager";
 import { DevWorkspace } from "../../workspace";
 import { Parser as yargsParser } from "yargs/helpers";
-import * as yargs from '../../typings/yargs';
+import * as yargs from 'yargs';
 
 export type ArgOption<T> = { [key in keyof T as CamelCaseKey<key>]: T[key] } & OtherOptions;
 
@@ -188,7 +188,7 @@ export abstract class CommandModule<T extends {} = {}> implements ICommandModule
    * Adds schema options to a command also this keeps track of options that are required for analytics.
    * **Note:** This method should be called from the command bundler method.
    */
-  protected addSchemaOptionsToCommand<T>(localYargs: Argv<T>, options: Option[]): Argv<T> {
+  protected addSchemaOptionsToCommand<T>(localYargs: Argv<T>, options: Iterable<Option>): Argv<T> {
 
     addSchemaOptionsToCommand(localYargs, options,
       this.context.args.options.help,

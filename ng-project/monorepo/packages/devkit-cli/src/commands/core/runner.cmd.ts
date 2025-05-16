@@ -1,26 +1,26 @@
 import yargs = require('yargs');
 import { Parser } from 'yargs/helpers';
 import { colors, Logger } from '@ngdev/devkit-core/utilities';
-import { assertIsError } from '../utilities/error';
-import { CommandContext, CommandModuleError } from './core/abstract.cmd';
+import { assertIsError } from '../../utilities/error';
+import { CommandContext, CommandModuleError } from './abstract.cmd';
 import {
     addCommandModuleToYargs,
     CommandModuleConstructor
-} from './helper/add-cmd-to-args';
-import { jsonHelpUsage } from './helper/json-help-usage';
-import { normalizeMiddleware } from './helper/normalize-middleware';
+} from '../helper/add-cmd-to-args';
+import { jsonHelpUsage } from '../helper/json-help-usage';
+import { normalizeMiddleware } from '../helper/normalize-middleware';
 import {
     CommandConfig,
     RootCommands,
     RootCommandsAliases
-} from './command.list';
-import { DevWorkspace } from '../workspace';
+} from '../command.list';
+import { DevWorkspace } from '../../workspace';
 import { EnumPkg, PkgManagerFactory } from '@ngdev/devkit-core/pkgmanager';
-import { Arguments, Dictionary } from '../typings/yargs';
+import { Arguments, Dictionary } from '../../typings/yargs';
 
 const { bgYellow, red } = colors;
 
-const pkg = import('../../package.json');
+const pkg = import('../../../package.json');
 
 const yargsParser = Parser as unknown as typeof Parser;
 const helpDesc = `See ${red('--help')} for a list of available commands`;
@@ -37,7 +37,7 @@ export async function runCommand(args: string[], logger: Logger): Promise<number
     const { $0, _, help = false, jsonHelp = false, getYargsCompletions = false, ...rest } = abc;
 
     // When `getYargsCompletions` is true the scriptName 'ngdev' at index 0 is not removed.
-    const positional = getYargsCompletions ? _.slice(1) : _;
+    const positional: any[] = getYargsCompletions ? _.slice(1) : _;
 
     let localYargs: yargs.Argv = yargs(args);
 
@@ -155,9 +155,7 @@ export async function runCommand(args: string[], logger: Logger): Promise<number
  * Get the commands that need to be registered.
  * @returns One or more command factories that needs to be registered.
  */
-async function getCommandsToRegister(
-    commandName: string | number
-): Promise<CommandModuleConstructor[]> {
+async function getCommandsToRegister(commandName: string | number): Promise<CommandModuleConstructor[]> {
     const commands: CommandConfig[] = [];
     if (commandName in RootCommands) {
         commands.push(RootCommands[commandName]);

@@ -1,5 +1,5 @@
-import {PkgManagerFactory} from "@ngdev/devkit-core/pkgmanager";
-import {RunnerFactory} from "@ngdev/devkit-core/runners";
+import { PkgManagerFactory } from '@ngdev/devkit-core/pkgmanager';
+import { RunnerFactory } from '@ngdev/devkit-core/runners';
 import { SchematicArg, SchematicsCommand } from './core/schematics.cmd';
 import { ArgOption, CommandScope, LocalArgv } from './core/abstract.cmd';
 import { RootCommands } from './command.list';
@@ -32,19 +32,22 @@ export default class NewCommand extends SchematicsCommand<NewArgs> {
 
         // add option from schematic [new]
         const {options: {collection}} = this.context.args;
-        const collectionName = <string>collection ?? await this.getCollectionFromConfig();
-        const workflow = this.createWorkflowBuilder(collectionName);
+        const collectionName = <string>collection ?? await this.findCollectionBy();
+        const workflow = this.getOrCreateWorkflowBuilder(collectionName);
         const schematicOption = await workflow.getSchematicOption(this.schematicName);
-        return this.addSchemaOptionsToCommand<any>(argv, schematicOption);
+        return this.addSchemaOptionsToCommand<any>(argv, schematicOption.values());
     }
 
     async run(options: ArgOption<NewArgs>): Promise<number | void> {
-        const collectionName = options.collection ?? await this.getCollectionFromConfig();
+        const collectionName = options.collection ?? await this.findCollectionBy();
         const { dryRun, force, interactive, defaults, collection, packageManager, appName, libName, ...schematicOptions } = options;
 
         const packageName = <any>packageManager ?? 'pnpm';
         const pnpmVersion = await PkgManagerFactory.create(packageName).version;
         const ngVersion  = await RunnerFactory.angular().getVersion();
+
+        const workflow = await this.getOrCreateWorkflowExecution(collectionName, {   dryRun, force, interactive, defaults });
+
 
         await this.addSmartDefaultProvider({
             dryRun, force, interactive, defaults,
@@ -60,30 +63,20 @@ export default class NewCommand extends SchematicsCommand<NewArgs> {
         schematicOptions.appsDir = schematicOptions.appsDir ?? 'apps';
         schematicOptions.libsDir = schematicOptions.libsDir ?? 'packages';
 
-        const number = await this.runSchematic({
+        if(!schematicOptions.packageManager) {
+           // schematicOptions.packageManager = packageName;
+        }
+
+        return await this.runSchematic({
             collectionName, schematicOptions,
             schematicName: this.schematicName,
             executionOptions: { dryRun, force, interactive, defaults }
         });
-
-        // if(number == 0) {
-        //     this.createDir(schematicOptions);
-        // }
-
-        return number;
     }
 
-    /** Find a collection from config that has an `ng-new` schematic. */
-    private async getCollectionFromConfig(): Promise<string> {
-        for (const collectionName of await this.getSchematicCollections()) {
-            const workflow = this.createWorkflowBuilder(collectionName);
-            const collection = workflow.engine.createCollection(collectionName);
-            const schematicsInCollection = collection.description.schematics;
-            if (Object.keys(schematicsInCollection).includes(this.schematicName)) {
-                return collectionName;
-            }
-        }
-
-        return Collection.NgDevSC;
+    /** Find a collection from config that has an `dev-new` schematic. */
+    private async findCollectionBy(): Promise<string> {
+       return this.findCollectionBySchematic(this.schematicName, Collection.NgDevSC);
     }
+
 }

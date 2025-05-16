@@ -2,8 +2,8 @@ import { getLocalPackageUrl } from "@ngdev/devkit-core/utilities";
 import { paths } from "../commands/helper/paths";
 
 export function loadCmdConfig(currentDir: string) {
-  const packageUrl = getLocalPackageUrl('@schematics/angular', currentDir);
+  const packageUrl = getLocalPackageUrl('@angular/cli', currentDir);
   if(!packageUrl) throw new Error(`The package [@schematics/angular] not install`);
-  else return require(paths.join(packageUrl, 'src/commands/command-config'));
+  else return import(paths.join(packageUrl, 'src/commands/command-config'));
 
 }

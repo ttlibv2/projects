@@ -1,5 +1,5 @@
 import { Asserts } from "./asserts";
-import { BiFunction, Callback } from "./functions";
+import { BiFunction, Callback, Consumer } from './functions';
 import { Objects } from "./objects";
 const { notNull, isNull, equals } = Objects;
 
@@ -319,6 +319,15 @@ export class TsMap<K extends keyof any, V> extends Map<K, V> {
     putIfAbsent(key: K, value: V): V | undefined {
         let v = this.get(key);
         return isNull(v) ? this.put(key, value) : v;
+    }
+
+    update(key: K, callback: Consumer<V>): void {
+        let v = this.get(key);
+        if(v && callback) callback(v);
+    }
+
+    removeAll(...keys: K[]): void {
+        keys.forEach(key => this.remove(key));
     }
 
     remove(key: K): boolean ;

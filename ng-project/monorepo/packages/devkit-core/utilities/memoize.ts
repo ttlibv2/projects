@@ -30,6 +30,7 @@ export function memoize<This, Args extends unknown[], Return>(
     const key = `${kind}:${<any>name}:${JSON.stringify(args)}`;
 
     if (cache.has(key)) {
+     // console.log(key, cache.has(key))
       return cache.get(key) as Return;
     }
 

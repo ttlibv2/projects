@@ -7,8 +7,9 @@ import { normalize as devkitNormalize } from '@angular-devkit/core';
 import { relative } from 'node:path';
 import { isTTY } from '../../utilities/tty';
 import { Option, parseJsonSchemaToOptions } from '../helper/json-schema';
+import { TsMap } from '@ngdev/utilities';
 
-type OmitOption = 'registry' | 'engineHostCreator' | 'optionTransforms';
+type OmitOption = 'registry' | 'engineHostCreator' | 'optionTransforms' | 'schemaValidation';
 type SchematicDefaultsFunc = (collectionName: string, schematicName: string, projectName: string) => Promise<Record<string, any>>;
 
 type SchematicCollection = NgCollection<FileSystemCollectionDescription, FileSystemSchematicDescription>;
@@ -17,7 +18,7 @@ type SchematicCollection = NgCollection<FileSystemCollectionDescription, FileSys
 export interface SCExecutionOptions extends Omit<NodeWorkflowOptions, OmitOption> {
 
     resolvePaths: string[];
-    schemaValidation: boolean;
+   // schemaValidation: boolean;
 
     /**Enable interactive input prompts*/
     interactive: boolean;
@@ -47,6 +48,7 @@ export class SCNodeWorkflow extends NodeWorkflow {
     constructor(workflowRoot: string, options: NodeWorkflowOptions & {collectionName: string}) {
         super(workflowRoot, options);
         this.collectionName = options.collectionName;
+        //this.createCollection(this.collectionName);
     }
 
     createCollection(collectionName?: string): SchematicCollection {
@@ -57,14 +59,20 @@ export class SCNodeWorkflow extends NodeWorkflow {
         return this.createCollection(collectionName).listSchematicNames(includeHidden);
     }
 
-    existSchematicName(schematicName: string, collectionName?: string): boolean {
+    existCollection(collection: string): boolean {
+        try{this.createCollection(collection); return true;}
+        catch (err) { return false; }
+    }
+
+    existSchematic(schematicName: string, collectionName?: string): boolean {
         return this.listSchematicNames(collectionName).includes(schematicName);
     }
 
-    async getSchematicOption(schematicName: string, collectionName?: string): Promise<Option[]> {
+    async getSchematicOption(schematicName: string, collectionName?: string): Promise<TsMap<string, Option>> {
         const collection = this.createCollection(collectionName);
         const {description: {schemaJson}} = collection.createSchematic(schematicName, true);
-        return schemaJson ? parseJsonSchemaToOptions(this.registry, schemaJson) : [];
+        const options: Option[] = schemaJson ? await parseJsonSchemaToOptions(this.registry, schemaJson) : [];
+        return new TsMap(options.map(opt => [opt.name, opt]));
     }
 
 
@@ -96,6 +104,7 @@ export class SCNodeWorkflow extends NodeWorkflow {
 
         const workflow = new SCNodeWorkflow(workflowRoot, {
             ...nodeOptions,
+            schemaValidation: true,
             registry: new schema.CoreSchemaRegistry(formats.standardFormats),
             engineHostCreator: (options) => new EngineHost(options.resolvePaths),
             optionTransforms: [
@@ -113,6 +122,7 @@ export class SCNodeWorkflow extends NodeWorkflow {
         const workingDir = devkitNormalize(relative(workflowRoot, process.cwd()),);
         workflow.registry.addSmartDefaultProvider("workingDirectory", () => workingDir === "" ? undefined : workingDir );
         workflow.registry.addSmartDefaultProvider("projectName", () => getProjectName());
+        workflow.engineHost.registerOptionsTransform(async (schematic, options) => options);
 
         if (options.interactive !== false && isTTY()) {
             applyInquirerPrompts(workflow, {defaults});

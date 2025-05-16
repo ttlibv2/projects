@@ -54,6 +54,7 @@
     "npm.build.executor": "Run",
     "npm.build:cli.executor": "Run",
     "npm.build:core.executor": "Run",
+    "npm.build:sc.executor": "Run",
     "npm.build:tsc.executor": "Run",
     "npm.build:utilities.executor": "Run",
     "npm.build:watch.executor": "Run",
@@ -87,8 +88,11 @@
     "npm.sc:build.executor": "Run",
     "npm.scheamtic -> build.executor": "Run",
     "npm.schematics::watch.executor": "Run",
-    "npm.test (1).executor": "Debug",
+    "npm.test (1).executor": "Run",
     "npm.test.executor": "Debug",
+    "npm.test:aaa (1).executor": "Debug",
+    "npm.test:aaa.executor": "Debug",
+    "npm.test:sample.executor": "Run",
     "npm.tsc:compile.executor": "Run",
     "npm.tsc:watch (1).executor": "Run",
     "npm.tsc:watch.executor": "Run",
@@ -101,7 +105,8 @@
     "npm.watch:core.executor": "Run",
     "npm.watch:sc.executor": "Run",
     "npm.watch:schematics.executor": "Run",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "npm.watch:utilities.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "ts.external.directory.path": "D:\\Angular_CLI\\projects\\ng-project\\monorepo\\node_modules\\typescript\\lib"
   }
 }]]></component>
@@ -121,42 +126,22 @@
       <recent name="D:\Angular_CLI\projects\ng-project\sample\packages\tslib\projects\tslib\src" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.watch:cli">
-    <configuration name="build:cli" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-cli/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build:cli" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="build:utilities" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/monorepo/packages/utilities/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build:utilities" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="test (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="npm.test:aaa (1)">
+    <configuration name="test:aaa (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/sample/test/package.json" />
       <command value="run" />
       <scripts>
-        <script value="test" />
+        <script value="test:aaa" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+    <configuration name="test:aaa" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
       <scripts>
-        <script value="test" />
+        <script value="test:aaa" />
       </scripts>
       <node-interpreter value="project" />
       <envs />
@@ -172,13 +157,33 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="watch:core" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/monorepo/packages/devkit-core/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="watch:core" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="watch:utilities" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/monorepo/packages/utilities/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="watch:utilities" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.test:aaa (1)" />
+        <item itemvalue="npm.test:aaa" />
+        <item itemvalue="npm.watch:utilities" />
+        <item itemvalue="npm.watch:core" />
         <item itemvalue="npm.watch:cli" />
-        <item itemvalue="npm.build:utilities" />
-        <item itemvalue="npm.test (1)" />
-        <item itemvalue="npm.test" />
-        <item itemvalue="npm.build:cli" />
       </list>
     </recent_temporary>
   </component>
@@ -245,7 +250,54 @@
           <line>242</line>
           <option name="timeStamp" value="74" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/node_modules/.pnpm/@angular-devkit+schematics@19.2.8_chokidar@4.0.3/node_modules/@angular-devkit/schematics/src/workflow/base.js</url>
+          <line>110</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/node_modules/.pnpm/@angular-devkit+schematics@19.2.8_chokidar@4.0.3/node_modules/@angular-devkit/schematics/src/workflow/base.js</url>
+          <line>129</line>
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/node_modules/.pnpm/@angular-devkit+schematics@19.2.8_chokidar@4.0.3/node_modules/@angular-devkit/schematics/src/workflow/base.js</url>
+          <line>120</line>
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/node_modules/.pnpm/@angular-devkit+schematics@19.2.8_chokidar@4.0.3/node_modules/@angular-devkit/schematics/src/workflow/base.js</url>
+          <line>123</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-cli/node_modules/@angular-devkit/core/src/json/schema/registry.js</url>
+          <line>328</line>
+          <option name="timeStamp" value="81" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/node_modules/.pnpm/@angular-devkit+core@19.2.8_chokidar@4.0.3/node_modules/@angular-devkit/core/src/json/schema/registry.js</url>
+          <line>531</line>
+          <option name="timeStamp" value="84" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-cli/src/commands/angular.cmd.ts</url>
+          <line>86</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/monorepo/packages/devkit-cli/src/commands/helper/json-schema.ts</url>
+          <line>305</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="88" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="js.build_tools.npm">
+        <watch expression="name" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

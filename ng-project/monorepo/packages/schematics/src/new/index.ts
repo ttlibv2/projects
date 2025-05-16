@@ -6,6 +6,7 @@ import { Schema as NgAppOption } from './schema';
 const packageManager: string = 'pnpm';
 
 export default function(options: NgAppOption): Rule {
+    console.log(`NgAppOption: `, options);
 
     return async (tree: Tree) => {
 

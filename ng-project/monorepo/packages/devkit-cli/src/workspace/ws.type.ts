@@ -47,6 +47,10 @@ export class DevWorkspace {
     return schematics[schematic] ?? {};
   }
 
+  getProject(name: string): ws.ProjectProp | null {
+    return this.projects?.get(name) ?? null;
+  }
+
   get collections(): Record<string, string[]> {
     return this.cli?.collections;
   }

@@ -7,13 +7,13 @@
       "factory": "./src/new",
       "schema": "./src/new/schema.json"
     },
-	 "ng-new-app2": {
+	 "ng-new-app": {
       "description": "Create a angular application project",
       "factory": "./src/angular/new-app",
       "schema": "./src/angular/new-app/schema.json",
 	  "aliases": ["ng-app", "new-app"]
     },
-	 "ng-new-lib2": {
+	 "ng-new-lib": {
       "description": "Create a angular library project",
       "factory": "./src/angular/new-lib",
       "schema": "./src/angular/new-lib/schema.json",

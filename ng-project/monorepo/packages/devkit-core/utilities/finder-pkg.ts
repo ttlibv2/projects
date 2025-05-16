@@ -60,28 +60,38 @@ export async function getPackageFile<T = any>(packageName: string, fileName: str
 
 }
 
+export function getUrlLocalByPackage(packageName: string, ...localPaths: string[]) {
+    if(localPaths.length == 0) localPaths.push(process.cwd());
+
+    for(const projectRoot of localPaths) {
+        const nodeModulesPath = join(projectRoot, 'node_modules');
+        const packagePath = join(nodeModulesPath, packageName);
+        if (existsSync(packagePath)) return packagePath;
+    }
+
+
+
+
+
+
+
+}
 /**
  * Find local or global package path
  * @param packageName the package name to find
- * @param cwd current directory to find
+ * @param localPaths current directory to find
  * */
-export function getLocalPackageUrl(packageName: string, cwd?: string): string | null {
+export function getLocalPackageUrl(packageName: string, ...localPaths: string[]): string | null {
+    if(localPaths.length == 0) localPaths.push(process.cwd());
 
-    // Step 1: Get the current working directory
-    const projectRoot =  cwd ?? process.cwd();
-
-    // Step 2: Check if `node_modules` exists locally
-    const nodeModulesPath = join(projectRoot, 'node_modules');
-
-    if (existsSync(nodeModulesPath)) {
-        // Step 3: Check if the package is installed locally
+    // Get the current working directory
+    for(const projectRoot of localPaths) {
+        const nodeModulesPath = join(projectRoot, 'node_modules');
         const packagePath = join(nodeModulesPath, packageName);
-        if (existsSync(packagePath)) {
-            return packagePath; // Return the local path to the package
-        }
+        if (existsSync(packagePath)) return packagePath;
     }
 
-    // Step 4: Check globally if not found locally
+    // Check globally if not found locally
     const globalNodeModulesPath = getGlobalNodeModulesPath(packageName); // Implement this based on the environment
     if(globalNodeModulesPath != null) {
         const globalPackagePath = join(globalNodeModulesPath, packageName);
@@ -90,7 +100,7 @@ export function getLocalPackageUrl(packageName: string, cwd?: string): string | 
         }
     }
 
-    // Step 5: Return null if the package is not found
+    // Return null if the package is not found
     return null;
 }
 

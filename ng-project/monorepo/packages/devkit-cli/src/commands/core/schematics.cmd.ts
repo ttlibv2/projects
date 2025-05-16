@@ -2,15 +2,17 @@ import { ArgOption, CommandModule, CommandScope, LocalArgv, OtherOptions } from 
 import { memoize } from '@ngdev/devkit-core/utilities';
 import { SCNodeWorkflow } from './sc-workflow';
 import { Collection } from '../../collection';
-import { getProjectByCwd, getSchematicDefaults } from '../../workspace';
+import { getSchematicDefaults } from '../../workspace';
 import { subscribeToWorkflow } from '../helper/schematic-workflow';
 import { UnsuccessfulWorkflowExecution } from '@angular-devkit/schematics';
 import { writeErrorToLogFile } from '../../utilities/log-file';
 import { assertIsError } from '../../utilities/error';
-import { Option } from '../helper/json-schema';
 import { schema } from '@angular-devkit/core';
+import { getProjectName, getResolvePaths } from '../helper/helper';
+import { Option } from '../helper/json-schema';
+import { TsMap } from '@ngdev/utilities';
 
-interface RunSchematicOption {
+export interface RunSchematicOption {
     executionOptions: SchematicsExecutionOptions;
     schematicOptions: OtherOptions;
     collectionName: string;
@@ -76,7 +78,7 @@ export abstract class SchematicsCommand<T extends SchematicArg> extends CommandM
     protected async runSchematic(options: RunSchematicOption): Promise<number> {
         const { logger } = this.context;
         const { schematicOptions, executionOptions, collectionName, schematicName} = options;
-        const workflow = await this.createWorkflowExecution(collectionName, options.executionOptions);
+        const workflow = await this.getOrCreateWorkflowExecution(collectionName, executionOptions);
 
         if (!schematicName) {
             throw new Error("schematicName cannot be undefined.");
@@ -124,18 +126,14 @@ export abstract class SchematicsCommand<T extends SchematicArg> extends CommandM
         return 0;
     }
 
-    /**
-     * @param collectionName The collection name has create workflow
-     * @param workflowRoot The cwd folder has create
-     * */
     @memoize
-    protected createWorkflowBuilder(collectionName: string, workflowRoot?: string): SCNodeWorkflow {
+    protected getOrCreateWorkflowBuilder(collectionName: string, workflowRoot?: string): SCNodeWorkflow {
         const options = {collectionName, resolvePaths: this.getResolvePaths(collectionName)};
         return SCNodeWorkflow.forBuilder(workflowRoot ?? this.context.root, options);
     }
 
     @memoize
-    protected async createWorkflowExecution(collectionName: string, options: SchematicsExecutionOptions): Promise<SCNodeWorkflow> {
+    protected async getOrCreateWorkflowExecution(collectionName: string, options: SchematicsExecutionOptions): Promise<SCNodeWorkflow> {
         const { logger, root: contextRoot, packageManager } = this.context;
         const { force, dryRun, packageRegistry, schemaValidation = true, workflowRoot, defaults, interactive} = options;
 
@@ -146,7 +144,7 @@ export abstract class SchematicsCommand<T extends SchematicArg> extends CommandM
         }
 
         return SCNodeWorkflow.forExecution(workflowRootDir, {
-            force, dryRun, packageRegistry, schemaValidation,
+            force, dryRun, packageRegistry,
             defaults, interactive, logger,collectionName,
             packageManager: packageManager.name.toLowerCase(),
             projectName: () => this.getProjectName(),
@@ -156,49 +154,57 @@ export abstract class SchematicsCommand<T extends SchematicArg> extends CommandM
     }
 
     @memoize
-    protected async getSchematicCollections(): Promise<Set<string>> {
+    protected async getCollectionFromConfig(): Promise<Set<string>> {
        return new Set([Collection.NgDevSC]);
     }
 
-    protected parseSchematicInfo(schematic: string): string[]  {
-        if (!schematic?.includes(":")) return [undefined, schematic];
-        else {
-            const [collectionName, schematicName] = schematic.split(":", 2);
-            return [collectionName, schematicName];
+    @memoize
+    protected async findCollectionBySchematic(schematic: string, defaultCollection?: string): Promise<string> {
+        for (const collectionName of await this.getCollectionFromConfig()) {
+            const workflow = this.getOrCreateWorkflowBuilder(collectionName);
+            const schematicsInCollection = workflow.listSchematicNames(collectionName, true);
+            if (schematicsInCollection.includes(schematic)) return collectionName;
         }
+        return defaultCollection;
+    }
+
+    @memoize
+    protected async getSchematicOption(collection: string, schematic: string): Promise<TsMap<string, Option>> {
+        const workflow = this.getOrCreateWorkflowBuilder(collection);
+        return await workflow.getSchematicOption(schematic);
     }
 
     protected getResolvePaths(collectionName: string): string[] {
-        const { workspace, root } = this.context;
-
-        // Resolve relative collections from the location of `ngdev-cli.json`
-        if (collectionName[0] == ".") return [root];
-
-        // Global
-        else if(!workspace) return [__dirname, process.cwd()];
-
-        // Workspace: Favor __dirname for @ngdev/schematics to use the build-in version
-        else if(collectionName == Collection.NgDevSC) return [__dirname, process.cwd(), root];
-
-        // Workspace: other => collectionName != Collection.NgDevSC
-        else return [process.cwd(), root, __dirname];
+        return getResolvePaths(this.context, collectionName);
     }
 
     private getProjectName(): string | undefined {
-        const { workspace } = this.context;
-        if (!workspace) return undefined;
-
-        const projectName = getProjectByCwd(workspace);
-        if (projectName) return projectName;
-
-        return undefined;
+        return getProjectName(this.context);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     protected async addSmartDefaultProvider(options: SmartDefaultProviderOption) {
         const {providers, collectionName, ...workflowOptions } = options;
-        const workflow = await this.createWorkflowExecution(collectionName, workflowOptions);
-        Object.entries(providers).forEach(provider => workflow.registry.addSmartDefaultProvider(provider[0], provider[1]));
+        const workflow = await this.getOrCreateWorkflowExecution(collectionName, workflowOptions);
+        Object.entries(providers).forEach(provider => {
+            console.log(provider);
+            workflow.registry.addSmartDefaultProvider(provider[0], provider[1]);
+        });
     }
 
 }

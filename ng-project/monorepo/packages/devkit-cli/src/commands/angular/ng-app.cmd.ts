@@ -3,6 +3,7 @@ import { NgNewArg, NgNewCommand } from './ng-new.cmd';
 import { LocalArgv } from '../core/abstract.cmd';
 
 export default class NgNewAppCommand extends NgNewCommand<NgNewArg> {
+    readonly command = "ng app <name>";
     readonly aliases = RootCommands['ng-app'].aliases;
     readonly describe = 'Creates a new angular application project';
 

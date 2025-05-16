@@ -281,7 +281,7 @@ export async function parseJsonSchemaToOptions(
  */
 export function addSchemaOptionsToCommand<T>(
   localYargs: Argv<T>,
-  options: Option[],
+  options: Iterable<Option>,
   includeDefaultValues: boolean,
 ): Map<string, string> {
   const booleanOptionsWithNoPrefix = new Set<string>();

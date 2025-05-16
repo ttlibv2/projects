@@ -8,6 +8,7 @@
     "compiler": "tsc -p tsconfig.json",
     "prebuild": "rimraf dist/src dist/package.json dist/collection.json",
     "postbuild": "pnpm run copy:collection",
+    "build:sc": "pnpm run build",
     "watch:sc": "tsc -p tsconfig.json --watch",
     "copy:collection": "cpx collection.json dist && cpx package.json dist && cpx src/**/*.{md,json} dist/src && cpx src/**/files/** dist/src",
     "copy:watch": "cpx collection.json dist && cpx package.json dist && cpx src/**/*.{md,json} dist/src && cpx src/**/files/** dist/src --watch"

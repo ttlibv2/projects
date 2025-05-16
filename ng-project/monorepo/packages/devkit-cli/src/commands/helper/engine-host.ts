@@ -66,12 +66,10 @@ function shouldWrapSchematic(schematicFile: string, schematicEncapsulation: bool
 export class EngineHost extends NodeModulesEngineHost {
 
   createSchematicDescription(name: string, collection: FileSystemCollectionDesc): FileSystemSchematicDesc | null {
-    console.warn(`createSchematicDescription`)
     return super.createSchematicDescription(name, collection);
   }
 
   protected override _resolveReferenceString(refString: string, parentPath: string, collectionDescription?: FileSystemCollectionDesc) {
-    console.error(`_resolveReferenceString`);
 
     const [path, name] = refString.split("#", 2);
 
@@ -150,12 +148,9 @@ const legacyModules: Record<string, unknown> = {
  * @param moduleCache A map to use for caching repeat module usage and proper `instanceof` support.
  * @param exportName An optional name of a specific export to return. Otherwise, return all exports.
  */
-function wrap(
-  schematicFile: string,
-  schematicDirectory: string,
-  moduleCache: Map<string, unknown>,
-  exportName?: string,
-): () => unknown {
+function wrap(schematicFile: string, schematicDirectory: string, moduleCache: Map<string, unknown>, exportName?: string): () => unknown {
+  //console.error(`engine-host:wrap`, { schematicFile, schematicDirectory });
+
   const hostRequire = createRequire(__filename);
   const schematicRequire = createRequire(schematicFile);
 

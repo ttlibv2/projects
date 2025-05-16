@@ -56,10 +56,10 @@ export async function readWorkspace(host: WorkspaceHost, filePath: string, optio
     let node: Node;
 
     // parse workspace
-    const workspace: any = {
-        ...parseWorkspace(workspaceNode, context),
-        [JsonWorkspaceSymbol]: context.metadata
-    };
+    const dataWB = parseWorkspace(workspaceNode, context);
+    if(!dataWB.projects) dataWB.projects = new ProjectMap();
+
+    const workspace: any = { ...dataWB, [JsonWorkspaceSymbol]: context.metadata };
 
     return {filePath, host, workspace} as any;
 }
